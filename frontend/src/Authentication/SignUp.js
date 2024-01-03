@@ -3,10 +3,6 @@ import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import {
-  Radio,
-  RadioGroup,
-  Textarea,
-  Stack,
   Text,
   useDisclosure,
   Modal,
@@ -37,15 +33,13 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [pic, setPic] = useState(undefined);
   const [picLoading, setPicLoading] = useState(false);
-  const [value, setValue] = useState("");
-  const [gender, setGender] = useState("");
   const [code, setCode] = useState("");
   const [inputCode, setInputCode] = useState("");
   const [disabled, setDisabled] = useState(false);
 
   const generateAndVerify = async () => {
     setPicLoading(true);
-    if (!name || !email || !password || !confirmpassword || !isFormValid()) {
+    if (!name || !email || !password || !confirmpassword) {
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -69,7 +63,6 @@ const Signup = () => {
     }
     try {
       const { data } = await axios.get(`/api/user/${email}`);
-      console.log(data);
       setCode(data);
       onOpen();
       setPicLoading(false);
@@ -109,8 +102,6 @@ const Signup = () => {
           name,
           email,
           password,
-          gender,
-          value,
           pic,
         },
         config
@@ -123,7 +114,7 @@ const Signup = () => {
         localStorage.setItem("userInfo", JSON.stringify(userData));
       }, 2500);
       setPicLoading(false);
-      navigate("/chats");
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Error Occurred!",
@@ -180,15 +171,6 @@ const Signup = () => {
     }
   };
 
-  const MIN_CHARACTERS = 100;
-  const MAX_CHARACTERS = 200;
-  const isFormValid = () => {
-    if (gender === "female") {
-      return value.length >= MIN_CHARACTERS;
-    } else {
-      return !!name && !!email && !!password && !!confirmpassword;
-    }
-  };
 
   return (
     <VStack spacing="3px">
@@ -244,6 +226,7 @@ const Signup = () => {
             <Text
               textAlign={"center"}
               justifyContent={"center"}
+              textColor={"white"}
               color={code !== inputCode ? "red" : "green"}
             >
               Please Enter the Exact Code Recieved
@@ -252,15 +235,15 @@ const Signup = () => {
         </ModalContent>
       </Modal>
       <FormControl id="first-name" isRequired>
-        <FormLabel>Name</FormLabel>
+        <FormLabel  textColor={"white"}>Name</FormLabel>
         <Input
           placeholder="Enter Your Name"
           textColor={"white"}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-      <FormControl id="email" isRequired>
-        <FormLabel>Email Address</FormLabel>
+      <FormControl  id="email" isRequired>
+        <FormLabel  textColor={"white"}>Email Address</FormLabel>
         <Input
           type="email"
           textColor={"white"}
@@ -274,6 +257,7 @@ const Signup = () => {
             m={0}
             color={"green.400"}
             userSelect={"none"}
+            textColor={"white"}
           >
             Your email is for login only. No ads
           </FormLabel>
@@ -282,7 +266,7 @@ const Signup = () => {
         )}
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
+        <FormLabel  textColor={"white"}>Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
@@ -298,7 +282,7 @@ const Signup = () => {
         </InputGroup>
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
+        <FormLabel  textColor={"white"}>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
@@ -313,36 +297,8 @@ const Signup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <FormControl id="gender" isRequired>
-        <FormLabel>Gender</FormLabel>
-        <RadioGroup onChange={setGender} value={gender} isRequired>
-          <Stack direction="row">
-            <Radio value="male">Male</Radio>
-            <Radio value="female">Female</Radio>
-          </Stack>
-        </RadioGroup>
-      </FormControl>
-      {gender === "female" && (
-        <FormControl id="description" isRequired>
-          <FormLabel>Description</FormLabel>
-          <Textarea
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="Hello Admin! I'm Nina, a young woman based in Nairobi. I'm passionate about my work but sometimes lonely during my free time, I'd love ..."
-            size="sm"
-            minLength={MIN_CHARACTERS}
-            maxLength={MAX_CHARACTERS}
-          />
-          <Text
-            fontSize="sm"
-            color={value.length >= MIN_CHARACTERS ? "green.500" : "red.500"}
-          >
-            {`${value.length}/${MIN_CHARACTERS}`}
-          </Text>
-        </FormControl>
-      )}
       <FormControl id="pic">
-        <FormLabel>Upload your Picture</FormLabel>
+        <FormLabel textColor={"white"}>Upload your Picture</FormLabel>
         <Input
           type="file"
           p={1.5}
@@ -358,13 +314,9 @@ const Signup = () => {
         style={{ marginTop: 15 }}
         onClick={() => generateAndVerify()}
         isLoading={picLoading}
-        isDisabled={!isFormValid() || disabled}
+        isDisabled={disabled}
       >
-        {gender === "female" && !isFormValid() ? (
-          <Text>Not Enough characters</Text>
-        ) : (
-          <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>
-        )}
+       Sign Up
       </Button>
     </VStack>
   );

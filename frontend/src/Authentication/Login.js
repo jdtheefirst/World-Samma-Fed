@@ -125,7 +125,7 @@ const Login = () => {
   return (
     <VStack spacing="10px">
       <FormControl id="email" isRequired>
-        <FormLabel>Email Address</FormLabel>
+        <FormLabel textColor={"white"}>Email Address</FormLabel>
         <Input
           value={email}
           textColor={"white"}
@@ -135,7 +135,7 @@ const Login = () => {
         />
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
+        <FormLabel textColor={"white"}>Password</FormLabel>
         <InputGroup size="md">
           <Input
             value={password}
@@ -183,6 +183,7 @@ const Login = () => {
               textAlign={"center"}
               justifyContent={"center"}
               fontSize={"2xl"}
+              textColor={"white"}
             >
               Enter your Email below
             </Text>
@@ -216,7 +217,7 @@ const Login = () => {
             </Button>
           </ModalBody>
           <ModalFooter display="flex">
-            <Text textAlign={"start"}>
+            <Text textAlign={"start"} textColor={"white"}>
               A code will be sent to the above email
             </Text>
             {searching && <Spinner />}

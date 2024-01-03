@@ -1,17 +1,10 @@
 import {
-    Box,
-    Container,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    Text,
+  Box,
+   Button,
+   Container,
+   Text
   } from "@chakra-ui/react";
-
   import { useNavigate } from "react-router-dom";
-  import Login from "../Authentication/Login";
-  import Signup from "../Authentication/SignUp";
   import ErrorBoundary from "../components/ErrorBoundary";
 
   
@@ -26,38 +19,18 @@ import {
   
     return (
       <ErrorBoundary fallback={<p>Something went wrong</p>}>
-        <Container maxW="xl" centerContent>
-          <Box
-            display="flex"
-            justifyContent="center"
-            p={3}
-            bg="white"
-            w="100%"
-            m="40px 0 15px 0"
-            borderRadius="lg"
-            borderWidth="1px"
-          >
-  
-            <Text fontWeight={"bold"} fontSize="3xl">Welcome to World Samma</Text>
-          </Box>
-          <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px">
-            <Tabs isFitted variant="soft-rounded">
-              <TabList mb="1em">
-                <Tab>Login</Tab>
-                <Tab>Sign Up</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <Login />
-                </TabPanel>
-                <TabPanel>
-                  <Signup />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </Box>{" "}
-         
-        </Container>
+       <Box display={"flex"} width={"100%"}>
+       <Box display={"flex"} justifyContent={"flex-end"} className="sideDrawer" width={"100%"}><Button background={"transparent"} textColor={"white"} _hover={{backgroundColor: "transparent", color: "green"}} onClick={ () => navigate("/login")}>Login/Sign Up</Button></Box> 
+       <Box
+          display="flex"
+          justifyContent="space-between"
+          w="100%"
+          h="91.5vh"
+          p="0.2rem"
+        >
+          Mzeva
+        </Box>
+       </Box>
       </ErrorBoundary>
     );
   }
