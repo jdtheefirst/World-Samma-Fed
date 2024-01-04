@@ -13,6 +13,13 @@
     overflow-y: scroll;
 
 }
+.sideDrawer {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 
 .App-logo {
   height: 40vmin;
