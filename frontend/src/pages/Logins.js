@@ -11,10 +11,13 @@ import {
   } from "@chakra-ui/react";
   import Login from "../Authentication/Login";
   import Signup from "../Authentication/SignUp";
+  import "../App.css"
 
 const Logins = () => {
   return (
-    <Container maxW="xl" centerContent>
+    <Container maxW="xl" centerContent  css={{
+      animation: 'slideInFromRight 0.5s ease-out'
+    }}>
          <Box
             display="flex"
             justifyContent="center"
@@ -24,7 +27,7 @@ const Logins = () => {
             m="40px 0 15px 0"
             borderRadius="lg"
             borderWidth="1px"
-          >
+           >
   
             <Text fontWeight={"bold"} fontSize="3xl">Welcome to World Samma</Text>
           </Box>
