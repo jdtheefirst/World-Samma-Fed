@@ -5,7 +5,6 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Logins from "./pages/Logins";
 
-
 function App() {
   return (
     <div className="App">

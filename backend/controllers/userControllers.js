@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Sequence = require("../models/Sequence")
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
@@ -27,6 +28,24 @@ const registerUsers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists, login");
   }
+  const getNextAdminNumber = async () => {
+  // Assuming you have a Sequence model defined with a 'number' field
+  const sequence = await Sequence.findOneAndUpdate({}, { $inc: { number: 1 } }, { new: true });
+
+  // If no sequence exists, create one with an initial number
+  if (!sequence) {
+    const newSequence = new Sequence({ number: 1 });
+    await newSequence.save();
+    return "001A";
+  }
+
+  // Generate the sequence based on the retrieved number
+  const paddedNumber = sequence.number.toString().padStart(3, "0");
+  const adminNumber = `${paddedNumber}A`;
+
+  return adminNumber;
+};
+
 
   const userData = { name, email, password, gender, pic, value };
 
@@ -38,14 +57,9 @@ const registerUsers = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       gender: user.gender,
-      value: user.value,
       pic: user.pic,
-      isBlocked: [],
       token: generateToken(user._id),
-      accountType: user.accountType,
-      subscription: user.subscription,
-      adsSubscription: user.adsSubscription,
-      day: user.day,
+
     };
 
     res.status(201).json(responseData);

@@ -15,23 +15,10 @@ import {
 
 const Logins = () => {
   return (
-    <Container maxW="xl" centerContent  css={{
+    <Container display={"flex"} maxW="xl" justifyContent={"center"} alignItems={"center"} mt={"10%"} centerContent  css={{
       animation: 'slideInFromRight 0.5s ease-out'
     }}>
-         <Box
-            display="flex"
-            justifyContent="center"
-            p={3}
-            bg="white"
-            w="100%"
-            m="40px 0 15px 0"
-            borderRadius="lg"
-            borderWidth="1px"
-           >
-  
-            <Text fontWeight={"bold"} fontSize="3xl">Welcome to World Samma</Text>
-          </Box>
-          <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px">
+          <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px" > 
             <Tabs isFitted variant="soft-rounded">
               <TabList mb="1em">
                 <Tab>Login</Tab>

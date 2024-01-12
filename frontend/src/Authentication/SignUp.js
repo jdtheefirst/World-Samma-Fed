@@ -3,6 +3,10 @@ import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import {
+  Radio,
+  RadioGroup,
+  Textarea,
+  Stack,
   Text,
   useDisclosure,
   Modal,
@@ -13,11 +17,13 @@ import {
   ModalBody,
   ModalFooter,
   Divider,
+  Select,
+  SelectItem
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useState } from "react";
-
+import {countries} from 'countries-list';
 import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
@@ -33,13 +39,24 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [pic, setPic] = useState(undefined);
   const [picLoading, setPicLoading] = useState(false);
+  const [value, setValue] = useState("");
+  const [gender, setGender] = useState("");
   const [code, setCode] = useState("");
   const [inputCode, setInputCode] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const [otherName, setOtherName] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState("")
+  const [provinces, setProvinces] = useState("")
+  console.log(countries)
+
+ const countryOptions = Object.entries(countries).map(([code, country]) => ({
+  value: country.name,
+  label: country.name,
+}));
 
   const generateAndVerify = async () => {
     setPicLoading(true);
-    if (!name || !email || !password || !confirmpassword) {
+    if (!name || !email || !password || !confirmpassword || !otherName || selectedCountry || provinces) {
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -63,6 +80,7 @@ const Signup = () => {
     }
     try {
       const { data } = await axios.get(`/api/user/${email}`);
+      console.log(data);
       setCode(data);
       onOpen();
       setPicLoading(false);
@@ -102,17 +120,12 @@ const Signup = () => {
           name,
           email,
           password,
+          gender,
+          value,
           pic,
         },
         config
       );
-      let userData = await { ...data, isNewUser: true };
-      localStorage.setItem("userInfo", JSON.stringify(userData));
-
-      setTimeout(() => {
-        delete userData.isNewUser;
-        localStorage.setItem("userInfo", JSON.stringify(userData));
-      }, 2500);
       setPicLoading(false);
       navigate("/dashboard");
     } catch (error) {
@@ -171,7 +184,6 @@ const Signup = () => {
     }
   };
 
-
   return (
     <VStack spacing="3px">
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
@@ -187,6 +199,7 @@ const Signup = () => {
               textAlign={"center"}
               justifyContent={"center"}
               fontSize={"2xl"}
+              textColor={"white"}
             >
               Enter Code sent to: ~{email}~
             </Text>
@@ -200,9 +213,9 @@ const Signup = () => {
           >
             <Input
               fontSize={"2xl"}
+              textColor={"white"}
               placeholder={`i.e 126413`}
               type="text"
-              textColor={"white"}
               textAlign="center"
               onChange={(e) => setInputCode(e.target.value)}
               value={inputCode}
@@ -225,8 +238,8 @@ const Signup = () => {
           <ModalFooter display="flex">
             <Text
               textAlign={"center"}
-              justifyContent={"center"}
               textColor={"white"}
+              justifyContent={"center"}
               color={code !== inputCode ? "red" : "green"}
             >
               Please Enter the Exact Code Recieved
@@ -235,15 +248,55 @@ const Signup = () => {
         </ModalContent>
       </Modal>
       <FormControl id="first-name" isRequired>
-        <FormLabel  textColor={"white"}>Name</FormLabel>
+        <FormLabel textColor={"white"}>First name</FormLabel>
         <Input
-          placeholder="Enter Your Name"
+          placeholder="Enter Your First Name"
           textColor={"white"}
+          value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-      <FormControl  id="email" isRequired>
-        <FormLabel  textColor={"white"}>Email Address</FormLabel>
+
+      <FormControl id="other-name" isRequired>
+        <FormLabel textColor={"white"}>Other name</FormLabel>
+        <Input
+          placeholder="Enter Your Other Name"
+          textColor={"white"}
+          value={otherName}
+          onChange={(e) => setOtherName(e.target.value)}
+        />
+      </FormControl>
+       <FormControl id="country" isRequired>
+        <FormLabel textColor="white">Country</FormLabel>
+        <Select
+  placeholder="Select your country"
+  textColor={"grey"}
+  display={"flex"}
+  justifyContent={"center"}
+  alignItems={"center"}
+  width={"100%"}
+  value={selectedCountry}
+  onChange={(e) => setSelectedCountry(e.target.value)}
+>
+  {countryOptions.map((option) => (
+    <option key={option.value} value={option.value}>
+      {option.label}
+    </option>
+  ))}
+</Select>
+      </FormControl>
+      <FormControl id="provinces" isRequired>
+        <FormLabel textColor={"white"}>County/Province</FormLabel>
+        <Input
+          type="email"
+          textColor={"white"}
+          placeholder="Province"
+          onChange={(e) => setProvinces(e.target.value)}
+        />
+        
+      </FormControl>
+      <FormControl id="email" isRequired>
+        <FormLabel textColor={"white"}>Email Address</FormLabel>
         <Input
           type="email"
           textColor={"white"}
@@ -266,12 +319,12 @@ const Signup = () => {
         )}
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel  textColor={"white"}>Password</FormLabel>
+        <FormLabel textColor={"white"}>Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
-            placeholder="Enter Password"
             textColor={"white"}
+            placeholder="Enter Password"
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -282,7 +335,7 @@ const Signup = () => {
         </InputGroup>
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel  textColor={"white"}>Confirm Password</FormLabel>
+        <FormLabel textColor={"white"}>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
@@ -296,6 +349,15 @@ const Signup = () => {
             </Button>
           </InputRightElement>
         </InputGroup>
+      </FormControl>
+      <FormControl id="gender" isRequired>
+        <FormLabel textColor={"white"}>Gender</FormLabel>
+        <RadioGroup onChange={setGender} value={gender} textColor={"white"} isRequired>
+          <Stack direction="row">
+            <Radio value="male">Male</Radio>
+            <Radio value="female">Female</Radio>
+          </Stack>
+        </RadioGroup>
       </FormControl>
       <FormControl id="pic">
         <FormLabel textColor={"white"}>Upload your Picture</FormLabel>
@@ -316,7 +378,8 @@ const Signup = () => {
         isLoading={picLoading}
         isDisabled={disabled}
       >
-       Sign Up
+          <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>
+     
       </Button>
     </VStack>
   );

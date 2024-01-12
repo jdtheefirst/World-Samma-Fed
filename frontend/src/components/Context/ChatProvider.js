@@ -11,17 +11,17 @@ const ChatProvider = ({ children }) => {
   const [pic, setPic] = useState("");
   const [recoverEmail, setRecoverEmail] = useState();
   const [socket, setSocket] = useState(null);
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-  useEffect(() => {
-    const token = userInfo.token;
+//   useEffect(() => {
+//     const token = userInfo.token;
  
-    const newSocket = io('http://localhost:8080', {
-      query: { token }});
-    setSocket(newSocket);
+//     const newSocket = io('http://localhost:8080', {
+//       query: { token }});
+//     setSocket(newSocket);
 
-    return () => newSocket.close();
-}, [userInfo.token]);
+//     return () => newSocket.close();
+// }, [userInfo.token]);
 
   return (
     <ChatContext.Provider
