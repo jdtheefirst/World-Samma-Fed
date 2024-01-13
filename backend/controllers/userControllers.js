@@ -29,25 +29,31 @@ const registerUsers = asyncHandler(async (req, res) => {
     throw new Error("User already exists, login");
   }
   const getNextAdminNumber = async () => {
-  // Assuming you have a Sequence model defined with a 'number' field
   const sequence = await Sequence.findOneAndUpdate({}, { $inc: { number: 1 } }, { new: true });
-
-  // If no sequence exists, create one with an initial number
-  if (!sequence) {
-    const newSequence = new Sequence({ number: 1 });
-    await newSequence.save();
-    return "001A";
+  
+  if (!sequence || sequence.number > 999) {
+    // If the sequence is not found or the number exceeds 999, reset the sequence
+    await Sequence.updateOne({}, { number: 1 }, { upsert: true });
   }
 
-  // Generate the sequence based on the retrieved number
-  const paddedNumber = sequence.number.toString().padStart(3, "0");
-  const adminNumber = `${paddedNumber}A`;
+  // Get the current sequence number
+  const currentNumber = sequence ? sequence.number : 1;
+
+  // Calculate the prefix (001, 002, ..., 999)
+  const paddedNumber = currentNumber.toString().padStart(3, "0");
+
+  // Calculate the suffix (A, B, ..., Z)
+  const suffix = String.fromCharCode(((currentNumber - 1) % 26) + 65);
+
+  const adminNumber = `${paddedNumber}${suffix}`;
+  //at least 25k combinatons here
 
   return adminNumber;
 };
 
 
-  const userData = { name, email, password, gender, pic, value };
+  const admission = await getNextAdminNumber();
+  const userData = { name, email, password, gender, pic, admission};
 
   const user = await User.create(userData);
 
@@ -117,14 +123,9 @@ const searchUser = async (req, res) => {
       name: userExists.name,
       email: userExists.email,
       gender: userExists.gender,
-      value: userExists.value,
       pic: userExists.pic,
-      isBlocked: userExists.isBlocked,
       token: generateToken(userExists._id),
-      accountType: userExists.accountType,
-      subscription: userExists.subscription,
-      adsSubscription: userExists.adsSubscription,
-      day: userExists.day,
+      belt: userExists.belt
     };
     res.status(201).json(responseData);
   }

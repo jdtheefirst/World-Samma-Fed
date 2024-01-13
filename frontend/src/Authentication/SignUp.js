@@ -5,7 +5,6 @@ import { VStack } from "@chakra-ui/layout";
 import {
   Radio,
   RadioGroup,
-  Textarea,
   Stack,
   Text,
   useDisclosure,
@@ -18,7 +17,6 @@ import {
   ModalFooter,
   Divider,
   Select,
-  SelectItem
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
@@ -39,7 +37,6 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [pic, setPic] = useState(undefined);
   const [picLoading, setPicLoading] = useState(false);
-  const [value, setValue] = useState("");
   const [gender, setGender] = useState("");
   const [code, setCode] = useState("");
   const [inputCode, setInputCode] = useState("");
@@ -47,6 +44,7 @@ const Signup = () => {
   const [otherName, setOtherName] = useState('');
   const [selectedCountry, setSelectedCountry] = useState("")
   const [provinces, setProvinces] = useState("")
+  const [passport, setPassport]= useState('')
   console.log(countries)
 
  const countryOptions = Object.entries(countries).map(([code, country]) => ({
@@ -121,7 +119,6 @@ const Signup = () => {
           email,
           password,
           gender,
-          value,
           pic,
         },
         config
@@ -288,13 +285,25 @@ const Signup = () => {
       <FormControl id="provinces" isRequired>
         <FormLabel textColor={"white"}>County/Province</FormLabel>
         <Input
-          type="email"
+          type="text"
           textColor={"white"}
           placeholder="Province"
           onChange={(e) => setProvinces(e.target.value)}
         />
         
       </FormControl>
+       <FormControl id="id/passport" isRequired>
+        <FormLabel textColor={"white"}>Id/Passport</FormLabel>
+        <Input
+          type="number"
+          textColor={"white"}
+          placeholder="passport no:"
+          value={passport}
+          onChange={(e) => setPassport(e.target.value)}
+        />
+        
+      </FormControl>
+      
       <FormControl id="email" isRequired>
         <FormLabel textColor={"white"}>Email Address</FormLabel>
         <Input

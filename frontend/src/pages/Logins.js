@@ -15,7 +15,7 @@ import {
 
 const Logins = () => {
   return (
-    <Container display={"flex"} maxW="xl" justifyContent={"center"} alignItems={"center"} mt={"10%"} centerContent  css={{
+    <Container display={"flex"} maxW="xl"centerContent css={{
       animation: 'slideInFromRight 0.5s ease-out'
     }}>
           <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px" > 

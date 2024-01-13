@@ -12,8 +12,7 @@ const userSchema = mongoose.Schema(
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
-    accountType: { type: String, default: "new" },
-    belt: { type: String, default: "starter" },
+    admission: { type: String},
   },
   { versionKey: false },
   { timestamps: true }
