@@ -16,9 +16,11 @@ const privateEmailPass = process.env.privateEmailPass;
 const privateEmail = "admin@fuckmate.boo";
 
 const registerUsers = asyncHandler(async (req, res) => {
-  const { name, email, password, gender, pic, value } = req.body;
+  const { name, email, password, gender, pic, selectedCountry,
+          otherName,
+          provinces} = req.body;
 
-  if (!email || !name || !password || !gender) {
+  if (!email || !name || !password || !gender || !selectedCountry || !otherName || !provinces) {
     res.status(400);
     throw new Error("Please enter all fields");
   }
@@ -28,32 +30,41 @@ const registerUsers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists, login");
   }
-  const getNextAdminNumber = async () => {
+const getNextAdminNumber = async () => {
   const sequence = await Sequence.findOneAndUpdate({}, { $inc: { number: 1 } }, { new: true });
-  
-  if (!sequence || sequence.number > 999) {
-    // If the sequence is not found or the number exceeds 999, reset the sequence
+
+  if (!sequence || sequence.number > 999999999) {
     await Sequence.updateOne({}, { number: 1 }, { upsert: true });
   }
-
-  // Get the current sequence number
   const currentNumber = sequence ? sequence.number : 1;
 
-  // Calculate the prefix (001, 002, ..., 999)
-  const paddedNumber = currentNumber.toString().padStart(3, "0");
+  const paddedNumber = currentNumber.toString().padStart(9, "0");
 
-  // Calculate the suffix (A, B, ..., Z)
-  const suffix = String.fromCharCode(((currentNumber - 1) % 26) + 65);
+  const suffix = generateSuffix((currentNumber - 1) % 702);
 
   const adminNumber = `${paddedNumber}${suffix}`;
-  //at least 25k combinatons here
 
   return adminNumber;
 };
 
+const generateSuffix = (index) => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const base = letters.length;
+
+  let suffix = "";
+  while (index >= 0) {
+    suffix = letters[index % base] + suffix;
+    index = Math.floor(index / base) - 1;
+  }
+
+  return suffix;
+};
+
 
   const admission = await getNextAdminNumber();
-  const userData = { name, email, password, gender, pic, admission};
+  const userData = { name, email, password, gender, pic, admission, selectedCountry,
+          otherName,
+          provinces,};
 
   const user = await User.create(userData);
 
@@ -61,8 +72,12 @@ const registerUsers = asyncHandler(async (req, res) => {
     const responseData = {
       _id: user._id,
       name: user.name,
+      otherName: user.otherName,
+      admission: user.admission,
       email: user.email,
       gender: user.gender,
+      country: user.selectedCountry,
+      provinces: user.provinces,
       pic: user.pic,
       token: generateToken(user._id),
 
@@ -318,6 +333,8 @@ const deleteImage = async (req, res) => {
 };
 const authorizeUser = async (req, res) => {
   const { userEmail } = req.params;
+
+  console.log(userEmail);
 
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000

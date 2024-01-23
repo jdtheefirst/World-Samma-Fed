@@ -7,7 +7,6 @@ import {
     TabPanel,
     TabPanels,
     Tabs,
-    Text,
   } from "@chakra-ui/react";
   import Login from "../Authentication/Login";
   import Signup from "../Authentication/SignUp";
@@ -17,7 +16,7 @@ const Logins = () => {
   return (
     <Container display={"flex"} maxW="xl"centerContent css={{
       animation: 'slideInFromRight 0.5s ease-out'
-    }}>
+    }} marginTop={"30px"}>
           <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px" > 
             <Tabs isFitted variant="soft-rounded">
               <TabList mb="1em">

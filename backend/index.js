@@ -16,11 +16,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT;
 app.use("/api/user", userRoutes);
-app.listen(
-  PORT,
-  console.log(`Server running on PORT ${PORT}...`)
-);
-
 app.use("/api/paycheck", payRoutes);
 const __dirname1 = path.resolve();
 
@@ -40,3 +35,7 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(notFound);
 app.use(errorHandler);
+app.listen(
+  PORT,
+  console.log(`Server running on PORT ${PORT}...`)
+);

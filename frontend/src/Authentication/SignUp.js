@@ -45,7 +45,6 @@ const Signup = () => {
   const [selectedCountry, setSelectedCountry] = useState("")
   const [provinces, setProvinces] = useState("")
   const [passport, setPassport]= useState('')
-  console.log(countries)
 
  const countryOptions = Object.entries(countries).map(([code, country]) => ({
   value: country.name,
@@ -54,7 +53,8 @@ const Signup = () => {
 
   const generateAndVerify = async () => {
     setPicLoading(true);
-    if (!name || !email || !password || !confirmpassword || !otherName || selectedCountry || provinces) {
+    if (!name || !email || !password || !confirmpassword || !otherName || !selectedCountry || !provinces) {
+      console.log(name, email,password, confirmpassword, otherName, selectedCountry, provinces);
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -119,13 +119,19 @@ const Signup = () => {
           email,
           password,
           gender,
+          selectedCountry,
+          otherName,
+          provinces,
           pic,
         },
         config
       );
       setPicLoading(false);
+      console.log(data)
+      localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
+      console.log(error);
       toast({
         title: "Error Occurred!",
         description: error.response.data.message,
@@ -187,19 +193,13 @@ const Signup = () => {
         <ModalOverlay />
         <ModalContent padding={5}>
           <ModalHeader
-            fontSize="40px"
+            fontSize="medium"
             fontFamily="Work sans"
             display="flex"
             justifyContent="center"
+            textAlign={"center"}
           >
-            <Text
-              textAlign={"center"}
-              justifyContent={"center"}
-              fontSize={"2xl"}
-              textColor={"white"}
-            >
               Enter Code sent to: ~{email}~
-            </Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -209,8 +209,7 @@ const Signup = () => {
             justifyContent="space-between"
           >
             <Input
-              fontSize={"2xl"}
-              textColor={"white"}
+              fontSize={"medium"}
               placeholder={`i.e 126413`}
               type="text"
               textAlign="center"

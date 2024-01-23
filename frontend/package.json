@@ -1,6 +1,7 @@
 {
   "name": "world-samma",
   "version": "0.1.0",
+  "proxy": "http://localhost:8080",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
@@ -12,6 +13,7 @@
     "@tsparticles/react": "^3.0.0",
     "axios": "^1.6.3",
     "countries-list": "^3.0.6",
+    "http-proxy-middleware": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.1",

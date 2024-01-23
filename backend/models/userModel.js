@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
+    otherName: {type: String, required: true},
     email: { type: String, required: true, unique: true, sparse: true },
     password: { type: String, required: true },
     pic: {
@@ -12,7 +13,10 @@ const userSchema = mongoose.Schema(
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
-    admission: { type: String},
+    admission: { type: String, required: true, unique: true},
+    selectedCountry: {type: String},
+    gender: {type: String},
+    provinces: {type: String}
   },
   { versionKey: false },
   { timestamps: true }

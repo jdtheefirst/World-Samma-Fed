@@ -4,20 +4,16 @@ import {
    Image,
    Text
   } from "@chakra-ui/react";
-  import { useNavigate } from "react-router-dom";
   import ErrorBoundary from "../components/ErrorBoundary";
   import "../App.css"
+  import Logins from "./Logins"
+import { useState } from "react";
 
 
   
   function Homepage() {
-    const navigate = useNavigate();
+    const [getStarted, setGetStarted] = useState();
   
-    // useEffect(() => {
-    //   const user = JSON.parse(localStorage.getItem("userInfo"));
-  
-    //   if (user) navigate("/chats");
-    // }, [navigate]);
   
     return (
       <ErrorBoundary fallback={<p>Something went wrong</p>}>
@@ -25,10 +21,10 @@ import {
         <Box display="flex" justifyContent="flex-end" className="sideDrawer" backgroundColor={"Background"} width="100%">
           <Button background="transparent" _hover={{backgroundColor: "transparent", color: "green"}}>About</Button>
           <Button background="transparent"  _hover={{backgroundColor: "transparent", color: "green"}}>Events</Button>
-          <Button background="transparent" _hover={{backgroundColor: "transparent", color: "green"}} onClick={() => navigate("/login")}>Login/Sign Up</Button>
+          <Button background="transparent" _hover={{backgroundColor: "transparent", color: "green"}} onClick={() => setGetStarted(true)}>Login/Sign Up</Button>
         </Box>
         <Text textAlign={"center"} fontWeight={"bold"} fontSize={"2xl"} backgroundColor={"Background"}m={1} p={5} borderRadius={3}>Welcome to World-Samma, where discipline meets passion. Begin your path to mastery today.</Text>
-        <Box
+       {getStarted ? <Logins/> : <> <Box
           display="flex"
           justifyContent="center"
           alignItems={"center"}
@@ -73,7 +69,7 @@ import {
         />
        
         </Box>
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}><Button borderRadius={20} backgroundColor={"#a432a8"} onClick={() => navigate("/login")}>Get Started</Button></Box>
+        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}><Button borderRadius={20} backgroundColor={"#a432a8"} onClick={() => setGetStarted(true)}>Get Started</Button></Box></>}
       </Box>
     </ErrorBoundary>
     );
