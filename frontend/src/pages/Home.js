@@ -23,7 +23,7 @@ import { useState } from "react";
           <Button background="transparent"  _hover={{backgroundColor: "transparent", color: "green"}}>Events</Button>
           <Button background="transparent" _hover={{backgroundColor: "transparent", color: "green"}} onClick={() => setGetStarted(true)}>Login/Sign Up</Button>
         </Box>
-        <Text textAlign={"center"} fontWeight={"bold"} fontSize={"2xl"} backgroundColor={"Background"}m={1} p={5} borderRadius={3}>Welcome to World-Samma, where discipline meets passion. Begin your path to mastery today.</Text>
+        <Text textAlign={"center"} fontWeight={"bold"} fontSize={{ base: 'sm', md: 'xl' }} backgroundColor={"Background"}m={1} p={5} borderRadius={3}>Welcome to World-Samma, where discipline meets passion. Begin your path to mastery today.</Text>
        {getStarted ? <Logins/> : <> <Box
           display="flex"
           justifyContent="center"

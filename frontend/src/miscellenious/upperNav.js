@@ -1,11 +1,10 @@
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Box, Text } from "@chakra-ui/layout";
-import { Badge, Image, useBreakpointValue, IconButton } from "@chakra-ui/react";
+import { Badge, Image, useBreakpointValue, IconButton, CloseButton} from "@chakra-ui/react";
 import {
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
 } from "@chakra-ui/menu";
@@ -16,8 +15,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
 } from "@chakra-ui/modal";
-import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -69,21 +67,23 @@ function UpperNav (){
         alignItems="center"
         bg="white"
         w="100%"
-        p="5px 10px 5px 10px"
+        p={1}
+        paddingBottom={2}
         boxShadow='lg'
       >
         <Text
-          display={displayValue}
+          display={"flex"}
           justifyContent={"center"}
-          alignItems={"space-between"}
-          fontSize="2xl"
+          alignItems={"center"}
+          fontSize="medium"
           userSelect={"none"}
-          visibility={textVisibility}
+          p={0}
+          m={0}
         >
           Worldsamma
         </Text>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}
-        ><Button backgroundColor={"transparent"}  _hover={{ backgroundColor: "transparent", color: "green.400" }}  onClick={() => {
+        ><Button backgroundColor={"transparent"} display={displayValue} visibility={textVisibility}  _hover={{ backgroundColor: "transparent", color: "green.400" }}  onClick={() => {
           navigate('/dashboard')
         }}>My Programs</Button>
           <Button
@@ -91,7 +91,6 @@ function UpperNav (){
             onClick={onOpen}
             _hover={{ backgroundColor: "transparent", color: "green.400" }}
           >
-            <i className="fas fa-search"></i>
             <Text
               display={{ base: "none", md: "flex" }}
               px={4}
@@ -145,40 +144,50 @@ function UpperNav (){
             <MenuButton
               as={Button}
               bg="white"
-              _hover={{ backgroundColor: "green.100" }}
-              rightIcon={<ChevronDownIcon />}
+              _hover={{ backgroundColor: "transparent" }}
+              onClick={onOpen}
             >
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user?.name}
-                src={user?.pic}
-              />
+               {displayValue === "flex" ? (
+        <Avatar
+          size="sm"
+          cursor="pointer"
+          name={user?.name}
+          src={user?.pic}
+        />
+      ) : (
+        <IconButton backgroundColor={"transparent"} icon={<Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706276791/icons8-menu-50_afv1fe.png" height={5}/>} />
+      )}
             </MenuButton>
-            <MenuList>
-              {/* <ClientModal user={user}>
-                <MenuItem>My Profile</MenuItem>{" "}
-              </ClientModal> */}
-              <MenuDivider />
-              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-            </MenuList>
           </Menu>
         </div>
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Dashboard</DrawerHeader>
+        <DrawerContent >
+          <DrawerHeader borderBottomWidth="1px" display={"flex"} justifyContent={"space-between"}>Dashboard <CloseButton onClick={onClose}/></DrawerHeader>
            <DrawerBody display={"flex"} flexDir={"column"} justifyContent={"space-between"} width={"100%"}>
-            <Box padding={3}><Text>
-              Profile
-            </Text> 
-             <Text textAlign={"start"}>
+            <Box padding={3} display={"flex"} justifyContent={"space-around"} flexDir={"column"}>
+              <Button display={"flex"} justifyContent={"left"} alignItems={"center"} m={1} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                name={user?.name}
+                src={user?.pic}
+              />
+              <Text p={2} m={1}>Profile</Text>
+            </Button> 
+             <Button justifyContent={"left"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}} onClick={() => {navigate('/dashboard'); onClose();}}>
               My Programs
-            </Text> </Box>
-            <Button>Log out</Button>
-            
+            </Button>
+            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
+              Join Club
+            </Button>
+             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
+              From A Club
+            </Button>
+            </Box>
+            <Button onClick={logoutHandler}>Log out</Button>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

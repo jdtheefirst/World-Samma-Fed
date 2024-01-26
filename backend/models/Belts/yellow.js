@@ -13,6 +13,5 @@ const beltSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Belt1 model
-const Belt = mongoose.model("Belt", beltSchema);
-module.exports = Belt;
+const Yellow = mongoose.model("Belt", beltSchema);
+module.exports = Yellow;

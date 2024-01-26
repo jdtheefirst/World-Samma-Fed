@@ -8,7 +8,7 @@ const MyPrograms = ({courses}) => {
         My Programs
       </Text>
       {courses.map((course) => (
-        <Flex key={course.id} display={"flex"} alignItems="center" justifyContent="space-between" m={4} p={4} width={"70%"} border={"1px"} borderRadius={5}>
+        <Flex key={course.id} display={"flex"} alignItems="center" justifyContent="space-between" m={4} p={{ base: '1', md: '4' }} width={{ base: '90%', md: '70%' }} border={"1px"} borderRadius={5}>
             <Box><Text fontSize={"larger"} fontWeight={"medium"} m={5}>{course.title}</Text>
           <Link href={`/courses/${course.id}`} style={{ textDecoration: 'none', color: 'inherit' }} p={0} m={0}> 
             Continue
