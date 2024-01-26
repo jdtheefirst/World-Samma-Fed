@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
     "@react-oauth/google": "^0.12.1",
     "@testing-library/jest-dom": "^5.17.0",
@@ -20,6 +21,7 @@
     "react-scripts": "5.0.1",
     "react-tsparticles": "^2.12.2",
     "socket.io-client": "^4.7.2",
+    "styled-components": "^6.1.8",
     "tsparticles": "^3.0.3",
     "web-vitals": "^2.1.4"
   },

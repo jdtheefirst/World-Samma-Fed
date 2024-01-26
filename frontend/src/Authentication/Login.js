@@ -65,11 +65,11 @@ const Login = () => {
         { email, password },
         config
       );
-
+      console.log(data)
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
 
-      navigate("/chats");
+      navigate("/dashboard");
     } catch (error) {
       toast({
         title: "Account Missing!",

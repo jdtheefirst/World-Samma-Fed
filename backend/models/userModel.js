@@ -16,7 +16,8 @@ const userSchema = mongoose.Schema(
     admission: { type: String, required: true, unique: true},
     selectedCountry: {type: String},
     gender: {type: String},
-    provinces: {type: String}
+    provinces: {type: String},
+    belt: {type: String, default: 'Member'}
   },
   { versionKey: false },
   { timestamps: true }

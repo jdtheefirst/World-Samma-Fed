@@ -1,27 +1,15 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import io from 'socket.io-client';
+import React, { createContext, useContext, useState} from "react";
 
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
   const [verify, setVerify] = useState(undefined);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(undefined);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [pic, setPic] = useState("");
   const [recoverEmail, setRecoverEmail] = useState();
-  const [socket, setSocket] = useState(null);
-//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-//   useEffect(() => {
-//     const token = userInfo.token;
- 
-//     const newSocket = io('http://localhost:8080', {
-//       query: { token }});
-//     setSocket(newSocket);
-
-//     return () => newSocket.close();
-// }, [userInfo.token]);
+  const [notification, setNotification] = useState([]);
 
   return (
     <ChatContext.Provider
@@ -30,6 +18,8 @@ const ChatProvider = ({ children }) => {
         setRecoverEmail,
         verify,
         setVerify,
+        notification,
+        setNotification,
         pic,
         setPic,
         email,

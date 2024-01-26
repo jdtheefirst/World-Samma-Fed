@@ -79,6 +79,7 @@ const generateSuffix = (index) => {
       country: user.selectedCountry,
       provinces: user.provinces,
       pic: user.pic,
+      belt: user.belt,
       token: generateToken(user._id),
 
     };
@@ -138,6 +139,8 @@ const searchUser = async (req, res) => {
       name: userExists.name,
       email: userExists.email,
       gender: userExists.gender,
+      country: userExists.selectedCountry,
+      provinces: userExists.provinces,
       pic: userExists.pic,
       token: generateToken(userExists._id),
       belt: userExists.belt
@@ -162,14 +165,11 @@ const recoverEmail = async (req, res) => {
         name: userData.name,
         email: userData.email,
         gender: userData.gender,
-        value: userData.value,
         pic: userData.pic,
-        isBlocked: userData.isBlocked,
+        country: userData.selectedCountry,
+        provinces: userData.provinces,
         token: generateToken(userData._id),
-        accountType: userData.accountType,
-        subscription: userData.subscription,
-        adsSubscription: userData.adsSubscription,
-        day: userData.day,
+        belt: userData.belt
       };
       res.status(201).json(responseData);
     }
@@ -193,14 +193,12 @@ const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       gender: user.gender,
-      value: user.value,
       pic: user.pic,
-      isBlocked: user.isBlocked,
+      country: user.selectedCountry,
+      provinces: user.provinces,
       token: generateToken(user._id),
-      accountType: user.accountType,
-      subscription: user.subscription,
-      adsSubscription: user.adsSubscription,
-      day: user.day,
+      belt: user.belt
+      
     });
   } else {
     res.status(401);
