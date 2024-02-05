@@ -40,8 +40,8 @@ import { useState } from "react";
           borderRadius='lg'
           height={"90%"}
           _hover={{
-            transform: 'scale(1.05)', // Scales up the image to 105% of its original size
-            transition: 'transform 0.2s', // Smooth transition effect
+            transform: 'scale(1.05)', 
+            transition: 'transform 0.2s', 
           }}
           m={2}
         />

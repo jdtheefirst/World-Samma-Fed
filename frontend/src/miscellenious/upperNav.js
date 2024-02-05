@@ -72,10 +72,9 @@ function UpperNav (){
         boxShadow='lg'
       >
         <Text
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
+          textAlign={"center"}
           fontSize="medium"
+          fontWeight={"bold"}
           userSelect={"none"}
           p={0}
           m={0}
@@ -177,14 +176,23 @@ function UpperNav (){
               />
               <Text p={2} m={1}>Profile</Text>
             </Button> 
-             <Button justifyContent={"left"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}} onClick={() => {navigate('/dashboard'); onClose();}}>
+             <Button justifyContent={"left"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}} onClick={() => {navigate('/dashboard'); onClose();}}>
               My Programs
             </Button>
-            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
+            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
               Join Club
             </Button>
-             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
-              From A Club
+             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
+              Form a Club
+            </Button>
+            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
+             Provincial level
+            </Button>
+            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
+             National level
+            </Button>
+            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
+             International Championship
             </Button>
             </Box>
             <Button onClick={logoutHandler}>Log out</Button>
