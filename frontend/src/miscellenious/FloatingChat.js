@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Input, Button, Text } from '@chakra-ui/react';
+import { Box, Input, Button, Text,useToast } from '@chakra-ui/react';
 
 const Message = ({ sender, text, onSelect }) => (
   <Box p={2} mb={2} borderWidth="1px" borderRadius="md" onClick={onSelect}>
@@ -9,57 +9,61 @@ const Message = ({ sender, text, onSelect }) => (
 );
 
 const FloatingChat = () => {
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'Admin', text: 'Welcome to the chat!' },
-    { id: 2, sender: 'Coach', text: 'How can we assist you today?' },
-    // Add more messages as needed
-  ]);
+  const toast = useToast();
 
   const [replyTo, setReplyTo] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const [chatOptions, setChatOptions] = useState(['Admin', 'Couch', 'Provincial Coach', 'National Coach']);
+  const [selectedChatOption, setSelectedChatOption] = useState(null);
+
 
   const handleSelectMessage = (message) => {
     // Set the selected message as the one to reply to
     setReplyTo(message);
   };
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() === '') {
-      return; // Prevent sending empty messages
-    }
+ const sendMessage = async (event) => {
+  if (!selectedChatOption) {
+    toast({
+      title: 'Select a recipient',
+      description: 'Please choose whom you want to chat with.',
+      status: 'info',
+      duration: 5000,
+      isClosable: true,
+      position: 'bottom',
+    });
+    return;
+  }
 
-    const sender = 'User'; // For simplicity, you can set the sender as the user
-    const updatedMessages = [...messages, { id: messages.length + 1, sender, text: newMessage }];
-
-    setMessages(updatedMessages);
-    setNewMessage('');
-    setReplyTo(null);
-  };
+};
 
   return (
     <Box position="fixed" bottom="0" right="0" width="300px" borderLeft="1px" borderColor="gray.300">
-      {messages.map((message) => (
-        <Message
-          key={message.id}
-          sender={message.sender}
-          text={message.text}
-          onSelect={() => handleSelectMessage(message)}
-        />
-      ))}
       <Box p={2}>
-        {replyTo && (
-          <Text>
-            Replying to: {replyTo.sender} - {replyTo.text}
-          </Text>
-        )}
+       {!selectedChatOption && (
+    <Box>
+    <Text>Select whom you want to chat with:</Text>
+    {chatOptions.map((option) => (
+      <Button key={option} onClick={() => setSelectedChatOption(option)}>
+        {option}
+      </Button>
+    ))}
+    </Box>
+     )} 
+     
+     <Box>{selectedChatOption && (
+  <Text>
+    Chatting with {selectedChatOption}
+  </Text>
+)}
         <Input
           placeholder="Type your message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
         />
-        <Button onClick={handleSendMessage} mt={2}>
+        <Button onClick={sendMessage} mt={2}>
           Send
-        </Button>
+        </Button></Box>
       </Box>
     </Box>
   );
