@@ -1,39 +1,37 @@
 const mongoose = require("mongoose");
 
-const chatSchema = mongoose.Schema(
-  {
+const chatSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  admin: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  coach: {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    admin: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    coach: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    provincial: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    national: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    messages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-      },
-    ],
+    default: 'coach',
   },
-  {
-    timestamps: true,
-  }
-);
+  provincial: {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    default: 'provincialCoach',
+  },
+  national: {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    default: 'nationalCoach',
+  },
+});
 
-const Chat = mongoose.model("Chat", chatSchema);
+const Chat = mongoose.model('Chat', chatSchema);
 
 module.exports = Chat;

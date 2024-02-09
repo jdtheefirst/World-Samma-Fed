@@ -6,20 +6,16 @@ const createMessage = async (req, res) => {
     const { sender, content, user } = req.body;
     const adminId = "65afe4227b69cf7f766b5abe";
 
-    let chat = await Chat.findOne({
-      users: { $all: [user, adminId] },
+     let chat = await Chat.findOne({
+      user: user,
+      admin: adminId,
     });
 
     if (!chat) {
       chat = new Chat({
-        users: [user, adminId],
+        user: user,
         admin: adminId,
-        coach: 'coach',
-        provincial: 'provincialCoach',
-        national: 'nationalCoach',
       });
-
-      await chat.save();
     }
 
     const message = new Message({
