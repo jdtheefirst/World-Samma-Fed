@@ -35,7 +35,7 @@ class ErrorBoundary extends React.Component {
           >
             {" "}
             <Text fontSize={"2xl"}>An error occurred. Please </Text>
-            <Link color="teal.500" href="/chats">
+            <Link color="teal.500" href="/dashboard">
               Go Back...
             </Link>
           </Box>
