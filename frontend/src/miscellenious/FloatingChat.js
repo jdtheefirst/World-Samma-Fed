@@ -4,20 +4,18 @@ import ScrollableChat from './ScrollableChat';
 import { ChatState } from '../components/Context/ChatProvider';
 import {getUserById} from "../components/config/chatlogics"
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const FloatingChat = () => {
   const toast = useToast();
   const [newMessage, setNewMessage] = useState('');
-  const [chatOptions, setChatOptions] = useState(['Admin...', 'Couch...', 'Provincial Coach...', 'National Coach...']);
+  const [chatOptions, setChatOptions] = useState(['Admin', 'Couch', 'Provincial Coach', 'National Coach']);
   const [selectedChatOption, setSelectedChatOption] = useState(null);
   const [messages, setMessages] = useState('')
   const [loading, setLoading] = useState();
-  const {user, setUser} = ChatState();
+  const {user} = ChatState();
  
   const fetchMessages = useCallback(async () => {
          if(!user) return;
-
     try {
       const config = {
         headers: {
@@ -64,6 +62,7 @@ const FloatingChat = () => {
 
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Error Occured!",
         description: "Failed to Load the Messages",
@@ -78,7 +77,7 @@ const FloatingChat = () => {
     useEffect(() => {
     fetchMessages();
 
-  }, [fetchMessages, toast, user.token]);
+  }, [fetchMessages]);
 
  const sendMessage = async (event) => {
   if ((event && event.key === "Enter") || !event) {
@@ -104,9 +103,8 @@ const FloatingChat = () => {
           setNewMessage("");
           const { data } = await axios.post(
             "/api/message",
-            {
+            { sender: selectedChatOption,
               content: newMessage,
-              chatId: 'jngatiampesa23@gmail.com',
               user,
             },
             config
@@ -159,7 +157,7 @@ const FloatingChat = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
           />
-         <IconButton onClick={sendMessage} p={0} m={0}>
+         <IconButton onClick={sendMessage} p={0} m={1}>
     <Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1707479527/icons8-send-24_higtsx.png" />
   </IconButton>
         </Box>

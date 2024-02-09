@@ -19,13 +19,10 @@ import { BellIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
-import { useEffect } from "react";
 
 function UpperNav (){
-
   const {
     user,
-    setUser,
     notification,
     setNotification,
   } = ChatState()
@@ -37,26 +34,13 @@ function UpperNav (){
     localStorage.removeItem("userInfo");
     navigate("/");
   };
-
-  useEffect(() => {
-   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-   if(!userInfo){
-    navigate('/');
-    return;
-   }
-  setUser(userInfo);
-}, [setUser, navigate]);
-
   
-
   const displayValue = useBreakpointValue({ base: "none", md: "flex" });
 
   const textVisibility = useBreakpointValue({
     base: "hidden",
     md: "visible",
   });
-
-  console.log(user);
 
 
   return (

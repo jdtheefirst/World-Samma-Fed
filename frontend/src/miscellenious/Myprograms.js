@@ -1,9 +1,6 @@
 import { Box, Flex, Text, Button, Link } from '@chakra-ui/react';
-import { ChatState } from '../components/Context/ChatProvider';
 
 const MyPrograms = ({courses}) => {
-  const {user} = ChatState();
-  console.log(user);
 
   return (
     <Box display={"flex"} flexDir={"column"} alignItems="center" justifyContent="space-between" width="100%" p={4} backgroundColor={"background"}>
