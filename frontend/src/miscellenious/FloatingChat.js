@@ -45,6 +45,8 @@ const FloatingChat = () => {
 
       const { data } = await axios.get(`/api/message/${user._id}`, config);
 
+      console.log(data);
+
       const userDataCache = new Map();
 
       const resolvedMessages = await Promise.allSettled(
@@ -99,9 +101,22 @@ const FloatingChat = () => {
     fetchMessages();
   }, [fetchMessages]);
 
+  useEffect(() => {
+  if (selectedChatOption === "Coach") {
+    setSender(user.physicalCoach);
+  } else if (selectedChatOption === "Admin" && chat && chat.admin) {
+    setSender(chat.admin);
+  } else if (selectedChatOption === "Provincial Coach" && chat && chat.provincial) {
+    setSender(chat.provincial);
+  } else if (selectedChatOption === "National Coach" && chat && chat.national) {
+    setSender(chat.national);
+  }
+}, [selectedChatOption, user.physicalCoach, chat]);
+
+
   const sendMessage = async (event) => {
     if ((event && event.key === "Enter") || !event) {
-      console.log(selectedChatOption);
+      console.log(selectedChatOption, sender);
       if (!selectedChatOption) {
         console.log('WE are here!!!');
         toast({
@@ -114,18 +129,6 @@ const FloatingChat = () => {
         });
         return;
       }
-      if (selectedChatOption === "Coach") {
-          setSender(user.physicalCoach);
-        } else if (selectedChatOption === "Admin") {
-          setSender(chat.admin);
-          console.log(sender);
-        } else if (selectedChatOption === "Provincial Coach") {
-          setSender(chat.provincial);
-        } else if (selectedChatOption === "National Coach") {
-          setSender(chat.national);
-        }else{
-          return;
-        }
 
       try {
         const userId = user._id;
@@ -135,7 +138,6 @@ const FloatingChat = () => {
             Authorization: `Bearer ${user.token}`,
           },
         };
-
         setNewMessage("");
         const { data } = await axios.post(
           "/api/message",
@@ -158,7 +160,7 @@ const FloatingChat = () => {
     }
   };
   return (
-    <Box position="fixed" bottom="0" right="1" height={"50vh"} width="350px" border="1px solid #d80eeb" background={"Background"} borderRadius={4}>
+    <Box position="fixed" bottom="0" right="1" height={"90vh"} width="350px" border="1px solid #d80eeb" background={"Background"} borderRadius={4}>
       <Box p={2} top="0" left="0" height="100%" display="flex" flexDir="column" justifyContent="center">
         {!selectedChatOption && (
           <Box display={"flex"} flexDir={"column"}>

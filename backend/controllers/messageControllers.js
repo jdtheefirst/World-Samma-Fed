@@ -41,4 +41,25 @@ const createMessage = async (req, res) => {
   }
 };
 
-module.exports = { createMessage };
+const allMessages = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId, "Here we have it!!!")
+    const messages = await Message.find({
+      $or: [
+        { sender: userId },
+        { recipient: userId }
+      ]
+    })
+      .populate("sender", "name pic email")
+      .populate("chat");
+
+    res.json(messages);
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+};
+
+
+module.exports = { createMessage, allMessages};
