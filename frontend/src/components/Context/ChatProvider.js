@@ -5,6 +5,7 @@ const ChatContext = createContext();
 const ChatProvider = ({ children }) => {
   const [verify, setVerify] = useState(undefined);
   const [user, setUser] = useState(undefined);
+  const [chat, setChat] = useState(undefined);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [pic, setPic] = useState("");
@@ -18,6 +19,8 @@ const ChatProvider = ({ children }) => {
         setRecoverEmail,
         verify,
         setVerify,
+        chat,
+        setChat,
         notification,
         setNotification,
         pic,

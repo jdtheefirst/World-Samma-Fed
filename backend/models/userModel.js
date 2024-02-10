@@ -17,7 +17,9 @@ const userSchema = mongoose.Schema(
     selectedCountry: {type: String},
     gender: {type: String},
     provinces: {type: String},
-    belt: {type: String, default: 'Member'}
+    belt: {type: String, default: 'Member'},
+    coach: {type: String, default: undefined},
+    physicalCoach: {type: String, default: undefined},
   },
   { versionKey: false },
   { timestamps: true }

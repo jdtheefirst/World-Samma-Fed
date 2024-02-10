@@ -10,25 +10,19 @@ const chatSchema = new mongoose.Schema({
     ref: "User",
   },
   coach: {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    default: 'coach',
-  },
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: 'coach',
+},
   provincial: {
-    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    },
-    default: 'provincialCoach',
+      default: 'provincialCoach',
   },
   national: {
-    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    },
-    default: 'nationalCoach',
+      default: 'nationalCoach',
   },
 });
 

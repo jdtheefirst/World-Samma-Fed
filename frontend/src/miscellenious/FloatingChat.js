@@ -8,11 +8,40 @@ import axios from 'axios';
 const FloatingChat = () => {
   const toast = useToast();
   const [newMessage, setNewMessage] = useState('');
-  const [chatOptions, setChatOptions] = useState(['Admin', 'Couch', 'Provincial Coach', 'National Coach']);
+  const [chatOptions, setChatOptions] = useState(['Admin', 'Coach', 'Provincial Coach', 'National Coach']);
   const [selectedChatOption, setSelectedChatOption] = useState(null);
-  const [messages, setMessages] = useState('')
+  const [messages, setMessages] = useState('');
+  const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState();
-  const {user} = ChatState();
+  const {user, setChat, chat} = ChatState();
+
+const fetchOrCreateChat = useCallback(async () => {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    setLoading(true);
+
+    const { data } = await axios.get(`/api/chat/${user._id}`, config);
+    console.log(data);
+
+  } catch (error) {
+    console.error('Error fetching or creating chat:', error);
+  }
+}, [user.token, user._id]);
+
+useEffect(() => {
+  fetchOrCreateChat();
+}, [fetchOrCreateChat]);
+
+  if(selectedChatOption === "Coach"){setSender(user.physicalCoach)}else if(selectedChatOption === "Provincial Coach"){
+    setSender(chat.provincial)
+  }else if(selectedChatOption === "National Coach"){
+    setSender(chat.national)
+  }
  
   const fetchMessages = useCallback(async () => {
          if(!user) return;
@@ -92,7 +121,7 @@ const FloatingChat = () => {
     });
     return;
   }
-   try {
+   try {  const userId = user._id;
           const config = {
             headers: {
               "Content-type": "application/json",
@@ -103,9 +132,9 @@ const FloatingChat = () => {
           setNewMessage("");
           const { data } = await axios.post(
             "/api/message",
-            { sender: selectedChatOption,
+            { sender: sender,
               content: newMessage,
-              user,
+              userId,
             },
             config
           );
