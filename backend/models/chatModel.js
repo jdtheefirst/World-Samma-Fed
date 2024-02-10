@@ -10,21 +10,31 @@ const chatSchema = new mongoose.Schema({
     ref: "User",
   },
   coach: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "User",
-  default: 'coach',
-},
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   provincial: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: 'provincialCoach',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   national: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: 'nationalCoach',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
+  messages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+    },
+  ],
 });
+
+chatSchema.set('toObject', { getters: true });
+chatSchema.set('toJSON', { getters: true });
+
+chatSchema.path('coach').default(null);
+chatSchema.path('provincial').default(null);
+chatSchema.path('national').default(null);
 
 const Chat = mongoose.model('Chat', chatSchema);
 

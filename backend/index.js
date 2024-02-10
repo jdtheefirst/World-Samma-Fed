@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRouter");
 const payRoutes = require("./routes/payRouter");
 const chatRouter = require("./routes/chatRouter");
+const messageRouter = require("./routes/messageRoute");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -19,6 +20,7 @@ const PORT = process.env.PORT;
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/chat", chatRouter);
+app.use("/api/message", messageRouter);
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {

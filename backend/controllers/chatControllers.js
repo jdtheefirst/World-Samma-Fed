@@ -6,7 +6,7 @@ const createChat = async (req, res) => {
 
   try {
     
-    const adminId = "65afe4227b69cf7f766b5abe";
+    const adminId = "65afe74c7d7281f61e29a329";
 
      let chat = await Chat.findOne({
       user: userId
@@ -18,7 +18,8 @@ const createChat = async (req, res) => {
         admin: adminId,
       });
     }
-    res.json(chat);
+    const savedChat = await chat.save();
+    res.json(savedChat);
 }catch(error){
      console.error('Error fetching or creating chat:', error);
     }

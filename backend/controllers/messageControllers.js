@@ -7,7 +7,7 @@ const createMessage = async (req, res) => {
 
   try {
     
-    const adminId = "65afe4227b69cf7f766b5abe";
+    const adminId = "65afe74c7d7281f61e29a329";
 
      let chat = await Chat.findOne({
       user: userId
@@ -26,6 +26,7 @@ const createMessage = async (req, res) => {
       content: content,
       chat: chat._id,
     });
+    console.log(message);
 
     await message.save();
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const {
- createMessage
+createMessage
 } = require("../controllers/messageControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
