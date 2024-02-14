@@ -11,12 +11,23 @@ const messageModel = mongoose.Schema(
       ref: "User",
     },
     content: { type: String, trim: true },
-    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
   },
   {
     timestamps: true,
   }
 );
+messageModel.virtual("admission", {
+  ref: "User",
+  localField: "sender",
+  foreignField: "admission",
+  justOne: true,
+});
+messageModel.virtual("admission", {
+  ref: "User",
+  localField: "recipient",
+  foreignField: "admission",
+  justOne: true,
+});
 
 const Message = mongoose.model("Message", messageModel);
 module.exports = Message;

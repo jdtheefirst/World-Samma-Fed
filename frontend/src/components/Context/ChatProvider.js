@@ -7,6 +7,8 @@ const ChatProvider = ({ children }) => {
   const [user, setUser] = useState(undefined);
   const [chat, setChat] = useState(undefined);
   const [email, setEmail] = useState("");
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [send, setSend] = useState(null);
   const [name, setName] = useState("");
   const [pic, setPic] = useState("");
   const [recoverEmail, setRecoverEmail] = useState();
@@ -31,6 +33,10 @@ const ChatProvider = ({ children }) => {
         setName,
         user,
         setUser,
+        selectedChat,
+        setSelectedChat,
+        send,
+        setSend
       }}
     >
       {children}

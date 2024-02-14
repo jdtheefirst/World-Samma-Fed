@@ -2,18 +2,37 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Box, Input, Button, Text, useToast, IconButton, Image } from '@chakra-ui/react';
 import ScrollableChat from './ScrollableChat';
 import { ChatState } from '../components/Context/ChatProvider';
-import { getUserById } from "../components/config/chatlogics";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const FloatingChat = () => {
+const FloatingChat = ({ onClose }) => {
   const toast = useToast();
   const [newMessage, setNewMessage] = useState('');
   const [chatOptions, setChatOptions] = useState(['Admin', 'Coach', 'Provincial Coach', 'National Coach']);
   const [selectedChatOption, setSelectedChatOption] = useState(null);
-  const [messages, setMessages] = useState('');
+  const [messages, setMessages] = useState([]);
   const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState();
-  const { user, setChat, chat } = ChatState();
+  const [rank, setRank] = useState(false);
+  const { user, setChat, chat,selectedChat, setSelectedChat, send, setSend } = ChatState();
+  console.log(chat);
+  const navigate = useNavigate();
+
+    useEffect(() => {
+  if (chat && (chat.admin === user._id || chat.coach === user._id || chat.provincial === user._id || chat.national === user._id)) {
+    setRank(true);
+  }
+}  , [user._id, chat]);
+
+useEffect(() => {
+  if (selectedChatOption === 'Coach' && !chat.coach ) {
+    navigate("/club")
+  }else if(selectedChatOption === 'Provincial Coach' && !chat.provincial ){
+    navigate("/provincial")
+  }else if(selectedChatOption === 'National Coach' && !chat.national ){
+    navigate("/national")
+  }
+}  , [selectedChatOption, chat, navigate]);
 
   const fetchOrCreateChat = useCallback(async () => {
     try {
@@ -33,63 +52,34 @@ const FloatingChat = () => {
   }, [user.token, user._id, setChat]);
 
   const fetchMessages = useCallback(async () => {
-    if (!user) return;
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+  if (!user) return;
 
-      setLoading(true);
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
 
-      const { data } = await axios.get(`/api/message/${user._id}`, config);
+    setLoading(true);
 
-      console.log(data);
+    const { data } = await axios.get(`/api/message/${user._id}`, config);
 
-      const userDataCache = new Map();
+    setMessages(data);
 
-      const resolvedMessages = await Promise.allSettled(
-        data.map(async (message) => {
-          const senderId = message.sender._id;
-
-          let sender = userDataCache.get(senderId);
-
-          if (!sender) {
-            try {
-              sender = await getUserById(senderId, user.token);
-
-              userDataCache.set(senderId, sender);
-            } catch (error) {
-              console.error(error);
-            }
-          }
-          return {
-            ...message,
-            sender,
-          };
-        })
-      );
-
-      const resolvedValues = resolvedMessages
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result.value);
-
-      setMessages(resolvedValues);
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast({
-        title: "Error Occurred!",
-        description: "Failed to Load the Messages",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-    }
-  }, [toast, user]);
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+    toast({
+      title: "Error Occured!",
+      description: "Failed to Load the Messages",
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+  }
+}, [toast, user]);
 
   useEffect(() => {
     console.log('useEffect for selectedChatOption');
@@ -113,15 +103,31 @@ const FloatingChat = () => {
   }
 }, [selectedChatOption, user.physicalCoach, chat]);
 
+useEffect(()=>{
+  if(selectedChat){
+    setSender(selectedChat);
+  }
+}, [selectedChat, setSender])
+
 
   const sendMessage = async (event) => {
     if ((event && event.key === "Enter") || !event) {
-      console.log(selectedChatOption, sender);
-      if (!selectedChatOption) {
+      if (!selectedChatOption && !rank) {
         console.log('WE are here!!!');
         toast({
           title: 'Select a recipient',
           description: 'Please choose whom you want to chat with.',
+          status: 'info',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+        return;
+      }
+      if (rank && !selectedChat) {
+        toast({
+          title: 'Select a recipient',
+          description: 'Please choose whom you want to reply to.',
           status: 'info',
           duration: 5000,
           isClosable: true,
@@ -144,7 +150,6 @@ const FloatingChat = () => {
           { sender: sender, content: newMessage, userId },
           config
         );
-        console.log("message sent", data,"selectedChatOption", selectedChatOption);
 
         setMessages((prevMessages) => [...prevMessages, data]);
       } catch (error) {
@@ -159,40 +164,56 @@ const FloatingChat = () => {
       }
     }
   };
+  const handleChatClose = () => {
+    onClose();
+  };
   return (
-    <Box position="fixed" bottom="0" right="1" height={"90vh"} width="350px" border="1px solid #d80eeb" background={"Background"} borderRadius={4}>
+    <Box display={"flex"} flexDirection={"column"} position="fixed" bottom="0" right="1" height={"90vh"} width={{ base: "95%", lg: "350px"}} border="1px solid #d80eeb" background={"Background"} borderRadius={4}>
+      <Button p={2} onClick={handleChatClose}>X</Button>
       <Box p={2} top="0" left="0" height="100%" display="flex" flexDir="column" justifyContent="center">
-        {!selectedChatOption && (
-          <Box display={"flex"} flexDir={"column"}>
+        {!selectedChatOption && !rank && (
+          <Box display={"flex"} flexDir={"column"} bg="transparent">
             <Text>Select whom you want to chat with:</Text>
             {chatOptions.map((option) => (
-              <Button key={option} onClick={() => setSelectedChatOption(option)}>
+              <Button key={option} bg="transparent" onClick={() => setSelectedChatOption(option)}>
                 {option}
               </Button>
             ))}
           </Box>
         )}
         <ScrollableChat messages={messages} />
-        <Text display={"flex"} justifyContent={"center"} alignItems={"center"} height={"100%"}>
-          Messages
-        </Text>
-        <Box position="absolute" bottom={0} width="100%">
-          {selectedChatOption && (
-            <Text>
-              Chatting with {selectedChatOption}
-            </Text>
-          )}
-          <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"96%"}>
-            <Input
-              placeholder="Type your message..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-            />
-            <IconButton onClick={() => sendMessage()} p={0} m={1}>
-              <Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1707479527/icons8-send-24_higtsx.png" />
-            </IconButton>
-          </Box>
-        </Box>
+   <Box position="absolute" bottom={0} width="100%">
+  {rank && (
+    <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"100%"}>
+      Replying to {selectedChat ? send : "(select a message please)"}
+      {selectedChat && (
+        <Button onClick={() => { setSelectedChat(null); setSend(null); }} background={"transparent"}>
+          X
+        </Button>
+      )}
+    </Box>
+  )}
+
+  {selectedChatOption && (
+    <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"100%"}>
+      Chatting with {selectedChatOption}
+      <Button onClick={() => setSelectedChatOption(null)} background={"transparent"}>
+        X
+      </Button>
+    </Box>
+  )}
+
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"96%"} background={"Background"}>
+    <Input
+      placeholder="Type your message..."
+      value={newMessage}
+      onChange={(e) => setNewMessage(e.target.value)}
+    />
+    <IconButton onClick={() => sendMessage()} p={0} m={1}>
+      <Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1707479527/icons8-send-24_higtsx.png" />
+    </IconButton>
+  </Box>
+</Box>
       </Box>
     </Box>
   );

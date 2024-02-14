@@ -164,10 +164,7 @@ function UpperNav (){
               My Programs
             </Button>
             <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
-              Join Club
-            </Button>
-             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
-              Form a Club
+              Clubs
             </Button>
             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
              Provincial level

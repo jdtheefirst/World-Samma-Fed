@@ -34,9 +34,9 @@ const NotFound = () => {
         <Button
           margin={3}
           backgroundColor={"green.400"}
-          onClick={() => navigate("/chats")}
+          onClick={() => navigate("/dashboard")}
         >
-          Return back to chats
+          Return back to my programs.
         </Button>
       </Box>
     </Flex>
