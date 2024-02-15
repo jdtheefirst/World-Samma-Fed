@@ -60,13 +60,10 @@ const generateSuffix = (index) => {
   return suffix;
 };
 
+const admission = await getNextAdminNumber('U');
+const userData = { name, email, password, gender, pic, admission, selectedCountry, otherName, provinces,};
 
-  const admission = await getNextAdminNumber();
-  const userData = { name, email, password, gender, pic, admission, selectedCountry,
-          otherName,
-          provinces,};
-
-  const user = await User.create(userData);
+const user = await User.create(userData);
 
   if (user) {
     const responseData = {
@@ -197,7 +194,8 @@ const authUser = asyncHandler(async (req, res) => {
       country: user.selectedCountry,
       provinces: user.provinces,
       token: generateToken(user._id),
-      belt: user.belt
+      belt: user.belt,
+      admission: user.admission
       
     });
   } else {
@@ -229,35 +227,7 @@ const getUsers = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const block = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const user = req.user;
-  try {
-    await User.updateOne(
-      { _id: user._id },
-      { $addToSet: { isBlocked: userId } }
-    );
-    const updatedUser = await User.findById(user._id).select("isBlocked");
 
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to Block!" });
-  }
-});
-const Unblock = asyncHandler(async (req, res) => {
-  const { userId } = req.params;
-  const user = req.user;
-
-  try {
-    await User.updateOne({ _id: user._id }, { $pull: { isBlocked: userId } });
-
-    const updatedUser = await User.findById(user._id).select("isBlocked");
-
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ error: "Unable to Unblock" });
-  }
-});
 const updateUser = async (req, res) => {
   const { pic } = req.body;
   const { userId } = req.params;
@@ -406,8 +376,6 @@ module.exports = {
   authUser,
   getUserById,
   getUsers,
-  block,
-  Unblock,
   updateUser,
   deleteUser,
   deleteImage,

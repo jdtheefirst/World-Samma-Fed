@@ -7,12 +7,21 @@ import {
   import ErrorBoundary from "../components/ErrorBoundary";
   import "../App.css"
   import Logins from "./Logins"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
   
   function Homepage() {
     const [getStarted, setGetStarted] = useState();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (userInfo) {
+    navigate('/dashboard');
+  }
+}, [navigate]);
   
   
     return (

@@ -7,8 +7,6 @@ const {
   authUser,
   getUserById,
   getUsers,
-  block,
-  Unblock,
   updateUser,
   deleteUser,
   deleteImage,
@@ -18,7 +16,6 @@ const {
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
-const id = process.env.idURL;
 const express = require("express");
 const router = express.Router();
 
@@ -30,8 +27,6 @@ router.route("/login").post(limiter, authUser);
 router.get("/:userEmail", limiter, authorizeUser);
 
 router.get("/female/users", protect, limiter, getUsers);
-router.put("/block/:userId", protect, limiter, block);
-router.put("/unblock/:userId", protect, limiter, Unblock);
 router.get("/getuserid/:userId", protect, getUserById);
 router.put("/update/:userId", protect, limiter, updateUser);
 router.delete("/deleteuser/:userId", protect, limiter, deleteUser);

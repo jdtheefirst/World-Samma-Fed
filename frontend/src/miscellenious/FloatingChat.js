@@ -26,7 +26,7 @@ const FloatingChat = ({ onClose }) => {
 
 useEffect(() => {
   if (selectedChatOption === 'Coach' && !chat.coach ) {
-    navigate("/club")
+    navigate("/clubs")
   }else if(selectedChatOption === 'Provincial Coach' && !chat.provincial ){
     navigate("/provincial")
   }else if(selectedChatOption === 'National Coach' && !chat.national ){

@@ -5,6 +5,7 @@ import NotFound from "./pages/NotFound";
 import Logins from "./pages/Logins";
 import { Dashboard } from "./pages/Dashboard";
 import CourseDetails from "./pages/Courses";
+import { Clubs } from "./pages/Clubs";
 
 const courses = [
   {
@@ -89,6 +90,7 @@ function App() {
         <Route path="/login" element={<Logins />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route path="/courses/:id" element={<CourseDetails courses={courses} />} />
+        <Route path="/clubs" element={<Clubs/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

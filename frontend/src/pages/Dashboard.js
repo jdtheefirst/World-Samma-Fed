@@ -10,7 +10,7 @@ import { ChatState } from '../components/Context/ChatProvider'
 
 export const Dashboard = ({courses}) => {
   const [chatOpen, setChatOpen] = useState(false);
-  const {user, setUser} = ChatState();
+  const { setUser} = ChatState();
   const navigate = useNavigate();
 
   useEffect(() => {

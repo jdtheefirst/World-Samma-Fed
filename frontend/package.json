@@ -1,54 +1,12 @@
 {
-  "name": "world-samma",
-  "version": "0.1.0",
-  "proxy": "http://localhost:8080",
-  "private": true,
-  "dependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@chakra-ui/icons": "^2.1.1",
-    "@chakra-ui/react": "^2.8.2",
-    "@react-oauth/google": "^0.12.1",
-    "@styled-icons/boxicons-regular": "^10.47.0",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@tsparticles/react": "^3.0.0",
-    "axios": "^1.6.3",
-    "countries-list": "^3.0.6",
-    "http-proxy-middleware": "^2.0.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1",
-    "react-scripts": "5.0.1",
-    "react-scrollable-feed": "^2.0.1",
-    "react-tsparticles": "^2.12.2",
-    "socket.io-client": "^4.7.2",
-    "styled-components": "^6.1.8",
-    "tsparticles": "^3.0.3",
-    "web-vitals": "^2.1.4"
-  },
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
