@@ -6,6 +6,27 @@
       "latitude": "6.51569110",
       "longitude": "36.95410700"
    },
+    {
+      "name": "Pietermaai",
+      "isoCode": "PM",
+      "countryCode": "CW",
+      "latitude": "12.1026027",
+      "longitude": "68.9283398"
+    },
+    {
+      "name": "Otrobanda",
+      "isoCode": "OT",
+      "countryCode": "CW",
+      "latitude": "12.1094",
+      "longitude": "68.9405"
+    },
+    {
+      "name": "Scharloo",
+      "isoCode": "SC",
+      "countryCode": "CW",
+      "latitude": "12.1000000",
+      "longitude": "68.9166700"
+    },
    {
       "name": "Somali Region",
       "isoCode": "SO",

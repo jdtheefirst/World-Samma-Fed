@@ -1,18 +1,40 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStatesOfCountry = void 0;
-var states_json_1 = __importDefault(require("./states.json"));
-var interface_1 = require("./interface");
-function getStatesOfCountry(countryCode) {
-    if (countryCode === void 0) { countryCode = ''; }
-    if (!countryCode)
-        return [];
-    var states = states_json_1.default.filter(function (value) {
-        return value.countryCode === countryCode;
-    });
-    return states.sort(interface_1.compare);
+const stateList = require('./states.json');
+const countriesList = require('./countries.json');
+
+function compare(a, b) {
+   if (a.name < b.name)
+        return -1;
+    if (a.name > b.name)
+        return 1;
+    return 0;
 }
-exports.getStatesOfCountry = getStatesOfCountry;
+
+function getStatesOfCountry(countryName = '') {
+  
+  if (!countryName) {
+    console.log('No country name provided, returning default states.');
+    return [];
+  }
+
+  const country = countriesList.find((c) => c.name === countryName);
+  
+  if (!country) {
+    console.error(`Country not found for ${countryName}`);
+    return [];
+  }
+
+  const states = stateList.filter((value) => {
+    const stateCountryCode = value.countryCode.toUpperCase();
+    const countryIsoCode = country.isoCode.toUpperCase();
+
+    const isMatchingCountry = stateCountryCode === countryIsoCode;
+
+    return isMatchingCountry;
+  });
+  
+  return states.sort(compare);
+}
+
+module.exports = {
+  getStatesOfCountry,
+};

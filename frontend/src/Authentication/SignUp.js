@@ -20,9 +20,10 @@ import {
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {countries} from 'countries-list';
 import { useNavigate } from "react-router-dom";
+import { getStatesOfCountry } from "../assets/state";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -44,7 +45,8 @@ const Signup = () => {
   const [otherName, setOtherName] = useState('');
   const [selectedCountry, setSelectedCountry] = useState("")
   const [provinces, setProvinces] = useState("")
-  const [passport, setPassport]= useState('')
+  const [passport, setPassport]= useState('');
+  const [subdivisions, setSubdivisions] = useState([]);
 
  const countryOptions = Object.entries(countries).map(([code, country]) => ({
   value: country.name,
@@ -186,6 +188,16 @@ const Signup = () => {
       return;
     }
   };
+   useEffect(() => {
+    
+    const fetchSubdivisions = async () => {
+      const states = getStatesOfCountry(selectedCountry);
+      setSubdivisions(states);
+      console.log(states)
+    };
+
+    fetchSubdivisions();
+  }, [selectedCountry]);
 
   return (
     <VStack spacing="3px">
@@ -262,25 +274,43 @@ const Signup = () => {
           onChange={(e) => setOtherName(e.target.value)}
         />
       </FormControl>
-       <FormControl id="country" isRequired>
-        <FormLabel textColor="white">Country</FormLabel>
-        <Select
-  placeholder="Select your country"
-  textColor={"grey"}
-  display={"flex"}
-  justifyContent={"center"}
-  alignItems={"center"}
-  width={"100%"}
-  value={selectedCountry}
-  onChange={(e) => setSelectedCountry(e.target.value)}
->
-  {countryOptions.map((option) => (
-    <option key={option.value} value={option.value}>
-      {option.label}
-    </option>
-  ))}
-</Select>
-      </FormControl>
+      <FormControl id="country" isRequired>
+  <FormLabel textColor="white">Country</FormLabel>
+  <Select
+    placeholder="Select your country"
+    display={"flex"}
+    justifyContent={"center"}
+    alignItems={"center"}
+    width={"100%"}
+    textColor={"white"}
+    value={selectedCountry}
+    onChange={(e) => setSelectedCountry(e.target.value)}
+  >
+    {countryOptions.map((option) => (
+      <option key={option.value} value={option.value} style={{color: "black"}}>
+        {option.label}
+      </option>
+    ))}
+  </Select>
+</FormControl>
+    {selectedCountry && subdivisions ? <FormControl id="provinces" isRequired>
+  <FormLabel textColor={"white"}>County/Province</FormLabel>
+  <Select
+    placeholder="Select your province"
+    display={"flex"}
+    justifyContent={"center"}
+    alignItems={"center"}
+    textColor={"white"}
+    width={"100%"}
+    value={provinces}
+    onChange={(e) => setProvinces(e.target.value)}>
+    {subdivisions && subdivisions.map((subdivision) => (
+      <option key={subdivision.value} value={subdivision.value} style={{color: "black"}}>
+        {subdivision.name}
+      </option>
+    ))}
+  </Select>
+</FormControl> : 
       <FormControl id="provinces" isRequired>
         <FormLabel textColor={"white"}>County/Province</FormLabel>
         <Input
@@ -290,7 +320,7 @@ const Signup = () => {
           onChange={(e) => setProvinces(e.target.value)}
         />
         
-      </FormControl>
+      </FormControl>}
        <FormControl id="id/passport" isRequired>
         <FormLabel textColor={"white"}>Id/Passport</FormLabel>
         <Input
