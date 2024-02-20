@@ -9,7 +9,7 @@ const clubsModel = mongoose.Schema(
     },
     code: { type: String, required: true, unique: true},
     country: { type: String },
-    province: { type: String },
+    provience: { type: String },
     members: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

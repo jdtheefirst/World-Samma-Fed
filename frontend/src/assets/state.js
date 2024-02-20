@@ -1,23 +1,23 @@
+// ../assets/state.js
+
 const stateList = require('./states.json');
 const countriesList = require('./countries.json');
+import ReactCountryFlag from 'react-country-flag';
 
 function compare(a, b) {
-   if (a.name < b.name)
-        return -1;
-    if (a.name > b.name)
-        return 1;
-    return 0;
+  if (a.name < b.name) return -1;
+  if (a.name > b.name) return 1;
+  return 0;
 }
 
 function getStatesOfCountry(countryName = '') {
-  
   if (!countryName) {
     console.log('No country name provided, returning default states.');
     return [];
   }
 
   const country = countriesList.find((c) => c.name === countryName);
-  
+
   if (!country) {
     console.error(`Country not found for ${countryName}`);
     return [];
@@ -31,10 +31,23 @@ function getStatesOfCountry(countryName = '') {
 
     return isMatchingCountry;
   });
-  
+
   return states.sort(compare);
 }
 
-module.exports = {
-  getStatesOfCountry,
-};
+function getCountryFlag(countryName = '') {
+ const country = countriesList.find((c) => c.name === countryName);
+
+   if (!country) {
+    return '🏳️';
+  }
+  return  <ReactCountryFlag
+                countryCode={country.isoCode}
+                svg
+                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/1x1/"
+                cdnSuffix="svg"
+                title={country.isoCode}
+            />
+}
+
+export { getStatesOfCountry, getCountryFlag };

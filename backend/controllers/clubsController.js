@@ -15,7 +15,7 @@ const registerClubs = async (req, res) => {
     res.status(400);
     throw new Error("You have an active club already");
   }
-const getNextAdminNumber = async (prefix, initialSequence = 1) => {
+const getNextClubNumber = async (prefix, initialSequence = 1) => {
   const sequence = await Sequence.findOneAndUpdate({ prefix }, { $inc: { number: 1 } }, { new: true });
 
   if (!sequence || sequence.number > 9999999) {
@@ -28,9 +28,9 @@ const getNextAdminNumber = async (prefix, initialSequence = 1) => {
 
   const suffix = generateSuffix((currentNumber - 1) % 702);
 
-  const adminNumber = `${prefix}${paddedNumber}${suffix}`;
+  const clubNumber = `${prefix}${paddedNumber}${suffix}`;
 
-  return adminNumber;
+  return clubNumber;
 };
 
 const generateSuffix = (index) => {
@@ -46,7 +46,7 @@ const generateSuffix = (index) => {
   return suffix;
 };
 
- const clubCode = await getNextAdminNumber('C');
+ const clubCode = await getNextClubNumber('C');
 
   const clubData = {name, country, province, coach, chair, viceChair, treasurer, members, clubCode};
 
@@ -61,9 +61,10 @@ const generateSuffix = (index) => {
   }
 };
 const fetchClubs = async (req, res) => {
-  const { country, province } = req.params;
+  const { country, provience } = req.params;
+  console.log(country, provience)
   try {
-    const clubs = await Club.find({ country, province });
+    const clubs = await Club.find({ country, provience });
 
     res.status(200).json(clubs);
   } catch (error) {

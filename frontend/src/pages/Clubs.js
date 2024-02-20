@@ -1,23 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom'
-import { Box, Button, FormControl, FormLabel, Select, Text } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Image, Select, Text } from '@chakra-ui/react';
 import { ChatState } from '../components/Context/ChatProvider';
-import { getStatesOfCountry } from '../assets/state';
+import { getStatesOfCountry, getCountryFlag } from '../assets/state';
 import UpperNav from '../miscellenious/upperNav';
 import axios from 'axios';
+import { ClubRegistration } from '../Authentication/club';
 
 export const Clubs = () => {
   const { user } = ChatState();
-  console.log(user);
   const [subdivisions, setSubdivisions] = useState([]);
-  const [clubs, setClubs] =useState(undefined);
-  const [provience, setProvince] = useState(user?.provience);
+  const [clubs, setClubs] =useState([]);
+  const [provience, setProvience] = useState(user?.provinces);
+  const [fillForm, setFillForm] = useState(false);
   const navigate = useNavigate();
+  const flag = getCountryFlag(user?.country);
 
-    const fetchClubs = useCallback(async () => {
+  const fetchClubs = useCallback(async () => {
       if(!user){
-        console.log("No user")
-        return;} 
+        navigate('/dashboard');
+        return
+      }; 
     try {
       const config = {
         headers: {
@@ -29,13 +32,17 @@ export const Clubs = () => {
       setClubs(data);
       console.log(clubs);
     } catch (error) {
-      console.error('Error fetching or creating chat:', error);
+      console.error('Error fetching or creating clubs:', error);
     }
   }, [user.token, user._id, setClubs, provience]);
 
-    useEffect(() => {
+  useEffect(() => {
+      if(!user) {
+        navigate('/dashboard');
+        return;
+      }
     fetchClubs();
-  }, [fetchClubs]);
+  }, [fetchClubs, navigate, user]);
 
   useEffect(() => {
     if(!user) navigate('/dashboard');
@@ -49,23 +56,24 @@ export const Clubs = () => {
   }, [user]);
 
   return (
-    <Box display="flex" flexDir="column" backgroundColor="Background" width="100%">
-      <UpperNav/>
-      <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
-        Country: {user.country}
+    <Box display="flex" flexDir="column" backgroundColor="Background" width="100%" height={"100%"} position={"relative"}>
+       <Box position={"fixed"} background={"Background"} zIndex={10} width="100%"><UpperNav/></Box>
+      <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3 }mt={10}>
+        Country: {user.country} {flag}
       </Text>
-      <Box>
-  <FormControl id="provinces" isRequired>
-    <FormLabel>State</FormLabel>
+    <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} width={"100%"} backgroundColor="Background" >
+    <FormControl id="provinces" isRequired textAlign={"center"} width={{ base: '100%', md: '80%' }}p={3}>
+    <FormLabel textAlign={"center"}>Select State</FormLabel>
     <Select
       placeholder="Select your province"
       display={"flex"}
       justifyContent={"center"}
       alignItems={"center"}
       width={"100%"}
+      cursor={"auto"}
       value={provience}
       onChange={(e) => {
-        setProvince(e.target.value);
+        setProvience(e.target.value);
         fetchClubs(e.target.value);
       }}
     >
@@ -76,17 +84,24 @@ export const Clubs = () => {
       ))}
     </Select>
   </FormControl>
-</Box>
+  <Text fontSize={"larger"} fontWeight={"bold"} textColor={"darkgreen"} >
+    Available Clubs in {provience}
+  </Text>
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} height={"10rem"} m={3} borderRadius={3} width={{ base: '97%', md: '80%' }} >
+     {clubs.length > 0 ?  clubs.map((club) => (
+        <option key={club.code} style={{ color: "black" }}>
+          <Button>{club.name}</Button>
+        </option>
+      )) :
+      <Text display={"flex"} flexDir={"column"}><Image src='https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png'/>
+      <Text>No Clubs in this region</Text></Text>
+      }
+  </Box>
 
-      <Box height={"200px"} width={"100%"} overflowY={"scroll"} m={1}>
-        {clubs && clubs.map((clubs) => (
-          <Button width={"100%"} border={"1px solid #e803fc"}key={clubs.code}>{clubs.name}</Button>
-        ))}
-      </Box>
-      <Box>
-        <Text>Available Clubs</Text>
-        <Box></Box>
-      </Box>
+  {user.couch ? <Box m={2}>Your Club</Box>
+   :  <Button display={"flex"} backgroundColor={"#c255ed"} borderRadius={20} onClick={ () => {setFillForm(true);}} m={2}>Make Your Club</Button>}
+  </Box> 
+  {fillForm && <ClubRegistration  onClose={() => setFillForm(false)}/>}
     </Box>
   );
 };

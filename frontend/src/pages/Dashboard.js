@@ -27,7 +27,7 @@ export const Dashboard = ({courses}) => {
     <Box width="100%" height={"100%"} background={"Background"} position={"relative"}>
       <ErrorBoundary fallback={<p>Something went wrong</p>} userSelect={"none"}>
         <Box position={"fixed"} background={"Background"} zIndex={10} width="100%"><UpperNav/></Box>
-        <Box mt={20}><Progress userBelt={"Member"}/></Box>
+        <Box mt={20}><Progress userBelt={"Visitor"}/></Box>
         <MyPrograms courses={courses} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)}/>}
         <Button display={chatOpen? "none" : "flex"} position="fixed" bottom="0" right="1" borderRadius={20}fontSize={"large"} backgroundColor={"orange"} onClick={()=> setChatOpen(true)}>Chat</Button>
