@@ -58,7 +58,7 @@ export const Clubs = () => {
   return (
     <Box display="flex" flexDir="column" backgroundColor="Background" width="100%" height={"100%"} position={"relative"}>
        <Box position={"fixed"} background={"Background"} zIndex={10} width="100%"><UpperNav/></Box>
-      <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3 }mt={10}>
+      <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3 }mt={14}>
         Country: {user.country} {flag}
       </Text>
     <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} width={"100%"} backgroundColor="Background" >
@@ -70,7 +70,6 @@ export const Clubs = () => {
       justifyContent={"center"}
       alignItems={"center"}
       width={"100%"}
-      cursor={"auto"}
       value={provience}
       onChange={(e) => {
         setProvience(e.target.value);
@@ -87,14 +86,16 @@ export const Clubs = () => {
   <Text fontSize={"larger"} fontWeight={"bold"} textColor={"darkgreen"} >
     Available Clubs in {provience}
   </Text>
-  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} height={"10rem"} m={3} borderRadius={3} width={{ base: '97%', md: '80%' }} >
-     {clubs.length > 0 ?  clubs.map((club) => (
+  <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} height={"10rem"} m={3} borderRadius={3} width={{ base: '97%', md: '80%' }} >
+    {clubs.length > 0 ?  clubs.map((club) => (
         <option key={club.code} style={{ color: "black" }}>
           <Button>{club.name}</Button>
         </option>
       )) :
-      <Text display={"flex"} flexDir={"column"}><Image src='https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png'/>
-      <Text>No Clubs in this region</Text></Text>
+      <>
+      <Text textAlign={"center"}><Image src='https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png'  width={7}/>
+      </Text><Text>No Clubs in this region</Text>
+      </>
       }
   </Box>
 
