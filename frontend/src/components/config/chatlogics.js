@@ -1,4 +1,8 @@
 import axios from "axios";
+import { useEffect, useState, useRef } from "react";
+import { io } from "socket.io-client";
+
+let socketInstance;
 
 export const isSameSenderMargin = (messages, m, i, userId) => {
   const isCurrentUserSender = m.sender?.$oid === userId;
@@ -73,33 +77,36 @@ export async function getUserById(userId, token) {
   }
 }
 
-// export function useConnectSocket(token) {
-//   const [socket, setSocket] = useState(null);
+export function useConnectSocket(token) {
+  const socketRef = useRef(socketInstance);
+  const [socket, setSocket] = useState(socketRef.current);
 
-//   useEffect(() => {
-//     if (socketInstance) {
-//       setSocket(socketInstance);
-//       return;
-//     }
+  useEffect(() => {
+    if (socketRef.current) {
+      setSocket(socketRef.current);
+      return;
+    }
 
-//     const newSocket = io('https://fuckmate.boo', {
-//       query: { token },
-//     });
+    const newSocket = io('http://localhost:8080', {
+      query: { token },
+    });
 
-//     newSocket.on('connect', () => {
-//     });
+    newSocket.on('connect', () => {
+      console.log("Socket Connected")
+    });
 
-//     newSocket.on("disconnect", () => {
-//     });
+    newSocket.on('disconnect', () => {
+      console.log("Socket disconnected")
+    });
 
-//     setSocket(newSocket);
-//     socketInstance = newSocket;
+    setSocket(newSocket);
+    socketRef.current = newSocket;
 
-//     return () => {
-//       newSocket.disconnect();
-//       socketInstance = null;
-//     };
-//   }, [token]);
+    return () => {
+      newSocket.disconnect();
+      socketRef.current = null;
+    };
+  }, [token]);
 
-//   return socket;
-// }
+  return socket;
+}

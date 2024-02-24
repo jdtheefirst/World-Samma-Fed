@@ -9,6 +9,7 @@ const messageRouter = require("./routes/messageRoute");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 const bodyParser = require("body-parser");
+const { initializeSocketIO } = require("./socket");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -18,6 +19,13 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const PORT = process.env.PORT;
+const server = app.listen(
+  PORT,
+  console.log(`Server running on PORT ${PORT}...`)
+);
+
+initializeSocketIO(server);
+
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/chat", chatRouter);
@@ -41,7 +49,3 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(notFound);
 app.use(errorHandler);
-app.listen(
-  PORT,
-  console.log(`Server running on PORT ${PORT}...`)
-);

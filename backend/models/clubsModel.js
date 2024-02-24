@@ -13,8 +13,13 @@ const clubsModel = mongoose.Schema(
     members: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }]
+    }],
+    clubRequests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
   },
+  
   { versionKey: false, timestamps: true }
 );
 

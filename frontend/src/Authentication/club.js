@@ -5,6 +5,7 @@ import {countries} from 'countries-list';
 import { getStatesOfCountry } from '../assets/state';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useConnectSocket } from '../components/config/chatlogics';
 
 export const ClubRegistration = ({onClose}) => {
     const {user} = ChatState();
@@ -14,6 +15,15 @@ export const ClubRegistration = ({onClose}) => {
     const [subdivisions, setSubdivisions] = useState([]);
     const [suggest, setSuggest] = useState([{name: "Joseph", admission: "U000000006C"}, {name: "Martin", admission: "U000000007B"}, {name: "Joseph", admission: "U000000006C"}, {name: "Joseph", admission: "U000000006C"}, {name: "Joseph", admission: "U000000006C"},]);
     const navigate = useNavigate();
+
+    const socket = useConnectSocket(user?.token);
+
+    console.log(socket);
+
+    useEffect(() => {
+    if(!socket || !user) return;
+    socket.emit("setup", user);
+    }, [user, socket]);
     
     const countryOptions = Object.entries(countries).map(([code, country]) => ({
   value: country.name,
@@ -32,7 +42,9 @@ export const ClubRegistration = ({onClose}) => {
       };
 
       const { data } = await axios.get(`/api/user/${user.country}/${provience}`, config);
-      setSuggest(data);
+      if(data.length > 0){
+        setSuggest(data);
+      }
 
     } catch (error) {
       console.error('Error fetching users with no clubs:', error);

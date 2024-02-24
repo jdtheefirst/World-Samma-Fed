@@ -7,12 +7,12 @@ import MyPrograms from '../miscellenious/Myprograms'
 import FloatingChat from '../miscellenious/FloatingChat'
 import { useNavigate } from 'react-router-dom'
 import { ChatState } from '../components/Context/ChatProvider'
+import { useConnectSocket } from '../components/config/chatlogics'
 
 export const Dashboard = ({courses}) => {
   const [chatOpen, setChatOpen] = useState(false);
-  const { setUser} = ChatState();
+  const { user, setUser, setMessages} = ChatState();
   const navigate = useNavigate();
-
   useEffect(() => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   if (!userInfo) {
@@ -22,6 +22,17 @@ export const Dashboard = ({courses}) => {
     setUser(userInfo);
   }
 }, [setUser, navigate]);
+
+const socket = useConnectSocket(user?.token);
+
+useEffect(()=>{
+  if(!socket) return;
+  
+  socket.on("message received", (newMessageReceived) => {
+  setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
+});
+})
+
  
   return (
     <Box width="100%" height={"100%"} background={"Background"} position={"relative"}>

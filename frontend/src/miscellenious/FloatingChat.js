@@ -10,11 +10,10 @@ const FloatingChat = ({ onClose }) => {
   const [newMessage, setNewMessage] = useState('');
   const [chatOptions, setChatOptions] = useState(['Admin', 'Coach', 'Provincial Coach', 'National Coach']);
   const [selectedChatOption, setSelectedChatOption] = useState(null);
-  const [messages, setMessages] = useState([]);
   const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState();
   const [rank, setRank] = useState(false);
-  const { user, setChat, chat,selectedChat, setSelectedChat, send, setSend } = ChatState();
+  const { user, setChat, chat,selectedChat, setSelectedChat, send, setSend, messages, setMessages } = ChatState();
   console.log(chat);
   const navigate = useNavigate();
 
@@ -152,6 +151,8 @@ useEffect(()=>{
         );
 
         setMessages((prevMessages) => [...prevMessages, data]);
+
+        socket.emit("new message", data);
       } catch (error) {
         toast({
           title: "Failed to send the Message",

@@ -20,6 +20,10 @@ const userSchema = mongoose.Schema(
     belt: {type: String, default: 'Member'},
     coach: {type: String, default: undefined},
     physicalCoach: {type: String, default: undefined},
+    clubRequests: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Club',
+  }],
   },
   { versionKey: false },
   { timestamps: true }

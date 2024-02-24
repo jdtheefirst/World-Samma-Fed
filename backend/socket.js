@@ -39,6 +39,13 @@ const initializeSocketIO = (server) => {
     console.log("Connected to socket.io");
 
     socket.on("setup", (userData) => {
+
+        socket.on("new message", (newMessageRecieved) => {
+      if (userData._id == newMessageRecieved.recipient._id){
+        socket.emit("message recieved", newMessageRecieved);
+      }
+  });
+
       const userId = userData._id;
       socket.join(userId);
       socket.emit("connected");
@@ -50,6 +57,10 @@ const initializeSocketIO = (server) => {
         io.emit("newUserRegistered", userData);
       }
     });
+
+    socket.on("typing", (room) => socket.in(room).emit("typing"));
+    socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
+
 
 
     socket.on("join room", (roomId) => {

@@ -27,11 +27,11 @@ const ProgressSlot = styled.div`
   margin: 0;
 
   &.completed {
-    background-color: #e6fae3;
+    background-color: white;
   }
 
   &.remaining {
-    background-color: #cbd1cb;
+    background-color: white;
   }
 `;
 const progressAnimation = keyframes`

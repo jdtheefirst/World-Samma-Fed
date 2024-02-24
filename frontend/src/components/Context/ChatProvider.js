@@ -13,6 +13,8 @@ const ChatProvider = ({ children }) => {
   const [pic, setPic] = useState("");
   const [recoverEmail, setRecoverEmail] = useState();
   const [notification, setNotification] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [requests, setRequests] = useState([])
 
   return (
     <ChatContext.Provider
@@ -36,7 +38,11 @@ const ChatProvider = ({ children }) => {
         selectedChat,
         setSelectedChat,
         send,
-        setSend
+        setSend,
+        messages,
+        setMessages,
+        requests,
+        setRequests
       }}
     >
       {children}
