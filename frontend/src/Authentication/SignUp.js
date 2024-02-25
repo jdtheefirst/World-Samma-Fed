@@ -193,7 +193,6 @@ const Signup = () => {
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(selectedCountry);
       setSubdivisions(states);
-      console.log(states)
     };
 
     fetchSubdivisions();
@@ -412,7 +411,8 @@ const Signup = () => {
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={() => generateAndVerify()}
+        onClick={() => submitHandler()}
+        // generateAndVerify()
         isLoading={picLoading}
         isDisabled={disabled}
       >

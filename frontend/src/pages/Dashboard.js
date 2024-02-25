@@ -33,6 +33,27 @@ useEffect(()=>{
 });
 })
 
+useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/user/info');
+
+        console.log(response);
+
+        // setUser(response);
+
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    if (user) {
+      fetchUserInfo();
+    }
+  }, [user]);
+
+
+
  
   return (
     <Box width="100%" height={"100%"} background={"Background"} position={"relative"}>

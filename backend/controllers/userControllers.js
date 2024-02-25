@@ -1,11 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const Club = require('../models/clubsModel');
 const Sequence = require("../models/Sequence")
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
+const { getIO } = require("../socket");
 
 const crypto = require("crypto");
 const axios = require("axios");
@@ -217,12 +219,22 @@ const getUserById = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
+  console.log("Route reached")
+  const {country, provience} = req.params;
+
+  if(!country || !provience){
+    return;
+    
+  }
+
   try {
-    const allUsers = await User.aggregate([
-      { $match: { gender: "female", deleted: { $ne: true } } },
-      { $sample: { size: 3 } },
-    ]);
-    res.json(allUsers);
+  const allUsers = await User.find({
+  selectedCountry: country,
+  provinces: provience,
+});
+
+  res.json(allUsers);
+
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -366,6 +378,96 @@ const getAdsInfo = async (req, res) => {
     console.error("Error fetching/displaying ads:", error);
   }
 };
+const clubRequests = async(req, res) => {
+  const {country, provience, name, userId} = req.params;
+
+  console.log("We are here?")
+
+  const loggedUser = req.user._id;
+  const getNextClubNumber = async (prefix, initialSequence = 1) => {
+  const sequence = await Sequence.findOneAndUpdate({ prefix }, { $inc: { number: 1 } }, { new: true });
+
+  if (!sequence || sequence.number > 9999999) {
+    await Sequence.updateOne({ prefix }, { number: initialSequence }, { upsert: true });
+  }
+
+  const currentNumber = sequence ? sequence.number : initialSequence;
+
+  const paddedNumber = currentNumber.toString().padStart(8, "0");
+
+  const suffix = generateSuffix((currentNumber - 1) % 702);
+
+  const clubNumber = `${prefix}${paddedNumber}${suffix}`;
+
+  return clubNumber;
+};
+
+const generateSuffix = (index) => {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const base = letters.length;
+
+  let suffix = "";
+  while (index >= 0) {
+    suffix = letters[index % base] + suffix;
+    index = Math.floor(index / base) - 1;
+  }
+
+  return suffix;
+};
+
+ const clubCode = await getNextClubNumber('C');
+
+  let club
+
+  try {
+  club = await Club.findOne({ coach: loggedUser });
+
+  if (!club) {
+  club = await Club.create({
+    name: name,
+    code: clubCode,
+    selectedCountry: country,
+    provinces: provience,
+    clubRequests: userId,
+  });
+
+  const user = await User.findById(userId);
+  if (user) {
+    user.clubRequests.push(club._id);
+    await user.save();
+  }
+
+  const userSocket = getIO().sockets.sockets.get(userId);
+  if (userSocket) {
+    userSocket.emit("sent request", club);
+  }
+
+  res.json(club);
+} else {
+  club.clubRequests.push(userId);
+  await club.save();
+
+  const user = await User.findById(userId);
+  if (user) {
+    user.clubRequests.push(club._id);
+    await user.save();
+  }
+
+  const userSocket = getIO().sockets.sockets.get(userId);
+  if (userSocket) {
+    userSocket.emit("sent request", club);
+  }
+
+  res.json(club);
+}
+
+
+console.log(club, "We have a Club");
+ 
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports = {
   authorizeUser,
@@ -380,4 +482,5 @@ module.exports = {
   deleteUser,
   deleteImage,
   getAdsInfo,
+  clubRequests
 };

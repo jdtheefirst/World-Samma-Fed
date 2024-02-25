@@ -13,6 +13,7 @@ const {
   authorizeUser,
   recoverEmail,
   getAdsInfo,
+  clubRequests
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
@@ -27,6 +28,7 @@ router.route("/login").post(limiter, authUser);
 router.get("/:userEmail", limiter, authorizeUser);
 
 router.get("/:country/:provience", protect, limiter, getUsers);
+router.get("/:country/:provience/:name/:userId", protect, limiter, clubRequests);
 router.get("/getuserid/:userId", protect, getUserById);
 router.put("/update/:userId", protect, limiter, updateUser);
 router.delete("/deleteuser/:userId", protect, limiter, deleteUser);

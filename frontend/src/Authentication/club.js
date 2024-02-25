@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Image, Input, Select, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Image, Input, Select, Text, VStack, useToast } from '@chakra-ui/react';
 import React, { useCallback, useEffect, useState } from 'react'
 import { ChatState } from '../components/Context/ChatProvider';
 import {countries} from 'countries-list';
@@ -8,8 +8,8 @@ import axios from 'axios';
 import { useConnectSocket } from '../components/config/chatlogics';
 
 export const ClubRegistration = ({onClose}) => {
-    const {user} = ChatState();
-    const [name, setName] = useState();
+    const {user, club, setClub} = ChatState();
+    const [name, setName] = useState(undefined);
     const [selectedCountry, setSelectedCountry] = useState(user.country);
     const [provience, setProvience] = useState(user.provinces);
     const [subdivisions, setSubdivisions] = useState([]);
@@ -18,7 +18,8 @@ export const ClubRegistration = ({onClose}) => {
 
     const socket = useConnectSocket(user?.token);
 
-    console.log(socket);
+    console.log(socket, user);
+    const toast = useToast();
 
     useEffect(() => {
     if(!socket || !user) return;
@@ -42,7 +43,10 @@ export const ClubRegistration = ({onClose}) => {
       };
 
       const { data } = await axios.get(`/api/user/${user.country}/${provience}`, config);
-      if(data.length > 0){
+
+      console.log(data)
+
+      if(data.length >= 0){
         setSuggest(data);
       }
 
@@ -74,6 +78,34 @@ export const ClubRegistration = ({onClose}) => {
    const handleFormClose = () => {
     onClose();
   };
+  console.log(name);
+  const requestClubRequest = useCallback(async (userId)=> {
+    console.log(name);
+    if(!name){
+      toast({
+        title: "Give your Club a name please"
+      });
+      return;
+    }
+     if(!user){
+        navigate('/dashboard');
+        return
+      }; 
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/user/${user.country}/${user.provinces}/${name}/${userId}`, config);
+      setClub(data);
+   
+
+    } catch (error) {
+      console.error('Error fetching Club:', error);
+    }
+  }, [user.token, user._id, setClub]);
 
 
   return (
