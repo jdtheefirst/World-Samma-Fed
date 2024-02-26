@@ -13,8 +13,14 @@ const createMessage = async (req, res) => {
 await message.save();
 
 const savedMessage = await Message.findById(message._id)
-  .populate("sender admission")
-  .populate("recipient admission");
+  .populate({
+    path: "sender",
+    select: "name admission pic",
+  })
+  .populate({
+    path: "recipient",
+    select: "name admission pic",
+  });
 
     res.json(savedMessage);
   } catch (error) {

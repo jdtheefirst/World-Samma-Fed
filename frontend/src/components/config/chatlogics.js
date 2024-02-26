@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
+import { ChatState } from "../Context/ChatProvider";
+
 
 let socketInstance;
 
@@ -80,33 +82,37 @@ export async function getUserById(userId, token) {
 export function useConnectSocket(token) {
   const socketRef = useRef(socketInstance);
   const [socket, setSocket] = useState(socketRef.current);
+  const { user } = ChatState();
 
   useEffect(() => {
-    if (socketRef.current) {
-      setSocket(socketRef.current);
-      return;
-    }
+  if (socketRef.current) {
+    setSocket(socketRef.current);
+    return;
+  }
 
-    const newSocket = io('http://localhost:8080', {
-      query: { token },
-    });
+  const newSocket = io('http://localhost:8080', {
+    query: { token },
+  });
 
-    newSocket.on('connect', () => {
-      console.log("Socket Connected")
-    });
+  newSocket.on('connect', () => {
+    const email = user?.email;
+    console.log("Socket Connected", email);
+    newSocket.emit('newConnection', { email });
+  });
 
-    newSocket.on('disconnect', () => {
-      console.log("Socket disconnected")
-    });
+  newSocket.on('disconnect', () => {
+    console.log("Socket disconnected")
+  });
 
-    setSocket(newSocket);
-    socketRef.current = newSocket;
+  setSocket(newSocket);
+  socketRef.current = newSocket;
 
-    return () => {
-      newSocket.disconnect();
-      socketRef.current = null;
-    };
-  }, [token]);
+  return () => {
+    newSocket.disconnect();
+    socketRef.current = null;
+  };
+}, [token, user?.email]);
+
 
   return socket;
 }

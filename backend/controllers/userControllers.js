@@ -11,7 +11,7 @@ const { getIO } = require("../socket");
 
 const crypto = require("crypto");
 const axios = require("axios");
-const { DOMParser } = require("xmldom");
+const { DOMParser } = require("@xmldom/xmldom");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
@@ -63,23 +63,26 @@ const generateSuffix = (index) => {
 };
 
 const admission = await getNextAdminNumber('U');
-const userData = { name, email, password, gender, pic, admission, selectedCountry, otherName, provinces,};
+const user = { name, email, password, gender, pic, admission, selectedCountry, otherName, provinces,};
 
-const user = await User.create(userData);
+const userInfo = await User.create(user);
 
-  if (user) {
+  if (userInfo) {
     const responseData = {
-      _id: user._id,
-      name: user.name,
-      otherName: user.otherName,
-      admission: user.admission,
-      email: user.email,
-      gender: user.gender,
-      country: user.selectedCountry,
-      provinces: user.provinces,
-      pic: user.pic,
-      belt: user.belt,
-      token: generateToken(user._id),
+      _id: userInfo._id,
+      name: userInfo.name,
+      otherName: userInfo.otherName,
+      admission: userInfo.admission,
+      email: userInfo.email,
+      gender: userInfo.gender,
+      country: userInfo.selectedCountry,
+      provinces: userInfo.provinces,
+      pic: userInfo.pic,
+      belt: userInfo.belt,
+      physicalCoach: userInfo.physicalCoach,
+      coach: userInfo.coach,
+      clubRequests: userInfo.clubRequests,
+      token: generateToken(userInfo._id),
 
     };
 
@@ -92,8 +95,8 @@ const user = await User.create(userData);
 const forgotEmail = async (req, res) => {
   const { email } = req.params;
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
+  const userInfo = await User.findOne({ email });
+  if (userInfo) {
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
@@ -101,7 +104,7 @@ const forgotEmail = async (req, res) => {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: privateEmail,
+        userInfo: privateEmail,
         pass: privateEmailPass,
       },
     });
@@ -129,20 +132,24 @@ This is system's generated code, please do not reply.`,
 const searchUser = async (req, res) => {
   const { email } = req.params;
 
-  const userExists = await User.findOne({ email });
-  if (!userExists) {
+  const userInfo = await User.findOne({ email });
+  if (!userInfo) {
     res.status(201).json("Unfound");
   } else {
     const responseData = {
-      _id: userExists._id,
-      name: userExists.name,
-      email: userExists.email,
-      gender: userExists.gender,
-      country: userExists.selectedCountry,
-      provinces: userExists.provinces,
-      pic: userExists.pic,
-      token: generateToken(userExists._id),
-      belt: userExists.belt
+      _id: userInfo._id,
+      admission: userInfo.admission,
+      name: userInfo.name,
+      email: userInfo.email,
+      gender: userInfo.gender,
+      country: userInfo.selectedCountry,
+      provinces: userInfo.provinces,
+      pic: userInfo.pic,
+      token: generateToken(userInfo._id),
+      belt: userInfo.belt,
+      physicalCoach: userInfo.physicalCoach,
+      coach: userInfo.coach,
+      clubRequests: userInfo.clubRequests,
     };
     res.status(201).json(responseData);
   }
@@ -152,23 +159,27 @@ const recoverEmail = async (req, res) => {
   const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const userData = await User.findOneAndUpdate(
+  const userInfo = await User.findOneAndUpdate(
     { email: email },
     { password: hashedPassword },
     { new: true }
   );
   try {
-    if (userData) {
+    if (userInfo) {
       const responseData = {
-        _id: userData._id,
-        name: userData.name,
-        email: userData.email,
-        gender: userData.gender,
-        pic: userData.pic,
-        country: userData.selectedCountry,
-        provinces: userData.provinces,
-        token: generateToken(userData._id),
-        belt: userData.belt
+        _id: userInfo._id,
+        admission: userInfo.admission,
+        name: userInfo.name,
+        email: userInfo.email,
+        gender: userInfo.gender,
+        pic: userInfo.pic,
+        country: userInfo.selectedCountry,
+        provinces: userInfo.provinces,
+        token: generateToken(userInfo._id),
+        belt: userInfo.belt,
+        physicalCoach: userInfo.physicalCoach,
+        coach: userInfo.coach,
+        clubRequests: userInfo.clubRequests,
       };
       res.status(201).json(responseData);
     }
@@ -180,41 +191,48 @@ const recoverEmail = async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (user.deleted) {
+  const userInfo = await User.findOne({ email });
+  if (userInfo.deleted) {
     res.status(401);
     throw new Error("Sign Up please...");
   }
 
-  if (user && (await user.comparePassword(password))) {
-    res.json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      gender: user.gender,
-      pic: user.pic,
-      country: user.selectedCountry,
-      provinces: user.provinces,
-      token: generateToken(user._id),
-      belt: user.belt,
-      admission: user.admission
-      
-    });
+ if (userInfo && (await userInfo.comparePassword(password))) {
+  res.json({
+      _id: userInfo._id,
+      admission: userInfo.admission,
+      name: userInfo.name,
+      email: userInfo.email,
+      gender: userInfo.gender,
+      country: userInfo.selectedCountry,
+      provinces: userInfo.provinces,
+      physicalCoach: userInfo.physicalCoach,
+      coach: userInfo.coach,
+      pic: userInfo.pic,
+      token: generateToken(userInfo._id),
+      clubRequests: userInfo.clubRequests,
+
+  });
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
   }
 });
 
-const getUserById = async (req, res) => {
+const getInfo = async (req, res) => {
+  console.log("getuserinfo route")
+
   const { userId } = req.params;
 
-  try {
-    const user = await User.findById(userId);
+  console.log("getuserinfo route")
 
-    res.json(user);
+  try {
+    const userInfo = await User.findById(userId);
+
+    res.json({userInfo, token: generateToken(userInfo._id)});
+
   } catch (error) {
-    res.status(500).json({ error: "Failed to retrieve user" });
+    res.status(500).json({ error: "Failed to retrieve possible update" });
   }
 };
 
@@ -253,7 +271,7 @@ const updateUser = async (req, res) => {
 
     res.json(updatedUser);
   } catch (error) {
-    throw new Error("Failed to update user pic");
+    throw new Error("Failed to update userInfo pic");
   }
 };
 const deleteUser = async (req, res) => {
@@ -279,7 +297,7 @@ const deleteUser = async (req, res) => {
     }
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error("Error deleting userInfo:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -312,6 +330,7 @@ const deleteImage = async (req, res) => {
   }
 };
 const authorizeUser = async (req, res) => {
+  console.log("Did we just access this route?")
   const { userEmail } = req.params;
 
   console.log(userEmail);
@@ -325,7 +344,7 @@ const authorizeUser = async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-      user: privateEmail,
+      userInfo: privateEmail,
       pass: privateEmailPass,
     },
   });
@@ -351,7 +370,7 @@ const getAdsInfo = async (req, res) => {
   const acceptLanguage = req.headers["accept-language"] || "en-US";
   const referrer = req.headers.referer || "unknown";
   const userIP = req.ip || req.connection.remoteAddress;
-  const userAgent = req.headers["user-agent"] || "Unknown";
+  const userAgent = req.headers["userInfo-agent"] || "Unknown";
 
   try {
     const response = await fetch(
@@ -381,9 +400,7 @@ const getAdsInfo = async (req, res) => {
 const clubRequests = async(req, res) => {
   const {country, provience, name, userId} = req.params;
 
-  console.log("We are here?")
-
-  const loggedUser = req.user._id;
+  const loggedUser = req.userInfo._id;
   const getNextClubNumber = async (prefix, initialSequence = 1) => {
   const sequence = await Sequence.findOneAndUpdate({ prefix }, { $inc: { number: 1 } }, { new: true });
 
@@ -431,10 +448,10 @@ const generateSuffix = (index) => {
     clubRequests: userId,
   });
 
-  const user = await User.findById(userId);
-  if (user) {
-    user.clubRequests.push(club._id);
-    await user.save();
+  const userInfo = await User.findById(userId);
+  if (userInfo) {
+    userInfo.clubRequests.push(club._id);
+    await userInfo.save();
   }
 
   const userSocket = getIO().sockets.sockets.get(userId);
@@ -447,10 +464,10 @@ const generateSuffix = (index) => {
   club.clubRequests.push(userId);
   await club.save();
 
-  const user = await User.findById(userId);
-  if (user) {
-    user.clubRequests.push(club._id);
-    await user.save();
+  const userInfo = await User.findById(userId);
+  if (userInfo) {
+    userInfo.clubRequests.push(club._id);
+    await userInfo.save();
   }
 
   const userSocket = getIO().sockets.sockets.get(userId);
@@ -476,7 +493,7 @@ module.exports = {
   recoverEmail,
   searchUser,
   authUser,
-  getUserById,
+  getInfo,
   getUsers,
   updateUser,
   deleteUser,

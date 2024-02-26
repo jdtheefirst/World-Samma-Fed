@@ -20,9 +20,11 @@ const userSchema = mongoose.Schema(
     belt: {type: String, default: 'Member'},
     coach: {type: mongoose.Schema.Types.ObjectId,
     ref: 'Club',
+    default: null,
   },
     physicalCoach: {type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    default: null,
   },
     clubRequests: [{
     type: mongoose.Schema.Types.ObjectId,

@@ -42,15 +42,15 @@ const progressAnimation = keyframes`
     width: ${({ userProgressIndex }) => (userProgressIndex + 1.2) * 10}%;
   }
 `;
-// animation: ${progressAnimation} 1s ease-in-out; 
-// width: ${({ userProgressIndex }) => (userProgressIndex) * 10}%;
+
 const ProgressArrow = styled.div`
   position: absolute;
   bottom: 0;
   left: 0;
   width: 50px;
-  height: 10px;
-  background-color: #228B22;
+  height: 14px;
+  background-color: #66d171;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -83,6 +83,7 @@ const Progress = ({ userBelt }) => {
           className={index <= userProgressIndex ? 'completed' : 'remaining'}
         >
           <Text
+            marginTop={-3}
             fontWeight={{ base: 'sm', md: 'md' }}
             fontSize={{ base: '10px', md: 'md' }}
             textAlign="center"
@@ -92,7 +93,7 @@ const Progress = ({ userBelt }) => {
           </Text>
         </ProgressSlot>
       ))}
-      <ProgressArrow userProgressIndex={userProgressIndex}> <Text fontSize={"smaller"}>{(userProgressIndex + 1) * 10}%</Text> </ProgressArrow>
+      <ProgressArrow userProgressIndex={userProgressIndex}> <Text fontSize={"small"} p={1}>{(userProgressIndex + 1) * 10}%</Text> </ProgressArrow>
     </ProgressContainer>
   );
 };

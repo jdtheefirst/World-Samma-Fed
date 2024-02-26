@@ -44,8 +44,6 @@ export const ClubRegistration = ({onClose}) => {
 
       const { data } = await axios.get(`/api/user/${user.country}/${provience}`, config);
 
-      console.log(data)
-
       if(data.length >= 0){
         setSuggest(data);
       }
@@ -165,6 +163,7 @@ export const ClubRegistration = ({onClose}) => {
         
       </FormControl>}
       <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} m={3} borderRadius={3} width={"100%"} height={"200px"} overflow="auto">
+        {!suggest && <Text textAlign={"center"}>No student without a club in this region.</Text>}
        {suggest.length > 0 && suggest.map((suggestion) => (
     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} key={suggestion._id} style={{ color: "black" }} width={"90%"} m={3}>
       <Text fontSize={"small"} fontWeight={"bold"} >Name: {suggestion.name}, Adm: {suggestion.admission}</Text>

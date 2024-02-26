@@ -112,13 +112,9 @@ function UpperNav (){
                   key={notif._id}
                   onClick={() => {
                     setNotification(notification.filter((n) => n !== notif));
-                    const otherNotifications = notification.filter(
-                      (n) => n.chat._id !== notif.chat._id
-                    );
-                    setNotification(otherNotifications);
                   }}
                 >
-                  {/* {`New Message from ${getSenderName(user, notif.chat.users)}`} */}
+                  {`New Message from ${notification.sender.name} ADM: ${notification.sender.admission}`}
                 </MenuItem>
               ))}
             </MenuList>

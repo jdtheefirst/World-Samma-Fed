@@ -35,13 +35,23 @@ const initializeSocketIO = (server) => {
     }
   });
 
+
   io.on("connection", (socket) => {
     console.log("Connected to socket.io");
 
-    socket.on("setup", (userData) => {
+    socket.on("newConnection", async (userData) => {
 
-        socket.on("new message", (newMessageRecieved) => {
-      if (userData._id == newMessageRecieved.recipient._id){
+    const email = userData.email;
+
+    const clubRequests = await User.findOne({ email }).select("clubRequests");
+
+    if(clubRequests){
+      
+    socket.emit("updates", clubRequests);
+    };
+
+     socket.on("new message", (newMessageRecieved) => {
+      if (userData._id === newMessageRecieved.recipient._id){
         socket.emit("message recieved", newMessageRecieved);
       }
   });
@@ -79,10 +89,10 @@ const initializeSocketIO = (server) => {
       if (recipientStatus === 'busy') {
         socket.emit("user busy", recipientId);
       } else {
-        userStatuses.set(recipientId, 'busy'); // Mark recipient as busy
-        userStatuses.set(socket.userData._id, 'busy'); // Mark caller as busy
-        const roomId = createRoomId(socket.userData._id, recipientId); // Create a unique room ID
-        io.to(recipientId).emit("call initiated", roomId); // Notify recipient with the room ID
+        userStatuses.set(recipientId, 'busy');
+        userStatuses.set(socket.userData._id, 'busy');
+        const roomId = createRoomId(socket.userData._id, recipientId);
+        io.to(recipientId).emit("call initiated", roomId);
       }
     });
     
