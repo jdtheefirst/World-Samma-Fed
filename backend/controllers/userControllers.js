@@ -12,6 +12,7 @@ const { getIO } = require("../socket");
 const crypto = require("crypto");
 const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
+const { getUserSocket } = require("../config/socketUtils");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
@@ -249,6 +250,10 @@ const getUsers = async (req, res) => {
   const allUsers = await User.find({
   selectedCountry: country,
   provinces: provience,
+  $and: [
+    { coach: null },
+    { physicalCoach: null },
+  ],
 });
 
   res.json(allUsers);
@@ -400,7 +405,7 @@ const getAdsInfo = async (req, res) => {
 const clubRequests = async(req, res) => {
   const {country, provience, name, userId} = req.params;
 
-  const loggedUser = req.userInfo._id;
+  const loggedUser = req.user._id;
   const getNextClubNumber = async (prefix, initialSequence = 1) => {
   const sequence = await Sequence.findOneAndUpdate({ prefix }, { $inc: { number: 1 } }, { new: true });
 
@@ -432,16 +437,17 @@ const generateSuffix = (index) => {
   return suffix;
 };
 
- const clubCode = await getNextClubNumber('C');
-
-  let club
+let club
 
   try {
   club = await Club.findOne({ coach: loggedUser });
 
   if (!club) {
+  const clubCode = await getNextClubNumber('C');
+
   club = await Club.create({
     name: name,
+    coach: loggedUser,
     code: clubCode,
     selectedCountry: country,
     provinces: provience,
@@ -470,9 +476,11 @@ const generateSuffix = (index) => {
     await userInfo.save();
   }
 
-  const userSocket = getIO().sockets.sockets.get(userId);
+  const userSocket = getUserSocket(userId);
+  console.log(userSocket);
+
   if (userSocket) {
-    userSocket.emit("sent request", club);
+    userSocket.emit("sent request", club._id);
   }
 
   res.json(club);

@@ -8,28 +8,38 @@ import axios from 'axios';
 import { useConnectSocket } from '../components/config/chatlogics';
 
 export const ClubRegistration = ({onClose}) => {
-    const {user, club, setClub} = ChatState();
+    const {user, club, setClub, setRequests, setUser} = ChatState();
     const [name, setName] = useState(undefined);
     const [selectedCountry, setSelectedCountry] = useState(user.country);
     const [provience, setProvience] = useState(user.provinces);
     const [subdivisions, setSubdivisions] = useState([]);
-    const [suggest, setSuggest] = useState([{name: "Joseph", admission: "U000000006C"}, {name: "Martin", admission: "U000000007B"}, {name: "Joseph", admission: "U000000006C"}, {name: "Joseph", admission: "U000000006C"}, {name: "Joseph", admission: "U000000006C"},]);
+    const [suggest, setSuggest] = useState([]);
     const navigate = useNavigate();
+    const toast = useToast();
 
     const socket = useConnectSocket(user?.token);
 
     console.log(socket, user);
-    const toast = useToast();
 
     useEffect(() => {
+    
     if(!socket || !user) return;
-    socket.emit("setup", user);
-    }, [user, socket]);
+
+    socket.on("sent request", (club) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      clubRequests: [...prevUser.clubRequests, club._id],
+    }));
+
+    setRequests((prev) => ({ ...prev, club }));
+  });
+    }, [user, socket, setRequests, setUser]);
     
     const countryOptions = Object.entries(countries).map(([code, country]) => ({
   value: country.name,
   label: country.name,
 }));
+
     const getUsersWithNoClub = useCallback(async () => {
       if(!user){
         navigate('/dashboard');
@@ -38,15 +48,13 @@ export const ClubRegistration = ({onClose}) => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
 
       const { data } = await axios.get(`/api/user/${user.country}/${provience}`, config);
 
-      if(data.length >= 0){
         setSuggest(data);
-      }
 
     } catch (error) {
       console.error('Error fetching users with no clubs:', error);
@@ -76,9 +84,9 @@ export const ClubRegistration = ({onClose}) => {
    const handleFormClose = () => {
     onClose();
   };
-  console.log(name);
+
   const requestClubRequest = useCallback(async (userId)=> {
-    console.log(name);
+
     if(!name){
       toast({
         title: "Give your Club a name please"
@@ -98,23 +106,23 @@ export const ClubRegistration = ({onClose}) => {
 
       const { data } = await axios.get(`/api/user/${user.country}/${user.provinces}/${name}/${userId}`, config);
       setClub(data);
-   
+      
+
 
     } catch (error) {
       console.error('Error fetching Club:', error);
     }
   }, [user.token, user._id, setClub]);
 
-
   return (
      <VStack spacing="3px" backgroundColor={"whitesmoke"} p={1}>
     <Button fontSize={"x-large"} marginRight={"90%"} onClick={handleFormClose} width={"10px"}>X</Button>
-     <Text fontSize={"larger"} fontWeight={"bold"} textColor="#c255ed">Club Form</Text> 
-     <Box m={3} p={3} borderRadius={3} width={{base: "97%", md: "70%"}} border={"1px solid #c255ed"}><FormControl id="first-name" isRequired>
+     <Text fontSize={"larger"} fontWeight={"bold"} >Club Form</Text> 
+     <Box m={3} p={3} borderRadius={3} width={{base: "97%", md: "60%"}} border={"1px solid #c255ed"}><FormControl id="first-name" isRequired>
         <FormLabel textColor={"#c255ed"}>Club name</FormLabel>
         <Input
           placeholder="Enter Club Name"
-          value={name}
+          value={name || (club && club.name) || ""}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
@@ -126,7 +134,8 @@ export const ClubRegistration = ({onClose}) => {
     justifyContent={"center"}
     alignItems={"center"}
     width={"100%"}
-    value={selectedCountry}
+    value={user.country}
+    isDisabled={true}
     onChange={(e) => setSelectedCountry(e.target.value)}
   >
     {countryOptions.map((option) => (
@@ -145,6 +154,7 @@ export const ClubRegistration = ({onClose}) => {
     alignItems={"center"}
     width={"100%"}
     value={provience}
+    isDisabled={true}
     onChange={(e) => setProvience(e.target.value)}>
     {subdivisions && subdivisions.map((subdivision) => (
       <option key={subdivision.value} value={subdivision.value} style={{color: "black"}}>
@@ -162,17 +172,34 @@ export const ClubRegistration = ({onClose}) => {
         />
         
       </FormControl>}
-      <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} m={3} borderRadius={3} width={"100%"} height={"200px"} overflow="auto">
+      <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} m={1} borderRadius={3} width={"100%"} height={"200px"} overflow="auto">
+        <Text textAlign={"center"} fontSize={'medium'}>Make requests to members around you.</Text>
         {!suggest && <Text textAlign={"center"}>No student without a club in this region.</Text>}
        {suggest.length > 0 && suggest.map((suggestion) => (
     <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} key={suggestion._id} style={{ color: "black" }} width={"90%"} m={3}>
       <Text fontSize={"small"} fontWeight={"bold"} >Name: {suggestion.name}, Adm: {suggestion.admission}</Text>
-      <Button borderRadius={20} onClick={() => requestClubRequest(suggestion._id)} backgroundColor={"#c255ed"}>
-        Send Request
-      </Button>
+      <Button borderRadius={20} isDisabled={club && club.clubRequests.includes(suggestion._id)} onClick={() => requestClubRequest(suggestion._id)} backgroundColor={"#c255ed"}>
+
+        {club && club.clubRequests.includes(suggestion._id)
+       ? "Request sent" : "Send Request"}
+
+     </Button>
     </Box>
   ))}
-  </Box> 
+  </Box>
+  <FormControl id="requests">
+        <FormLabel textColor={"#c255ed"}>{`Number of requests made *${club && club.clubRequests.length}*`}</FormLabel>
+        
+      </FormControl>
+      <FormControl id="members" isRequired>
+        <FormLabel textColor={"#c255ed"}>Students(successfull responses) {club && club.members.length}/20</FormLabel>
+       <Box display={"flex"}justifyContent={"center"} alignItems={"center"} borderRadius={3} width={"100%"} height={"200px"} overflow="auto">
+        {club && club.members.length === 0 &&  <Text textAlign={"center"}>No members available for this club.</Text>}
+       {club.members.length > 0 && club.members.map((members) => (
+      <Button fontSize={"small"} fontWeight={"bold"} >Adm: {members.admission}</Button>
+  ))}
+  </Box>
+      </FormControl>
       <Button
         colorScheme="blue"
         width="100%"

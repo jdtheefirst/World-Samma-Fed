@@ -18,7 +18,13 @@ const clubsModel = mongoose.Schema(
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
+  
+  registered: {
+    type: Boolean,
+    default: false,
   },
+  },
+  
   
   { versionKey: false, timestamps: true }
 );

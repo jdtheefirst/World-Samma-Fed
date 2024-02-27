@@ -1,5 +1,5 @@
 const Sequence = require("../models/Sequence");
-const { Club } = require("../models/clubsModel");
+const Club  = require("../models/clubsModel");
 
 
 const registerClubs = async (req, res) => {
@@ -72,5 +72,29 @@ const fetchClubs = async (req, res) => {
   }
 };
 
+const fetchMyClub = async (req, res) => {
+  const { clubId } = req.params;
 
-module.exports = {registerClubs, fetchClubs}
+  console.log(clubId, "My Club is this one!");
+
+  try {
+     const club = await Club.findById(clubId);
+
+    if (!club) {
+        return res.status(404).json({ error: 'Club not found' });
+    }
+
+    res.status(200).json(club);
+
+    console.log(club);
+
+} catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+    throw new Error(`An error occurred: ${error.message}`);
+}
+
+};
+
+
+module.exports = {registerClubs, fetchClubs, fetchMyClub}

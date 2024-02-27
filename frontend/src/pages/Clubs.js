@@ -8,7 +8,7 @@ import axios from 'axios';
 import { ClubRegistration } from '../Authentication/club';
 
 export const Clubs = () => {
-  const { user } = ChatState();
+  const { user, club } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const [clubs, setClubs] =useState([]);
   const [provience, setProvience] = useState(user?.provinces);
@@ -16,11 +16,14 @@ export const Clubs = () => {
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
 
+   console.log(user);
+
   const fetchClubs = useCallback(async () => {
       if(!user){
         navigate('/dashboard');
         return
       }; 
+      console.log(user);
     try {
       const config = {
         headers: {
@@ -34,7 +37,7 @@ export const Clubs = () => {
     } catch (error) {
       console.error('Error fetching or creating clubs:', error);
     }
-  }, [user.token, user._id, setClubs, provience]);
+  }, [user, setClubs, provience]);
 
   useEffect(() => {
       if(!user) {
@@ -62,7 +65,7 @@ export const Clubs = () => {
         Country: {user.country} {flag}
       </Text>
     <Box display={"flex"} flexDir={"column"} justifyContent={"center"} alignItems={"center"} width={"100%"} backgroundColor="Background" >
-    <FormControl id="provinces" isRequired textAlign={"center"} width={{ base: '100%', md: '80%' }}p={3}>
+    <FormControl id="provinces" isRequired textAlign={"center"} width={{ base: '100%', md: '60%' }}p={3}>
     <FormLabel textAlign={"center"}>Select State</FormLabel>
     <Select
       placeholder="Select your province"
@@ -100,7 +103,11 @@ export const Clubs = () => {
   </Box>
 
   {user.couch ? <Box m={2}>Your Club</Box>
-   :  <Button display={"flex"} backgroundColor={"#c255ed"} borderRadius={20} onClick={ () => {setFillForm(true);}} m={2}>Make Your Club</Button>}
+   :  <Button display={"flex"} backgroundColor={"#c255ed"} borderRadius={20} onClick={ () => {setFillForm(true);}} m={2}><Text>
+    {club && club.registered
+      ? "Continue Registering"
+      : "Register Club"}
+  </Text></Button>}
   </Box> 
   {fillForm && <ClubRegistration  onClose={() => setFillForm(false)}/>}
     </Box>

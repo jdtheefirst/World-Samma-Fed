@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { Box, Button, IconButton, Image } from '@chakra-ui/react'
 import UpperNav from '../miscellenious/upperNav'
@@ -9,11 +9,15 @@ import { useNavigate } from 'react-router-dom'
 import { ChatState } from '../components/Context/ChatProvider'
 import { useConnectSocket } from '../components/config/chatlogics'
 import axios from 'axios'
+import chat from '../chat.png';
 
 export const Dashboard = ({courses}) => {
   const [chatOpen, setChatOpen] = useState(false);
-  const { user, setUser, setMessages, notification, setNotification} = ChatState();
+  const { user, setUser, setClub, setMessages, notification, setNotification} = ChatState();
   const navigate = useNavigate();
+  const [isHovered, setHovered] = useState(false);
+
+  console.log(user);
 
   useEffect(() => {
 
@@ -29,6 +33,28 @@ export const Dashboard = ({courses}) => {
 
 const socket = useConnectSocket(user?.token);
 
+const requestClub = useCallback(async ()=> {
+     if(!user.coach){
+      console.log("I have no Club")
+        return;
+      };
+
+    try {
+      const clubId = user.coach;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/clubs/${clubId}`, config);
+      setClub(data);
+
+    } catch (error) {
+      console.error('Error fetching Club:', error);
+    }
+  }, [user?.token, setClub]);
 
 useEffect(()=>{
    if (!socket) {
@@ -96,34 +122,11 @@ useEffect(()=>{
   };
 }, [socket, setUser, user?.token, user])
 
-console.log(user);
-
-  // useEffect(() => {
-  //   const fetchClubInfo = async () => {
-  //     if(!user) return;
-  //     try {
-  //       const config = {
-  //       headers: {
-  //         Authorization: `Bearer ${user.token}`,
-  //       },
-  //     };
-
-  //     const response = await axios.get(`/api/club/${user._id}`, config);
-      
-  //     if(response.coach){
-  //       setClub(response);
-  //     }
-  //     console.log(response);
-
-  //     } catch (error) {
-  //       console.error('Error fetching user info:', error);
-  //     }
-  //   };
-
-  //   if (user) {
-  //     fetchClubInfo();
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      requestClub();
+    }
+  }, [user]);
 
 
 
@@ -135,7 +138,26 @@ console.log(user);
         <Box mt={20}><Progress userBelt={"Visitor"}/></Box>
         <MyPrograms courses={courses} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)}/>}
-        <IconButton display={chatOpen? "none" : "flex"} position="fixed" bottom="0" right={5} icon={<Image src='https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708964780/icons8-facebook-messenger-48_ffq52e.png' alt='Chat' height={"150%"} />} p={0} borderRadius={"50%"} backgroundColor={"white"} onClick={()=> setChatOpen(true)}/>
+        <IconButton
+      display={chatOpen? "none" : "flex"}
+      position="fixed"
+      bottom={0}
+      right={10}
+      icon={
+        <Image
+          src={chat}
+          alt="Chat"
+          width={isHovered ? '60px' : '40px'}
+          transition="width 0.3s ease-in-out"
+        />
+      }
+      backgroundColor="white"
+      _hover={{backgroundColor: "white"}}
+      onClick={() => setChatOpen(true)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)} 
+      borderRadius={20}
+    />
       </ErrorBoundary>
     </Box>
   )

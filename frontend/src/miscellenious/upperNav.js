@@ -159,7 +159,7 @@ function UpperNav (){
              <Button justifyContent={"left"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}} onClick={() => {navigate('/dashboard'); onClose();}}>
               My Programs
             </Button>
-            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
+            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}} onClick={() => {navigate('/clubs'); onClose();}}>
               Clubs
             </Button>
             <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>

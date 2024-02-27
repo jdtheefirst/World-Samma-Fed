@@ -1,6 +1,9 @@
 const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
+const { getUserIdFromToken } = require("./middleware/authMiddleware");
+const {setUserSocket,
+  getUserSocket} = require('./config/socketUtils')
 let io;
 
 const initializeSocketIO = (server) => {
@@ -11,7 +14,7 @@ const initializeSocketIO = (server) => {
     },
   });
   const onlineUsers = new Set();
-  const userStatuses = new Map(); 
+  const userStatuses = new Map();
 
   io.use(async (socket, next) => {
     try {
@@ -38,6 +41,9 @@ const initializeSocketIO = (server) => {
 
   io.on("connection", (socket) => {
     console.log("Connected to socket.io");
+
+    const userId = getUserIdFromToken(socket.handshake.query.token);
+    setUserSocket(userId, socket.id);
 
     socket.on("newConnection", async (userData) => {
 

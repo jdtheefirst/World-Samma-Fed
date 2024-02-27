@@ -60,7 +60,7 @@ const ProgressArrow = styled.div`
   animation: ${progressAnimation} 2s ease-in-out; 
 `;
 const Progress = ({ userBelt }) => {
-  const progressLevels = ['Visitor', 'Starter', 'Yellow', 'Orange', 'Red', 'Purple', 'Green', 'Blue', 'Brown', 'Black'];
+  const progressLevels = ['Visitor', 'Beginner', 'Yellow', 'Orange', 'Red', 'Purple', 'Green', 'Blue', 'Brown', 'Black'];
   const colors = [
     '#727a74',
     'black',
