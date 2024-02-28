@@ -7,25 +7,29 @@ const clubsModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    code: { type: String, required: true, unique: true},
+    code: { type: String, required: true, unique: true },
     country: { type: String },
     provience: { type: String },
-    members: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
-    clubRequests: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  }],
-  
-  registered: {
-    type: Boolean,
-    default: false,
+    members: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    clubRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    followers: { type: Number },
+    likes: { type: Number },
+    registered: {
+      type: Boolean,
+      default: false,
+    },
   },
-  },
-  
-  
+
   { versionKey: false, timestamps: true }
 );
 

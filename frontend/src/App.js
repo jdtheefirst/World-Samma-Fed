@@ -7,6 +7,7 @@ import { Dashboard } from "./pages/Dashboard";
 import CourseDetails from "./pages/Courses";
 import { Clubs } from "./pages/Clubs";
 import ClubDetailes from "./pages/ClubDetails";
+import { ChatState } from "./components/Context/ChatProvider";
 
 const courses = [
   {
@@ -165,6 +166,7 @@ const courses = [
 ];
 
 function App() {
+  const { user } = ChatState();
   return (
     <div className="App">
       <Routes>
@@ -176,7 +178,10 @@ function App() {
           element={<CourseDetails courses={courses} />}
         />
         <Route path="/clubs" element={<Clubs />} />
-        <Route path="/showclub/:clubId" element={<ClubDetailes />} />
+        <Route
+          path="/showclub/:clubId"
+          element={<ClubDetailes user={user} />}
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

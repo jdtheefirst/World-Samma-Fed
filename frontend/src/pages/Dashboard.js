@@ -18,8 +18,6 @@ export const Dashboard = ({ courses }) => {
   const navigate = useNavigate();
   const [isHovered, setHovered] = useState(false);
 
-  console.log(user);
-
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -50,8 +48,6 @@ export const Dashboard = ({ courses }) => {
 
       const { data } = await axios.get(`/api/clubs/${clubId}`, config);
       setClub(data);
-
-      console.log(data);
     } catch (error) {
       console.error("Error fetching Club:", error);
     }
