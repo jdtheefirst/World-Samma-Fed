@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const Club = require('../models/clubsModel');
-const Sequence = require("../models/Sequence")
+const Club = require("../models/clubsModel");
+const Sequence = require("../models/Sequence");
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
@@ -19,11 +19,26 @@ const privateEmailPass = process.env.privateEmailPass;
 const privateEmail = "admin@fuckmate.boo";
 
 const registerUsers = asyncHandler(async (req, res) => {
-  const { name, email, password, gender, pic, selectedCountry,
-          otherName,
-          provinces} = req.body;
+  const {
+    name,
+    email,
+    password,
+    gender,
+    pic,
+    selectedCountry,
+    otherName,
+    provinces,
+  } = req.body;
 
-  if (!email || !name || !password || !gender || !selectedCountry || !otherName || !provinces) {
+  if (
+    !email ||
+    !name ||
+    !password ||
+    !gender ||
+    !selectedCountry ||
+    !otherName ||
+    !provinces
+  ) {
     res.status(400);
     throw new Error("Please enter all fields");
   }
@@ -33,40 +48,54 @@ const registerUsers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists, login");
   }
-const getNextAdminNumber = async () => {
-  const sequence = await Sequence.findOneAndUpdate({}, { $inc: { number: 1 } }, { new: true });
+  const getNextAdminNumber = async () => {
+    const sequence = await Sequence.findOneAndUpdate(
+      {},
+      { $inc: { number: 1 } },
+      { new: true }
+    );
 
-  if (!sequence || sequence.number > 999999999) {
-    await Sequence.updateOne({}, { number: 1 }, { upsert: true });
-  }
-  const currentNumber = sequence ? sequence.number : 1;
+    if (!sequence || sequence.number > 999999999) {
+      await Sequence.updateOne({}, { number: 1 }, { upsert: true });
+    }
+    const currentNumber = sequence ? sequence.number : 1;
 
-  const paddedNumber = currentNumber.toString().padStart(9, "0");
+    const paddedNumber = currentNumber.toString().padStart(9, "0");
 
-  const suffix = generateSuffix((currentNumber - 1) % 702);
+    const suffix = generateSuffix((currentNumber - 1) % 702);
 
-  const adminNumber = `${paddedNumber}${suffix}`;
+    const adminNumber = `${paddedNumber}${suffix}`;
 
-  return adminNumber;
-};
+    return adminNumber;
+  };
 
-const generateSuffix = (index) => {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const base = letters.length;
+  const generateSuffix = (index) => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const base = letters.length;
 
-  let suffix = "";
-  while (index >= 0) {
-    suffix = letters[index % base] + suffix;
-    index = Math.floor(index / base) - 1;
-  }
+    let suffix = "";
+    while (index >= 0) {
+      suffix = letters[index % base] + suffix;
+      index = Math.floor(index / base) - 1;
+    }
 
-  return suffix;
-};
+    return suffix;
+  };
 
-const admission = await getNextAdminNumber('U');
-const user = { name, email, password, gender, pic, admission, selectedCountry, otherName, provinces,};
+  const admission = await getNextAdminNumber("U");
+  const user = {
+    name,
+    email,
+    password,
+    gender,
+    pic,
+    admission,
+    selectedCountry,
+    otherName,
+    provinces,
+  };
 
-const userInfo = await User.create(user);
+  const userInfo = await User.create(user);
 
   if (userInfo) {
     const responseData = {
@@ -84,7 +113,6 @@ const userInfo = await User.create(user);
       coach: userInfo.coach,
       clubRequests: userInfo.clubRequests,
       token: generateToken(userInfo._id),
-
     };
 
     res.status(201).json(responseData);
@@ -198,8 +226,8 @@ const authUser = asyncHandler(async (req, res) => {
     throw new Error("Sign Up please...");
   }
 
- if (userInfo && (await userInfo.comparePassword(password))) {
-  res.json({
+  if (userInfo && (await userInfo.comparePassword(password))) {
+    res.json({
       _id: userInfo._id,
       admission: userInfo.admission,
       name: userInfo.name,
@@ -212,8 +240,7 @@ const authUser = asyncHandler(async (req, res) => {
       pic: userInfo.pic,
       token: generateToken(userInfo._id),
       clubRequests: userInfo.clubRequests,
-
-  });
+    });
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
@@ -221,43 +248,37 @@ const authUser = asyncHandler(async (req, res) => {
 });
 
 const getInfo = async (req, res) => {
-  console.log("getuserinfo route")
+  console.log("getuserinfo route");
 
   const { userId } = req.params;
 
-  console.log("getuserinfo route")
+  console.log("getuserinfo route");
 
   try {
     const userInfo = await User.findById(userId);
 
-    res.json({userInfo, token: generateToken(userInfo._id)});
-
+    res.json({ userInfo, token: generateToken(userInfo._id) });
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve possible update" });
   }
 };
 
 const getUsers = async (req, res) => {
-  console.log("Route reached")
-  const {country, provience} = req.params;
+  console.log("Route reached");
+  const { country, provience } = req.params;
 
-  if(!country || !provience){
+  if (!country || !provience) {
     return;
-    
   }
 
   try {
-  const allUsers = await User.find({
-  selectedCountry: country,
-  provinces: provience,
-  $and: [
-    { coach: null },
-    { physicalCoach: null },
-  ],
-});
+    const allUsers = await User.find({
+      selectedCountry: country,
+      provinces: provience,
+      $and: [{ coach: null }, { physicalCoach: null }],
+    });
 
-  res.json(allUsers);
-
+    res.json(allUsers);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -335,7 +356,7 @@ const deleteImage = async (req, res) => {
   }
 };
 const authorizeUser = async (req, res) => {
-  console.log("Did we just access this route?")
+  console.log("Did we just access this route?");
   const { userEmail } = req.params;
 
   console.log(userEmail);
@@ -402,97 +423,103 @@ const getAdsInfo = async (req, res) => {
     console.error("Error fetching/displaying ads:", error);
   }
 };
-const clubRequests = async(req, res) => {
-  const {country, provience, name, userId} = req.params;
+const clubRequests = async (req, res) => {
+  const { country, provience, name, userId } = req.params;
 
   const loggedUser = req.user._id;
   const getNextClubNumber = async (prefix, initialSequence = 1) => {
-  const sequence = await Sequence.findOneAndUpdate({ prefix }, { $inc: { number: 1 } }, { new: true });
+    const sequence = await Sequence.findOneAndUpdate(
+      { prefix },
+      { $inc: { number: 1 } },
+      { new: true }
+    );
 
-  if (!sequence || sequence.number > 9999999) {
-    await Sequence.updateOne({ prefix }, { number: initialSequence }, { upsert: true });
-  }
+    if (!sequence || sequence.number > 9999999) {
+      await Sequence.updateOne(
+        { prefix },
+        { number: initialSequence },
+        { upsert: true }
+      );
+    }
 
-  const currentNumber = sequence ? sequence.number : initialSequence;
+    const currentNumber = sequence ? sequence.number : initialSequence;
 
-  const paddedNumber = currentNumber.toString().padStart(8, "0");
+    const paddedNumber = currentNumber.toString().padStart(8, "0");
 
-  const suffix = generateSuffix((currentNumber - 1) % 702);
+    const suffix = generateSuffix((currentNumber - 1) % 702);
 
-  const clubNumber = `${prefix}${paddedNumber}${suffix}`;
+    const clubNumber = `${prefix}${paddedNumber}${suffix}`;
 
-  return clubNumber;
-};
+    return clubNumber;
+  };
 
-const generateSuffix = (index) => {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  const base = letters.length;
+  const generateSuffix = (index) => {
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const base = letters.length;
 
-  let suffix = "";
-  while (index >= 0) {
-    suffix = letters[index % base] + suffix;
-    index = Math.floor(index / base) - 1;
-  }
+    let suffix = "";
+    while (index >= 0) {
+      suffix = letters[index % base] + suffix;
+      index = Math.floor(index / base) - 1;
+    }
 
-  return suffix;
-};
+    return suffix;
+  };
 
-let club
+  let club;
 
   try {
-  club = await Club.findOne({ coach: loggedUser });
+    club = await Club.findOne({ coach: loggedUser });
 
-  if (!club) {
-  const clubCode = await getNextClubNumber('C');
+    if (!club) {
+      const clubCode = await getNextClubNumber("C");
 
-  club = await Club.create({
-    name: name,
-    coach: loggedUser,
-    code: clubCode,
-    selectedCountry: country,
-    provinces: provience,
-    clubRequests: userId,
-  });
+      club = await Club.create({
+        name: name,
+        coach: loggedUser,
+        code: clubCode,
+        country: country,
+        provience: provience,
+        clubRequests: userId,
+      });
 
-  const userInfo = await User.findById(userId);
-  if (userInfo) {
-    userInfo.clubRequests.push(club._id);
-    await userInfo.save();
-  }
+      const userInfo = await User.findById(userId);
+      if (userInfo) {
+        userInfo.clubRequests.push(club._id);
+        await userInfo.save();
+      }
 
-  const userSocket = getIO().sockets.sockets.get(userId);
-  if (userSocket) {
-    userSocket.emit("sent request", club);
-  }
+      const userSocket = getIO().sockets.sockets.get(userId);
+      if (userSocket) {
+        userSocket.emit("sent request", club);
+      }
 
-  res.json(club);
-} else {
-  club.clubRequests.push(userId);
-  await club.save();
+      res.json(club);
+    } else {
+      club.clubRequests.push(userId);
+      await club.save();
 
-  const userInfo = await User.findById(userId);
-  if (userInfo) {
-    userInfo.clubRequests.push(club._id);
-    await userInfo.save();
-  }
+      const userInfo = await User.findById(userId);
+      if (userInfo) {
+        userInfo.clubRequests.push(club._id);
+        await userInfo.save();
+      }
 
-  const userSocket = getUserSocket(userId);
-  console.log(userSocket);
+      const userSocket = getUserSocket(userId);
+      console.log(userSocket);
 
-  if (userSocket) {
-    userSocket.emit("sent request", club._id);
-  }
+      if (userSocket) {
+        userSocket.emit("sent request", club._id);
+      }
 
-  res.json(club);
-}
+      res.json(club);
+    }
 
-
-console.log(club, "We have a Club");
- 
+    console.log(club, "We have a Club");
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 module.exports = {
   authorizeUser,
@@ -507,5 +534,5 @@ module.exports = {
   deleteUser,
   deleteImage,
   getAdsInfo,
-  clubRequests
+  clubRequests,
 };
