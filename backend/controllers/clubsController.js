@@ -1,5 +1,6 @@
 const Sequence = require("../models/Sequence");
 const Club = require("../models/clubsModel");
+const Broadcast = require("../models/coachBroadcast");
 
 const registerClubs = async (req, res) => {
   const {
@@ -108,10 +109,6 @@ const fetchClubs = async (req, res) => {
 const fetchMyClub = async (req, res) => {
   const { clubId } = req.params;
 
-  console.log(clubId);
-
-  console.log(clubId, "My Club is this one!");
-
   try {
     const club = await Club.findById(clubId);
 
@@ -120,8 +117,6 @@ const fetchMyClub = async (req, res) => {
     }
 
     res.status(200).json(club);
-
-    console.log(club);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -129,4 +124,87 @@ const fetchMyClub = async (req, res) => {
   }
 };
 
-module.exports = { registerClubs, fetchClubs, fetchMyClub };
+const followClub = async (req, res) => {
+  const { clubId, userId } = req.params;
+
+  try {
+    const club = await Club.findById(clubId);
+
+    if (!club) {
+      return res.status(404).json({ error: "Club not found" });
+    }
+
+    const isFollower = club.followers.find(
+      (followerId) => followerId.toString() === userId
+    );
+
+    if (isFollower) {
+      club.followers = club.followers.filter(
+        (followerId) => followerId.toString() !== userId
+      );
+    } else {
+      club.followers.push(userId);
+    }
+
+    await club.save();
+
+    res.status(200).json(club);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", error: message.error });
+  }
+};
+const likeClub = async (req, res) => {
+  const { clubId, userId } = req.params;
+
+  try {
+    const club = await Club.findById(clubId);
+
+    if (!club) {
+      return res.status(404).json({ error: "Club not found" });
+    }
+
+    const likes = club.likes.find((likeId) => likeId.toString() === userId);
+
+    if (likes) {
+      club.likes = club.likes.filter((likeId) => likeId.toString() !== userId);
+    } else {
+      club.likes.push(userId);
+    }
+
+    await club.save();
+
+    res.status(200).json(club);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", error: message.error });
+  }
+};
+
+const broadcast = async (req, res) => {
+  const { clubId, coachId } = req.params;
+  try {
+    const broadcastMessages = await Broadcast.find({
+      coach: coachId,
+      club: clubId,
+    });
+
+    res.status(200).json(broadcastMessages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports = {
+  registerClubs,
+  fetchClubs,
+  fetchMyClub,
+  followClub,
+  likeClub,
+  broadcast,
+};

@@ -58,7 +58,7 @@ export const Clubs = () => {
     if (!user) navigate("/dashboard");
 
     const fetchSubdivisions = async () => {
-      const states = getStatesOfCountry(user.country);
+      const states = getStatesOfCountry(user?.country);
       setSubdivisions(states);
     };
 
@@ -89,7 +89,7 @@ export const Clubs = () => {
         p={3}
         mt={14}
       >
-        Country: {user.country} {flag}
+        Country: {user?.country} {flag}
       </Text>
       <Box
         display={"flex"}
@@ -144,16 +144,15 @@ export const Clubs = () => {
           p={0}
           borderRadius={3}
           width={{ base: "100%", md: "80%" }}
-          border={"1px solid black"}
         >
           {clubs && clubs.length > 0 ? (
-            clubs.map((club) => (
+            clubs.map((club, index) => (
               <Button
                 key={club.code}
                 width={"90%"}
                 onClick={() => navigate(`/showclub/${club._id}`)}
               >
-                Club: {club.name}, Reg no: {club.code}
+                {index + 1}. Club: {club.name}, Reg no: {club.code}
               </Button>
             ))
           ) : (
@@ -169,7 +168,7 @@ export const Clubs = () => {
           )}
         </Box>
 
-        {user.couch ? (
+        {user?.couch ? (
           <Box m={2}>Your Club</Box>
         ) : (
           <Button

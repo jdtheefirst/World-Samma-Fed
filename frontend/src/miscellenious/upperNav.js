@@ -1,13 +1,14 @@
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Box, Text } from "@chakra-ui/layout";
-import { Badge, Image, useBreakpointValue, IconButton, CloseButton} from "@chakra-ui/react";
 import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-} from "@chakra-ui/menu";
+  Badge,
+  Image,
+  useBreakpointValue,
+  IconButton,
+  CloseButton,
+} from "@chakra-ui/react";
+import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import {
   Drawer,
   DrawerBody,
@@ -20,12 +21,8 @@ import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 
-function UpperNav (){
-  const {
-    user,
-    notification,
-    setNotification,
-  } = ChatState()
+function UpperNav() {
+  const { user, notification, setNotification } = ChatState();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
@@ -34,14 +31,13 @@ function UpperNav (){
     localStorage.removeItem("userInfo");
     navigate("/");
   };
-  
+
   const displayValue = useBreakpointValue({ base: "none", md: "flex" });
 
   const textVisibility = useBreakpointValue({
     base: "hidden",
     md: "visible",
   });
-
 
   return (
     <>
@@ -51,9 +47,9 @@ function UpperNav (){
         alignItems="center"
         bg="white"
         w="100%"
-        p={1}
+        p={3}
         paddingBottom={2}
-        boxShadow='lg'
+        boxShadow="lg"
       >
         <Text
           textAlign={"center"}
@@ -65,10 +61,18 @@ function UpperNav (){
         >
           Worldsamma
         </Text>
-        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}
-        ><Button backgroundColor={"transparent"} display={displayValue} visibility={textVisibility}  _hover={{ backgroundColor: "transparent", color: "green.400" }}  onClick={() => {
-          navigate('/dashboard')
-        }}>My Programs</Button>
+        <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
+          <Button
+            backgroundColor={"transparent"}
+            display={displayValue}
+            visibility={textVisibility}
+            _hover={{ backgroundColor: "transparent", color: "green.400" }}
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
+            My Programs
+          </Button>
           <Button
             variant="ghost"
             onClick={onOpen}
@@ -81,9 +85,16 @@ function UpperNav (){
             >
               Discover
             </Text>
-           
           </Button>
-         <Button backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}><Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706249110/icons8-search-50_xjjjxc.png" height={5}/></Button>
+          <Button
+            backgroundColor={"Background"}
+            _hover={{ backgroundColor: "transparent" }}
+          >
+            <Image
+              src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706249110/icons8-search-50_xjjjxc.png"
+              height={5}
+            />
+          </Button>
         </Box>
 
         <div>
@@ -126,16 +137,24 @@ function UpperNav (){
               _hover={{ backgroundColor: "transparent" }}
               onClick={onOpen}
             >
-               {displayValue === "flex" ? (
-        <Avatar
-          size="sm"
-          cursor="pointer"
-          name={user?.name}
-          src={user?.pic}
-        />
-      ) : (
-        <IconButton backgroundColor={"transparent"} icon={<Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706276791/icons8-menu-50_afv1fe.png" height={5}/>} />
-      )}
+              {displayValue === "flex" ? (
+                <Avatar
+                  size="sm"
+                  cursor="pointer"
+                  name={user?.name}
+                  src={user?.pic}
+                />
+              ) : (
+                <IconButton
+                  backgroundColor={"transparent"}
+                  icon={
+                    <Image
+                      src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706276791/icons8-menu-50_afv1fe.png"
+                      height={5}
+                    />
+                  }
+                />
+              )}
             </MenuButton>
           </Menu>
         </div>
@@ -143,34 +162,87 @@ function UpperNav (){
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent >
-          <DrawerHeader borderBottomWidth="1px" display={"flex"} justifyContent={"space-between"}>Dashboard <CloseButton onClick={onClose}/></DrawerHeader>
-           <DrawerBody display={"flex"} flexDir={"column"} justifyContent={"space-between"} width={"100%"}>
-            <Box padding={3} display={"flex"} justifyContent={"space-around"} flexDir={"column"}>
-              <Button display={"flex"} justifyContent={"left"} alignItems={"center"} m={1} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent"}}>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user?.name}
-                src={user?.pic}
-              />
-              <Text p={2} m={1}>Profile</Text>
-            </Button> 
-             <Button justifyContent={"left"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}} onClick={() => {navigate('/dashboard'); onClose();}}>
-              My Programs
-            </Button>
-            <Button justifyContent={"start"} backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}} onClick={() => {navigate('/clubs'); onClose();}}>
-              Clubs
-            </Button>
-            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
-             Provincial level
-            </Button>
-            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
-             National level
-            </Button>
-            <Button justifyContent={"left"}  backgroundColor={"Background"} _hover={{ backgroundColor: "transparent", color: "green"}}>
-             International Championship
-            </Button>
+        <DrawerContent>
+          <DrawerHeader
+            borderBottomWidth="1px"
+            display={"flex"}
+            justifyContent={"space-between"}
+          >
+            Dashboard <CloseButton onClick={onClose} />
+          </DrawerHeader>
+          <DrawerBody
+            display={"flex"}
+            flexDir={"column"}
+            justifyContent={"space-between"}
+            width={"100%"}
+          >
+            <Box
+              padding={3}
+              display={"flex"}
+              justifyContent={"space-around"}
+              flexDir={"column"}
+            >
+              <Button
+                display={"flex"}
+                justifyContent={"left"}
+                alignItems={"center"}
+                m={1}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent" }}
+              >
+                <Avatar
+                  size="sm"
+                  cursor="pointer"
+                  name={user?.name}
+                  src={user?.pic}
+                />
+                <Text p={2} m={1}>
+                  Profile
+                </Text>
+              </Button>
+              <Button
+                justifyContent={"left"}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={() => {
+                  navigate("/dashboard");
+                  onClose();
+                }}
+              >
+                My Programs
+              </Button>
+              <Button
+                justifyContent={"start"}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={() => {
+                  navigate("/clubs");
+                  onClose();
+                }}
+              >
+                Clubs
+              </Button>
+              <Button
+                justifyContent={"left"}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
+              >
+                Provincial level
+              </Button>
+              <Button
+                justifyContent={"left"}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
+              >
+                National level
+              </Button>
+              <Button
+                justifyContent={"left"}
+                backgroundColor={"Background"}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
+              >
+                International Championship
+              </Button>
             </Box>
             <Button onClick={logoutHandler}>Log out</Button>
           </DrawerBody>

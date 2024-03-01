@@ -21,7 +21,7 @@ import { useConnectSocket } from "../components/config/chatlogics";
 export const ClubRegistration = ({ onClose }) => {
   const { user, club, setClub, setRequests, setUser } = ChatState();
   const [name, setName] = useState(null);
-  const [selectedCountry, setSelectedCountry] = useState(user.country);
+  const [selectedCountry, setSelectedCountry] = useState(user?.country);
   const [provience, setProvience] = useState(user.provinces);
   const [subdivisions, setSubdivisions] = useState([]);
   const [suggest, setSuggest] = useState([]);
@@ -33,7 +33,10 @@ export const ClubRegistration = ({ onClose }) => {
   console.log(socket, user);
 
   useEffect(() => {
-    if (!socket || !user) return;
+    if (!socket || !user) {
+      navigate("/dashboard");
+      return;
+    }
 
     socket.on("sent request", (club) => {
       setUser((prevUser) => ({

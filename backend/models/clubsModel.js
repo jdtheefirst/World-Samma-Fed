@@ -22,8 +22,19 @@ const clubsModel = mongoose.Schema(
         ref: "User",
       },
     ],
-    followers: { type: Number },
-    likes: { type: Number },
+    description: { type: String },
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     registered: {
       type: Boolean,
       default: false,
