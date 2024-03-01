@@ -9,10 +9,9 @@ import {
   Image,
   Text,
   Textarea,
-  VStack,
   Icon,
   Container,
-  Spacer,
+  useToast,
 } from "@chakra-ui/react";
 import { FaHeart, FaVideo } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
@@ -23,7 +22,10 @@ const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
   const [club, setClub] = useState();
   const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [broadcast, setBroadcast] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   console.log(user);
 
@@ -54,13 +56,45 @@ const ClubDetails = ({ user }) => {
     } catch (error) {
       console.error("Error fetching Club:", error);
     }
-  }, [user?.token, setClub]);
+  }, [user?.token, setClub, clubId]);
+
+  const handleBroadcast = useCallback(async () => {
+    if (!user || !clubId) {
+      navigate("/dashboard");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      const userId = user._id;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/clubs/broadcast/${clubId}/${userId}`,
+        config
+      );
+      console.log(data);
+
+      setBroadcast(data);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching BroadcastMessages:", error);
+      console.log(error);
+    }
+  }, [user, user?.token, clubId, setBroadcastMessage]);
 
   useEffect(() => {
     if (user) {
       getClub();
+      handleBroadcast();
     }
-  }, [user, getClub]);
+  }, [user, getClub, handleBroadcast]);
 
   const handleFollow = async () => {
     if (!user || !clubId) {
@@ -118,13 +152,42 @@ const ClubDetails = ({ user }) => {
     }
   };
 
-  const handleLiveCall = () => {
-    console.log("Initiate live call for club:", clubId);
+  const handleBroadcastMessage = async () => {
+    if (!user || !clubId) {
+      navigate("/club");
+      return;
+    }
+
+    if (!broadcastMessage) {
+      toast({
+        title: "Please include a message in the text area.",
+      });
+    }
+
+    try {
+      const userId = user._id;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/clubs/message/${clubId}/${userId}`,
+        { broadcastMessage },
+        config
+      );
+
+      setBroadcast((prev) => [...prev, data]);
+    } catch (error) {
+      console.error("Error fetching Club:", error);
+      console.log(error);
+    }
   };
 
-  const handleBroadcastMessage = () => {
-    console.log("Broadcast message:", broadcastMessage);
-  };
+  const handleLiveCall = async () => {};
+
   const handleJoin = () => {
     console.log("Join Club");
   };
@@ -155,7 +218,7 @@ const ClubDetails = ({ user }) => {
         bottom={0}
         m={2}
         transform="translateX(-50%)"
-        height={"50%"}
+        height={"45%"}
         borderRadius="20"
         width={{ base: "100%", md: "80%" }}
       />
@@ -184,7 +247,7 @@ const ClubDetails = ({ user }) => {
           justifyContent="center"
           alignItems="center"
           spacing={4}
-          mb={4}
+          mt={-15}
           zIndex={1}
         >
           <Box
@@ -263,6 +326,7 @@ const ClubDetails = ({ user }) => {
         justifyContent={"center"}
         alignItems={"center"}
         background={"Background"}
+        m={1}
       >
         <Box
           display={"flex"}
@@ -274,6 +338,26 @@ const ClubDetails = ({ user }) => {
           <Heading as="h3" size="md" mb={2}>
             Broadcast Board
           </Heading>
+          <Box
+            display={"flex"}
+            overflowY="auto"
+            height={"150px"}
+            backgroundColor="blue"
+            zIndex={10}
+            width={"100%"}
+            m={2}
+            p={2}
+          >
+            {" "}
+            Here???
+            {broadcast &&
+              broadcast.map((message) => (
+                <Box key={message._id}>
+                  <Text>{message.content}</Text>
+                </Box>
+              ))}
+          </Box>
+
           <Textarea
             width={{ base: "80%", md: "60%" }}
             placeholder="Leave a message for club members..."

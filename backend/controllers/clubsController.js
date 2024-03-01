@@ -187,6 +187,7 @@ const likeClub = async (req, res) => {
 
 const broadcast = async (req, res) => {
   const { clubId, coachId } = req.params;
+
   try {
     const broadcastMessages = await Broadcast.find({
       coach: coachId,
@@ -200,6 +201,25 @@ const broadcast = async (req, res) => {
   }
 };
 
+const createBroadcast = async (req, res) => {
+  const { clubId, coachId } = req.params;
+  const { broadcastMessage } = req.body;
+
+  try {
+    const message = new Broadcast({
+      coach: coachId,
+      club: clubId,
+      content: broadcastMessage,
+    });
+
+    await message.save();
+
+    res.status(201).json(message);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 module.exports = {
   registerClubs,
   fetchClubs,
@@ -207,4 +227,5 @@ module.exports = {
   followClub,
   likeClub,
   broadcast,
+  createBroadcast,
 };
