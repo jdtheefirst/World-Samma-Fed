@@ -218,8 +218,33 @@ const ClubDetails = ({ user }) => {
 
   const handleLiveCall = async () => {};
 
-  const handleJoin = () => {
-    console.log("Join Club");
+  const handleJoin = async () => {
+    if (!user || !clubId) {
+      navigate("/dashboard");
+      return;
+    }
+
+    try {
+      const userId = user._id;
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/clubs/join/${clubId}/${userId}`,
+        config
+      );
+
+      setClub(data);
+
+      console.log(data);
+    } catch (error) {
+      console.error("Error accepting join request:", error);
+      console.log(error);
+    }
   };
 
   return (
@@ -231,7 +256,6 @@ const ClubDetails = ({ user }) => {
       position="relative"
       width={"100%"}
       background={"Background"}
-      minHeight="100vh"
       p={0}
       mt={50}
     >
@@ -338,12 +362,17 @@ const ClubDetails = ({ user }) => {
             ) : (
               <IconButton
                 icon={<Icon as={SlUserFollow} />}
-                colorScheme="green"
+                colorScheme={
+                  club && club.clubRequest.includes(user?._id)
+                    ? "green"
+                    : "blue"
+                }
                 size="md"
+                isDisabled={club && club.members.includes(user?._id)}
                 onClick={handleJoin}
               />
             )}
-            {club && club.coach === user._id ? "live" : "Join"}
+            {club && club.coach === user?._id ? "live" : "Join"}
           </Box>
         </Flex>
       </Container>
@@ -362,6 +391,8 @@ const ClubDetails = ({ user }) => {
           justifyContent={"center"}
           alignItems={"center"}
           width={{ base: "100%", md: "60%" }}
+          borderX="1px"
+          borderColor="#d142f5"
         >
           <Heading as="h3" size="md" mb={2}>
             Broadcast Board

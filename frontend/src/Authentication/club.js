@@ -8,6 +8,7 @@ import {
   Select,
   Text,
   VStack,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -30,23 +31,18 @@ export const ClubRegistration = ({ onClose }) => {
 
   const socket = useConnectSocket(user?.token);
 
-  console.log(socket, user);
-
   useEffect(() => {
-    if (!socket || !user) {
-      navigate("/dashboard");
-      return;
+    if (socket) {
+      socket.on("sent request", (club) => {
+        setUser((prevUser) => ({
+          ...prevUser,
+          clubRequests: [...prevUser.clubRequests, club._id],
+        }));
+
+        setRequests((prev) => ({ ...prev, club }));
+      });
     }
-
-    socket.on("sent request", (club) => {
-      setUser((prevUser) => ({
-        ...prevUser,
-        clubRequests: [...prevUser.clubRequests, club._id],
-      }));
-
-      setRequests((prev) => ({ ...prev, club }));
-    });
-  }, [user, socket, setRequests, setUser]);
+  }, [socket, setRequests, setUser]);
 
   const countryOptions = Object.entries(countries).map(([code, country]) => ({
     value: country.name,
@@ -145,6 +141,18 @@ export const ClubRegistration = ({ onClose }) => {
       </Button>
       <Text fontSize={"larger"} fontWeight={"bold"}>
         Club Form
+        <Text
+          fontSize={"sm"}
+          fontWeight={500}
+          bg={useColorModeValue("green.50", "green.900")}
+          p={2}
+          px={3}
+          color={"green.500"}
+          rounded={"full"}
+        >
+          Status (*{club && club.registration ? "Registered" : "Not registered"}
+          )
+        </Text>
       </Text>
       <Box
         m={3}

@@ -10,6 +10,7 @@ const {
   broadcast,
   createBroadcast,
   acceptRequest,
+  joinClub,
 } = require("../controllers/clubsController");
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.route("/follow/:clubId/:userId").get(protect, limiter, followClub);
 router.route("/likes/:clubId/:userId").get(protect, limiter, likeClub);
 router.route("/broadcast/:clubId/:coachId").get(protect, limiter, broadcast);
 router.route("/accept/:clubId/:memberId").get(protect, limiter, acceptRequest);
+router.route("/join/:clubId/:userId").get(protect, limiter, joinClub);
 router
   .route("/message/:clubId/:coachId")
   .post(protect, limiter, createBroadcast);

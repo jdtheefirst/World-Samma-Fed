@@ -478,6 +478,7 @@ const clubRequests = async (req, res) => {
         name: name,
         coach: loggedUser,
         code: clubCode,
+        members: loggedUser,
         country: country,
         provience: provience,
         clubRequests: userId,

@@ -98,7 +98,6 @@ const registerClubs = async (req, res) => {
 };
 const fetchClubs = async (req, res) => {
   const { country, provience } = req.params;
-  console.log(country, provience);
   try {
     const clubs = await Club.find({ country, provience });
 
@@ -265,6 +264,28 @@ const acceptRequest = async (req, res) => {
   }
 };
 
+const joinClub = async (req, res) => {
+  const { clubId, userId } = req.params;
+
+  try {
+    const club = await Club.findById(clubId);
+
+    if (!club) {
+      return res.status(404).json({ error: "Club not found" });
+    }
+
+    if (!club.clubRequest.includes(userId)) {
+      club.clubRequest.push(userId);
+      await club.save();
+    }
+
+    res.status(200).json(club);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   registerClubs,
   fetchClubs,
@@ -274,4 +295,5 @@ module.exports = {
   broadcast,
   createBroadcast,
   acceptRequest,
+  joinClub,
 };
