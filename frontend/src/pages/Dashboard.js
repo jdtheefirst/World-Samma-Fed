@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { Box, Button, IconButton, Image } from "@chakra-ui/react";
+import { Box, Button, IconButton, Image, useToast } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import Progress from "../miscellenious/Progress";
 import MyPrograms from "../miscellenious/Myprograms";
@@ -10,6 +10,7 @@ import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import axios from "axios";
 import chat from "../chat.png";
+import axiosInstance from "../components/config/axios";
 
 export const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -17,6 +18,7 @@ export const Dashboard = ({ courses }) => {
     ChatState();
   const navigate = useNavigate();
   const [isHovered, setHovered] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -46,8 +48,27 @@ export const Dashboard = ({ courses }) => {
         },
       };
 
-      const { data } = await axios.get(`/api/clubs/${clubId}`, config);
-      setClub(data);
+      axiosInstance
+        .get(`/api/clubs/${clubId}`, config)
+        .then(async (response) => {
+          setClub(response.data);
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            toast({
+              title: "Your session has expired",
+              description: "Logging out in less than 8 seconds",
+              duration: 8000,
+              status: "loading",
+              position: "bottom",
+            });
+
+            setTimeout(() => {
+              localStorage.removeItem("userInfo");
+              navigate("/");
+            }, 8000);
+          }
+        });
     } catch (error) {
       console.error("Error fetching Club:", error);
     }

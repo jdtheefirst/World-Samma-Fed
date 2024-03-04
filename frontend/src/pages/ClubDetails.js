@@ -17,6 +17,7 @@ import { FaHeart, FaVideo } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
 import axios from "axios";
 import UpperNav from "../miscellenious/upperNav";
+import formatMessageTime from "../components/config/formatTime";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
@@ -81,7 +82,7 @@ const ClubDetails = ({ user }) => {
       console.log(data);
 
       setBroadcast(data);
-
+      setBroadcastMessage("");
       setLoading(false);
     } catch (error) {
       console.error("Error fetching BroadcastMessages:", error);
@@ -154,7 +155,7 @@ const ClubDetails = ({ user }) => {
 
   const handleBroadcastMessage = async () => {
     if (!user || !clubId) {
-      navigate("/club");
+      navigate("/clubs");
       return;
     }
 
@@ -162,6 +163,7 @@ const ClubDetails = ({ user }) => {
       toast({
         title: "Please include a message in the text area.",
       });
+      return;
     }
 
     try {
@@ -169,19 +171,47 @@ const ClubDetails = ({ user }) => {
 
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
 
-      const { data } = await axios.get(
+      const { data } = await axios.post(
         `/api/clubs/message/${clubId}/${userId}`,
         { broadcastMessage },
         config
       );
 
       setBroadcast((prev) => [...prev, data]);
+
+      console.log(data);
     } catch (error) {
       console.error("Error fetching Club:", error);
+      console.log(error);
+    }
+  };
+  const handleAcceptRequest = async (memberId) => {
+    if (!user || !clubId) {
+      navigate("/dashboard");
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/clubs/accept/${clubId}/${memberId}`,
+        config
+      );
+
+      setClub(data);
+
+      console.log(data);
+    } catch (error) {
+      console.error("Error accepting request:", error);
       console.log(error);
     }
   };
@@ -218,11 +248,11 @@ const ClubDetails = ({ user }) => {
         bottom={0}
         m={2}
         transform="translateX(-50%)"
-        height={"45%"}
+        height={"50%"}
         borderRadius="20"
         width={{ base: "100%", md: "80%" }}
       />
-      <Flex align="center" mb={40}>
+      <Flex align="center" mt={200}>
         <Image
           src={clubData.profilePicture}
           alt={`Profile*`}
@@ -230,10 +260,9 @@ const ClubDetails = ({ user }) => {
           boxSize="100px"
           border="4px solid white"
           zIndex={1}
-          mt={40}
-          background={"red"}
+          mt={200}
         />
-        <Box zIndex={1} mt={40}>
+        <Box zIndex={1} mt={200}>
           <Heading as="h2" size="lg" color="white">
             {club && club.name}
           </Heading>
@@ -242,12 +271,11 @@ const ClubDetails = ({ user }) => {
           </Text>
         </Box>
       </Flex>
-      <Container maxW={{ base: "100%", md: "80%" }}>
+      <Container maxW={{ base: "100%", md: "80%" }} mt={100}>
         <Flex
           justifyContent="center"
           alignItems="center"
           spacing={4}
-          mt={-15}
           zIndex={1}
         >
           <Box
@@ -340,39 +368,92 @@ const ClubDetails = ({ user }) => {
           </Heading>
           <Box
             display={"flex"}
+            flexDir={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
             overflowY="auto"
             height={"150px"}
-            backgroundColor="blue"
-            zIndex={10}
+            borderRadius={20}
             width={"100%"}
-            m={2}
             p={2}
           >
-            {" "}
-            Here???
             {broadcast &&
               broadcast.map((message) => (
-                <Box key={message._id}>
-                  <Text>{message.content}</Text>
-                </Box>
+                <Text
+                  key={message._id}
+                  background={"#92e0a5"}
+                  textAlign={"center"}
+                  width={{ base: "90%", md: "70%" }}
+                  borderRadius={20}
+                  m={2}
+                  p={1}
+                >
+                  {broadcast && broadcast.length === 0 && (
+                    <Text textAlign={"center"}> No message here.</Text>
+                  )}
+                  {message.content}
+                  <Text fontSize={"small"}>
+                    {formatMessageTime(message.createdAt)}
+                  </Text>
+                </Text>
               ))}
           </Box>
+          {club && user && club.coach === user._id && (
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              width={"100%"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <Heading as="h3" size="md" m={2}>
+                No of Requests received
+              </Heading>
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                overflowY="auto"
+                borderRadius={20}
+                height={"150px"}
+                width={"100%"}
+                m={2}
+                p={2}
+              >
+                {club && club.membersRequests.length === 0 && (
+                  <Text textAlign={"center"}> No requests made yet.</Text>
+                )}
 
-          <Textarea
-            width={{ base: "80%", md: "60%" }}
-            placeholder="Leave a message for club members..."
-            value={broadcastMessage}
-            onChange={(e) => setBroadcastMessage(e.target.value)}
-          />
-          <Button
-            colorScheme="blue"
-            size="sm"
-            mt={2}
-            width={"30%"}
-            onClick={handleBroadcastMessage}
-          >
-            Post Message
-          </Button>
+                {club &&
+                  club.membersRequests.map((request) => (
+                    <Button
+                      fontSize={"small"}
+                      fontWeight={"bold"}
+                      onClick={handleAcceptRequest(request._id)}
+                      width={"90%"}
+                      m={1}
+                    >
+                      Accept {request.name}, Adm: {request.admission} ✔️
+                    </Button>
+                  ))}
+              </Box>
+              <Textarea
+                width={{ base: "80%", md: "60%" }}
+                placeholder="Leave a message for club members..."
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+              />
+              <Button
+                colorScheme="blue"
+                size="sm"
+                mt={2}
+                width={"30%"}
+                onClick={handleBroadcastMessage}
+              >
+                Post Message
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

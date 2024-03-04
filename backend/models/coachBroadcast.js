@@ -10,7 +10,7 @@ const coachBroadcast = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Club",
     },
-    content: { type: String, trim: true },
+    content: { type: String, trim: true, required: true },
   },
   {
     timestamps: true,

@@ -22,6 +22,12 @@ const clubsModel = mongoose.Schema(
         ref: "User",
       },
     ],
+    membersRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     description: { type: String },
     followers: [
       {
