@@ -231,7 +231,7 @@ const acceptRequest = async (req, res) => {
     const club = await Club.findById(clubId);
 
     if (club) {
-      club.membersRequest.pull(memberId);
+      club.membersRequests.pull(memberId);
       club.members.push(memberId);
 
       await club.save();
@@ -274,8 +274,8 @@ const joinClub = async (req, res) => {
       return res.status(404).json({ error: "Club not found" });
     }
 
-    if (!club.clubRequest.includes(userId)) {
-      club.clubRequest.push(userId);
+    if (!club.membersRequests.includes(userId)) {
+      club.membersRequests.push(userId);
       await club.save();
     }
 

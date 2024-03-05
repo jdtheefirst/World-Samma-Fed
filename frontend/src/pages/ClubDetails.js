@@ -12,6 +12,7 @@ import {
   Icon,
   Container,
   useToast,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { FaHeart, FaVideo } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
@@ -223,7 +224,13 @@ const ClubDetails = ({ user }) => {
       navigate("/dashboard");
       return;
     }
-
+    if (club.membersRequests.includes(user._id)) {
+      toast({
+        title: "Request already sent.",
+        description: "Please wait for coach to reply.",
+      });
+      return;
+    }
     try {
       const userId = user._id;
 
@@ -253,129 +260,153 @@ const ClubDetails = ({ user }) => {
       flexDir={"column"}
       justifyContent={"center"}
       alignItems={"center"}
-      position="relative"
       width={"100%"}
+      overflowY={"visible"}
       background={"Background"}
       p={0}
-      mt={50}
     >
       <Flex zIndex={10} width="100%" top={0} position={"fixed"}>
         <UpperNav />
       </Flex>
-      <Image
-        src={clubData.backgroundPicture}
-        alt="Background"
-        position="absolute"
-        top={0}
-        left="50%"
-        right={20}
-        bottom={0}
-        m={2}
-        transform="translateX(-50%)"
-        height={"50%"}
-        borderRadius="20"
-        width={{ base: "100%", md: "80%" }}
-      />
-      <Flex align="center" mt={200}>
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        width={"100%"}
+        mt={{ base: "50", md: "150" }}
+        position="relative"
+      >
         <Image
-          src={clubData.profilePicture}
-          alt={`Profile*`}
-          borderRadius="full"
-          boxSize="100px"
-          border="4px solid white"
-          zIndex={1}
-          mt={200}
+          src={clubData.backgroundPicture}
+          alt="Background"
+          top={0}
+          borderRadius="20"
+          width={{ base: "100%", md: "80%" }}
         />
-        <Box zIndex={1} mt={200}>
-          <Heading as="h2" size="lg" color="white">
-            {club && club.name}
-          </Heading>
-          <Text color="white">
-            {club && club.description ? club.description : "Club description"}
-          </Text>
-        </Box>
-      </Flex>
-      <Container maxW={{ base: "100%", md: "80%" }} mt={100}>
-        <Flex
-          justifyContent="center"
-          alignItems="center"
-          spacing={4}
+
+        <Box
+          display={"flex"}
+          position="absolute"
+          top={0}
+          mt={{ base: "0", md: "20%" }}
+          left={{ base: "0", md: "30%" }}
+          textAlign="center"
+          width={"100%"}
+          p={4}
+          color="white"
           zIndex={1}
         >
-          <Box
-            display={"flex"}
-            flexDir={"column"}
-            justifyContent={"space between"}
-            alignItems={"center"}
-            p={0}
-            m={1}
-            zIndex={1}
-          >
-            <Button
-              colorScheme="teal"
-              size="md"
-              onClick={handleFollow}
-              isDisabled={club && club.coach === user._id}
+          <Image
+            src={clubData.profilePicture}
+            alt={`Profile*`}
+            borderRadius="full"
+            boxSize="100px"
+            border="4px solid white"
+            marginBottom={4}
+          />
+          <Box>
+            {" "}
+            <Heading as="h2" size="lg">
+              {club && club.name}
+            </Heading>
+            <Text>
+              {club && club.description
+                ? club.description
+                : "Club description not available"}
+            </Text>
+            <Text
+              fontSize={"sm"}
+              fontWeight={500}
+              bg={useColorModeValue("green.50", "green.900")}
+              p={2}
+              px={3}
+              color={"green.500"}
+              rounded={"full"}
+              marginTop={2}
             >
-              {club && club.followers?.includes(user?._id)
-                ? "Unfollow"
-                : "Follow"}
-            </Button>
-            <Text fontSize={"small"}>{club && club.followers?.length}</Text>
+              Status (*
+              {club && club.registration ? "Registered" : "Not registered"})
+            </Text>
           </Box>
-
-          <Box
-            display={"flex"}
-            flexDir={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            fontSize={"small"}
-            p={0}
-            m={1}
+        </Box>
+      </Box>
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        spacing={4}
+        width={"100%"}
+      >
+        <Box
+          display={"flex"}
+          flexDir={"column"}
+          justifyContent={"space between"}
+          alignItems={"center"}
+          p={0}
+          m={1}
+          zIndex={1}
+        >
+          <Button
+            colorScheme="teal"
+            size="md"
+            onClick={handleFollow}
+            isDisabled={club && club.coach === user._id}
           >
+            {club && club.followers?.includes(user?._id)
+              ? "Unfollow"
+              : "Follow"}
+          </Button>
+          <Text fontSize={"small"}>{club && club.followers?.length}</Text>
+        </Box>
+
+        <Box
+          display={"flex"}
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          fontSize={"small"}
+          p={0}
+          m={1}
+        >
+          <IconButton
+            icon={<Icon as={FaHeart} />}
+            isDisabled={club && club.coach === user._id}
+            colorScheme={
+              club && club.likes?.includes(user?._id) ? "green" : "red"
+            }
+            size="md"
+            onClick={handleLike}
+          />
+          {club && club.likes?.length}
+        </Box>
+        <Box
+          display={"flex"}
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          p={0}
+          fontSize={"small"}
+        >
+          {club && club.coach === user._id ? (
             <IconButton
-              icon={<Icon as={FaHeart} />}
-              isDisabled={club && club.coach === user._id}
+              icon={<Icon as={FaVideo} />}
+              colorScheme="purple"
+              size="md"
+              onClick={handleLiveCall}
+            />
+          ) : (
+            <IconButton
+              icon={<Icon as={SlUserFollow} />}
               colorScheme={
-                club && club.likes?.includes(user?._id) ? "green" : "red"
+                club && club.clubRequests.includes(user?._id) ? "green" : "blue"
               }
               size="md"
-              onClick={handleLike}
+              isDisabled={club && club.members.includes(user?._id)}
+              onClick={handleJoin}
             />
-            {club && club.likes?.length}
-          </Box>
-          <Box
-            display={"flex"}
-            flexDir={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            p={0}
-            fontSize={"small"}
-          >
-            {club && club.coach === user._id ? (
-              <IconButton
-                icon={<Icon as={FaVideo} />}
-                colorScheme="purple"
-                size="md"
-                onClick={handleLiveCall}
-              />
-            ) : (
-              <IconButton
-                icon={<Icon as={SlUserFollow} />}
-                colorScheme={
-                  club && club.clubRequest.includes(user?._id)
-                    ? "green"
-                    : "blue"
-                }
-                size="md"
-                isDisabled={club && club.members.includes(user?._id)}
-                onClick={handleJoin}
-              />
-            )}
-            {club && club.coach === user?._id ? "live" : "Join"}
-          </Box>
-        </Flex>
-      </Container>
+          )}
+          {club && club.coach === user?._id ? "live" : "Join"}
+        </Box>
+      </Flex>
       <Box
         display={"flex"}
         width={"100%"}
@@ -408,6 +439,9 @@ const ClubDetails = ({ user }) => {
             width={"100%"}
             p={2}
           >
+            {broadcast && broadcast.length === 0 && (
+              <Text textAlign={"center"}> No message here.</Text>
+            )}
             {broadcast &&
               broadcast.map((message) => (
                 <Text
@@ -419,9 +453,6 @@ const ClubDetails = ({ user }) => {
                   m={2}
                   p={1}
                 >
-                  {broadcast && broadcast.length === 0 && (
-                    <Text textAlign={"center"}> No message here.</Text>
-                  )}
                   {message.content}
                   <Text fontSize={"small"}>
                     {formatMessageTime(message.createdAt)}
@@ -438,7 +469,7 @@ const ClubDetails = ({ user }) => {
               alignItems={"center"}
             >
               <Heading as="h3" size="md" m={2}>
-                No of Requests received
+                Number of Requests received
               </Heading>
               <Box
                 display={"flex"}

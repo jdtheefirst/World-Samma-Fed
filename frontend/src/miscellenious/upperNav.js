@@ -20,6 +20,7 @@ import { BellIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
+import Requests from "./Requests";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
@@ -86,15 +87,7 @@ function UpperNav() {
               Discover
             </Text>
           </Button>
-          <Button
-            backgroundColor={"Background"}
-            _hover={{ backgroundColor: "transparent" }}
-          >
-            <Image
-              src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706249110/icons8-search-50_xjjjxc.png"
-              height={5}
-            />
-          </Button>
+          <Requests />
         </Box>
 
         <div>
@@ -186,9 +179,9 @@ function UpperNav() {
                 display={"flex"}
                 justifyContent={"left"}
                 alignItems={"center"}
+                background={"white"}
                 m={1}
-                backgroundColor={"Background"}
-                _hover={{ backgroundColor: "transparent" }}
+                _hover={{ backgroundColor: "transparent", color: "green" }}
               >
                 <Avatar
                   size="sm"
@@ -202,7 +195,7 @@ function UpperNav() {
               </Button>
               <Button
                 justifyContent={"left"}
-                backgroundColor={"Background"}
+                background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 onClick={() => {
                   navigate("/dashboard");
@@ -213,7 +206,7 @@ function UpperNav() {
               </Button>
               <Button
                 justifyContent={"start"}
-                backgroundColor={"Background"}
+                background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 onClick={() => {
                   navigate("/clubs");
@@ -224,21 +217,21 @@ function UpperNav() {
               </Button>
               <Button
                 justifyContent={"left"}
-                backgroundColor={"Background"}
+                background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
               >
                 Provincial level
               </Button>
               <Button
+                background={"white"}
                 justifyContent={"left"}
-                backgroundColor={"Background"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
               >
                 National level
               </Button>
               <Button
+                background={"white"}
                 justifyContent={"left"}
-                backgroundColor={"Background"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
               >
                 International Championship

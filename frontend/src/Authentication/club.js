@@ -275,14 +275,9 @@ export const ClubRegistration = ({ onClose }) => {
               </Box>
             ))}
         </Box>
-        <FormControl id="requests">
-          <FormLabel textColor={"#c255ed"}>{`Number of requests made *${
-            club && club.clubRequests.length
-          }*`}</FormLabel>
-        </FormControl>
         <FormControl id="members" isRequired>
           <FormLabel textColor={"#c255ed"}>
-            Students(successfull responses) {club && club.members.length}/20
+            Students enrolled {club && club.members.length}/20
           </FormLabel>
           <Box
             display={"flex"}

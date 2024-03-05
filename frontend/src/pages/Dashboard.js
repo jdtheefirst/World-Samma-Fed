@@ -20,6 +20,8 @@ export const Dashboard = ({ courses }) => {
   const [isHovered, setHovered] = useState(false);
   const toast = useToast();
 
+  console.log(user);
+
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -149,7 +151,7 @@ export const Dashboard = ({ courses }) => {
     <Box
       width="100%"
       height={"100%"}
-      background={"Background"}
+      background={"white"}
       position={"relative"}
     >
       <ErrorBoundary fallback={<p>Something went wrong</p>} userSelect={"none"}>
