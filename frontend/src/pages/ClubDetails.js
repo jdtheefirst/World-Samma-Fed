@@ -10,15 +10,15 @@ import {
   Text,
   Textarea,
   Icon,
-  Container,
   useToast,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { FaHeart, FaVideo } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
 import axios from "axios";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
+import Live from "../miscellenious/Live";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
@@ -28,8 +28,6 @@ const ClubDetails = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-
-  console.log(user);
 
   const clubData = {
     name: "Club Name",
@@ -217,8 +215,6 @@ const ClubDetails = ({ user }) => {
     }
   };
 
-  const handleLiveCall = async () => {};
-
   const handleJoin = async () => {
     if (!user || !clubId) {
       navigate("/dashboard");
@@ -261,8 +257,9 @@ const ClubDetails = ({ user }) => {
       justifyContent={"center"}
       alignItems={"center"}
       width={"100%"}
-      overflowY={"visible"}
-      background={"Background"}
+      overflowX={"hidden"}
+      over
+      background={"white"}
       p={0}
     >
       <Flex zIndex={10} width="100%" top={0} position={"fixed"}>
@@ -387,12 +384,7 @@ const ClubDetails = ({ user }) => {
           fontSize={"small"}
         >
           {club && club.coach === user._id ? (
-            <IconButton
-              icon={<Icon as={FaVideo} />}
-              colorScheme="purple"
-              size="md"
-              onClick={handleLiveCall}
-            />
+            <Live />
           ) : (
             <IconButton
               icon={<Icon as={SlUserFollow} />}
@@ -413,7 +405,7 @@ const ClubDetails = ({ user }) => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        background={"Background"}
+        background={"white"}
         m={1}
       >
         <Box
@@ -448,13 +440,14 @@ const ClubDetails = ({ user }) => {
                   key={message._id}
                   background={"#92e0a5"}
                   textAlign={"center"}
+                  fontWeight={"bold"}
                   width={{ base: "90%", md: "70%" }}
                   borderRadius={20}
                   m={2}
                   p={1}
                 >
                   {message.content}
-                  <Text fontSize={"small"}>
+                  <Text fontSize={"small"} textDecor={"underline"}>
                     {formatMessageTime(message.createdAt)}
                   </Text>
                 </Text>

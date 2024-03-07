@@ -43,7 +43,7 @@ const CourseDetails = ({ courses }) => {
           </Text>
           <iframe
             title={`Lesson ${currentLesson.id}`}
-            width="100%" // Set initial width, adjust as needed
+            width="100%"
             height="315"
             src={currentLesson.video}
             allowFullScreen

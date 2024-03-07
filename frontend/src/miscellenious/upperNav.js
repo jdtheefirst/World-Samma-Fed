@@ -118,7 +118,9 @@ function UpperNav() {
                     setNotification(notification.filter((n) => n !== notif));
                   }}
                 >
-                  {`New Message from ${notification.sender.name} ADM: ${notification.sender.admission}`}
+                  {`New Message from ${
+                    notif.sender ? notif.sender.name : "Coach"
+                  } ADM: ${notif.sender ? notif.sender.admission : " "}`}
                 </MenuItem>
               ))}
             </MenuList>

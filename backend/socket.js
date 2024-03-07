@@ -2,8 +2,7 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
 const { getUserIdFromToken } = require("./middleware/authMiddleware");
-const {setUserSocket,
-  getUserSocket} = require('./config/socketUtils')
+const { setUserSocket, getUserSocket } = require("./config/socketUtils");
 let io;
 
 const initializeSocketIO = (server) => {
@@ -20,24 +19,27 @@ const initializeSocketIO = (server) => {
     try {
       const token = socket.handshake.query.token;
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
+
       if (decoded.exp < Date.now() / 1000) {
         throw new Error("Not authorized, token has expired");
       }
-  
+
       const user = await User.findById(decoded.id).select("-password");
       if (!user) {
         throw new Error("User not found");
       }
-  
-      socket.user = user;
+
+      socket.user = {
+        ...user.toObject(),
+        token: token,
+      };
+
       next();
     } catch (error) {
       console.error(error);
       next(new Error("Authentication error"));
     }
   });
-
 
   io.on("connection", (socket) => {
     console.log("Connected to socket.io");
@@ -46,21 +48,27 @@ const initializeSocketIO = (server) => {
     setUserSocket(userId, socket.id);
 
     socket.on("newConnection", async (userData) => {
+      const email = userData.email;
 
-    const email = userData.email;
+      const clubRequests = await User.findOne({ email }).select("clubRequests");
 
-    const clubRequests = await User.findOne({ email }).select("clubRequests");
-
-    if(clubRequests){
-      
-    socket.emit("updates", clubRequests);
-    };
-
-     socket.on("new message", (newMessageRecieved) => {
-      if (userData._id === newMessageRecieved.recipient._id){
-        socket.emit("message recieved", newMessageRecieved);
+      if (clubRequests) {
+        socket.emit("updates", clubRequests);
       }
-  });
+
+      socket.on("new message", (newMessageReceived) => {
+        const recipientSocketId = getUserSocket(
+          newMessageReceived.recipient._id
+        );
+
+        if (recipientSocketId) {
+          socket
+            .to(recipientSocketId)
+            .emit("message received", newMessageReceived);
+        } else {
+          console.log("Recipient not connected");
+        }
+      });
 
       const userId = userData._id;
       socket.join(userId);
@@ -77,8 +85,6 @@ const initializeSocketIO = (server) => {
     socket.on("typing", (room) => socket.in(room).emit("typing"));
     socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-
-
     socket.on("join room", (roomId) => {
       socket.join(roomId);
       const otherUsers = io.sockets.adapter.rooms.get(roomId);
@@ -91,21 +97,20 @@ const initializeSocketIO = (server) => {
       io.to(to).emit("signal", { signal, callerID: from });
     });
     socket.on("initiate call", (recipientId) => {
-      const recipientStatus = userStatuses.get(recipientId) || 'available';
-      if (recipientStatus === 'busy') {
+      const recipientStatus = userStatuses.get(recipientId) || "available";
+      if (recipientStatus === "busy") {
         socket.emit("user busy", recipientId);
       } else {
-        userStatuses.set(recipientId, 'busy');
-        userStatuses.set(socket.userData._id, 'busy');
+        userStatuses.set(recipientId, "busy");
+        userStatuses.set(socket.userData._id, "busy");
         const roomId = createRoomId(socket.userData._id, recipientId);
         io.to(recipientId).emit("call initiated", roomId);
       }
     });
-    
+
     socket.on("call initiated", (roomId) => {
       io.to(roomId).emit("ringing");
     });
-    
 
     socket.on("endCall", (roomId) => {
       io.to(roomId).emit("call ended");
@@ -116,13 +121,11 @@ const initializeSocketIO = (server) => {
       if (socket.userData && socket.userData._id) {
         onlineUsers.delete(socket.userData._id);
         io.emit("onlineUsers", Array.from(onlineUsers));
-        userStatuses.set(socket.userData?._id, 'available');
-
+        userStatuses.set(socket.userData?._id, "available");
       }
     });
     userStatuses.delete(socket.userData?._id);
   });
-  
 
   return io;
 };

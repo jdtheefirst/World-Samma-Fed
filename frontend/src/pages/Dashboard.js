@@ -20,8 +20,6 @@ export const Dashboard = ({ courses }) => {
   const [isHovered, setHovered] = useState(false);
   const toast = useToast();
 
-  console.log(user);
-
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -37,7 +35,6 @@ export const Dashboard = ({ courses }) => {
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
-      console.log("I have no Club");
       return;
     }
 
@@ -78,7 +75,6 @@ export const Dashboard = ({ courses }) => {
 
   useEffect(() => {
     if (!socket) {
-      console.log("Socket not connected");
       return;
     }
     const showNotification = (title, options) => {

@@ -1,3 +1,4 @@
+const { getIO } = require("../socket");
 const { getUserSocket } = require("../config/socketUtils");
 const Sequence = require("../models/Sequence");
 const Club = require("../models/clubsModel");
@@ -207,8 +208,8 @@ const broadcast = async (req, res) => {
 
 const createBroadcast = async (req, res) => {
   const { clubId, coachId } = req.params;
-
   const { broadcastMessage } = req.body;
+  const socket = getIO();
 
   try {
     const message = new Broadcast({
@@ -219,13 +220,31 @@ const createBroadcast = async (req, res) => {
 
     await message.save();
 
-    res.status(201).json(message);
+    const club = await Club.findById(clubId).select("members");
+
+    if (club && club.members && club.members.length > 0) {
+      club.members.forEach((memberId) => {
+        const recipientSocketId = getUserSocket(memberId);
+
+        if (recipientSocketId) {
+          socket.to(recipientSocketId).emit("message received", message);
+          console.log(`Broadcast sent to ${memberId}`);
+        } else {
+          console.log(`Member ${memberId} not connected`);
+        }
+      });
+    }
+
+    res.status(200).json(message);
   } catch (error) {
-    console.log(error);
+    console.error("Error creating broadcast:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
+
 const acceptRequest = async (req, res) => {
   const { clubId, memberId } = req.params;
+  const socket = getIO();
 
   try {
     const club = await Club.findById(clubId);
@@ -239,16 +258,18 @@ const acceptRequest = async (req, res) => {
       const user = await User.findById(memberId);
 
       if (user) {
-        user.clubRequest.pull(clubId);
+        user.clubRequests.pull(clubId);
 
         user.physicalCoach = club.coach;
 
         await user.save();
 
-        const userSocket = getUserSocket(memberId);
+        const recipientSocketId = getUserSocket(memberId);
 
-        if (userSocket) {
-          userSocket.emit("updates", user.clubRequest);
+        if (recipientSocketId) {
+          socket.to(recipientSocketId).emit("updates", user.clubRequests);
+        } else {
+          console.log(`Member not connected`);
         }
       } else {
         return res.status(404).json({ error: "User not found" });
@@ -281,8 +302,77 @@ const joinClub = async (req, res) => {
 
     res.status(200).json(club);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const fetchRequests = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).populate({
+      path: "clubRequests",
+      select: "name _id",
+    });
+
+    if (user) {
+      const clubs = user.clubRequests.map((club) => ({
+        name: club.name,
+        _id: club._id,
+      }));
+
+      return res.status(200).json(clubs);
+    } else {
+      return res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const declineRequests = async (req, res) => {
+  const { userId, clubId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (user) {
+      const clubRequestToRemove = user.clubRequests.find(
+        (request) => request.toString() === clubId
+      );
+
+      if (clubRequestToRemove) {
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { $pull: { clubRequests: clubRequestToRemove._id } },
+          { new: true }
+        )
+          .populate({
+            path: "clubRequests",
+            select: "name _id",
+          })
+          .lean();
+
+        return res.status(200).json(updatedUser);
+      } else {
+        return res.status(404).json({ error: "Club request not found" });
+      }
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const club = await Club.findByIdAndUpdate(
+      clubId,
+      { $pull: { clubRequests: userId } },
+      { new: true }
+    );
+
+    if (!club) {
+      return res.status(404).json({ message: "Club not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -296,4 +386,6 @@ module.exports = {
   createBroadcast,
   acceptRequest,
   joinClub,
+  fetchRequests,
+  declineRequests,
 };

@@ -12,6 +12,7 @@ import ScrollableChat from "./ScrollableChat";
 import { ChatState } from "../components/Context/ChatProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useConnectSocket } from "../components/config/chatlogics";
 
 const FloatingChat = ({ onClose }) => {
   const toast = useToast();
@@ -37,8 +38,9 @@ const FloatingChat = ({ onClose }) => {
     messages,
     setMessages,
   } = ChatState();
-  console.log(chat, user);
   const navigate = useNavigate();
+
+  const socket = useConnectSocket(user?.token);
 
   useEffect(() => {
     if (
@@ -97,6 +99,8 @@ const FloatingChat = ({ onClose }) => {
 
       setLoading(false);
     } catch (error) {
+      console.log(error);
+
       setLoading(false);
       toast({
         title: "Error Occured!",
@@ -110,12 +114,10 @@ const FloatingChat = ({ onClose }) => {
   }, [toast, user]);
 
   useEffect(() => {
-    console.log("useEffect for selectedChatOption");
     fetchOrCreateChat();
   }, [fetchOrCreateChat]);
 
   useEffect(() => {
-    console.log("useEffect for fetchMessages");
     fetchMessages();
   }, [fetchMessages]);
 
@@ -148,7 +150,6 @@ const FloatingChat = ({ onClose }) => {
   const sendMessage = async (event) => {
     if ((event && event.key === "Enter") || !event) {
       if (!selectedChatOption && !rank) {
-        console.log("WE are here!!!");
         toast({
           title: "Select a recipient",
           description: "Please choose whom you want to chat with.",
@@ -190,6 +191,7 @@ const FloatingChat = ({ onClose }) => {
 
         socket.emit("new message", data);
       } catch (error) {
+        console.log(error);
         toast({
           title: "Failed to send the Message",
           description: "Please try again after some time",
@@ -224,7 +226,7 @@ const FloatingChat = ({ onClose }) => {
         p={2}
         top="0"
         left="0"
-        height="100%"
+        height="95%"
         display="flex"
         flexDir="column"
         justifyContent="center"

@@ -8,7 +8,6 @@ const generateToken = require("../config/generateToken");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const { getIO } = require("../socket");
-
 const crypto = require("crypto");
 const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
@@ -425,6 +424,7 @@ const getAdsInfo = async (req, res) => {
 };
 const clubRequests = async (req, res) => {
   const { country, provience, name, userId } = req.params;
+  const socket = getIO();
 
   const loggedUser = req.user._id;
   const getNextClubNumber = async (prefix, initialSequence = 1) => {
@@ -489,10 +489,12 @@ const clubRequests = async (req, res) => {
         userInfo.clubRequests.push(club._id);
         await userInfo.save();
       }
+      const recipientSocketId = getUserSocket(userId);
 
-      const userSocket = getIO().sockets.sockets.get(userId);
-      if (userSocket) {
-        userSocket.emit("sent request", club);
+      if (recipientSocketId) {
+        socket.to(recipientSocketId).emit("sent request", club);
+      } else {
+        console.log("Recipient not connected");
       }
 
       res.json(club);
@@ -506,11 +508,12 @@ const clubRequests = async (req, res) => {
         await userInfo.save();
       }
 
-      const userSocket = getUserSocket(userId);
-      console.log(userSocket);
+      const recipientSocketId = getUserSocket(userId);
 
-      if (userSocket) {
-        userSocket.emit("sent request", club._id);
+      if (recipientSocketId) {
+        socket.to(recipientSocketId).emit("sent request", club);
+      } else {
+        console.log("Recipient not connected");
       }
 
       res.json(club);
