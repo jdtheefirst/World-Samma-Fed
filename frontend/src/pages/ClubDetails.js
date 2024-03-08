@@ -257,8 +257,6 @@ const ClubDetails = ({ user }) => {
       justifyContent={"center"}
       alignItems={"center"}
       width={"100%"}
-      overflowX={"hidden"}
-      over
       background={"white"}
       p={0}
     >
@@ -383,20 +381,21 @@ const ClubDetails = ({ user }) => {
           p={0}
           fontSize={"small"}
         >
-          {club && club.coach === user._id ? (
-            <Live />
-          ) : (
-            <IconButton
-              icon={<Icon as={SlUserFollow} />}
-              colorScheme={
-                club && club.clubRequests.includes(user?._id) ? "green" : "blue"
-              }
-              size="md"
-              isDisabled={club && club.members.includes(user?._id)}
-              onClick={handleJoin}
-            />
-          )}
-          {club && club.coach === user?._id ? "live" : "Join"}
+          <Live user={user} club={club} />
+          <IconButton
+            icon={<Icon as={SlUserFollow} />}
+            colorScheme={
+              club && club.clubRequests.includes(user?._id) ? "green" : "blue"
+            }
+            size="md"
+            isDisabled={
+              club &&
+              (club.members.includes(user?._id) || club.coach === user._id)
+            }
+            onClick={handleJoin}
+          >
+            Join
+          </IconButton>
         </Box>
       </Flex>
       <Box

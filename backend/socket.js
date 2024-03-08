@@ -1,6 +1,7 @@
 const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
+const Club = require("../backend/models/clubsModel");
 const { getUserIdFromToken } = require("./middleware/authMiddleware");
 const { setUserSocket, getUserSocket } = require("./config/socketUtils");
 let io;
@@ -17,7 +18,12 @@ const initializeSocketIO = (server) => {
 
   io.use(async (socket, next) => {
     try {
-      const token = socket.handshake.query.token;
+      const token = await socket.handshake.query.token;
+
+      if (!token) {
+        throw new Error("Not authorized, no token provided");
+      }
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       if (decoded.exp < Date.now() / 1000) {
@@ -29,10 +35,8 @@ const initializeSocketIO = (server) => {
         throw new Error("User not found");
       }
 
-      socket.user = {
-        ...user.toObject(),
-        token: token,
-      };
+      socket.user = user;
+      socket.handshake.query.token = token;
 
       next();
     } catch (error) {
@@ -41,10 +45,10 @@ const initializeSocketIO = (server) => {
     }
   });
 
-  io.on("connection", (socket) => {
-    console.log("Connected to socket.io");
+  io.on("connection", async (socket) => {
+    const token = await socket.handshake.query.token;
 
-    const userId = getUserIdFromToken(socket.handshake.query.token);
+    const userId = getUserIdFromToken(token);
     setUserSocket(userId, socket.id);
 
     socket.on("newConnection", async (userData) => {
@@ -55,6 +59,21 @@ const initializeSocketIO = (server) => {
       if (clubRequests) {
         socket.emit("updates", clubRequests);
       }
+      socket.on("startLiveSession", async (clubId) => {
+        try {
+          const club = await Club.findOne({ _id: clubId });
+
+          if (
+            club &&
+            (club.members.includes(userData._id) ||
+              club.followers.includes(userData._id))
+          ) {
+            socket.emit("liveSessionStarted", club.name);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      });
 
       socket.on("new message", (newMessageReceived) => {
         const recipientSocketId = getUserSocket(

@@ -70,6 +70,7 @@ const Login = () => {
 
       navigate("/dashboard");
     } catch (error) {
+      setLoading(false);
       toast({
         title: "Account Missing!",
         description: "Wrong Email or Password",
@@ -78,7 +79,6 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-      setLoading(false);
     }
   };
   const forgotPassword = async () => {

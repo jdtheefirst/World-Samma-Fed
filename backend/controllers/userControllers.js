@@ -219,30 +219,30 @@ const recoverEmail = async (req, res) => {
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const userInfo = await User.findOne({ email });
-  if (userInfo.deleted) {
-    res.status(401);
-    throw new Error("Sign Up please...");
-  }
+  try {
+    const userInfo = await User.findOne({ email });
 
-  if (userInfo && (await userInfo.comparePassword(password))) {
-    res.json({
-      _id: userInfo._id,
-      admission: userInfo.admission,
-      name: userInfo.name,
-      email: userInfo.email,
-      gender: userInfo.gender,
-      country: userInfo.selectedCountry,
-      provinces: userInfo.provinces,
-      physicalCoach: userInfo.physicalCoach,
-      coach: userInfo.coach,
-      pic: userInfo.pic,
-      token: generateToken(userInfo._id),
-      clubRequests: userInfo.clubRequests,
-    });
-  } else {
-    res.status(401);
-    throw new Error("Invalid Email or Password");
+    if (userInfo && (await userInfo.comparePassword(password))) {
+      res.json({
+        _id: userInfo._id,
+        admission: userInfo.admission,
+        name: userInfo.name,
+        email: userInfo.email,
+        gender: userInfo.gender,
+        country: userInfo.selectedCountry,
+        provinces: userInfo.provinces,
+        physicalCoach: userInfo.physicalCoach,
+        coach: userInfo.coach,
+        pic: userInfo.pic,
+        token: generateToken(userInfo._id),
+        clubRequests: userInfo.clubRequests,
+      });
+    } else {
+      res.status(401);
+      throw new Error("Invalid Email or Password");
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 

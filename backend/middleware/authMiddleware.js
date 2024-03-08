@@ -35,14 +35,13 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 const getUserIdFromToken = (token) => {
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
     return userId;
   } catch (error) {
-    console.error('Error decoding token:', error);
+    console.error("Error decoding token:", error);
     throw new Error("Not authorized, token failed");
   }
 };

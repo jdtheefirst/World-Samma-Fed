@@ -1,6 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { Box, Button, IconButton, Image, useToast } from "@chakra-ui/react";
+import {
+  Badge,
+  Box,
+  Button,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  useToast,
+} from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import Progress from "../miscellenious/Progress";
 import MyPrograms from "../miscellenious/Myprograms";
@@ -8,9 +19,9 @@ import FloatingChat from "../miscellenious/FloatingChat";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
-import axios from "axios";
 import chat from "../chat.png";
 import axiosInstance from "../components/config/axios";
+import { BellIcon } from "@chakra-ui/icons";
 
 export const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -18,7 +29,11 @@ export const Dashboard = ({ courses }) => {
     ChatState();
   const navigate = useNavigate();
   const [isHovered, setHovered] = useState(false);
+  const [show, setShow] = useState(false);
   const toast = useToast();
+  const [live, setLive] = useState([
+    { _id: "65def6a9d104e2a8f5025547", name: "Karate Kids" },
+  ]);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -130,9 +145,13 @@ export const Dashboard = ({ courses }) => {
         clubRequests: clubRequests.clubRequests,
       }));
     });
+    socket.on("liveSessionStarted", (clubName) => {
+      setLive((prev) => ({ ...prev, clubName }));
+    });
 
     return () => {
-      socket.off("newConnection");
+      socket.off("updates");
+      socket.off("liveSessionStarted");
       socket.off("message received");
     };
   }, [socket, setUser, user?.token, user]);
@@ -144,26 +163,63 @@ export const Dashboard = ({ courses }) => {
   }, [user]);
 
   return (
-    <Box
-      width="100%"
-      height={"100%"}
-      background={"white"}
-      position={"relative"}
-    >
-      <ErrorBoundary fallback={<p>Something went wrong</p>} userSelect={"none"}>
-        <Box
-          position={"fixed"}
-          background={"Background"}
-          zIndex={10}
-          width="100%"
-        >
+    <Box width="100%" height="100%" background="white" position="relative">
+      <ErrorBoundary fallback={<p>Something went wrong</p>} userSelect="none">
+        <Box position="fixed" background="Background" zIndex={10} width="100%">
           <UpperNav />
         </Box>
         <Box mt={20}>
-          <Progress userBelt={"Visitor"} />
+          <Progress userBelt="Visitor" />
         </Box>
         <MyPrograms courses={courses} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}
+        {live && (
+          <Box
+            position="fixed"
+            top={90}
+            right={50}
+            borderRadius={20}
+            border={"1px solid #d24ce0"}
+          >
+            {!show && (
+              <Button
+                backgroundColor="white"
+                _hover={{ backgroundColor: "white" }}
+                onClick={() => setShow(true)}
+                width={"100%"}
+                border={"1px solid #d24ce0"}
+                borderRadius={20}
+              >
+                Live Clubs{"   "}
+                <Image
+                  src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709910225/icons8-live-video-on_kr3qci.gif"
+                  height={6}
+                />
+              </Button>
+            )}
+            {show &&
+              live.map((liveItem) => (
+                <Button
+                  key={liveItem._id}
+                  textAlign={"center"}
+                  width={"100%"}
+                  backgroundColor="white"
+                  _hover={{ backgroundColor: "white" }}
+                  onClick={() => {
+                    setLive((prevLive) =>
+                      prevLive.filter((n) => n !== liveItem)
+                    );
+                    navigate(`/showclub/${liveItem._id}`);
+                    setShow(false);
+                  }}
+                  borderRadius={20}
+                >
+                  {`${liveItem.name} are live...`}
+                </Button>
+              ))}
+          </Box>
+        )}
+
         <IconButton
           display={chatOpen ? "none" : "flex"}
           position="fixed"
