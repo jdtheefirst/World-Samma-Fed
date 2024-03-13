@@ -21,7 +21,6 @@ import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import chat from "../chat.png";
 import axiosInstance from "../components/config/axios";
-import { BellIcon } from "@chakra-ui/icons";
 
 export const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -31,9 +30,7 @@ export const Dashboard = ({ courses }) => {
   const [isHovered, setHovered] = useState(false);
   const [show, setShow] = useState(false);
   const toast = useToast();
-  const [live, setLive] = useState([
-    { _id: "65def6a9d104e2a8f5025547", name: "Karate Kids" },
-  ]);
+  const [live, setLive] = useState([]);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -146,8 +143,6 @@ export const Dashboard = ({ courses }) => {
       }));
     });
     socket.on("liveSessionStarted", (clubName) => {
-      console.log(clubName);
-
       setLive((prev) => ({ ...prev, clubName }));
     });
 
@@ -175,7 +170,7 @@ export const Dashboard = ({ courses }) => {
         </Box>
         <MyPrograms courses={courses} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}
-        {live && (
+        {live.length > 0 && (
           <Box
             position="fixed"
             top={90}

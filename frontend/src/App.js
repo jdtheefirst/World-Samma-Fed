@@ -8,6 +8,9 @@ import CourseDetails from "./pages/Courses";
 import { Clubs } from "./pages/Clubs";
 import ClubDetailes from "./pages/ClubDetails";
 import { ChatState } from "./components/Context/ChatProvider";
+import SubmissionPage from "./pages/Submit";
+import ProfilePage from "./pages/ProfilePage";
+import AdminWorkSlot from "./pages/AdminWorkSlot";
 
 const courses = [
   {
@@ -178,6 +181,12 @@ function App() {
           element={<CourseDetails courses={courses} />}
         />
         <Route path="/clubs" element={<Clubs />} />
+        <Route path="/courses/:id/submit" element={<SubmissionPage />} />
+        <Route path="/profile" element={<ProfilePage user={user} />} />
+        <Route
+          path="/admin-work-slot"
+          element={<AdminWorkSlot user={user} />}
+        />
         <Route
           path="/showclub/:clubId/:liveStream"
           element={<ClubDetailes user={user} />}

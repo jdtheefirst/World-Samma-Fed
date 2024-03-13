@@ -67,6 +67,13 @@ const initializeSocketIO = (server) => {
       }
     });
 
+    socket.on("identityLiveSession", async (adminId) => {
+      io.to(adminId).emit("signalStart");
+    });
+    socket.on("signaling", ({ to, from, signal }) => {
+      io.to(to).emit("signaling", { from, signal });
+    });
+
     socket.on("new message", (newMessageReceived) => {
       const recipientSocketId = getUserSocket(newMessageReceived.recipient._id);
 

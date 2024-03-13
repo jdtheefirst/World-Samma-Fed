@@ -57,12 +57,12 @@ function UpperNav() {
       >
         <Text
           textAlign={"center"}
-          fontSize="medium"
+          fontSize={{ base: "small", md: "medium" }}
           fontWeight={"bold"}
           userSelect={"none"}
           p={0}
           m={0}
-          pl={5}
+          pl={3}
         >
           Worldsamma
         </Text>
@@ -188,6 +188,7 @@ function UpperNav() {
                 background={"white"}
                 m={1}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={() => navigate("/profile")}
               >
                 <Avatar
                   size="sm"

@@ -518,8 +518,6 @@ const clubRequests = async (req, res) => {
 
       res.json(club);
     }
-
-    console.log(club, "We have a Club");
   } catch (error) {
     console.log(error);
   }
