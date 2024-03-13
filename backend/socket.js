@@ -13,6 +13,7 @@ const initializeSocketIO = (server) => {
       origin: "http://localhost:3000",
     },
   });
+  const onlineClubs = new Set();
   const onlineUsers = new Set();
   const userStatuses = new Map();
 
@@ -51,6 +52,33 @@ const initializeSocketIO = (server) => {
     const userId = getUserIdFromToken(token);
     setUserSocket(userId, socket.id);
 
+    socket.on("startLiveSession", async (clubId) => {
+      const club = await Club.findOne({ _id: clubId });
+
+      if (
+        club &&
+        (club.members.includes(userId) || club.followers.includes(userId))
+      ) {
+        onlineClubs.add(clubId);
+        socket.join(clubId);
+        socket.broadcast.to(clubId).emit("liveSessionStarted", club.name);
+
+        socket.to(clubId).emit("startSignal");
+      }
+    });
+
+    socket.on("new message", (newMessageReceived) => {
+      const recipientSocketId = getUserSocket(newMessageReceived.recipient._id);
+
+      if (recipientSocketId) {
+        socket
+          .to(recipientSocketId)
+          .emit("message received", newMessageReceived);
+      } else {
+        console.log("Recipient not connected");
+      }
+    });
+
     socket.on("newConnection", async (userData) => {
       const email = userData.email;
 
@@ -59,35 +87,6 @@ const initializeSocketIO = (server) => {
       if (clubRequests) {
         socket.emit("updates", clubRequests);
       }
-      socket.on("startLiveSession", async (clubId) => {
-        try {
-          const club = await Club.findOne({ _id: clubId });
-
-          if (
-            club &&
-            (club.members.includes(userData._id) ||
-              club.followers.includes(userData._id))
-          ) {
-            socket.emit("liveSessionStarted", club.name);
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      });
-
-      socket.on("new message", (newMessageReceived) => {
-        const recipientSocketId = getUserSocket(
-          newMessageReceived.recipient._id
-        );
-
-        if (recipientSocketId) {
-          socket
-            .to(recipientSocketId)
-            .emit("message received", newMessageReceived);
-        } else {
-          console.log("Recipient not connected");
-        }
-      });
 
       const userId = userData._id;
       socket.join(userId);

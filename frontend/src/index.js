@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.css";
+import "./setup";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";

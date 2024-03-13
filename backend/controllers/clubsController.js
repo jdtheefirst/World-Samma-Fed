@@ -92,7 +92,18 @@ const registerClubs = async (req, res) => {
   try {
     const club = await Club.create(clubData);
 
-    res.status(201).json(club);
+    const populatedClub = await Club.findById(club._id)
+      .populate({ path: "coach" })
+      .populate({
+        path: "membersRequests",
+        select: "name admission",
+      })
+      .populate({
+        path: "members",
+        select: "name admission",
+      });
+
+    res.status(200).json(populatedClub);
   } catch (error) {
     throw new Error("Error occurred", error);
   }
@@ -112,16 +123,22 @@ const fetchMyClub = async (req, res) => {
   const { clubId } = req.params;
 
   try {
-    const club = await Club.findById(clubId).populate({
-      path: "membersRequests",
-      select: "name admission",
-    });
+    const populatedClub = await Club.findById(clubId)
+      .populate({ path: "coach" })
+      .populate({
+        path: "membersRequests",
+        select: "name admission",
+      })
+      .populate({
+        path: "members",
+        select: "name admission",
+      });
 
-    if (!club) {
+    if (!populatedClub) {
       return res.status(404).json({ error: "Club not found" });
     }
 
-    res.status(200).json(club);
+    res.status(200).json(populatedClub);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -153,7 +170,18 @@ const followClub = async (req, res) => {
 
     await club.save();
 
-    res.status(200).json(club);
+    const populatedClub = await Club.findById(club._id)
+      .populate({ path: "coach" })
+      .populate({
+        path: "membersRequests",
+        select: "name admission",
+      })
+      .populate({
+        path: "members",
+        select: "name admission",
+      });
+
+    res.status(200).json(populatedClub);
   } catch (error) {
     console.error(error);
     res
@@ -181,7 +209,18 @@ const likeClub = async (req, res) => {
 
     await club.save();
 
-    res.status(200).json(club);
+    const populatedClub = await Club.findById(club._id)
+      .populate({ path: "coach" })
+      .populate({
+        path: "membersRequests",
+        select: "name admission",
+      })
+      .populate({
+        path: "members",
+        select: "name admission",
+      });
+
+    res.status(200).json(populatedClub);
   } catch (error) {
     console.error(error);
     res
@@ -195,7 +234,6 @@ const broadcast = async (req, res) => {
 
   try {
     const broadcastMessages = await Broadcast.find({
-      coach: coachId,
       club: clubId,
     });
 
@@ -274,8 +312,17 @@ const acceptRequest = async (req, res) => {
       } else {
         return res.status(404).json({ error: "User not found" });
       }
-
-      return res.status(200).json(club);
+      const populatedClub = await Club.findById(club._id)
+        .populate({ path: "coach" })
+        .populate({
+          path: "membersRequests",
+          select: "name admission",
+        })
+        .populate({
+          path: "members",
+          select: "name admission",
+        });
+      return res.status(200).json(populatedClub);
     } else {
       return res.status(404).json({ error: "Club not found" });
     }
@@ -299,8 +346,18 @@ const joinClub = async (req, res) => {
       club.membersRequests.push(userId);
       await club.save();
     }
+    const populatedClub = await Club.findById(club._id)
+      .populate({ path: "coach" })
+      .populate({
+        path: "membersRequests",
+        select: "name admission",
+      })
+      .populate({
+        path: "members",
+        select: "name admission",
+      });
 
-    res.status(200).json(club);
+    res.status(200).json(populatedClub);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }

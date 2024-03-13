@@ -150,7 +150,7 @@ export const Clubs = () => {
               <Button
                 key={club.code}
                 width={"90%"}
-                onClick={() => navigate(`/showclub/${club._id}`)}
+                onClick={() => navigate(`/showclub/${club._id}/${false}`)}
               >
                 {index + 1}. Club: {club.name}, Reg no: {club.code}
               </Button>

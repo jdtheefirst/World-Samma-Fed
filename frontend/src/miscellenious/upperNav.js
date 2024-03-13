@@ -51,6 +51,9 @@ function UpperNav() {
         p={3}
         paddingBottom={2}
         boxShadow="lg"
+        zIndex={10}
+        top={0}
+        position={"fixed"}
       >
         <Text
           textAlign={"center"}
@@ -59,6 +62,7 @@ function UpperNav() {
           userSelect={"none"}
           p={0}
           m={0}
+          pl={5}
         >
           Worldsamma
         </Text>

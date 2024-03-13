@@ -19,6 +19,7 @@ import axios from "axios";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
 import Live from "../miscellenious/Live";
+import { useConnectSocket } from "../components/config/chatlogics";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
@@ -28,14 +29,28 @@ const ClubDetails = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+  const socket = useConnectSocket(user?.token);
 
   const clubData = {
     name: "Club Name",
     description: "A brief description of the club.",
     profilePicture:
       "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709221154/wsf_prl49r.jpg", // Sample image URL
-    backgroundPicture: "https://placekitten.com/800/400", // Sample image URL
+    backgroundPicture:
+      "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1704379830/samma_dm0t2d.jpg", // Sample image URL
   };
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    socket.on("liveSessionAvailable", (clubId) => {
+      setLive(true);
+    });
+    socket.emit("other user");
+    return () => {
+      socket.off("liveSessionAvailable");
+    };
+  }, [socket]);
   const getClub = useCallback(async () => {
     if (!user || !clubId) {
       navigate("/dashboard");
@@ -220,10 +235,10 @@ const ClubDetails = ({ user }) => {
       navigate("/dashboard");
       return;
     }
-    if (club.membersRequests.includes(user._id)) {
+    if (club.membersRequests.some((member) => member._id === user?._id)) {
       toast({
-        title: "Request already sent.",
-        description: "Please wait for coach to reply.",
+        title: "Request to join already sent.",
+        description: "Please wait for Coach to reply.",
       });
       return;
     }
@@ -254,22 +269,21 @@ const ClubDetails = ({ user }) => {
     <Box
       display={"flex"}
       flexDir={"column"}
-      justifyContent={"center"}
+      justifyContent={"flex-start"}
       alignItems={"center"}
       width={"100%"}
       background={"white"}
-      p={0}
+      overflowX={"hidden"}
     >
-      <Flex zIndex={10} width="100%" top={0} position={"fixed"}>
-        <UpperNav />
-      </Flex>
+      <UpperNav />
       <Box
         display={"flex"}
         justifyContent={"center"}
         alignItems={"center"}
         width={"100%"}
-        mt={{ base: "50", md: "150" }}
+        mt={"50"}
         position="relative"
+        background={"white"}
       >
         <Image
           src={clubData.backgroundPicture}
@@ -282,7 +296,7 @@ const ClubDetails = ({ user }) => {
         <Box
           display={"flex"}
           position="absolute"
-          top={0}
+          top={10}
           mt={{ base: "0", md: "20%" }}
           left={{ base: "0", md: "30%" }}
           textAlign="center"
@@ -295,20 +309,16 @@ const ClubDetails = ({ user }) => {
             src={clubData.profilePicture}
             alt={`Profile*`}
             borderRadius="full"
-            boxSize="100px"
+            boxSize={{ base: "100px", md: "200px" }}
             border="4px solid white"
             marginBottom={4}
           />
-          <Box>
+          <Box m={2}>
             {" "}
             <Heading as="h2" size="lg">
               {club && club.name}
             </Heading>
-            <Text>
-              {club && club.description
-                ? club.description
-                : "Club description not available"}
-            </Text>
+            <Text>Coach Rank: {club?.coach.belt}</Text>
             <Text
               fontSize={"sm"}
               fontWeight={500}
@@ -330,23 +340,19 @@ const ClubDetails = ({ user }) => {
         alignItems="center"
         spacing={4}
         width={"100%"}
+        background={"white"}
       >
         <Box
           display={"flex"}
           flexDir={"column"}
-          justifyContent={"space between"}
+          justifyContent={"space-between"}
           alignItems={"center"}
           p={0}
           m={1}
           zIndex={1}
         >
-          <Button
-            colorScheme="teal"
-            size="md"
-            onClick={handleFollow}
-            isDisabled={club && club.coach === user._id}
-          >
-            {club && club.followers?.includes(user?._id)
+          <Button colorScheme="teal" size="md" onClick={handleFollow}>
+            {club && club.followers?.find((member) => member === user?._id)
               ? "Unfollow"
               : "Follow"}
           </Button>
@@ -364,9 +370,10 @@ const ClubDetails = ({ user }) => {
         >
           <IconButton
             icon={<Icon as={FaHeart} />}
-            isDisabled={club && club.coach === user._id}
             colorScheme={
-              club && club.likes?.includes(user?._id) ? "green" : "red"
+              club && club.likes.some((member) => member === user?._id)
+                ? "green"
+                : "red"
             }
             size="md"
             onClick={handleLike}
@@ -378,24 +385,34 @@ const ClubDetails = ({ user }) => {
           flexDir={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          p={0}
           fontSize={"small"}
+          background={"white"}
+          p={0}
+          m={1}
         >
-          <Live user={user} club={club} />
-          <IconButton
-            icon={<Icon as={SlUserFollow} />}
-            colorScheme={
-              club && club.clubRequests.includes(user?._id) ? "green" : "blue"
-            }
-            size="md"
-            isDisabled={
-              club &&
-              (club.members.includes(user?._id) || club.coach === user._id)
-            }
-            onClick={handleJoin}
-          >
-            Join
-          </IconButton>
+          {" "}
+          <Text textAlign={"center"} mt={-1} background={"white"}>
+            <Live user={user} club={club} socket={socket} />
+            <IconButton
+              icon={<Icon as={SlUserFollow} />}
+              colorScheme={
+                club && club.clubRequests.some((member) => member === user?._id)
+                  ? "green"
+                  : "blue"
+              }
+              size="md"
+              m={1}
+              isDisabled={
+                club &&
+                (club.members.some((member) => member === user?._id) ||
+                  club.coach._id === user._id)
+              }
+              onClick={handleJoin}
+            />
+          </Text>
+          <Text textAlign={"center"} fontSize={"small"} mt={-1}>
+            Events
+          </Text>
         </Box>
       </Flex>
       <Box
@@ -405,7 +422,6 @@ const ClubDetails = ({ user }) => {
         justifyContent={"center"}
         alignItems={"center"}
         background={"white"}
-        m={1}
       >
         <Box
           display={"flex"}
@@ -413,10 +429,10 @@ const ClubDetails = ({ user }) => {
           justifyContent={"center"}
           alignItems={"center"}
           width={{ base: "100%", md: "60%" }}
-          borderX="1px"
           borderColor="#d142f5"
+          background={"white"}
         >
-          <Heading as="h3" size="md" mb={2}>
+          <Heading as="h3" size="md" mb={2} background={"white"}>
             Broadcast Board
           </Heading>
           <Box
@@ -440,19 +456,24 @@ const ClubDetails = ({ user }) => {
                   background={"#92e0a5"}
                   textAlign={"center"}
                   fontWeight={"bold"}
+                  fontStyle={"italic"}
                   width={{ base: "90%", md: "70%" }}
                   borderRadius={20}
                   m={2}
                   p={1}
                 >
-                  {message.content}
-                  <Text fontSize={"small"} textDecor={"underline"}>
+                  <Text
+                    fontSize={"small"}
+                    textDecor={"underline"}
+                    textColor={"#aa33b0"}
+                  >
                     {formatMessageTime(message.createdAt)}
                   </Text>
+                  {message.content}
                 </Text>
               ))}
           </Box>
-          {club && user && club.coach === user._id && (
+          {club && user && club.coach._id === user._id && (
             <Box
               display={"flex"}
               flexDir={"column"}
@@ -465,6 +486,7 @@ const ClubDetails = ({ user }) => {
               </Heading>
               <Box
                 display={"flex"}
+                flexDir={"column"}
                 justifyContent={"center"}
                 alignItems={"center"}
                 overflowY="auto"
@@ -479,15 +501,16 @@ const ClubDetails = ({ user }) => {
                 )}
 
                 {club &&
-                  club.membersRequests.map((request) => (
+                  club.membersRequests.map((request, index) => (
                     <Button
                       fontSize={"small"}
                       fontWeight={"bold"}
-                      onClick={handleAcceptRequest(request._id)}
+                      onClick={() => handleAcceptRequest(request._id)}
                       width={"90%"}
                       m={1}
                     >
-                      Accept {request.name}, Adm: {request.admission} ✔️
+                      {index + 1}. Accept {request.name}, Adm:{" "}
+                      {request.admission} ✔️
                     </Button>
                   ))}
               </Box>

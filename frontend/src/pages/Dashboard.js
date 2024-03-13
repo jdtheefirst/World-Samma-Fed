@@ -146,6 +146,8 @@ export const Dashboard = ({ courses }) => {
       }));
     });
     socket.on("liveSessionStarted", (clubName) => {
+      console.log(clubName);
+
       setLive((prev) => ({ ...prev, clubName }));
     });
 
@@ -209,7 +211,7 @@ export const Dashboard = ({ courses }) => {
                     setLive((prevLive) =>
                       prevLive.filter((n) => n !== liveItem)
                     );
-                    navigate(`/showclub/${liveItem._id}`);
+                    navigate(`/showclub/${liveItem._id}/${true}`);
                     setShow(false);
                   }}
                   borderRadius={20}

@@ -179,7 +179,7 @@ function App() {
         />
         <Route path="/clubs" element={<Clubs />} />
         <Route
-          path="/showclub/:clubId"
+          path="/showclub/:clubId/:liveStream"
           element={<ClubDetailes user={user} />}
         />
         <Route path="*" element={<NotFound />} />

@@ -1,21 +1,12 @@
 import { Button, IconButton } from "@chakra-ui/button";
-import { useDisclosure } from "@chakra-ui/hooks";
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/modal";
 import { FaVideo } from "react-icons/fa";
 import React, { useEffect, useRef, useState } from "react";
 import { Box, Icon, Image, useToast } from "@chakra-ui/react";
 import Peer from "simple-peer";
 import { useParams } from "react-router-dom";
 
-const Live = ({ user, club, socket }) => {
+const IdentityLive = ({ user, club, socket }) => {
+  const otherUserVideo = useRef(null);
   const currentVideo = useRef(null);
   const peerRef = useRef(null);
   const toast = useToast();
@@ -23,31 +14,23 @@ const Live = ({ user, club, socket }) => {
   const { clubId } = useParams();
   let stream;
 
-  // const isCurrentUserStreaming = user && peerRef.current?.initiator;
-
-  useEffect(() => {
-    const userVideoElement = currentVideo.current;
-
-    if (userVideoElement) {
-      console.log("found it, user video");
-    }
-  }, []);
+  const isCurrentUserStreaming = user && peerRef.current?.initiator;
 
   useEffect(() => {
     if (!socket) {
       return;
     }
-    socket.on("startSignal", () => {
+    socket.on("signalStart", () => {
       const peer = createPeer(socket.id, stream);
       peerRef.current = peer;
       setLive(true);
     });
-    // socket.on("signal", ({ to, from, signal }) => {
-    //   io.to(to).emit("signal", { from, signal });
-    // });
+    socket.on("signaling", ({ to, from, signal }) => {
+      io.to(to).emit("signaling", { from, signal });
+    });
     return () => {
       socket.off("startSignal");
-      // socket.off("signal");
+      socket.off("signal");
     };
   }, [socket]);
   const startCameraStream = () => {
@@ -57,7 +40,9 @@ const Live = ({ user, club, socket }) => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
-        const videoElement = currentVideo.current;
+        const videoElement = isCurrentUserStreaming
+          ? currentVideo.current
+          : otherUserVideo.current;
 
         if (!videoElement) {
           throw new Error("Video element not defined.");
@@ -65,11 +50,11 @@ const Live = ({ user, club, socket }) => {
 
         videoElement.srcObject = stream;
 
-        // peerRef.current?.on("stream", (otherStream) => {
-        //   otherUserVideo.current.srcObject = otherStream;
-        // });
+        peerRef.current?.on("stream", (otherStream) => {
+          otherUserVideo.current.srcObject = otherStream;
+        });
 
-        socket.emit("startLiveSession", clubId);
+        socket.emit("identityLiveSession", adminId);
       })
       .catch((error) => {
         console.error("Media Device access error:", error);
@@ -82,20 +67,20 @@ const Live = ({ user, club, socket }) => {
       });
   };
 
-  function createPeer(myId, stream) {
+  function createPeer(coachSocketId, myId, stream) {
     const peer = new Peer({
       initiator: false,
       trickle: false,
       stream,
     });
 
-    // peer.on("signal", (signal) => {
-    //   socket.emit("signal", {
-    //     to: coachSocketId,
-    //     from: myId,
-    //     signal,
-    //   });
-    // });
+    peer.on("signal", (signal) => {
+      socket.emit("signal", {
+        to: coachSocketId,
+        from: myId,
+        signal,
+      });
+    });
 
     return peer;
   }
@@ -148,6 +133,13 @@ const Live = ({ user, club, socket }) => {
           playsInline
           style={videoStyleFull}
         />
+        <video
+          id="otherUserVideo"
+          ref={otherUserVideo}
+          autoPlay
+          playsInline
+          style={videoStyleFull}
+        />
         {live && (
           <Button
             onClick={handleEndCall}
@@ -168,4 +160,4 @@ const Live = ({ user, club, socket }) => {
   );
 };
 
-export default Live;
+export default IdentityLive;
