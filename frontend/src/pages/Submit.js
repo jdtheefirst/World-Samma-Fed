@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -12,13 +12,20 @@ import {
   Text,
 } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const SubmissionPage = () => {
+const SubmissionPage = ({ user }) => {
   const [video, setVideo] = useState(null);
   const [passportPhoto, setPassportPhoto] = useState(null);
   const [videoLoading, setVideoLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
+  const [saveVideo, setSaveVideo] = useState("");
+  const [savePhoto, setSavePhoto] = useState("");
   const toast = useToast();
+  const navigate = useNavigate();
+
+  console.log(user);
 
   const handleVideoChange = (event) => {
     setVideo(event.target.files[0]);
@@ -27,27 +34,97 @@ const SubmissionPage = () => {
   const handlePhotoChange = (event) => {
     setPassportPhoto(event.target.files[0]);
   };
+  const submitHandler = useCallback(async () => {
+    if (!user) {
+      navigate("/dashboard");
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/submit/${user._id}`,
+        {
+          savePhoto,
+          saveVideo,
+        },
+        config
+      );
+      console.log(data);
+      navigate("/dashboard");
+      toast({
+        title: "Submission successful!",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error occurred trying to send your work!",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  }, [toast, navigate, user, savePhoto, savePhoto]);
+
+  useEffect(() => {
+    if (savePhoto && saveVideo) {
+      submitHandler();
+    }
+  }, [savePhoto, saveVideo]);
 
   const submitDetails = () => {
+    if (!video) {
+      toast({
+        title: "Your recorded video please.",
+        description: "No file selected.",
+        status: "info",
+        duration: 5000,
+      });
+      return;
+    }
+    if (!passportPhoto) {
+      toast({
+        title: "Your passport photo please.",
+        description: "No file selected.",
+        status: "info",
+        duration: 5000,
+      });
+      return;
+    }
     if (video) {
       setVideoLoading(true);
 
       let data = new FormData();
       data.append("file", video);
-      data.append("upload_preset", "RocketChat");
+      data.append("upload_preset", "worldsamma");
 
-      fetch("https://api.cloudinary.com/v1_1/dvc7i8g1a/video/upload", {
+      fetch("https://api.cloudinary.com/v1_1/dsdlgmgwi/video/upload", {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("Video URL:", data.url);
+          setSaveVideo(data.url);
           setVideoLoading(false);
         })
         .catch((err) => {
           setVideoLoading(false);
-          console.error("Error uploading video:", err);
+          toast({
+            title: "Error Occurred uploading your video.",
+            description: "Please try again later.",
+            duration: 5000,
+            status: "error",
+          });
         });
     }
     if (passportPhoto) {
@@ -55,29 +132,27 @@ const SubmissionPage = () => {
 
       let data = new FormData();
       data.append("file", passportPhoto);
-      data.append("upload_preset", "RocketChat");
+      data.append("upload_preset", "worldsamma");
 
-      fetch("https://api.cloudinary.com/v1_1/dvc7i8g1a/image/upload", {
+      fetch("https://api.cloudinary.com/v1_1/dsdlgmgwi/image/upload", {
         method: "post",
         body: data,
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("Passport Photo URL:", data.url);
+          setSavePhoto(data.url);
           setPhotoLoading(false);
         })
         .catch((err) => {
           setPhotoLoading(false);
-          console.error("Error uploading passport photo:", err);
+          toast({
+            title: "Error Occurred uploading your passport photo.",
+            description: "Please try again later.",
+            duration: 5000,
+            status: "error",
+          });
         });
     }
-    toast({
-      title: "Submission successful!",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-      position: "bottom",
-    });
   };
 
   return (

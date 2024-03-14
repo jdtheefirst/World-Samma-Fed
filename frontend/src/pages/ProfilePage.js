@@ -8,7 +8,7 @@ const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
   const [club, setClub] = useState();
   const toast = useToast();
-  const [showFollowers, setShowFollowers] = useState(true);
+  const [showFollowers, setShowFollowers] = useState(false);
   const handleMembers = () => {
     setShowFollowers(!showFollowers);
   };
@@ -98,14 +98,13 @@ const ProfilePage = ({ user }) => {
           <Text>Country: {user?.country}</Text>
           <Text>Coach: {user?.coach ? user.coach : "Not a coach"}</Text>
           <Text>Highest Level Attained: {user?.belt}</Text>
-
-          {user?.adm ? (
-            <Link to="/admin-work-slot">
-              <Button mt={4} colorScheme="teal">
-                Admin Work Slot
-              </Button>
-            </Link>
-          ) : null}
+          <Button
+            mt={4}
+            colorScheme="teal"
+            onClick={() => navigate("/admin-work-slot")}
+          >
+            Admin Work Slot
+          </Button>
         </Box>
         {user?.coach && club && (
           <>

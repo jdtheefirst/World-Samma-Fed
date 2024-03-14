@@ -169,7 +169,11 @@ const courses = [
 ];
 
 function App() {
-  const { user } = ChatState();
+  const { user, setUser } = ChatState();
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  if (!user && userInfo) {
+    setUser(userInfo);
+  }
   return (
     <div className="App">
       <Routes>
@@ -181,7 +185,10 @@ function App() {
           element={<CourseDetails courses={courses} />}
         />
         <Route path="/clubs" element={<Clubs />} />
-        <Route path="/courses/:id/submit" element={<SubmissionPage />} />
+        <Route
+          path="/courses/:id/submit"
+          element={<SubmissionPage user={user} />}
+        />
         <Route path="/profile" element={<ProfilePage user={user} />} />
         <Route
           path="/admin-work-slot"
