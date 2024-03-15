@@ -13,7 +13,8 @@ const {
   recoverEmail,
   getAdsInfo,
   clubRequests,
-  getInfo
+  getInfo,
+  certificate,
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
@@ -28,10 +29,16 @@ router.route("/login").post(limiter, authUser);
 // router.get("/:userEmail", limiter, authorizeUser);
 
 router.get("/:country/:provience", protect, limiter, getUsers);
-router.get("/:country/:provience/:name/:userId", protect, limiter, clubRequests);
+router.get(
+  "/:country/:provience/:name/:userId",
+  protect,
+  limiter,
+  clubRequests
+);
 router.get("/info/:userId", protect, limiter, getInfo);
 router.put("/update/:userId", protect, limiter, updateUser);
 router.delete("/deleteuser/:userId", protect, limiter, deleteUser);
 router.delete("/delete-image/:publicId", protect, limiter, deleteImage);
 router.get("/getadsninfo/advertisement", protect, limiter, getAdsInfo);
+router.get("/certificate/:userId", protect, limiter, certificate);
 module.exports = router;

@@ -98,13 +98,15 @@ const ProfilePage = ({ user }) => {
           <Text>Country: {user?.country}</Text>
           <Text>Coach: {user?.coach ? user.coach : "Not a coach"}</Text>
           <Text>Highest Level Attained: {user?.belt}</Text>
-          <Button
-            mt={4}
-            colorScheme="teal"
-            onClick={() => navigate("/admin-work-slot")}
-          >
-            Admin Work Slot
-          </Button>
+          {user.admin && (
+            <Button
+              mt={4}
+              colorScheme="teal"
+              onClick={() => navigate("/admin-work-slot")}
+            >
+              Admin Work Slot
+            </Button>
+          )}
         </Box>
         {user?.coach && club && (
           <>

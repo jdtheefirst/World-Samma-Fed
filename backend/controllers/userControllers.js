@@ -110,6 +110,7 @@ const registerUsers = asyncHandler(async (req, res) => {
       belt: userInfo.belt,
       physicalCoach: userInfo.physicalCoach,
       coach: userInfo.coach,
+      certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
       token: generateToken(userInfo._id),
     };
@@ -177,6 +178,7 @@ const searchUser = async (req, res) => {
       belt: userInfo.belt,
       physicalCoach: userInfo.physicalCoach,
       coach: userInfo.coach,
+      certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
     };
     res.status(201).json(responseData);
@@ -207,6 +209,7 @@ const recoverEmail = async (req, res) => {
         belt: userInfo.belt,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
+        certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
       };
       res.status(201).json(responseData);
@@ -233,6 +236,7 @@ const authUser = asyncHandler(async (req, res) => {
         provinces: userInfo.provinces,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
+        certificates: userInfo.certificates,
         pic: userInfo.pic,
         token: generateToken(userInfo._id),
         clubRequests: userInfo.clubRequests,
@@ -522,6 +526,28 @@ const clubRequests = async (req, res) => {
     console.log(error);
   }
 };
+const certificate = async (req, res) => {
+  const { userId } = req.params;
+  const { sendCertificate } = req.body;
+  const socket = getIO();
+  try {
+    const userInfo = await User.findById(userId);
+    if (userInfo) {
+      userInfo.certificates.push(sendCertificate);
+      await userInfo.save();
+    }
+
+    const recipientSocketId = getUserSocket(userId);
+
+    if (recipientSocketId) {
+      socket.to(recipientSocketId).emit("certificates", userInfo.certificates);
+    } else {
+      console.log("Recipient not connected");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 module.exports = {
   authorizeUser,
@@ -537,4 +563,5 @@ module.exports = {
   deleteImage,
   getAdsInfo,
   clubRequests,
+  certificate,
 };

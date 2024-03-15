@@ -146,10 +146,15 @@ export const Dashboard = ({ courses }) => {
       setLive((prev) => ({ ...prev, clubName }));
     });
 
+    socket.on("certificates", (certificates) => {
+      setUser((prev) => ({ ...prev, certificates: certificates }));
+    });
+
     return () => {
       socket.off("updates");
       socket.off("liveSessionStarted");
       socket.off("message received");
+      socket.off("certificates");
     };
   }, [socket, setUser, user?.token, user]);
 

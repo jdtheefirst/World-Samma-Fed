@@ -19,6 +19,7 @@ const userSchema = mongoose.Schema(
     provinces: { type: String },
     belt: { type: String, default: "Member" },
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
+    certificates: { type: Array, default: [] },
     physicalCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
