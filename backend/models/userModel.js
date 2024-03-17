@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema(
     belt: { type: String, default: "Member" },
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
     certificates: { type: Array, default: [] },
+    admin: { type: Boolean, default: false },
     physicalCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

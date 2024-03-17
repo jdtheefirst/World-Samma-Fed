@@ -7,7 +7,6 @@ const CourseDetails = ({ courses }) => {
   const { id } = useParams();
   const courseId = parseInt(id, 10);
   const course = courses.find((course) => course.id === courseId);
-  console.log(course, courseId);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
 
   const goToNextLesson = () => {
@@ -27,7 +26,7 @@ const CourseDetails = ({ courses }) => {
   return (
     <Box backgroundColor={"white"} width={"100%"}>
       <UpperNav />
-      <Text fontSize="24px" fontWeight="bold" mb={4}>
+      <Text fontSize="24px" fontWeight="bold" mb={4} mt={55}>
         {course.title}
       </Text>
       <Box

@@ -135,7 +135,7 @@ const Requests = () => {
               ))
             ) : (
               <>
-                <Text>No club request not replied to.</Text>
+                <Text>All club requests have been replied to.</Text>
               </>
             )}
           </ModalBody>

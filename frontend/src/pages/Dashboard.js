@@ -1,17 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
-import {
-  Badge,
-  Box,
-  Button,
-  IconButton,
-  Image,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, Button, IconButton, Image, useToast } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import Progress from "../miscellenious/Progress";
 import MyPrograms from "../miscellenious/Myprograms";
@@ -173,7 +162,7 @@ export const Dashboard = ({ courses }) => {
         <Box mt={20}>
           <Progress userBelt="Visitor" />
         </Box>
-        <MyPrograms courses={courses} />
+        <MyPrograms courses={courses} user={user} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}
         {live.length > 0 && (
           <Box
