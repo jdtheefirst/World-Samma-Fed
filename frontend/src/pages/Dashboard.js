@@ -20,6 +20,7 @@ export const Dashboard = ({ courses }) => {
   const [show, setShow] = useState(false);
   const toast = useToast();
   const [live, setLive] = useState([]);
+  const socket = useConnectSocket(user?.token);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -31,8 +32,6 @@ export const Dashboard = ({ courses }) => {
       setUser(userInfo);
     }
   }, [setUser, navigate]);
-
-  const socket = useConnectSocket(user?.token);
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -160,7 +159,7 @@ export const Dashboard = ({ courses }) => {
           <UpperNav />
         </Box>
         <Box mt={20}>
-          <Progress userBelt="Visitor" />
+          <Progress userBelt={"Visitor"} />
         </Box>
         <MyPrograms courses={courses} user={user} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}

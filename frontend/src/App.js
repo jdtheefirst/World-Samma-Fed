@@ -11,6 +11,7 @@ import { ChatState } from "./components/Context/ChatProvider";
 import SubmissionPage from "./pages/Submit";
 import ProfilePage from "./pages/ProfilePage";
 import AdminWorkSlot from "./pages/AdminWorkSlot";
+import Provience from "./pages/Provience";
 
 const courses = [
   {
@@ -198,6 +199,7 @@ function App() {
           path="/showclub/:clubId/:liveStream"
           element={<ClubDetailes user={user} />}
         />
+        <Route path="/province" element={<Provience user={user} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

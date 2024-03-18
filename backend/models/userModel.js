@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema(
     selectedCountry: { type: String },
     gender: { type: String },
     provinces: { type: String },
-    belt: { type: String, default: "Member" },
+    belt: { type: String, default: "Visitor" },
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
     certificates: { type: Array, default: [] },
     admin: { type: Boolean, default: false },

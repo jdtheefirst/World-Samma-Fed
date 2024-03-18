@@ -7,6 +7,7 @@ import {
   useToast,
   IconButton,
   Image,
+  Spinner,
 } from "@chakra-ui/react";
 import ScrollableChat from "./ScrollableChat";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -245,7 +246,11 @@ const FloatingChat = ({ onClose }) => {
             ))}
           </Box>
         )}
-        <ScrollableChat messages={messages} />
+        {loading ? (
+          <Spinner size={"lg"} />
+        ) : (
+          <ScrollableChat messages={messages} />
+        )}
         <Box position="absolute" bottom={0} width="100%">
           {rank && (
             <Box

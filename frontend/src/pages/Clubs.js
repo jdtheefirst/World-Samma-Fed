@@ -7,6 +7,7 @@ import {
   FormLabel,
   Image,
   Select,
+  Spinner,
   Text,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -23,12 +24,14 @@ export const Clubs = () => {
   const [fillForm, setFillForm] = useState(false);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
+  const [loading, setLoading] = useState(false);
 
   const fetchClubs = useCallback(async () => {
     if (!user) {
       navigate("/dashboard");
       return;
     }
+    setLoading(true);
     try {
       const config = {
         headers: {
@@ -41,6 +44,7 @@ export const Clubs = () => {
         config
       );
       setClubs(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching or creating clubs:", error);
     }
@@ -145,6 +149,8 @@ export const Clubs = () => {
           borderRadius={3}
           width={{ base: "100%", md: "80%" }}
         >
+          {" "}
+          {loading && <Spinner />}
           {clubs && clubs.length > 0 ? (
             clubs.map((club, index) => (
               <Button

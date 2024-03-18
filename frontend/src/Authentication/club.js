@@ -177,7 +177,7 @@ export const ClubRegistration = ({ onClose }) => {
             justifyContent={"center"}
             alignItems={"center"}
             width={"100%"}
-            value={user.country}
+            value={user?.country}
             isDisabled={true}
             onChange={(e) => setSelectedCountry(e.target.value)}
           >
@@ -297,9 +297,9 @@ export const ClubRegistration = ({ onClose }) => {
             )}
             {club &&
               club.members.length > 0 &&
-              club.members.map((members) => (
-                <Button fontSize={"small"} fontWeight={"bold"}>
-                  Adm: {members.admission}
+              club.members.map((member) => (
+                <Button fontSize={"small"} fontWeight={"bold"} m={1}>
+                  Adm: {member.admission}
                 </Button>
               ))}
           </Box>

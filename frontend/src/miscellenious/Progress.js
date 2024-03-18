@@ -34,21 +34,13 @@ const ProgressSlot = styled.div`
   font-weight: bold;
   padding: 0;
   margin: 0;
-
-  &.completed {
-    background-color: white;
-  }
-
-  &.remaining {
-    background-color: white;
-  }
 `;
 const progressAnimation = keyframes`
   from {
     width: 1%; /* Adjust the initial width as needed */
   }
   to {
-    width: ${({ userProgressIndex }) => (userProgressIndex + 1.2) * 10}%;
+    width: ${({ level }) => (level + 1.2) * 10}%;
   }
 `;
 
@@ -65,31 +57,41 @@ const ProgressArrow = styled.div`
   justify-content: flex-end;
   margin: 0;
   padding: 0;
-  width: ${({ userProgressIndex }) => (userProgressIndex + 1) * 10}%;
+  width: ${({ level }) => (level + 1) * 10}%;
   animation: ${progressAnimation} 2s ease-in-out;
 `;
 const Progress = ({ userBelt }) => {
   const progressLevels = [
     "Visitor",
-    beginner,
-    yellow,
-    orange,
-    red,
-    purple,
-    green,
-    blue,
-    brown,
-    black,
+    `${beginner}`,
+    `${yellow}`,
+    `${orange}`,
+    `${red}`,
+    `${purple}`,
+    `${green}`,
+    `${blue}`,
+    `${brown}`,
+    `${black}`,
   ];
-  const userProgressIndex = progressLevels.indexOf(userBelt);
+  const progress = [
+    "Visitor",
+    "Beginner",
+    "Yellow",
+    "Orange",
+    "Red",
+    "Purple",
+    "Green",
+    "Blue",
+    "Brown",
+    "Black",
+  ];
+
+  const level = progress.indexOf(userBelt);
 
   return (
     <ProgressContainer>
       {progressLevels.map((belt, index) => (
-        <ProgressSlot
-          key={index}
-          className={index <= userProgressIndex ? "completed" : "remaining"}
-        >
+        <ProgressSlot key={index}>
           <Text
             marginTop={-3}
             fontWeight={{ base: "sm", md: "md" }}
@@ -100,10 +102,10 @@ const Progress = ({ userBelt }) => {
           </Text>
         </ProgressSlot>
       ))}
-      <ProgressArrow userProgressIndex={userProgressIndex}>
+      <ProgressArrow level={level}>
         {" "}
         <Text fontSize={"small"} p={1}>
-          {(userProgressIndex + 1) * 10}%
+          {(level + 1) * 10}%
         </Text>{" "}
       </ProgressArrow>
     </ProgressContainer>

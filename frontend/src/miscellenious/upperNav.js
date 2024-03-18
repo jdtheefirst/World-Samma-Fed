@@ -226,6 +226,10 @@ function UpperNav() {
                 justifyContent={"left"}
                 background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={() => {
+                  navigate("/province");
+                  onClose();
+                }}
               >
                 Provincial level
               </Button>
