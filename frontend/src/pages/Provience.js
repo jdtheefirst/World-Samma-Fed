@@ -12,6 +12,7 @@ import { ChatState } from "../components/Context/ChatProvider";
 import { getStatesOfCountry } from "../assets/state";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
+import ProvincialCoachForm from "../Authentication/ProvinceInterim";
 
 const Provience = () => {
   const { user } = ChatState();
@@ -75,6 +76,7 @@ const Provience = () => {
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.provinces} Samma Association
         </Text>
+
         <Box
           height={"200px"}
           width={{ base: "97%", md: "70%" }}
@@ -107,10 +109,8 @@ const Provience = () => {
             ))}
         </Box>
         <Box>
-          <Text>
-            Available Clubs(show clubs available in every state when clicked)
-          </Text>
-          <Box></Box>
+          <Text>Officials: Viable Seat</Text>
+          <ProvincialCoachForm />
         </Box>
       </Box>
     </Box>

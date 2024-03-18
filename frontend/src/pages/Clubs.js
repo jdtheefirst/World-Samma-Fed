@@ -73,7 +73,7 @@ export const Clubs = () => {
     <Box
       display="flex"
       flexDir="column"
-      backgroundColor="Background"
+      backgroundColor="white"
       width="100%"
       height={"100%"}
       position={"relative"}
