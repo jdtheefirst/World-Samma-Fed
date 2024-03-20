@@ -58,7 +58,7 @@ const getCoaches = async (req, res) => {
   try {
     const coaches = await Club.find({ provience: province })
       .select("coach")
-      .populate("coach", "name, otherName admission");
+      .populate("coach", "name otherName admission");
     console.log(coaches);
     res.json(coaches);
   } catch (error) {
