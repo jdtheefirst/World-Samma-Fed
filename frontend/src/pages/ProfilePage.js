@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Box, Button, Heading, Image, Text, useToast } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import axiosInstance from "../components/config/axios";
+import axios from "axios";
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -60,8 +61,31 @@ const ProfilePage = ({ user }) => {
       navigate("/dashboard");
     }
   }, [user, navigate]);
+  const handleAcceptDecline = async (provinceId, accept) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/province/accept/decline/${provinceId}?accept=${accept}`,
+        config
+      );
 
-  console.log(club);
+      setUser((prevUser) => ({
+        ...prevUser,
+        provinceRequests: data.provinceRequests,
+      }));
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error Occurred!",
+        description: "Try again after sometime.",
+        status: "error",
+      });
+    }
+  };
 
   return (
     <Box
@@ -109,7 +133,7 @@ const ProfilePage = ({ user }) => {
           <Text>Country: {user?.country}</Text>
           <Text>Coach: {user?.coach ? user.coach : "Not a coach"}</Text>
           <Text>Highest Level Attained: {user?.belt}</Text>
-          {user.admin && (
+          {user?.admin && (
             <Button
               mt={4}
               colorScheme="teal"
@@ -124,18 +148,56 @@ const ProfilePage = ({ user }) => {
             textAlign={"start"}
             fontSize={"medium"}
             fontWeight={"bold"}
-            m={4}
             background={"white"}
             overflow={"auto"}
             boxShadow="base"
-            p="6"
+            p="4"
+            height={"200px"}
             rounded="md"
             bg="white"
+            width={"100%"}
           >
             <Heading mb={4}>Province Requests</Heading>
             {user?.provinceRequests.map((member, index) => (
-              <Text fontSize={"small"} key={member._id}>
-                {index + 1}. Name: {member.name} Adm: {member.admission}
+              <Text
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                key={member._id}
+                width={"100%"}
+              >
+                <Text
+                  p={1}
+                  fontStyle={"italic"}
+                  width={"100%"}
+                  fontSize={"x-small"}
+                >
+                  {" "}
+                  {index + 1}.{member.provincialCoach.name} Adm:
+                  {member.provincialCoach.admission} Approvals:{" "}
+                  {member.approvals.length}
+                </Text>
+                <Button
+                  borderRadius={20}
+                  background={"#A020F0"}
+                  color={"white"}
+                  _hover={{ color: "black" }}
+                  fontSize={"x-small"}
+                  onClick={() => handleAcceptDecline(member._id, true)}
+                >
+                  Approve✔️
+                </Button>
+                <Button
+                  borderRadius={20}
+                  fontSize={"x-small"}
+                  color={"white"}
+                  _hover={{ color: "black" }}
+                  background={"#A020F0"}
+                  m={1}
+                  onClick={() => handleAcceptDecline(member._id, false)}
+                >
+                  Decline
+                </Button>
               </Text>
             ))}
           </Box>

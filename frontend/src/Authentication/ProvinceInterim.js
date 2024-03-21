@@ -69,7 +69,6 @@ const ProvincialCoachForm = () => {
       getCoaches();
     }
   }, [getCoaches, user]);
-  console.log(coaches, province);
 
   return (
     <form onSubmit={handleSubmit}>
