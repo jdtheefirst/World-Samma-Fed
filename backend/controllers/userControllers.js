@@ -209,6 +209,7 @@ const recoverEmail = async (req, res) => {
         belt: userInfo.belt,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
+        provinceRequests: userInfo.provinceRequests,
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
       };
@@ -238,6 +239,7 @@ const authUser = asyncHandler(async (req, res) => {
         coach: userInfo.coach,
         certificates: userInfo.certificates,
         pic: userInfo.pic,
+        provinceRequests: userInfo.provinceRequests,
         token: generateToken(userInfo._id),
         clubRequests: userInfo.clubRequests,
       });

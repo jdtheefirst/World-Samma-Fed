@@ -8,9 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ProvincialCoachForm = () => {
-  const [coaches, setCoaches] = useState([
-    { _id: 1, name: "George Maina", admission: "U0000001A" },
-  ]);
+  const [coaches, setCoaches] = useState([]);
   const { user } = ChatState();
   const [province, setProvince] = useState();
   const [chairperson, setChairperson] = useState("");
@@ -44,18 +42,22 @@ const ProvincialCoachForm = () => {
   };
   const getCoaches = useCallback(async () => {
     if (!user) {
-      console.log("returning!!");
       navigate("/dashboard");
       return;
     }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const { data } = await axios.get("/api/province/my/province", config);
+      setProvince(data);
+    } catch (error) {
+      console.log(error);
+    }
+    try {
       const { data } = await axios.get("/api/province/get/coaches", config);
-      console.log(data);
       setCoaches(data);
     } catch (error) {
       console.log(error);
@@ -67,6 +69,7 @@ const ProvincialCoachForm = () => {
       getCoaches();
     }
   }, [getCoaches, user]);
+  console.log(coaches, province);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -119,16 +122,16 @@ const ProvincialCoachForm = () => {
                   fontWeight={"bold"}
                   p={1}
                 >
-                  {coach.name}
+                  {coach.coach.name} {coach.coach.admission}
                   <Button
-                    onClick={() => handleSendRequest(coach?._id)}
+                    onClick={() => handleSendRequest(coach?.coach._id)}
                     borderRadius={20}
                     background={"#A020F0"}
                     color={"white"}
                     _hover={{ color: "black" }}
-                    isDisabled={province?.requests.includes(coach._id)}
+                    isDisabled={province?.requests.includes(coach.coach._id)}
                   >
-                    {province?.requests.includes(coach._id)
+                    {province?.requests.includes(coach.coach._id)
                       ? "Request Sent"
                       : "Send Request"}
                   </Button>
@@ -136,7 +139,7 @@ const ProvincialCoachForm = () => {
               ))}
           </Box>
 
-          <FormControl id="approvals">
+          <FormControl id="approvals" isRequired>
             <FormLabel>Required Approvals</FormLabel>
             {province?.approvals.length}/20
           </FormControl>
@@ -148,23 +151,35 @@ const ProvincialCoachForm = () => {
             name="chairman"
             value={chairperson}
             onChange={(e) => setChairperson(e.target.chairperson)}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !province?.approvals.some((adm) => adm.admission === chairperson)
+            }
           />
         </FormControl>
-        <FormControl id="secretary">
+        <FormControl id="secretary" isRequired>
           <FormLabel>Secretary</FormLabel>
           <Input
             type="text"
             name="secretary"
             value={secretary}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !province?.approvals.some((adm) => adm.admission === secretary)
+            }
             onChange={(e) => setSecretary(e.target.secretary)}
           />
         </FormControl>
-        <FormControl id="vice-chairman">
+        <FormControl id="vice-chairman" isRequired>
           <FormLabel>Vice Chairperson</FormLabel>
           <Input
             type="text"
             name="viceChairman"
             value={viceChair}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !province?.approvals.some((adm) => adm.admission === viceChair)
+            }
             onChange={(e) => setViceChair(e.target.viceChair)}
           />
         </FormControl>
@@ -177,7 +192,11 @@ const ProvincialCoachForm = () => {
             isDisabled={true}
           />
         </FormControl>
-        <Button type="submit" colorScheme="blue">
+        <Button
+          type="submit"
+          colorScheme="blue"
+          isDisabled={province?.approvals.length < 20}
+        >
           Submit
         </Button>
       </VStack>

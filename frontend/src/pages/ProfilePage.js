@@ -73,23 +73,34 @@ const ProfilePage = ({ user }) => {
       alignItems={"center"}
       background={"white"}
     >
-      <UpperNav />
+      <UpperNav />{" "}
+      <Image
+        src={user?.pic}
+        alt={`Profile*`}
+        borderRadius="full"
+        boxSize={{ base: "100px", md: "200px" }}
+        border="4px solid white"
+        mt={{ base: 350, md: 0 }}
+      />
       <Box
         display={"flex"}
         flexWrap={"wrap"}
-        p={10}
-        mt={40}
         width={{ base: "100%", md: "80%" }}
+        boxShadow="dark-lg"
+        p="6"
+        rounded="md"
+        bg="white"
       >
-        <Image
-          src={user?.pic}
-          alt={`Profile*`}
-          borderRadius="full"
-          boxSize={{ base: "100px", md: "200px" }}
-          border="4px solid white"
-          marginBottom={4}
-        />
-        <Box textAlign={"start"} fontSize={"medium"} fontWeight={"bold"} m={2}>
+        <Box
+          textAlign={"start"}
+          fontSize={"medium"}
+          fontWeight={"bold"}
+          m={2}
+          boxShadow="base"
+          p="6"
+          rounded="md"
+          bg="white"
+        >
           <Heading mb={4}>Profile</Heading>
           <Text>
             Name: {user?.name} {user?.otherName}
@@ -108,6 +119,27 @@ const ProfilePage = ({ user }) => {
             </Button>
           )}
         </Box>
+        {user?.provinceRequests?.length > 0 && (
+          <Box
+            textAlign={"start"}
+            fontSize={"medium"}
+            fontWeight={"bold"}
+            m={4}
+            background={"white"}
+            overflow={"auto"}
+            boxShadow="base"
+            p="6"
+            rounded="md"
+            bg="white"
+          >
+            <Heading mb={4}>Province Requests</Heading>
+            {user?.provinceRequests.map((member, index) => (
+              <Text fontSize={"small"} key={member._id}>
+                {index + 1}. Name: {member.name} Adm: {member.admission}
+              </Text>
+            ))}
+          </Box>
+        )}
         {user?.coach && club && (
           <>
             <Box
@@ -116,7 +148,10 @@ const ProfilePage = ({ user }) => {
               fontWeight={"bold"}
               m={2}
               background={"white"}
-              p={2}
+              boxShadow="base"
+              p="6"
+              rounded="md"
+              bg="white"
             >
               <Heading mb={4}>Club Details</Heading>
               <Text>Club Name: {club.name}</Text>
@@ -137,6 +172,11 @@ const ProfilePage = ({ user }) => {
                 fontWeight={"bold"}
                 m={4}
                 background={"white"}
+                overflow={"auto"}
+                boxShadow="base"
+                p="6"
+                rounded="md"
+                bg="white"
               >
                 <Heading mb={4}>Members List</Heading>
                 {club.members.length > 0 &&

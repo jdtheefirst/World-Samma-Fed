@@ -4,7 +4,7 @@ const ProvincialCoach = require("../models/provinceModel");
 const User = require("../models/userModel");
 
 const makeProvincialRequests = async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user._id;
   const { coachId } = req.params;
   try {
     const myProvince = await ProvincialCoach.findOne({
@@ -12,9 +12,9 @@ const makeProvincialRequests = async (req, res) => {
     });
     if (myProvince) {
       myProvince.requests.push(coachId);
-      await myProvince.save();
+      await myProvince.save().populate("approvals", "name otherName admission");
 
-      const user = await User.findByIdAndUpdate(coachId, {
+      await User.findByIdAndUpdate(coachId, {
         $push: { provinceRequests: myProvince._id },
       });
       const recipientSocketId = getUserSocket(coachId);
@@ -28,8 +28,15 @@ const makeProvincialRequests = async (req, res) => {
           .emit("provincial request", populatedProvince);
         console.log(`Broadcast sent to ${coachId}`);
       } else {
-        console.log(`Member ${memberId} not connected`);
+        console.log(`Member ${coachId} not connected`);
       }
+      res.json(myProvince);
+    } else {
+      const myProvince = await ProvincialCoach.create({
+        provincialCoach: userId,
+        requests: [coachId],
+      }).populate("approvals", "name otherName admission");
+      res.json(myProvince);
     }
   } catch (error) {
     console.error(error);
@@ -45,8 +52,8 @@ const fecthMyProvince = async (req, res) => {
     const myProvince = await ProvincialCoach.findOne({
       provincialCoach: userId,
     })
-      .populate("provincialCoach")
-      .execPopulate();
+      .populate("approvals")
+      .populate("provincialCoach");
     res.json(myProvince);
   } catch (error) {
     console.log(error);
@@ -59,7 +66,6 @@ const getCoaches = async (req, res) => {
     const coaches = await Club.find({ provience: province })
       .select("coach")
       .populate("coach", "name otherName admission");
-    console.log(coaches);
     res.json(coaches);
   } catch (error) {
     console.error("Error fetching coaches:", error);

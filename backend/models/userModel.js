@@ -32,6 +32,12 @@ const userSchema = mongoose.Schema(
         ref: "Club",
       },
     ],
+    provinceRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ProvincialCoach",
+      },
+    ],
   },
   { versionKey: false },
   { timestamps: true }

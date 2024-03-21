@@ -124,12 +124,23 @@ export const Dashboard = ({ courses }) => {
       setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
     });
 
-    socket.on("updates", (clubRequests) => {
+    socket.on("updates", (requests) => {
       setUser((prevUser) => ({
         ...prevUser,
-        clubRequests: clubRequests.clubRequests,
+        clubRequests: requests.clubRequests,
+        provinceRequests: requests.provinceRequests,
       }));
     });
+    socket.on("provincial request", (request) => {
+      setUser((prevUser) => ({
+        ...prevUser,
+        provinceRequests: [
+          ...prevUser.provinceRequests,
+          request.provincialCoach,
+        ],
+      }));
+    });
+
     socket.on("liveSessionStarted", (clubName) => {
       setLive((prev) => ({ ...prev, clubName }));
     });
@@ -140,6 +151,7 @@ export const Dashboard = ({ courses }) => {
 
     return () => {
       socket.off("updates");
+      socket.off("provincial request");
       socket.off("liveSessionStarted");
       socket.off("message received");
       socket.off("certificates");

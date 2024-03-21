@@ -89,10 +89,15 @@ const initializeSocketIO = (server) => {
     socket.on("newConnection", async (userData) => {
       const email = userData.email;
 
-      const clubRequests = await User.findOne({ email }).select("clubRequests");
+      const requests = await User.findOne({ email })
+        .select("clubRequests provinceRequests")
+        .populate({
+          path: "provinceRequests",
+          select: "name admission",
+        });
 
-      if (clubRequests) {
-        socket.emit("updates", clubRequests);
+      if (requests) {
+        socket.emit("updates", requests);
       }
 
       const userId = userData._id;

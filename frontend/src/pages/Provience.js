@@ -56,7 +56,7 @@ const Provience = () => {
     <Box
       display="flex"
       flexDir="column"
-      backgroundColor="Background"
+      backgroundColor="white"
       overflowY={"auto"}
       width="100%"
     >
