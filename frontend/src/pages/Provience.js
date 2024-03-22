@@ -3,22 +3,24 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-  Center,
   Spinner,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
-import { getStatesOfCountry } from "../assets/state";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import ProvincialCoachForm from "../Authentication/ProvinceInterim";
+import formatMessageTime from "../components/config/formatTime";
 
 const Provience = () => {
   const { user } = ChatState();
   const [loading, setLoading] = useState(false);
   const [clubs, setClubs] = useState([]);
+  const [province, setProvince] = useState(undefined);
   const navigate = useNavigate();
+  const toast = useToast();
 
   const fetchClubs = useCallback(async () => {
     if (!user) {
@@ -26,24 +28,42 @@ const Provience = () => {
       return;
     }
     setLoading(true);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const { data } = await axios.get(
+        `/api/province/officials/${user.country}/${user.provinces}`,
+        config
+      );
+      setProvince(data);
 
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: "An Error Occurred!",
+        description: "Try again after sometime.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    try {
       const { data } = await axios.get(
         `/api/clubs/${user.country}/${user.provinces}`,
         config
       );
+
       setClubs(data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching or creating clubs:", error);
     }
-  }, [user, setClubs]);
+  }, [user, setClubs, setProvince]);
   useEffect(() => {
     if (!user) {
       navigate("/dashboard");
@@ -113,8 +133,34 @@ const Provience = () => {
             ))}
         </Box>
         <Box>
-          <Text>Officials: Viable Seat</Text>
-          <ProvincialCoachForm />
+          Officials: {province && "Viable position"}
+          {province === undefined ? (
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              boxShadow="2xl"
+              p="6"
+              rounded="md"
+              bg="white"
+              fontStyle={"italic"}
+            >
+              <Text>
+                Coach: {province?.provincialCoach?.name}{" "}
+                {province?.provincialCoach?.otherName}{" "}
+                {province?.provincialCoach?.belt}
+              </Text>
+              <Text>Chairperson: {province?.chairman} </Text>
+              <Text>Secretary: {province?.secretary} </Text>
+              <Text>viceChairperson: {province?.viceChairman} </Text>
+              <Text>
+                Interim commencement: {formatMessageTime(province?.updatedAt)}{" "}
+              </Text>
+            </Box>
+          ) : (
+            <ProvincialCoachForm />
+          )}
         </Box>
       </Box>
     </Box>

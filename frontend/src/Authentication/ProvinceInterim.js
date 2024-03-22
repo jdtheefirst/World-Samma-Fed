@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ChatState } from "../components/Context/ChatProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useColorModeValue } from "@chakra-ui/react";
 
 const ProvincialCoachForm = () => {
   const [coaches, setCoaches] = useState([]);
@@ -15,11 +16,26 @@ const ProvincialCoachForm = () => {
   const [viceChair, setViceChair] = useState("");
   const [secretary, setSecretary] = useState("");
   const navigate = useNavigate();
-  console.log(coaches);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    if (!chairperson || !secretary || !viceChair || !user) {
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const info = { chairperson, secretary, viceChair };
+      const { data } = await axios.post(`/api/province/register`, info, config);
+      console.log(data);
+      setProvince(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSendRequest = async (coachId) => {
@@ -33,7 +49,12 @@ const ProvincialCoachForm = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`/api/province/${coachId}`, config);
+      const body = { country: user.country, province: user.provinces };
+      const { data } = await axios.get(
+        `/api/province/${coachId}`,
+        body,
+        config
+      );
       console.log(data);
       setProvince(data);
     } catch (error) {
@@ -62,7 +83,7 @@ const ProvincialCoachForm = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [user, navigate, setCoaches]);
+  }, [user, navigate, setCoaches, setProvince]);
 
   useEffect(() => {
     if (user) {
@@ -81,6 +102,20 @@ const ProvincialCoachForm = () => {
         rounded="md"
         bg="white"
       >
+        {" "}
+        <Text
+          fontSize={"sm"}
+          fontWeight={500}
+          bg={useColorModeValue("green.50", "green.900")}
+          p={2}
+          px={3}
+          color={"green.500"}
+          rounded={"full"}
+        >
+          Status (*
+          {province && province.registered ? "Registered ✔️" : "Not registered"}
+          )
+        </Text>
         <Box
           display={"flex"}
           flexDir={"column"}

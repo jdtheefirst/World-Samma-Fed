@@ -6,6 +6,8 @@ const {
   getCoaches,
   fecthMyProvince,
   acceptDecline,
+  registerProvince,
+  getProvince,
 } = require("../controllers/provinceControllers");
 
 const router = express.Router();
@@ -16,5 +18,9 @@ router.route("/my/province").get(protect, limiter, fecthMyProvince);
 router
   .route("/accept/decline/:provinceId")
   .get(protect, limiter, acceptDecline);
+router.route("/register").post(protect, limiter, registerProvince);
+router
+  .route("/officials/:country/:province")
+  .get(protect, limiter, getProvince);
 
 module.exports = router;

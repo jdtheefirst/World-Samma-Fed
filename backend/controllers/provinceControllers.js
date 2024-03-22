@@ -6,6 +6,7 @@ const User = require("../models/userModel");
 const makeProvincialRequests = async (req, res) => {
   const userId = req.user._id;
   const { coachId } = req.params;
+  const { country, province } = req.body;
   try {
     const myProvince = await ProvincialCoach.findOne({
       provincialCoach: userId,
@@ -37,6 +38,8 @@ const makeProvincialRequests = async (req, res) => {
     } else {
       const myProvince = await ProvincialCoach.create({
         provincialCoach: userId,
+        country: country,
+        province: province,
         requests: [coachId],
       }).populate("approvals", "name otherName admission");
       res.json(myProvince);
@@ -129,10 +132,50 @@ const acceptDecline = async (req, res) => {
     res.status(500).json({ error: "Failed to accept/decline" });
   }
 };
+const registerProvince = async (req, res) => {
+  const { chairperson, secretary, viceChair } = req.body;
+  const userId = req.user._id;
+  try {
+    const Province = await ProvincialCoach.findOneAndUpdate(
+      { provincialCoach: userId },
+      {
+        chairman: chairperson,
+        secretary: secretary,
+        viceChairman: viceChair,
+        registered: true,
+      },
+      { new: true }
+    );
+    res.status(201).json(Province);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to register province" });
+  }
+};
+const getProvince = async (req, res) => {
+  const { country, province } = req.params;
+  console.log(country, province);
+  try {
+    const Province = await ProvincialCoach.find({
+      country: country,
+      province: province,
+      registered: true,
+    }).populate({
+      path: "provincialCoach",
+      select: "name admission belt",
+    });
 
+    res.status(201).json(Province);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Failed to register province" });
+  }
+};
 module.exports = {
   makeProvincialRequests,
   fecthMyProvince,
   getCoaches,
   acceptDecline,
+  registerProvince,
+  getProvince,
 };
