@@ -38,7 +38,10 @@ const Provience = () => {
         `/api/province/officials/${user.country}/${user.provinces}`,
         config
       );
-      setProvince(data);
+      if (data.length === 0) {
+      } else {
+        setProvince(data);
+      }
 
       setLoading(false);
     } catch (error) {
@@ -63,7 +66,7 @@ const Provience = () => {
       setLoading(false);
       console.error("Error fetching or creating clubs:", error);
     }
-  }, [user, setClubs, setProvince]);
+  }, [user, setClubs, setProvince, toast, setLoading]);
   useEffect(() => {
     if (!user) {
       navigate("/dashboard");

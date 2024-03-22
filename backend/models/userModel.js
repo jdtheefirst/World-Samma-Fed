@@ -38,6 +38,12 @@ const userSchema = mongoose.Schema(
         ref: "ProvincialCoach",
       },
     ],
+    nationalRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "NationalCoach",
+      },
+    ],
   },
   { versionKey: false },
   { timestamps: true }

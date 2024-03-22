@@ -8,11 +8,11 @@ const clubRouter = require("./routes/clubsRouter");
 const messageRouter = require("./routes/messageRoute");
 const submitRouter = require("./routes/submitRouter");
 const provinceRouter = require("./routes/provinceRouter");
+const nationalRouter = require("./routes/nationalRouter");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 const bodyParser = require("body-parser");
 const { initializeSocketIO } = require("./socket");
-const router = require("./routes/provinceRouter");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -36,6 +36,7 @@ app.use("/api/message", messageRouter);
 app.use("/api/clubs", clubRouter);
 app.use("/api/submit", submitRouter);
 app.use("/api/province", provinceRouter);
+app.use("/api/national", nationalRouter);
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {

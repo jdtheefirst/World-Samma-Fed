@@ -237,6 +237,10 @@ function UpperNav() {
                 background={"white"}
                 justifyContent={"left"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={() => {
+                  navigate("/national");
+                  onClose();
+                }}
               >
                 National level
               </Button>

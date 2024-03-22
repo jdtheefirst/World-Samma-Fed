@@ -1,5 +1,6 @@
 const { getUserSocket } = require("../config/socketUtils");
-const Club = require("../models/clubsModel");
+
+const NationalCoach = require("../models/nationalModel");
 const ProvincialCoach = require("../models/provinceModel");
 const User = require("../models/userModel");
 
@@ -8,8 +9,8 @@ const makeProvincialRequests = async (req, res) => {
   const { coachId } = req.params;
   const { country, province } = req.body;
   try {
-    const myProvince = await ProvincialCoach.findOne({
-      provincialCoach: userId,
+    const myProvince = await NationalCoach.findOne({
+      nationalCoach: userId,
     });
     if (myProvince) {
       myProvince.requests.push(coachId);
@@ -19,13 +20,13 @@ const makeProvincialRequests = async (req, res) => {
         "name otherName admission"
       );
       await User.findByIdAndUpdate(coachId, {
-        $push: { provinceRequests: myProvince._id },
+        $push: { nationalRequests: myProvince._id },
       });
       const recipientSocketId = getUserSocket(coachId);
 
       if (recipientSocketId) {
         const populatedProvince = await myProvince
-          .populate("provincialCoach")
+          .populate("nationalCoach")
           .execPopulate();
         socket
           .to(recipientSocketId)
@@ -36,8 +37,8 @@ const makeProvincialRequests = async (req, res) => {
       }
       res.json(populatedProvince);
     } else {
-      const myProvince = await ProvincialCoach.create({
-        provincialCoach: userId,
+      const myProvince = await NationalCoach.create({
+        nationalCoach: userId,
         country: country,
         province: province,
         requests: [coachId],
@@ -55,11 +56,11 @@ const fecthMyProvince = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    const myProvince = await ProvincialCoach.findOne({
-      provincialCoach: userId,
+    const myProvince = await NationalCoach.findOne({
+      nationalCoach: userId,
     })
       .populate("approvals")
-      .populate("provincialCoach");
+      .populate("nationalCoach");
     res.json(myProvince);
   } catch (error) {
     console.log(error);
@@ -67,11 +68,14 @@ const fecthMyProvince = async (req, res) => {
 };
 const getCoaches = async (req, res) => {
   const province = req.user.provinces;
+  const country = req.user.selectedCountry;
+
+  console.log(country);
 
   try {
-    const coaches = await Club.find({ provience: province })
-      .select("coach")
-      .populate("coach", "name otherName admission");
+    const coaches = await ProvincialCoach.find({ province: province })
+      .select("provincialCoach")
+      .populate("name otherName admission");
     res.json(coaches);
   } catch (error) {
     console.error("Error fetching coaches:", error);
@@ -90,18 +94,17 @@ const acceptDecline = async (req, res) => {
     // Check if the user exists and if provinceId exists in provinceRequests
     if (
       user &&
-      user.provinceRequests.some((request) =>
-        request.provinceId.equals(provinceId)
-      )
+      user &&
+      user.nationalRequests.some((request) => request.equals(provinceId))
     ) {
       // Remove provinceId from provinceRequests
-      user.provinceRequests = user.provinceRequests.filter(
-        (request) => !request.provinceId.equals(provinceId)
+      user.nationalRequests = user.nationalRequests.filter(
+        (request) => !request.equals(provinceId)
       );
       await user.save();
 
       // Find the provincial coach by ID
-      const province = await ProvincialCoach.findById(provinceId);
+      const province = await NationalCoach.findById(provinceId);
 
       // Update the provincial coach based on accept value
       if (province) {
@@ -115,11 +118,8 @@ const acceptDecline = async (req, res) => {
       // Populate the provinceRequests field in the provincial coach and send the response
       const populatedProvince = await province
         .populate({
-          path: "provinceRequests",
-          populate: {
-            path: "provincialCoach",
-            select: "name admission",
-          },
+          path: "nationalCoach",
+          select: "name admission",
         })
         .execPopulate();
 
@@ -136,8 +136,8 @@ const registerProvince = async (req, res) => {
   const { chairperson, secretary, viceChair } = req.body;
   const userId = req.user._id;
   try {
-    const Province = await ProvincialCoach.findOneAndUpdate(
-      { provincialCoach: userId },
+    const Province = await NationalCoach.findOneAndUpdate(
+      { nationalCoach: userId },
       {
         chairman: chairperson,
         secretary: secretary,
@@ -155,12 +155,12 @@ const registerProvince = async (req, res) => {
 const getProvince = async (req, res) => {
   const { country, province } = req.params;
   try {
-    const Province = await ProvincialCoach.find({
+    const Province = await NationalCoach.find({
       country: country,
       province: province,
       registered: true,
     }).populate({
-      path: "provincialCoach",
+      path: "nationalCoach",
       select: "name admission belt",
     });
 

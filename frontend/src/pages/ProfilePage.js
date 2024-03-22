@@ -86,6 +86,34 @@ const ProfilePage = ({ user }) => {
       });
     }
   };
+  const handleAcceptDeclineNational = async (nationalId, accept) => {
+    if (!user) {
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/national/accept/decline/${nationalId}?accept=${accept}`,
+        config
+      );
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        nationalRequests: data.nationalRequests,
+      }));
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error Occurred!",
+        description: "Try again after sometime.",
+        status: "error",
+      });
+    }
+  };
 
   return (
     <Box
@@ -195,6 +223,65 @@ const ProfilePage = ({ user }) => {
                   background={"#A020F0"}
                   m={1}
                   onClick={() => handleAcceptDecline(member._id, false)}
+                >
+                  Decline
+                </Button>
+              </Text>
+            ))}
+          </Box>
+        )}
+        {user?.nationalRequests?.length > 0 && (
+          <Box
+            textAlign={"start"}
+            fontSize={"medium"}
+            fontWeight={"bold"}
+            background={"white"}
+            overflow={"auto"}
+            boxShadow="base"
+            p="4"
+            height={"200px"}
+            rounded="md"
+            bg="white"
+            width={"100%"}
+          >
+            <Heading mb={4}>National Requests</Heading>
+            {user?.nationalRequests.map((member, index) => (
+              <Text
+                display={"flex"}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+                key={member._id}
+                width={"100%"}
+              >
+                <Text
+                  p={1}
+                  fontStyle={"italic"}
+                  width={"100%"}
+                  fontSize={"x-small"}
+                >
+                  {" "}
+                  {index + 1}.{member.nationalCoach.name} Adm:
+                  {member.nationalCoach.admission} Approvals:{" "}
+                  {member.approvals.length}
+                </Text>
+                <Button
+                  borderRadius={20}
+                  background={"#A020F0"}
+                  color={"white"}
+                  _hover={{ color: "black" }}
+                  fontSize={"x-small"}
+                  onClick={() => handleAcceptDeclineNational(member._id, true)}
+                >
+                  Approve✔️
+                </Button>
+                <Button
+                  borderRadius={20}
+                  fontSize={"x-small"}
+                  color={"white"}
+                  _hover={{ color: "black" }}
+                  background={"#A020F0"}
+                  m={1}
+                  onClick={() => handleAcceptDeclineNational(member._id, false)}
                 >
                   Decline
                 </Button>

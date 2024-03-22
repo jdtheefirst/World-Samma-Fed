@@ -12,6 +12,7 @@ import SubmissionPage from "./pages/Submit";
 import ProfilePage from "./pages/ProfilePage";
 import AdminWorkSlot from "./pages/AdminWorkSlot";
 import Provience from "./pages/Provience";
+import National from "./pages/National";
 
 const courses = [
   {
@@ -200,6 +201,7 @@ function App() {
           element={<ClubDetailes user={user} />}
         />
         <Route path="/province" element={<Provience user={user} />} />
+        <Route path="national" element={<National />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
