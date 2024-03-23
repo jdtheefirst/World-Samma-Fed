@@ -180,6 +180,8 @@ const searchUser = async (req, res) => {
       coach: userInfo.coach,
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
+      nationalRequests: userInfo.nationalRequests,
+      provinceRequests: userInfo.provinceRequests,
     };
     res.status(201).json(responseData);
   }
@@ -209,6 +211,7 @@ const recoverEmail = async (req, res) => {
         belt: userInfo.belt,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
+        nationalRequests: userInfo.nationalRequests,
         provinceRequests: userInfo.provinceRequests,
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
@@ -239,6 +242,7 @@ const authUser = asyncHandler(async (req, res) => {
         coach: userInfo.coach,
         certificates: userInfo.certificates,
         pic: userInfo.pic,
+        nationalRequests: userInfo.nationalRequests,
         provinceRequests: userInfo.provinceRequests,
         token: generateToken(userInfo._id),
         clubRequests: userInfo.clubRequests,
@@ -507,6 +511,7 @@ const clubRequests = async (req, res) => {
     } else {
       club.clubRequests.push(userId);
       await club.save();
+      const populatedClub = await Club.findById(club._id).populate("members");
 
       const userInfo = await User.findById(userId);
       if (userInfo) {
@@ -522,7 +527,7 @@ const clubRequests = async (req, res) => {
         console.log("Recipient not connected");
       }
 
-      res.json(club);
+      res.json(populatedClub);
     }
   } catch (error) {
     console.log(error);

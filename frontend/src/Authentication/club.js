@@ -24,6 +24,9 @@ export const ClubRegistration = ({ onClose }) => {
   const [name, setName] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(user?.country);
   const [provience, setProvience] = useState(user.provinces);
+  const [chairperson, setChairperson] = useState("");
+  const [viceChair, setViceChair] = useState("");
+  const [secretary, setSecretary] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
   const [suggest, setSuggest] = useState([]);
   const navigate = useNavigate();
@@ -128,19 +131,50 @@ export const ClubRegistration = ({ onClose }) => {
     },
     [user.token, user._id, setClub]
   );
+  const handleCreateClub = async (e) => {
+    e.preventDefault();
+    if (!chairperson || !secretary || !viceChair || !user) {
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const info = { chairperson, secretary, viceChair };
+      const { data } = await axios.post(`/api/club/register`, info, config);
+      console.log(data);
+      setClub(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <VStack spacing="3px" backgroundColor={"whitesmoke"} p={1}>
-      <Button
-        fontSize={"x-large"}
-        marginRight={"90%"}
-        onClick={handleFormClose}
-        width={"10px"}
+    <VStack
+      backgroundColor={"whitesmoke"}
+      width={"100%"}
+      boxShadow="dark-lg"
+      p="6"
+      rounded="md"
+      bg="white"
+    >
+      <Box
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        fontSize={"large"}
+        width={"100%"}
+        mt={20}
       >
-        X
-      </Button>
-      <Text fontSize={"larger"} fontWeight={"bold"}>
-        Club Form
+        <Button fontSize={"x-large"} onClick={handleFormClose} width={"10px"}>
+          X
+        </Button>
+        <Text fontWeight={"bold"} m={1}>
+          Club Form
+        </Text>
         <Text
           fontSize={"sm"}
           fontWeight={500}
@@ -153,7 +187,7 @@ export const ClubRegistration = ({ onClose }) => {
           Status (*{club && club.registration ? "Registered" : "Not registered"}
           )
         </Text>
-      </Text>
+      </Box>
       <Box
         m={3}
         p={3}
@@ -227,20 +261,21 @@ export const ClubRegistration = ({ onClose }) => {
             />
           </FormControl>
         )}
+        <FormControl id="first-name" isRequired>
+          <FormLabel textColor={"#c255ed"}>
+            Make requests to members around you.
+          </FormLabel>
+        </FormControl>
         <Box
           display={"flex"}
           flexDir={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          m={1}
           borderRadius={3}
           width={"100%"}
           height={"200px"}
           overflow="auto"
         >
-          <Text textAlign={"center"} fontSize={"medium"}>
-            Make requests to members around you.
-          </Text>
           {!suggest && (
             <Text textAlign={"center"}>
               No student without a club in this region.
@@ -255,7 +290,7 @@ export const ClubRegistration = ({ onClose }) => {
                 key={suggestion._id}
                 style={{ color: "black" }}
                 width={"90%"}
-                m={3}
+                m={1}
               >
                 <Text fontSize={"small"} fontWeight={"bold"}>
                   Name: {suggestion.name}, Adm: {suggestion.admission}
@@ -304,7 +339,66 @@ export const ClubRegistration = ({ onClose }) => {
               ))}
           </Box>
         </FormControl>
-        <Button colorScheme="blue" width="100%" style={{ marginTop: 15 }}>
+        <FormControl id="chairman" isRequired>
+          <FormLabel>Chairperson</FormLabel>
+          <Input
+            type="text"
+            name="chairman"
+            value={chairperson}
+            onChange={(e) => setChairperson(e.target.chairperson)}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !club?.members.some((adm) => adm.admission === chairperson)
+            }
+          />
+        </FormControl>
+        <FormControl id="secretary" isRequired>
+          <FormLabel>Secretary</FormLabel>
+          <Input
+            type="text"
+            name="secretary"
+            value={secretary}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !club?.members.some((adm) => adm.admission === secretary)
+            }
+            onChange={(e) => setSecretary(e.target.secretary)}
+          />
+        </FormControl>
+        <FormControl id="vice-chairman" isRequired>
+          <FormLabel>Vice Chairperson</FormLabel>
+          <Input
+            type="text"
+            name="viceChairman"
+            value={viceChair}
+            placeholder="Input valid adm of the party"
+            isInvalid={
+              !club?.members.some((adm) => adm.admission === viceChair)
+            }
+            onChange={(e) => setViceChair(e.target.viceChair)}
+          />
+        </FormControl>
+        <FormControl id="provincial-coach">
+          <FormLabel>Coach</FormLabel>
+          <Input
+            type="text"
+            name="provincialCoach"
+            value={user?.admission}
+            isDisabled={true}
+          />
+        </FormControl>
+        <Button
+          colorScheme="blue"
+          width="100%"
+          style={{ marginTop: 15 }}
+          isDisabled={
+            club?.members.length < 20 ||
+            !chairperson ||
+            !secretary ||
+            !viceChair
+          }
+          onClick={() => handleCreateClub()}
+        >
           <Text> Register Club </Text>
         </Button>{" "}
       </Box>

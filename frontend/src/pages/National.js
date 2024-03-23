@@ -85,7 +85,6 @@ const National = () => {
     }
     fetchClubs();
   }, [fetchClubs, navigate, user]);
-  console.log(national);
   return (
     <Box
       display="flex"
@@ -119,7 +118,9 @@ const National = () => {
           {" "}
           {subdivisions &&
             subdivisions.map((subdivision) => (
-              <Button m={1}>{subdivision.name}</Button>
+              <Button key={subdivision._id} m={1}>
+                {subdivision.name}
+              </Button>
             ))}
         </Box>
 
@@ -173,7 +174,6 @@ const National = () => {
                   borderRadius={20}
                   onClick={() => {
                     handleInterim();
-                    setShow(true);
                   }}
                 >
                   Interim

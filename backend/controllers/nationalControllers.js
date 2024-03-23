@@ -30,7 +30,7 @@ const makeProvincialRequests = async (req, res) => {
           .execPopulate();
         socket
           .to(recipientSocketId)
-          .emit("provincial request", populatedProvince);
+          .emit("national request", populatedProvince);
         console.log(`Broadcast sent to ${coachId}`);
       } else {
         console.log(`Member ${coachId} not connected`);

@@ -129,6 +129,7 @@ export const Dashboard = ({ courses }) => {
         ...prevUser,
         clubRequests: requests.clubRequests,
         provinceRequests: requests.provinceRequests,
+        nationalRequests: requests.nationalRequests,
       }));
     });
     socket.on("provincial request", (request) => {
@@ -138,6 +139,12 @@ export const Dashboard = ({ courses }) => {
           ...prevUser.provinceRequests,
           request.provincialCoach,
         ],
+      }));
+    });
+    socket.on("national request", (request) => {
+      setUser((prevUser) => ({
+        ...prevUser,
+        provinceRequests: [...prevUser.nationalRequests, request.nationalCoach],
       }));
     });
 

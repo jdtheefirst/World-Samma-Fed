@@ -261,8 +261,7 @@ const ProfilePage = ({ user }) => {
                 >
                   {" "}
                   {index + 1}.{member.nationalCoach.name} Adm:
-                  {member.nationalCoach.admission} Approvals:{" "}
-                  {member.approvals.length}
+                  {member.nationalCoach.admission}
                 </Text>
                 <Button
                   borderRadius={20}

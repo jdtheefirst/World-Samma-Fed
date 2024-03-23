@@ -75,8 +75,10 @@ export const Clubs = () => {
       flexDir="column"
       backgroundColor="white"
       width="100%"
-      height={"100%"}
-      position={"relative"}
+      overflowX={"auto"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      pt={{ base: 35, md: 20 }}
     >
       <Box
         position={"fixed"}
@@ -100,8 +102,14 @@ export const Clubs = () => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        width={"100%"}
+        width={"97%"}
         backgroundColor="Background"
+        boxShadow="dark-lg"
+        m={6}
+        p="6"
+        rounded="md"
+        bg="white"
+        fontStyle={"italic"}
       >
         <FormControl
           id="provinces"

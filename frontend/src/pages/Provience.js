@@ -13,13 +13,16 @@ import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import ProvincialCoachForm from "../Authentication/ProvinceInterim";
 import formatMessageTime from "../components/config/formatTime";
+import { getCountryFlag } from "../assets/state";
 
 const Provience = () => {
   const { user } = ChatState();
   const [loading, setLoading] = useState(false);
   const [clubs, setClubs] = useState([]);
-  const [province, setProvince] = useState(undefined);
+  const [province, setProvince] = useState(null);
   const navigate = useNavigate();
+  const flag = getCountryFlag(user?.country);
+  const [show, setShow] = useState(false);
   const toast = useToast();
 
   const fetchClubs = useCallback(async () => {
@@ -75,6 +78,21 @@ const Provience = () => {
     fetchClubs();
   }, [fetchClubs, navigate, user]);
 
+  const handleInterim = () => {
+    if (user.belt !== "Black") {
+      toast({
+        title: `Your highest rank is ${user.belt}`,
+        description:
+          "Head of a Provincial Association must have attained Black.",
+        status: "info",
+        isClosable: true,
+        duration: 5000,
+      });
+    } else {
+      setShow(true);
+    }
+  };
+
   return (
     <Box
       display="flex"
@@ -92,7 +110,7 @@ const Provience = () => {
         mt={20}
       >
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
-          Country: {user?.country}
+          Country: {user?.country} {flag}
         </Text>
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.provinces} Samma Association
@@ -135,9 +153,22 @@ const Provience = () => {
               </Button>
             ))}
         </Box>
-        <Box>
-          Officials: {province && "Viable position"}
-          {province === undefined ? (
+        <Box
+          display={"flex"}
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          boxShadow="dark-lg"
+          m={2}
+          p={4}
+          rounded="md"
+          bg="white"
+          fontStyle={"italic"}
+        >
+          {" "}
+          {loading && <Spinner />}
+          Officials: {!province && "Viable position"}
+          {province !== null ? (
             <Box
               display={"flex"}
               flexDir={"column"}
@@ -162,7 +193,23 @@ const Provience = () => {
               </Text>
             </Box>
           ) : (
-            <ProvincialCoachForm />
+            <>
+              {" "}
+              {!show && (
+                <Button
+                  bg={"purple"}
+                  color={"white"}
+                  _hover={{ color: "black" }}
+                  borderRadius={20}
+                  onClick={() => {
+                    handleInterim();
+                  }}
+                >
+                  Interim
+                </Button>
+              )}
+              {show && <ProvincialCoachForm />}
+            </>
           )}
         </Box>
       </Box>
