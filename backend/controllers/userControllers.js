@@ -82,6 +82,7 @@ const registerUsers = asyncHandler(async (req, res) => {
   };
 
   const admission = await getNextAdminNumber("U");
+  const WSF = await User.findOne({ admin: true });
   const user = {
     name,
     email,
@@ -92,6 +93,7 @@ const registerUsers = asyncHandler(async (req, res) => {
     selectedCountry,
     otherName,
     provinces,
+    WSF,
   };
 
   const userInfo = await User.create(user);
@@ -112,6 +114,7 @@ const registerUsers = asyncHandler(async (req, res) => {
       coach: userInfo.coach,
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
+      wsf: userInfo.WSF,
       token: generateToken(userInfo._id),
     };
 
@@ -181,6 +184,7 @@ const searchUser = async (req, res) => {
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
       nationalRequests: userInfo.nationalRequests,
+      wsf: userInfo.WSF,
       provinceRequests: userInfo.provinceRequests,
     };
     res.status(201).json(responseData);
@@ -212,6 +216,7 @@ const recoverEmail = async (req, res) => {
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
         nationalRequests: userInfo.nationalRequests,
+        wsf: userInfo.WSF,
         provinceRequests: userInfo.provinceRequests,
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
@@ -245,10 +250,12 @@ const authUser = asyncHandler(async (req, res) => {
         nationalRequests: userInfo.nationalRequests,
         provinceRequests: userInfo.provinceRequests,
         token: generateToken(userInfo._id),
+        wsf: userInfo.WSF,
         clubRequests: userInfo.clubRequests,
       });
     } else {
-      res.status(401);
+      res.status(401).json({ message: "Invalid Email or Password" });
+
       throw new Error("Invalid Email or Password");
     }
   } catch (error) {
@@ -540,14 +547,33 @@ const certificate = async (req, res) => {
   try {
     const userInfo = await User.findById(userId);
     if (userInfo) {
-      userInfo.certificates.push(sendCertificate);
-      await userInfo.save();
+      const belts = [
+        "Guest",
+        "Beginner",
+        "Yellow",
+        "Orange",
+        "Red",
+        "Purple",
+        "Green",
+        "Blue",
+        "Brown",
+        "Black",
+      ];
+
+      const userLevel = belts.indexOf(userInfo.belt);
+
+      if (userLevel !== -1 && userLevel < belts.length - 1) {
+        userInfo.belt = belts[userLevel + 1];
+
+        userInfo.certificates.push(sendCertificate);
+        await userInfo.save();
+      }
     }
 
     const recipientSocketId = getUserSocket(userId);
 
     if (recipientSocketId) {
-      socket.to(recipientSocketId).emit("certificates", userInfo.certificates);
+      socket.to(recipientSocketId).emit("certificates", userInfo);
     } else {
       console.log("Recipient not connected");
     }

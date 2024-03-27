@@ -19,7 +19,7 @@ const FloatingChat = ({ onClose }) => {
   const toast = useToast();
   const [newMessage, setNewMessage] = useState("");
   const [chatOptions, setChatOptions] = useState([
-    "Admin",
+    "WSF",
     "Coach",
     "Provincial Coach",
     "National Coach",
@@ -30,14 +30,14 @@ const FloatingChat = ({ onClose }) => {
   const [rank, setRank] = useState(false);
   const {
     user,
-    setChat,
-    chat,
     selectedChat,
     setSelectedChat,
     send,
     setSend,
     messages,
     setMessages,
+    national,
+    province,
   } = ChatState();
   const navigate = useNavigate();
 
@@ -45,42 +45,45 @@ const FloatingChat = ({ onClose }) => {
 
   useEffect(() => {
     if (
-      chat &&
-      (chat.admin === user._id ||
-        chat.coach === user._id ||
-        chat.provincial === user._id ||
-        chat.national === user._id)
+      user?.admin ||
+      user?.coach ||
+      province?.provincialCoach._id === user?._id ||
+      national?.nationalCoach._id === user?._id
     ) {
       setRank(true);
     }
-  }, [user._id, chat]);
+  }, [user, national, province, setRank]);
 
   useEffect(() => {
-    if (selectedChatOption === "Coach" && !chat?.coach) {
+    if (selectedChatOption === "Coach" && !user?.physicalCoach) {
       navigate("/clubs");
-    } else if (selectedChatOption === "Provincial Coach" && !chat?.provincial) {
+      toast({
+        title: "You've not joined a Club",
+        description: "Join a club or make one as you'd please",
+        status: "info",
+        duration: 5000,
+        position: "bottom-left",
+      });
+    } else if (selectedChatOption === "Provincial Coach" && !province) {
       navigate("/provincial");
-    } else if (selectedChatOption === "National Coach" && !chat?.national) {
+      toast({
+        title: "Provincial Samma Association seat is empty!",
+        description: "Apply for Interim",
+        status: "info",
+        duration: 5000,
+        position: "bottom-left",
+      });
+    } else if (selectedChatOption === "National Coach" && !national) {
       navigate("/national");
+      toast({
+        title: "National Samma Association seat is empty!",
+        description: "Apply for Interim",
+        status: "info",
+        duration: 5000,
+        position: "bottom-left",
+      });
     }
-  }, [selectedChatOption, chat, navigate]);
-
-  const fetchOrCreateChat = useCallback(async () => {
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      setLoading(true);
-
-      const { data } = await axios.get(`/api/chat/${user._id}`, config);
-      setChat(data);
-    } catch (error) {
-      console.error("Error fetching or creating chat:", error);
-    }
-  }, [user.token, user._id, setChat]);
+  }, [selectedChatOption, navigate, user, national, province, toast]);
 
   const fetchMessages = useCallback(async () => {
     if (!user) return;
@@ -115,32 +118,20 @@ const FloatingChat = ({ onClose }) => {
   }, [toast, user]);
 
   useEffect(() => {
-    fetchOrCreateChat();
-  }, [fetchOrCreateChat]);
-
-  useEffect(() => {
     fetchMessages();
   }, [fetchMessages]);
 
   useEffect(() => {
     if (selectedChatOption === "Coach") {
       setSender(user.physicalCoach);
-    } else if (selectedChatOption === "Admin" && chat && chat.admin) {
-      setSender(chat.admin);
-    } else if (
-      selectedChatOption === "Provincial Coach" &&
-      chat &&
-      chat.provincial
-    ) {
-      setSender(chat.provincial);
-    } else if (
-      selectedChatOption === "National Coach" &&
-      chat &&
-      chat.national
-    ) {
-      setSender(chat.national);
+    } else if (selectedChatOption === "WSF" && user) {
+      setSender(user.wsf);
+    } else if (selectedChatOption === "Provincial Coach" && province) {
+      setSender(province.provincialCoach._id);
+    } else if (selectedChatOption === "National Coach" && national) {
+      setSender(national.nationalCoach._id);
     }
-  }, [selectedChatOption, user.physicalCoach, chat]);
+  }, [selectedChatOption, national, province, user, setSender]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -217,7 +208,7 @@ const FloatingChat = ({ onClose }) => {
       height={"90vh"}
       width={{ base: "95%", lg: "350px" }}
       border="1px solid #d80eeb"
-      background={"Background"}
+      background={"white"}
       borderRadius={4}
     >
       <Button p={2} onClick={handleChatClose}>
@@ -267,6 +258,7 @@ const FloatingChat = ({ onClose }) => {
                     setSend(null);
                   }}
                   background={"transparent"}
+                  textColor={"red"}
                 >
                   X
                 </Button>
@@ -285,6 +277,7 @@ const FloatingChat = ({ onClose }) => {
               <Button
                 onClick={() => setSelectedChatOption(null)}
                 background={"transparent"}
+                textColor={"red"}
               >
                 X
               </Button>
@@ -296,7 +289,7 @@ const FloatingChat = ({ onClose }) => {
             justifyContent={"center"}
             alignItems={"center"}
             width={"96%"}
-            background={"Background"}
+            background={"white"}
           >
             <Input
               placeholder="Type your message..."

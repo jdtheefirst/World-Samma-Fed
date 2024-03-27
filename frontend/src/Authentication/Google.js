@@ -36,7 +36,7 @@ const GoogleLoginButton = () => {
   };
   const googleLogin = useGoogleLogin({
     clientId:
-      "836402802539-eqr9obfujd1q8heagf9luptlmcid62ss.apps.googleusercontent.com",
+      "342739457184-a1r49fblh6n0ir6uvl3526kmmdj3d15d.apps.googleusercontent.com",
     onSuccess: async (tokenResponse) => {
       const { access_token } = tokenResponse;
 

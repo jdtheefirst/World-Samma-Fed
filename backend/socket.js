@@ -106,7 +106,6 @@ const initializeSocketIO = (server) => {
         });
 
       if (requests) {
-        console.log("Sending updates");
         socket.emit("updates", requests);
       }
 

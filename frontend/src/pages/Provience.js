@@ -16,10 +16,9 @@ import formatMessageTime from "../components/config/formatTime";
 import { getCountryFlag } from "../assets/state";
 
 const Provience = () => {
-  const { user } = ChatState();
+  const { user, province } = ChatState();
   const [loading, setLoading] = useState(false);
   const [clubs, setClubs] = useState([]);
-  const [province, setProvince] = useState(null);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
   const [show, setShow] = useState(false);
@@ -36,27 +35,7 @@ const Provience = () => {
         Authorization: `Bearer ${user.token}`,
       },
     };
-    try {
-      const { data } = await axios.get(
-        `/api/province/officials/${user.country}/${user.provinces}`,
-        config
-      );
-      if (data.length === 0) {
-      } else {
-        setProvince(data);
-      }
 
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast({
-        title: "An Error Occurred!",
-        description: "Try again after sometime.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
     try {
       const { data } = await axios.get(
         `/api/clubs/${user.country}/${user.provinces}`,
@@ -69,7 +48,7 @@ const Provience = () => {
       setLoading(false);
       console.error("Error fetching or creating clubs:", error);
     }
-  }, [user, setClubs, setProvince, toast, setLoading]);
+  }, [user, setClubs, toast, setLoading]);
   useEffect(() => {
     if (!user) {
       navigate("/dashboard");
@@ -126,9 +105,6 @@ const Provience = () => {
           rounded="md"
           bg="white"
         >
-          <Text textAlign={"start"} fontWeight={"bold"}>
-            Registered clubs
-          </Text>
           {loading && <Spinner />}
           {clubs &&
             clubs.map((subdivision) => (

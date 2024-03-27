@@ -1,18 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Spinner, Text, useToast } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import UpperNav from "../miscellenious/upperNav";
-import ProvincialCoachForm from "../Authentication/ProvinceInterim";
 import formatMessageTime from "../components/config/formatTime";
 import { getCountryFlag, getStatesOfCountry } from "../assets/state";
 import NationalInterim from "../Authentication/NationalInterim";
-import axios from "axios";
 
 const National = () => {
-  const { user } = ChatState();
-  const [loading, setLoading] = useState(false);
-  const [national, setNational] = useState(null);
+  const { user, national } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const flag = getCountryFlag(user?.country);
   const [show, setShow] = useState(false);
@@ -44,47 +40,6 @@ const National = () => {
       setShow(true);
     }
   };
-  const fetchClubs = useCallback(async () => {
-    if (!user) {
-      navigate("/dashboard");
-      return;
-    }
-    setLoading(true);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-    try {
-      const { data } = await axios.get(
-        `/api/province/officials/${user.country}/${user.provinces}`,
-        config
-      );
-
-      if (data.length === 0) {
-      } else {
-        setNational(data);
-      }
-
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast({
-        title: "An Error Occurred!",
-        description: "Try again after sometime.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [user, setNational, toast, setLoading]);
-  useEffect(() => {
-    if (!user) {
-      navigate("/dashboard");
-      return;
-    }
-    fetchClubs();
-  }, [fetchClubs, navigate, user]);
   return (
     <Box
       display="flex"
@@ -137,7 +92,6 @@ const National = () => {
           fontStyle={"italic"}
         >
           {" "}
-          {loading && <Spinner />}
           Officials: {!national && "Viable position"}
           {national !== null ? (
             <Box

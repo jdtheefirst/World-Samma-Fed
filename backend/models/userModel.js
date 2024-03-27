@@ -17,10 +17,15 @@ const userSchema = mongoose.Schema(
     selectedCountry: { type: String },
     gender: { type: String },
     provinces: { type: String },
-    belt: { type: String, default: "Visitor" },
+    belt: { type: String, default: "Guest" },
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
     certificates: { type: Array, default: [] },
     admin: { type: Boolean, default: false },
+    WSF: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
     physicalCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

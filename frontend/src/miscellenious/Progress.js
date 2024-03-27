@@ -62,7 +62,7 @@ const ProgressArrow = styled.div`
 `;
 const Progress = ({ userBelt }) => {
   const progressLevels = [
-    "Visitor",
+    "Guest",
     `${beginner}`,
     `${yellow}`,
     `${orange}`,
@@ -74,7 +74,7 @@ const Progress = ({ userBelt }) => {
     `${black}`,
   ];
   const progress = [
-    "Visitor",
+    "Guest",
     "Beginner",
     "Yellow",
     "Orange",

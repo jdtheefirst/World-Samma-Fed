@@ -10,11 +10,20 @@ import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import chat from "../chat.png";
 import axiosInstance from "../components/config/axios";
+import axios from "axios";
 
 export const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
-  const { user, setUser, setClub, setMessages, notification, setNotification } =
-    ChatState();
+  const {
+    user,
+    setUser,
+    setClub,
+    setMessages,
+    notification,
+    setNotification,
+    setNational,
+    setProvince,
+  } = ChatState();
   const navigate = useNavigate();
   const [isHovered, setHovered] = useState(false);
   const [show, setShow] = useState(false);
@@ -127,6 +136,7 @@ export const Dashboard = ({ courses }) => {
     socket.on("updates", (requests) => {
       setUser((prevUser) => ({
         ...prevUser,
+        belt: requests.belt,
         clubRequests: requests.clubRequests,
         provinceRequests: requests.provinceRequests,
         nationalRequests: requests.nationalRequests,
@@ -153,7 +163,11 @@ export const Dashboard = ({ courses }) => {
     });
 
     socket.on("certificates", (certificates) => {
-      setUser((prev) => ({ ...prev, certificates: certificates }));
+      setUser((prev) => ({
+        ...prev,
+        certificates: certificates.certificates,
+        belt: certificates.belt,
+      }));
     });
 
     return () => {
@@ -165,11 +179,65 @@ export const Dashboard = ({ courses }) => {
     };
   }, [socket, setUser, user?.token, user]);
 
-  useEffect(() => {
-    if (user) {
-      requestClub();
+  const fetchClubs = useCallback(async () => {
+    if (!user) {
+      navigate("/dashboard");
+      return;
     }
-  }, [user]);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    try {
+      const { data } = await axios.get(
+        `/api/province/officials/${user.country}/${user.provinces}`,
+        config
+      );
+      if (data.length === 0) {
+      } else {
+        setProvince(data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "An Error Occurred!",
+        description: "Try again after sometime.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    try {
+      const { data } = await axios.get(
+        `/api/national/officials/${user.country}/${user.provinces}`,
+        config
+      );
+
+      if (data.length === 0) {
+      } else {
+        setNational(data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "An Error Occurred!",
+        description: "Try again after sometime.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [user, setNational, toast, setProvince]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/dashboard");
+      return;
+    }
+    fetchClubs();
+    requestClub();
+  }, [fetchClubs, navigate, user]);
 
   return (
     <Box width="100%" height="100%" background="white" position="relative">
@@ -178,7 +246,7 @@ export const Dashboard = ({ courses }) => {
           <UpperNav />
         </Box>
         <Box mt={20}>
-          <Progress userBelt={"Visitor"} />
+          <Progress userBelt={user?.belt} />
         </Box>
         <MyPrograms courses={courses} user={user} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}

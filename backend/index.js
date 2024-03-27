@@ -3,7 +3,6 @@ const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRouter");
 const payRoutes = require("./routes/payRouter");
-const chatRouter = require("./routes/chatRouter");
 const clubRouter = require("./routes/clubsRouter");
 const messageRouter = require("./routes/messageRoute");
 const submitRouter = require("./routes/submitRouter");
@@ -31,7 +30,6 @@ initializeSocketIO(server);
 
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
-app.use("/api/chat", chatRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/clubs", clubRouter);
 app.use("/api/submit", submitRouter);

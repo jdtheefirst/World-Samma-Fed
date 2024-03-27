@@ -96,6 +96,7 @@ const MyPrograms = ({ courses, user }) => {
                 background={"#a432a8"}
                 textColor={"white"}
                 _hover={{ color: "black" }}
+                isDisabled={course.title === user?.belt}
                 m={1}
               >
                 Enroll
@@ -109,7 +110,7 @@ const MyPrograms = ({ courses, user }) => {
                 color={"green.500"}
                 rounded={"full"}
               >
-                $100(*Best)
+                $45 Only
               </Text>
             </Box>
           )}

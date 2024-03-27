@@ -71,14 +71,28 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error) {
       setLoading(false);
-      toast({
-        title: "Account Missing!",
-        description: "Wrong Email or Password",
-        status: "info",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      if (error.response && error.response.status === 401) {
+        // Handle 401 Unauthorized error
+        toast({
+          title: "Account Missing!",
+          description: error.response.data.message,
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      } else {
+        // Handle other errors
+        console.error("An error occurred:", error);
+        toast({
+          title: "An Error Occurred!",
+          description: "Please try again later.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
     }
   };
   const forgotPassword = async () => {
@@ -159,7 +173,7 @@ const Login = () => {
       >
         Login
       </Button>
-      <GoogleOAuthProvider clientId="836402802539-eqr9obfujd1q8heagf9luptlmcid62ss.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="342739457184-a1r49fblh6n0ir6uvl3526kmmdj3d15d.apps.googleusercontent.com">
         <GoogleLoginButton />
       </GoogleOAuthProvider>
       <Link
