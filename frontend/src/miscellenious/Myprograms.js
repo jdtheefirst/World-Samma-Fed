@@ -15,6 +15,7 @@ import orange from "../orangeBelt.png";
 import purple from "../pupleBelt.png";
 import red from "../redBelt.png";
 import yellow from "../yellowBelt.png";
+import Paycheck from "./Payments";
 
 const MyPrograms = ({ courses, user }) => {
   const handleDownload = (title, url) => {
@@ -32,6 +33,18 @@ const MyPrograms = ({ courses, user }) => {
     blue,
     brown,
     black,
+  ];
+  const belts = [
+    "Guest",
+    "Beginner",
+    "Yellow",
+    "Orange",
+    "Red",
+    "Purple",
+    "Green",
+    "Blue",
+    "Brown",
+    "Black",
   ];
   return (
     <Box
@@ -90,17 +103,7 @@ const MyPrograms = ({ courses, user }) => {
               justifyContent={"space-between"}
               alignItems={"center"}
             >
-              <Button
-                borderRadius={20}
-                fontSize={"small"}
-                background={"#a432a8"}
-                textColor={"white"}
-                _hover={{ color: "black" }}
-                isDisabled={course.title === user?.belt}
-                m={1}
-              >
-                Enroll
-              </Button>
+              <Paycheck course={course} />
               <Text
                 fontSize={"sm"}
                 fontWeight={400}

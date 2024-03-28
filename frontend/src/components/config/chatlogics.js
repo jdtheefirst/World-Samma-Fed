@@ -110,3 +110,56 @@ export function useConnectSocket(token) {
 
   return socketRef.current;
 }
+export async function makePaymentMpesa(subscription, phoneNumber, user, toast) {
+  if (!phoneNumber) {
+    return;
+  }
+  try {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    const { data } = await axios.post(
+      `/api/paycheck/makepaymentmpesa/${user._id}`,
+      { phoneNumber, subscription },
+      config
+    );
+
+    if (data) {
+      toast({
+        title: "You have been prompt to finish your subscription process",
+        status: "info",
+        duration: 1000,
+        position: "bottom",
+      });
+    }
+  } catch (error) {}
+}
+export async function handleApprove(accountType, type, user, setUser) {
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    const { data } = await axios.put(
+      `/api/paycheck/${user._id}/${type}/${accountType}`,
+      {},
+      config
+    );
+
+    const userData = await {
+      ...user,
+      accountType: data.accountType,
+      subscription: data.subscription,
+      day: data.day,
+    };
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+    setUser(userData);
+  } catch (error) {
+    console.log(error);
+    throw new Error("Error occurred", error);
+  }
+}
