@@ -48,52 +48,42 @@ const createOrder = async (req, res) => {
   res.json(data);
 };
 const updateUser = async (req, res) => {
-  const userId = req.params.userId;
-  const userAcc = req.query.accountType;
-  const type = req.params.type;
-  const io = getIO();
+  const userId = req.user._id;
+  const userLevel = req.user.belt;
 
-  var Acc;
+  const belts = [
+    "Guest",
+    "Yellow",
+    "Orange",
+    "Red",
+    "Purple",
+    "Green",
+    "Blue",
+    "Brown",
+    "Black",
+  ];
 
-  var currentDate = new Date();
-  var subscriptionExpiry = new Date().getTime();
+  // Find the index of the next belt level in the array
+  const nextLevelIndex = belts.indexOf(userLevel) + 1;
 
-  if (type === "Ads") {
-    subscriptionExpiry = currentDate.getTime() + 30 * 24 * 60 * 60 * 1000;
-    try {
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          adsSubscription: subscriptionExpiry,
-        },
-        { new: true }
-      ).select("adsSubscription");
-      io.emit("noMoreAds", updatedUser);
-    } catch (error) {
-      console.log(error);
-    }
-    return;
-  } else if (userAcc === "Bronze") {
-    Acc = "Bronze";
-  } else if (userAcc === "Platnum") {
-    Acc = "Platnum";
-    subscriptionExpiry = currentDate.getTime() + 7 * 24 * 60 * 60 * 1000;
+  // Check if the user's current belt level is not already at the highest level
+  if (nextLevelIndex < belts.length) {
+    // Update the user's belt level
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { belt: belts[nextLevelIndex] },
+      { new: true }
+    ).select("belt");
+
+    res.json(updatedUser);
   } else {
-    Acc = "Gold";
-    subscriptionExpiry = currentDate.getTime() + 30 * 24 * 60 * 60 * 1000;
+    // Send a response indicating that the user is already at the highest belt level
+    res
+      .status(400)
+      .json({ message: "User is already at the highest belt level" });
   }
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    {
-      accountType: Acc,
-      subscription: subscriptionExpiry,
-      day: new Date().getTime() + 24 * 60 * 60 * 1000,
-    },
-    { new: true }
-  ).select("accountType subscription day");
-
-  res.json(updatedUser);
 };
+
 const makePaymentMpesa = async (req, res) => {
   userId = req.params.userId;
   subscription = req.body.subscription;

@@ -19,19 +19,103 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { makePaymentMpesa } from "../components/config/chatlogics";
+import {
+  makePaymentMpesa,
+  useConnectSocket,
+} from "../components/config/chatlogics";
 import { ChatState } from "../components/Context/ChatProvider";
+import axios from "axios";
 
 export default function Paycheck({ course }) {
   const toast = useToast();
-  const { user } = ChatState();
-  const navigate = useNavigate();
+  const { user, setUser } = ChatState();
   const [show, setShow] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   console.log(course.title);
+  const socket = useConnectSocket(user?.token);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("noPayment", (nothing) => {
+      toast({
+        title: nothing,
+        description: "Subscription unsuccessful",
+        status: "info",
+        duration: 5000,
+        position: "bottom",
+      });
+    });
+    socket.on("userUpdated", async (updatedUser) => {
+      const userData = await {
+        ...user,
+      };
+      await setUser(userData);
+
+      toast({
+        title: "Successfully subscribed",
+        description: `${user.accountType} subscriber`,
+        status: "info",
+        duration: 5000,
+        position: "bottom",
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [user, setUser, toast, socket]);
+  const handleAfterPay = async () => {
+    if (!user) {
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/user/update`, config);
+      setUser((prev) => ({ ...prev, belt: data.belt }));
+    } catch (error) {
+      console.error("Error updating user after payment:", error);
+    }
+  };
+
+  const checkAvailability = () => {
+    const userCertificatesLength = user && user.certificates.length;
+    const courseIndex = course.id - 1;
+
+    // Allow enrollment for the first/next course only if the user is a guest
+    const canEnroll =
+      (user && user.belt === "Membe" && courseIndex === 0) ||
+      userCertificatesLength + 1 === courseIndex + 1;
+
+    if (canEnroll) {
+      // Open the payment modal
+      onOpen();
+    } else if (user && user.belt === course.title) {
+      toast({
+        title: "Currently on this course",
+        description: "You don't need to enroll in this course.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      // Display a toast message indicating unavailability
+      toast({
+        title: "Course Unavailable",
+        description:
+          "You don't meet the requirements to enroll in this course.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -41,9 +125,8 @@ export default function Paycheck({ course }) {
         background={"#a432a8"}
         textColor={"white"}
         _hover={{ color: "black" }}
-        isDisabled={course.title === user?.belt}
         m={1}
-        onClick={() => onOpen()}
+        onClick={checkAvailability}
       >
         Enroll
       </Button>
@@ -114,6 +197,7 @@ export default function Paycheck({ course }) {
                   });
                 }}
                 onApprove={async (data, actions) => {
+                  await handleAfterPay();
                   return actions.order.capture().then(function (details) {
                     toast({
                       title: "Success",

@@ -36,7 +36,7 @@ router.get(
   clubRequests
 );
 router.get("/info/:userId", protect, limiter, getInfo);
-router.put("/update/:userId", protect, limiter, updateUser);
+router.put("/update", protect, limiter, updateUser);
 router.delete("/deleteuser/:userId", protect, limiter, deleteUser);
 router.delete("/delete-image/:publicId", protect, limiter, deleteImage);
 router.get("/getadsninfo/advertisement", protect, limiter, getAdsInfo);
