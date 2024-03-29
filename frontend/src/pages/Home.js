@@ -4,9 +4,11 @@ import "../App.css";
 import Logins from "./Logins";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CoffeeModal from "../miscellenious/coffee";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,6 +17,9 @@ function Homepage() {
       navigate("/dashboard");
     }
   }, [navigate]);
+  const handleCloseModal = () => {
+    setShow(false);
+  };
 
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
@@ -41,6 +46,13 @@ function Homepage() {
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
+            onClick={() => setShow(true)}
+          >
+            Donate☕️
+          </Button>
+          <Button
+            background="transparent"
+            _hover={{ backgroundColor: "transparent", color: "green" }}
             onClick={() => setGetStarted(true)}
           >
             Login/Sign Up
@@ -58,6 +70,7 @@ function Homepage() {
           Welcome to World-Samma, where discipline meets passion. Begin your
           path to mastery today.
         </Text>
+        {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
           <Logins />
         ) : (

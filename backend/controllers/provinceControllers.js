@@ -2,11 +2,13 @@ const { getUserSocket } = require("../config/socketUtils");
 const Club = require("../models/clubsModel");
 const ProvincialCoach = require("../models/provinceModel");
 const User = require("../models/userModel");
+const { getIO } = require("../socket");
 
 const makeProvincialRequests = async (req, res) => {
   const userId = req.user._id;
   const { coachId } = req.params;
   const { country, province } = req.body;
+  const socket = getIO();
   try {
     const myProvince = await ProvincialCoach.findOne({
       provincialCoach: userId,

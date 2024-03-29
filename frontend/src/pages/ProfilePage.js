@@ -142,6 +142,7 @@ const ProfilePage = ({ user }) => {
         p="6"
         rounded="md"
         bg="white"
+        fontStyle={"italic"}
       >
         <Box
           textAlign={"start"}

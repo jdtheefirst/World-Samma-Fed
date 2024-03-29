@@ -17,11 +17,16 @@ const GoogleLoginButton = () => {
         const { data } = await axios.get(`/api/user/searchuser/${email}`);
 
         if (data === "Unfound") {
-          navigate("/googleinfo");
+          toast({
+            title: "Your account doesn't exist!",
+            status: "info",
+            duration: 5000,
+            position: "bottom",
+          });
         } else {
           localStorage.setItem("userInfo", JSON.stringify(data));
 
-          navigate("/chats");
+          navigate("/dashboard");
         }
       } catch (error) {
         toast({

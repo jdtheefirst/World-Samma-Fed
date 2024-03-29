@@ -33,7 +33,6 @@ export default function Paycheck({ course }) {
   const [show, setShow] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log(course.title);
   const socket = useConnectSocket(user?.token);
 
   useEffect(() => {
@@ -47,15 +46,12 @@ export default function Paycheck({ course }) {
         position: "bottom",
       });
     });
-    socket.on("userUpdated", async (updatedUser) => {
-      const userData = await {
-        ...user,
-      };
-      await setUser(userData);
+    socket.on("userUpdated", async (update) => {
+      setUser((prev) => ({ ...prev, belt: update.belt }));
 
       toast({
-        title: "Successfully subscribed",
-        description: `${user.accountType} subscriber`,
+        title: "Successfully updated",
+        description: `Ranked ${update.belt}`,
         status: "info",
         duration: 5000,
         position: "bottom",
@@ -63,9 +59,10 @@ export default function Paycheck({ course }) {
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("userUpdated");
+      socket.off("noPayment");
     };
-  }, [user, setUser, toast, socket]);
+  }, [setUser, toast, socket]);
   const handleAfterPay = async () => {
     if (!user) {
       return;
@@ -80,7 +77,27 @@ export default function Paycheck({ course }) {
       const { data } = await axios.get(`/api/user/update`, config);
       setUser((prev) => ({ ...prev, belt: data.belt }));
     } catch (error) {
-      console.error("Error updating user after payment:", error);
+      if (error.response && error.response.status === 400) {
+        toast({
+          title: "Belt achieved!",
+          description: error.response.data.message,
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      } else {
+        // Handle other errors
+        console.error("An error occurred:", error);
+        toast({
+          title: "An Error Occurred!",
+          description: "Please try again later.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
     }
   };
 
@@ -90,7 +107,7 @@ export default function Paycheck({ course }) {
 
     // Allow enrollment for the first/next course only if the user is a guest
     const canEnroll =
-      (user && user.belt === "Membe" && courseIndex === 0) ||
+      (user && user.belt === "Guest" && courseIndex === 0) ||
       userCertificatesLength + 1 === courseIndex + 1;
 
     if (canEnroll) {
@@ -164,7 +181,7 @@ export default function Paycheck({ course }) {
                 color={"green.500"}
                 rounded={"full"}
               >
-                Elevate Your Craft: Select Your Belt & Subscribe
+                Elevate Your Craft: {course.title}
               </Text>
             </Box>
           </ModalHeader>
@@ -179,7 +196,7 @@ export default function Paycheck({ course }) {
             <PayPalScriptProvider
               options={{
                 clientId:
-                  "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                  "AWPQf5Vj892NjdxiaAeEykYYc8D62w6fxtwwtMLtR61GCuirpxfEsc6caIdpTHoV5v9GLF-f8HeWLI8S",
               }}
             >
               <PayPalButtons

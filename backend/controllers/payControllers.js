@@ -1,6 +1,8 @@
 const { default: axios } = require("axios");
 const User = require("../models/userModel");
 const dotenv = require("dotenv");
+const { getUserSocket } = require("../config/socketUtils");
+const { getIO } = require("../socket");
 
 dotenv.config({ path: "./secrets.env" });
 
@@ -8,8 +10,10 @@ let userId;
 let subscription;
 
 async function generateAccessToken() {
-  const { CLIENT_ID, APP_SECRET } = process.env;
-  const auth = Buffer.from(CLIENT_ID + ":" + APP_SECRET).toString("base64");
+  const { PAYPAL_CLIENT_ID, PAYPAL_APP_SECRET } = process.env;
+  const auth = Buffer.from(PAYPAL_CLIENT_ID + ":" + PAYPAL_APP_SECRET).toString(
+    "base64"
+  );
   const response = await fetch(`${base}/v1/oauth2/token`, {
     method: "post",
     body: "grant_type=client_credentials",
@@ -86,7 +90,6 @@ const updateUser = async (req, res) => {
 
 const makePaymentMpesa = async (req, res) => {
   userId = req.params.userId;
-  subscription = req.body.subscription;
   const phoneNumber = req.body.phoneNumber;
 
   const phone = parseInt(phoneNumber.slice(1));
@@ -107,17 +110,6 @@ const makePaymentMpesa = async (req, res) => {
     "base64"
   );
 
-  var Amount;
-
-  if (subscription === "Bronze") {
-    Amount = 200;
-  } else if (subscription === "Platnum") {
-    Amount = 1206;
-  } else if (subscription === "Gold") {
-    Amount = 6030;
-  } else {
-    Amount = 500;
-  }
   const generateToken = async () => {
     const secret = process.env.CUSTOMER_SECRET;
     const key = process.env.CUSTOMER_KEY;
@@ -150,12 +142,12 @@ const makePaymentMpesa = async (req, res) => {
         Password: `${password}`,
         Timestamp: `${timestamp}`,
         TransactionType: "CustomerBuyGoodsOnline",
-        Amount: Amount,
+        Amount: 5900,
         PartyA: `254${phone}`,
         PartyB: "8863150",
         PhoneNumber: `254${phone}`,
-        CallBackURL: `https://fuckmate.boo/api/paycheck/callback`,
-        AccountReference: "Admin",
+        CallBackURL: `https://world-samma/api/paycheck/callback`,
+        AccountReference: "Worldsamma",
         TransactionDesc: "Subcription",
       },
       {
@@ -173,6 +165,7 @@ const makePaymentMpesa = async (req, res) => {
 
 const CallBackURL = async (req, res) => {
   const { Body } = req.body;
+  const socket = getIO();
 
   const io = getIO();
   if (!userId && !subscription) {
@@ -186,49 +179,48 @@ const CallBackURL = async (req, res) => {
   if (Body.stkCallback.ResultDesc) {
     res.status(201);
   }
-  const currentDate = new Date();
-  var subscriptionExpiry = new Date().getTime();
-  if (subscription === "Bronze") {
-    Acc = "Bronze";
-  } else if (subscription === "Platnum") {
-    Acc = "Platnum";
-    subscriptionExpiry = currentDate.getTime() + 7 * 24 * 60 * 60 * 1000;
-  } else if (subscription === "Ads") {
-    subscriptionExpiry = currentDate.getTime() + 30 * 24 * 60 * 60 * 1000;
-    try {
-      const updatedUser = await User.findByIdAndUpdate(
+
+  const updatedUser = await User.findById(userId);
+
+  if (updatedUser) {
+    const userLevel = updatedUser.belt;
+    const belts = [
+      "Guest",
+      "Yellow",
+      "Orange",
+      "Red",
+      "Purple",
+      "Green",
+      "Blue",
+      "Brown",
+      "Black",
+    ];
+
+    // Find the index of the next belt level in the array
+    const nextLevelIndex = belts.indexOf(userLevel) + 1;
+
+    // Check if the user's current belt level is not already at the highest level
+    if (nextLevelIndex < belts.length) {
+      // Update the user's belt level
+      const updated = await User.findByIdAndUpdate(
         userId,
-        {
-          adsSubscription: subscriptionExpiry,
-        },
+        { belt: belts[nextLevelIndex] },
         { new: true }
-      ).select("adsSubscription");
-      console.log(updatedUser);
-      io.emit("noMoreAds", updatedUser);
-      res.json(updatedUser);
-    } catch (error) {
-      console.log(error);
+      ).select("belt");
+      const recipientSocketId = getUserSocket(userId);
+
+      if (recipientSocketId) {
+        socket.to(recipientSocketId).emit("userUpdated", updated);
+        console.log(`Broadcast sent to ${coachId}`);
+      } else {
+        console.log(`Member ${coachId} not connected`);
+      }
+    } else {
+      // Send a response indicating that the user is already at the highest belt level
+      res
+        .status(400)
+        .json({ message: "User is already at the highest belt level" });
     }
-    return;
-  } else {
-    Acc = "Gold";
-    subscriptionExpiry = currentDate.getTime() + 30 * 24 * 60 * 60 * 1000;
-  }
-
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        accountType: Acc,
-        subscription: subscriptionExpiry,
-        day: new Date().getTime() + 24 * 60 * 60 * 1000,
-      },
-      { new: true }
-    ).select("accountType subscription day");
-
-    io.emit("userUpdated", updatedUser);
-  } catch (error) {
-    console.log(error, "Error updating user");
   }
 };
 

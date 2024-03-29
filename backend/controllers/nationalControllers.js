@@ -1,4 +1,5 @@
 const { getUserSocket } = require("../config/socketUtils");
+const { getIO } = require("../socket");
 
 const NationalCoach = require("../models/nationalModel");
 const ProvincialCoach = require("../models/provinceModel");
@@ -8,6 +9,7 @@ const makeProvincialRequests = async (req, res) => {
   const userId = req.user._id;
   const { coachId } = req.params;
   const { country, province } = req.body;
+  const socket = getIO();
   try {
     const myProvince = await NationalCoach.findOne({
       nationalCoach: userId,
