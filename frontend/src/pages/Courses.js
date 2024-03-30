@@ -1,13 +1,18 @@
-import React, { useState } from "react";
-import { Box, Text, Button } from "@chakra-ui/react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Box, Text, Button, useToast } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
 import UpperNav from "../miscellenious/upperNav";
+import axios from "axios";
 
-const CourseDetails = ({ courses }) => {
+const CourseDetails = ({ courses, user }) => {
   const { id } = useParams();
   const courseId = parseInt(id, 10);
   const course = courses.find((course) => course.id === courseId);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const [translatedText, setTranslatedText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const goToNextLesson = () => {
     if (currentLessonIndex < course.lessons.length - 1) {
@@ -22,6 +27,49 @@ const CourseDetails = ({ courses }) => {
   };
 
   const currentLesson = course.lessons[currentLessonIndex];
+
+  const translateText = async (text) => {
+    console.log(text);
+    if (!user || !text) return;
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      setLoading(true);
+
+      const { data } = await axios.get(
+        `/api/translate?text=${text}&target=${user.language}`,
+        config
+      );
+
+      setTranslatedText(data);
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+  // useEffect(() => {
+  //   if (
+  //     user &&
+  //     user.belt &&
+  //     user.belt.trim() + " Belt" !== course.title.trim()
+  //   ) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [user, course, navigate]);
 
   return (
     <Box backgroundColor={"white"} width={"100%"}>
@@ -48,7 +96,17 @@ const CourseDetails = ({ courses }) => {
             allowFullScreen
             style={{ maxWidth: "800px", margin: "0 auto" }}
           ></iframe>
-          <Text mt={2}>{currentLesson.notes}</Text>
+          <Text mt={2} textAlign={"center"}>
+            <Button
+              background="transparent"
+              _hover={{ backgroundColor: "transparent", color: "green" }}
+              color={"purple"}
+              onClick={() => translateText(currentLesson.notes)}
+            >
+              translate
+            </Button>
+            {translatedText ? translatedText : currentLesson.notes}
+          </Text>
         </Box>
         <Box
           display="flex"

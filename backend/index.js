@@ -9,6 +9,7 @@ const submitRouter = require("./routes/submitRouter");
 const provinceRouter = require("./routes/provinceRouter");
 const nationalRouter = require("./routes/nationalRouter");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+const useTranslator = require("./routes/translateRouter");
 const path = require("path");
 const bodyParser = require("body-parser");
 const { initializeSocketIO } = require("./socket");
@@ -35,6 +36,7 @@ app.use("/api/clubs", clubRouter);
 app.use("/api/submit", submitRouter);
 app.use("/api/province", provinceRouter);
 app.use("/api/national", nationalRouter);
+app.use("/api/translate", useTranslator);
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {

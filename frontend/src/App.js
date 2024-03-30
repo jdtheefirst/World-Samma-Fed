@@ -184,7 +184,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route
           path="/courses/:id"
-          element={<CourseDetails courses={courses} />}
+          element={<CourseDetails courses={courses} user={user} />}
         />
         <Route path="/clubs" element={<Clubs />} />
         <Route
