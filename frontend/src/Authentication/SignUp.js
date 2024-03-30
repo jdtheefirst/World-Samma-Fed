@@ -21,7 +21,7 @@ import {
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {countries} from 'countries-list';
+import { countries, languages } from "countries-list";
 import { useNavigate } from "react-router-dom";
 import { getStatesOfCountry } from "../assets/state";
 
@@ -42,21 +42,33 @@ const Signup = () => {
   const [code, setCode] = useState("");
   const [inputCode, setInputCode] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const [otherName, setOtherName] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState("")
-  const [provinces, setProvinces] = useState("")
-  const [passport, setPassport]= useState('');
+  const [otherName, setOtherName] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [provinces, setProvinces] = useState("");
+  const [passport, setPassport] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
+  const [language, setLanguage] = useState("");
 
- const countryOptions = Object.entries(countries).map(([code, country]) => ({
-  value: country.name,
-  label: country.name,
-}));
+  const countryOptions = Object.entries(countries).map(([code, country]) => ({
+    value: country.name,
+    label: country.name,
+  }));
+  const languageOptions = Object.keys(languages).map((code) => ({
+    code,
+    name: languages[code].name,
+  }));
 
   const generateAndVerify = async () => {
     setPicLoading(true);
-    if (!name || !email || !password || !confirmpassword || !otherName || !selectedCountry || !provinces) {
-      console.log(name, email,password, confirmpassword, otherName, selectedCountry, provinces);
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !confirmpassword ||
+      !otherName ||
+      !selectedCountry ||
+      !provinces
+    ) {
       toast({
         title: "Please Fill all the Fields",
         status: "warning",
@@ -80,7 +92,6 @@ const Signup = () => {
     }
     try {
       const { data } = await axios.get(`/api/user/${email}`);
-      console.log(data);
       setCode(data);
       onOpen();
       setPicLoading(false);
@@ -106,6 +117,24 @@ const Signup = () => {
     }
   };
   const submitHandler = async () => {
+    if (
+      !name ||
+      !email ||
+      !password ||
+      !passport ||
+      !gender ||
+      !selectedCountry ||
+      !otherName ||
+      !provinces ||
+      !pic ||
+      !language
+    ) {
+      toast({
+        title: "Please fill all the required fields.",
+        status: "warning",
+      });
+      return;
+    }
     setPicLoading(true);
     try {
       const config = {
@@ -124,12 +153,13 @@ const Signup = () => {
           selectedCountry,
           otherName,
           provinces,
+          passport,
           pic,
+          language,
         },
         config
       );
       setPicLoading(false);
-      console.log(data)
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
@@ -188,8 +218,7 @@ const Signup = () => {
       return;
     }
   };
-   useEffect(() => {
-    
+  useEffect(() => {
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(selectedCountry);
       setSubdivisions(states);
@@ -210,7 +239,7 @@ const Signup = () => {
             justifyContent="center"
             textAlign={"center"}
           >
-              Enter Code sent to: ~{email}~
+            Enter Code sent to: ~{email}~
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -274,64 +303,65 @@ const Signup = () => {
         />
       </FormControl>
       <FormControl id="country" isRequired>
-  <FormLabel textColor="white">Country</FormLabel>
-  <Select
-    placeholder="Select your country"
-    display={"flex"}
-    justifyContent={"center"}
-    alignItems={"center"}
-    width={"100%"}
-    textColor={"white"}
-    value={selectedCountry}
-    onChange={(e) => setSelectedCountry(e.target.value)}
-  >
-    {countryOptions.map((option) => (
-      <option key={option.value} value={option.value} style={{color: "black"}}>
-        {option.label}
-      </option>
-    ))}
-  </Select>
-</FormControl>
-    {selectedCountry && subdivisions ? <FormControl id="provinces" isRequired>
-  <FormLabel textColor={"white"}>County/Province</FormLabel>
-  <Select
-    placeholder="Select your province"
-    display={"flex"}
-    justifyContent={"center"}
-    alignItems={"center"}
-    textColor={"white"}
-    width={"100%"}
-    value={provinces}
-    onChange={(e) => setProvinces(e.target.value)}>
-    {subdivisions && subdivisions.map((subdivision) => (
-      <option key={subdivision.value} value={subdivision.value} style={{color: "black"}}>
-        {subdivision.name}
-      </option>
-    ))}
-  </Select>
-</FormControl> : 
-      <FormControl id="provinces" isRequired>
-        <FormLabel textColor={"white"}>County/Province</FormLabel>
-        <Input
-          type="text"
+        <FormLabel textColor="white">Country</FormLabel>
+        <Select
+          placeholder="Select your country"
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          width={"100%"}
           textColor={"white"}
-          placeholder="Province"
-          onChange={(e) => setProvinces(e.target.value)}
-        />
-        
-      </FormControl>}
-       <FormControl id="id/passport" isRequired>
-        <FormLabel textColor={"white"}>Id/Passport</FormLabel>
-        <Input
-          type="number"
-          textColor={"white"}
-          placeholder="passport no:"
-          value={passport}
-          onChange={(e) => setPassport(e.target.value)}
-        />
-        
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+        >
+          {countryOptions.map((option) => (
+            <option
+              key={option.value}
+              value={option.value}
+              style={{ color: "black" }}
+            >
+              {option.label}
+            </option>
+          ))}
+        </Select>
       </FormControl>
-      
+      {selectedCountry && subdivisions ? (
+        <FormControl id="provinces" isRequired>
+          <FormLabel textColor={"white"}>County/Province</FormLabel>
+          <Select
+            placeholder="Select your province"
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            textColor={"white"}
+            width={"100%"}
+            value={provinces}
+            onChange={(e) => setProvinces(e.target.value)}
+          >
+            {subdivisions &&
+              subdivisions.map((subdivision) => (
+                <option
+                  key={subdivision.value}
+                  value={subdivision.value}
+                  style={{ color: "black" }}
+                >
+                  {subdivision.name}
+                </option>
+              ))}
+          </Select>
+        </FormControl>
+      ) : (
+        <FormControl id="provinces" isRequired>
+          <FormLabel textColor={"white"}>County/Province</FormLabel>
+          <Input
+            type="text"
+            textColor={"white"}
+            placeholder="Province"
+            onChange={(e) => setProvinces(e.target.value)}
+          />
+        </FormControl>
+      )}
+
       <FormControl id="email" isRequired>
         <FormLabel textColor={"white"}>Email Address</FormLabel>
         <Input
@@ -387,16 +417,46 @@ const Signup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
+      <FormControl id="id/passport" isRequired>
+        <FormLabel textColor={"white"}>Id/Passport</FormLabel>
+        <Input
+          type="number"
+          textColor={"white"}
+          placeholder="passport no:"
+          value={passport}
+          onChange={(e) => setPassport(e.target.value)}
+        />
+      </FormControl>
+      <FormControl id="language" isRequired>
+        <FormLabel textColor={"white"}>Language</FormLabel>
+        <Select
+          placeholder="Select language"
+          textColor={"grey"}
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+        >
+          {languageOptions.map((option) => (
+            <option key={option.code} value={option.code}>
+              {option.name}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
       <FormControl id="gender" isRequired>
         <FormLabel textColor={"white"}>Gender</FormLabel>
-        <RadioGroup onChange={setGender} value={gender} textColor={"white"} isRequired>
+        <RadioGroup
+          onChange={setGender}
+          value={gender}
+          textColor={"white"}
+          isRequired
+        >
           <Stack direction="row">
             <Radio value="male">Male</Radio>
             <Radio value="female">Female</Radio>
           </Stack>
         </RadioGroup>
       </FormControl>
-      <FormControl id="pic">
+      <FormControl id="pic" isRequired>
         <FormLabel textColor={"white"}>Upload your Picture</FormLabel>
         <Input
           type="file"
@@ -416,8 +476,7 @@ const Signup = () => {
         isLoading={picLoading}
         isDisabled={disabled}
       >
-          <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>
-     
+        <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>
       </Button>
     </VStack>
   );

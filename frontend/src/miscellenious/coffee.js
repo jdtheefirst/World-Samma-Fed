@@ -17,8 +17,6 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   const [selectedAmount, setSelectedAmount] = useState(Number);
   const toast = useToast();
 
-  console.log(selectedAmount);
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm">
       <ModalOverlay />
@@ -41,7 +39,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
             <PayPalScriptProvider
               options={{
                 clientId:
-                  "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                  "AWPQf5Vj892NjdxiaAeEykYYc8D62w6fxtwwtMLtR61GCuirpxfEsc6caIdpTHoV5v9GLF-f8HeWLI8S",
               }}
             >
               <PayPalButtons

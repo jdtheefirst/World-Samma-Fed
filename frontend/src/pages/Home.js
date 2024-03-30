@@ -34,19 +34,24 @@ function Homepage() {
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
+            onClick={() => setGetStarted(false)}
           >
             About
           </Button>
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
+            onClick={() => setGetStarted(false)}
           >
             Events
           </Button>
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
-            onClick={() => setShow(true)}
+            onClick={() => {
+              setShow(true);
+              setGetStarted(false);
+            }}
           >
             Donate☕️
           </Button>

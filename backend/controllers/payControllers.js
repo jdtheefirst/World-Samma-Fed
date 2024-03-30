@@ -3,6 +3,7 @@ const User = require("../models/userModel");
 const dotenv = require("dotenv");
 const { getUserSocket } = require("../config/socketUtils");
 const { getIO } = require("../socket");
+const { getNextNumber } = require("../config/getNextSequence");
 
 dotenv.config({ path: "./secrets.env" });
 
@@ -52,39 +53,48 @@ const createOrder = async (req, res) => {
   res.json(data);
 };
 const updateUser = async (req, res) => {
-  const userId = req.user._id;
-  const userLevel = req.user.belt;
+  try {
+    const userId = req.user._id;
+    const userLevel = req.user.belt;
 
-  const belts = [
-    "Guest",
-    "Yellow",
-    "Orange",
-    "Red",
-    "Purple",
-    "Green",
-    "Blue",
-    "Brown",
-    "Black",
-  ];
+    const belts = [
+      "Guest",
+      "Yellow",
+      "Orange",
+      "Red",
+      "Purple",
+      "Green",
+      "Blue",
+      "Brown",
+      "Black",
+    ];
 
-  // Find the index of the next belt level in the array
-  const nextLevelIndex = belts.indexOf(userLevel) + 1;
+    const nextLevelIndex = belts.indexOf(userLevel) + 1;
 
-  // Check if the user's current belt level is not already at the highest level
-  if (nextLevelIndex < belts.length) {
-    // Update the user's belt level
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { belt: belts[nextLevelIndex] },
-      { new: true }
-    ).select("belt");
+    if (nextLevelIndex < belts.length) {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { belt: belts[nextLevelIndex] },
+        { new: true }
+      );
 
-    res.json(updatedUser);
-  } else {
-    // Send a response indicating that the user is already at the highest belt level
-    res
-      .status(400)
-      .json({ message: "User is already at the highest belt level" });
+      if (updatedUser.belt === "Yellow") {
+        const admission = await getNextNumber("U", 9);
+        updatedUser.admission = admission;
+        await updatedUser.save();
+
+        return res.json(updatedUser);
+      }
+
+      return res.json(updatedUser);
+    } else {
+      return res
+        .status(400)
+        .json({ message: "User is already at the highest belt level" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 

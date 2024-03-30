@@ -13,10 +13,12 @@ const userSchema = mongoose.Schema(
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
-    admission: { type: String, required: true, unique: true },
+    admission: { type: String, unique: true, default: "Guest" },
     selectedCountry: { type: String },
     gender: { type: String },
     provinces: { type: String },
+    language: { type: String, required: true },
+    passport: { type: String },
     belt: { type: String, default: "Guest" },
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
     certificates: { type: Array, default: [] },

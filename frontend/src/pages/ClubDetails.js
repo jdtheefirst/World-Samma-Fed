@@ -319,6 +319,7 @@ const ClubDetails = ({ user }) => {
               {club && club.name}
             </Heading>
             <Text>Coach Rank: {club?.coach.belt}</Text>
+            <Text>Unique Identifier: {club?.admission}</Text>
             <Text
               fontSize={"sm"}
               fontWeight={500}

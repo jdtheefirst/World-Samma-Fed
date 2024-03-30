@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Club = require("../models/clubsModel");
-const Sequence = require("../models/Sequence");
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
@@ -12,6 +11,7 @@ const crypto = require("crypto");
 const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
 const { getUserSocket } = require("../config/socketUtils");
+const { getNextNumber } = require("../config/getNextSequence");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
@@ -27,6 +27,8 @@ const registerUsers = asyncHandler(async (req, res) => {
     selectedCountry,
     otherName,
     provinces,
+    passport,
+    language,
   } = req.body;
 
   if (
@@ -36,10 +38,13 @@ const registerUsers = asyncHandler(async (req, res) => {
     !gender ||
     !selectedCountry ||
     !otherName ||
-    !provinces
+    !provinces ||
+    !language ||
+    !passport ||
+    !pic
   ) {
     res.status(400);
-    throw new Error("Please enter all fields");
+    throw new Error({ message: "Please enter all fields!" });
   }
 
   const userExists = await User.findOne({ email });
@@ -47,52 +52,19 @@ const registerUsers = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("User already exists, login");
   }
-  const getNextAdminNumber = async () => {
-    const sequence = await Sequence.findOneAndUpdate(
-      {},
-      { $inc: { number: 1 } },
-      { new: true }
-    );
-
-    if (!sequence || sequence.number > 999999999) {
-      await Sequence.updateOne({}, { number: 1 }, { upsert: true });
-    }
-    const currentNumber = sequence ? sequence.number : 1;
-
-    const paddedNumber = currentNumber.toString().padStart(9, "0");
-
-    const suffix = generateSuffix((currentNumber - 1) % 702);
-
-    const adminNumber = `${paddedNumber}${suffix}`;
-
-    return adminNumber;
-  };
-
-  const generateSuffix = (index) => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const base = letters.length;
-
-    let suffix = "";
-    while (index >= 0) {
-      suffix = letters[index % base] + suffix;
-      index = Math.floor(index / base) - 1;
-    }
-
-    return suffix;
-  };
-
-  const admission = await getNextAdminNumber("U");
   const WSF = await User.findOne({ admin: true });
   const user = {
     name,
     email,
     password,
+    passport,
+    language,
     gender,
     pic,
-    admission,
     selectedCountry,
     otherName,
     provinces,
+    passport,
     WSF,
   };
 
@@ -115,6 +87,7 @@ const registerUsers = asyncHandler(async (req, res) => {
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
       wsf: userInfo.WSF,
+      language: userInfo.language,
       token: generateToken(userInfo._id),
     };
 
@@ -185,6 +158,7 @@ const searchUser = async (req, res) => {
       clubRequests: userInfo.clubRequests,
       nationalRequests: userInfo.nationalRequests,
       wsf: userInfo.WSF,
+      language: userInfo.language,
       provinceRequests: userInfo.provinceRequests,
     };
     res.status(201).json(responseData);
@@ -217,6 +191,7 @@ const recoverEmail = async (req, res) => {
         coach: userInfo.coach,
         nationalRequests: userInfo.nationalRequests,
         wsf: userInfo.WSF,
+        language: userInfo.language,
         provinceRequests: userInfo.provinceRequests,
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
@@ -251,6 +226,7 @@ const authUser = asyncHandler(async (req, res) => {
         provinceRequests: userInfo.provinceRequests,
         token: generateToken(userInfo._id),
         wsf: userInfo.WSF,
+        language: userInfo.language,
         clubRequests: userInfo.clubRequests,
       });
     } else {
@@ -444,52 +420,13 @@ const clubRequests = async (req, res) => {
   const socket = getIO();
 
   const loggedUser = req.user._id;
-  const getNextClubNumber = async (prefix, initialSequence = 1) => {
-    const sequence = await Sequence.findOneAndUpdate(
-      { prefix },
-      { $inc: { number: 1 } },
-      { new: true }
-    );
-
-    if (!sequence || sequence.number > 9999999) {
-      await Sequence.updateOne(
-        { prefix },
-        { number: initialSequence },
-        { upsert: true }
-      );
-    }
-
-    const currentNumber = sequence ? sequence.number : initialSequence;
-
-    const paddedNumber = currentNumber.toString().padStart(8, "0");
-
-    const suffix = generateSuffix((currentNumber - 1) % 702);
-
-    const clubNumber = `${prefix}${paddedNumber}${suffix}`;
-
-    return clubNumber;
-  };
-
-  const generateSuffix = (index) => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const base = letters.length;
-
-    let suffix = "";
-    while (index >= 0) {
-      suffix = letters[index % base] + suffix;
-      index = Math.floor(index / base) - 1;
-    }
-
-    return suffix;
-  };
-
   let club;
 
   try {
     club = await Club.findOne({ coach: loggedUser });
 
     if (!club) {
-      const clubCode = await getNextClubNumber("C");
+      const clubCode = await getNextNumber("C", 8);
 
       club = await Club.create({
         name: name,

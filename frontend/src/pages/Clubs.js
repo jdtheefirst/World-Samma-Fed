@@ -9,6 +9,7 @@ import {
   Select,
   Spinner,
   Text,
+  useToast,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import { getStatesOfCountry, getCountryFlag } from "../assets/state";
@@ -25,6 +26,7 @@ export const Clubs = () => {
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const fetchClubs = useCallback(async () => {
     if (!user) {
@@ -68,6 +70,31 @@ export const Clubs = () => {
 
     fetchSubdivisions();
   }, [user]);
+  const handleCreateClub = () => {
+    const belts = [
+      "Guest",
+      "Yellow",
+      "Orange",
+      "Red",
+      "Purple",
+      "Green",
+      "Blue",
+      "Brown",
+      "Black",
+    ];
+
+    if (user && belts.indexOf(user.belt) >= belts.indexOf("Orange")) {
+      setFillForm(true);
+    } else {
+      toast({
+        title: "You need to elevate your craft to at least Orange Belt!",
+        description: "Requirements not attained yet",
+        status: "info",
+        duration: 5000,
+        position: "bottom",
+      });
+    }
+  };
 
   return (
     <Box
@@ -190,7 +217,7 @@ export const Clubs = () => {
             backgroundColor={"#c255ed"}
             borderRadius={20}
             onClick={() => {
-              setFillForm(true);
+              handleCreateClub();
             }}
             m={2}
           >
