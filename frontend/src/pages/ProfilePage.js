@@ -170,8 +170,8 @@ const ProfilePage = ({ user }) => {
       });
     }
   };
-  const handleAfterPay = async () => {
-    if (!student) {
+  const handleAfterPay = async (studentId) => {
+    if (!studentId) {
       toast({
         title: "Your student info was lost or never inputted!",
         description: "Failed to process",
@@ -182,8 +182,33 @@ const ProfilePage = ({ user }) => {
       setShow(false);
       return;
     }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/submit/${studentId}?assisted=${true}`,
+        { savePhoto: user.pic },
+        config
+      );
+      setStudent(null);
+      setShow(false);
+    } catch (error) {
+      setStudent(null);
+      setShow(false);
+      toast({
+        title: "An Error Occurred!",
+        description: "Please try again later",
+        status: "warning",
+        isClosable: true,
+        position: "bottom",
+      });
+    }
   };
-  console.log(searchResult);
 
   return (
     <Box
@@ -335,6 +360,7 @@ const ProfilePage = ({ user }) => {
                         id: user._id,
                         name: user.name,
                         email: user.email,
+                        pic: user.pic,
                       });
                       setShow(true);
                     }}
@@ -356,6 +382,7 @@ const ProfilePage = ({ user }) => {
                   rounded={"full"}
                 >
                   Upgrading: {student.name} {student.email}
+                  ($5 Fee)
                 </Text>{" "}
                 <PayPalScriptProvider
                   options={{
@@ -378,7 +405,7 @@ const ProfilePage = ({ user }) => {
                       });
                     }}
                     onApprove={async (data, actions) => {
-                      await handleAfterPay();
+                      await handleAfterPay(student.id);
                       return actions.order.capture().then(function (details) {
                         toast({
                           title: "Success",

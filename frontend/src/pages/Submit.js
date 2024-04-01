@@ -25,8 +25,6 @@ const SubmissionPage = ({ user }) => {
   const toast = useToast();
   const navigate = useNavigate();
 
-  console.log(user);
-
   const handleVideoChange = (event) => {
     setVideo(event.target.files[0]);
   };
@@ -55,10 +53,10 @@ const SubmissionPage = ({ user }) => {
         },
         config
       );
-      console.log(data);
       navigate("/dashboard");
       toast({
         title: "Submission successful!",
+        description: "Wait for your results under 24hrs",
         status: "success",
         duration: 5000,
         isClosable: true,
