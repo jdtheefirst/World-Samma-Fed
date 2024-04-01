@@ -97,6 +97,19 @@ const registerUsers = asyncHandler(async (req, res) => {
     throw new Error("Failed to create the account, try again after some time.");
   }
 });
+const allUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  res.send(users);
+});
 const forgotEmail = async (req, res) => {
   const { email } = req.params;
 
@@ -534,4 +547,5 @@ module.exports = {
   getAdsInfo,
   clubRequests,
   certificate,
+  allUsers,
 };

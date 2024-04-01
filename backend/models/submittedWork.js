@@ -3,8 +3,9 @@ const mongoose = require("mongoose");
 const submittedWork = mongoose.Schema(
   {
     student: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    passport: { type: String, required: true },
-    video: { type: String, required: true },
+    passport: { type: String },
+    video: { type: String },
+    coachAssisted: { type: Boolean, default: false },
   },
   { versionKey: false },
   { timestamps: true }

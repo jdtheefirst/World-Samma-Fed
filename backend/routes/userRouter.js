@@ -15,6 +15,7 @@ const {
   clubRequests,
   getInfo,
   certificate,
+  allUsers,
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
@@ -41,4 +42,5 @@ router.delete("/deleteuser/:userId", protect, limiter, deleteUser);
 router.delete("/delete-image/:publicId", protect, limiter, deleteImage);
 router.get("/getadsninfo/advertisement", protect, limiter, getAdsInfo);
 router.get("/certificate/:userId", protect, limiter, certificate);
+router.route("/").get(protect, limiter, allUsers);
 module.exports = router;

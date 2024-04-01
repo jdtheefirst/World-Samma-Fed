@@ -1,9 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Box, Button, Heading, Image, Text, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  Image,
+  Input,
+  SkeletonCircle,
+  SkeletonText,
+  Text,
+  useColorModeValue,
+  useToast,
+} from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import axiosInstance from "../components/config/axios";
 import axios from "axios";
+import UserListItem from "../miscellenious/Skeleton";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -13,6 +26,11 @@ const ProfilePage = ({ user }) => {
   const handleMembers = () => {
     setShowFollowers(!showFollowers);
   };
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchResult, setSearchResult] = useState([]);
+  const [student, setStudent] = useState(null);
+  const [show, setShow] = useState(false);
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -114,6 +132,58 @@ const ProfilePage = ({ user }) => {
       });
     }
   };
+  const handleSearch = async () => {
+    setShow(false);
+    if (!search) {
+      toast({
+        title: "Please Enter something in search",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-left",
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/user?search=${search}`, config);
+
+      setLoading(false);
+      setSearchResult(data);
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Search Results",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
+  const handleAfterPay = async () => {
+    if (!student) {
+      toast({
+        title: "Your student info was lost or never inputted!",
+        description: "Failed to process",
+        status: "warning",
+        isClosable: true,
+        position: "bottom",
+      });
+      setShow(false);
+      return;
+    }
+  };
+  console.log(searchResult);
 
   return (
     <Box
@@ -125,52 +195,216 @@ const ProfilePage = ({ user }) => {
       alignItems={"center"}
       background={"white"}
     >
-      <UpperNav />{" "}
-      <Image
-        src={user?.pic}
-        alt={`Profile*`}
-        borderRadius="full"
-        boxSize={{ base: "100px", md: "200px" }}
-        border="4px solid white"
-        mt={{ base: 350, md: 0 }}
-      />
+      <UpperNav /> <Text>worldsamma</Text>
       <Box
         display={"flex"}
         flexWrap={"wrap"}
         width={{ base: "100%", md: "80%" }}
+        height={"100%"}
         boxShadow="dark-lg"
         p="6"
         rounded="md"
         bg="white"
+        mt={"10"}
         fontStyle={"italic"}
+        overflow="auto"
       >
         <Box
+          display={"flex"}
           textAlign={"start"}
-          fontSize={"medium"}
-          fontWeight={"bold"}
+          boxShadow="base"
+          width={"100%"}
+          p="0"
+          rounded="md"
+          bg="white"
+        >
+          {" "}
+          <Image
+            src={user?.pic}
+            alt={`Profile*`}
+            borderRadius="full"
+            boxSize={{ base: "100px", md: "200px" }}
+            border="4px solid white"
+          />
+          <Box textAlign={"center"} fontSize={"md"} fontFamily={"cursive"}>
+            {" "}
+            <Heading mb={4}>Profile</Heading>
+            <Text>
+              Name: {user?.name} {user?.otherName}
+            </Text>
+            <Text>Email: {user?.email}</Text>
+            <Text>Country: {user?.country}</Text>
+            <Text textAlign={"center"}>
+              Coach: {user?.coach ? " ✔️" : "Not a coach"}
+            </Text>
+            <Text>Highest Level Attained: {user?.belt}</Text>
+            {user?.admin && (
+              <Button
+                mt={4}
+                colorScheme="teal"
+                onClick={() => navigate("/admin-work-slot")}
+              >
+                Admin Work Slot
+              </Button>
+            )}
+          </Box>
+        </Box>
+        <Box
+          display="flex"
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          overflow={"auto"}
+          width={"100%"}
           m={2}
           boxShadow="base"
           p="6"
           rounded="md"
           bg="white"
         >
-          <Heading mb={4}>Profile</Heading>
-          <Text>
-            Name: {user?.name} {user?.otherName}
+          {" "}
+          <Text
+            fontSize={"sm"}
+            fontWeight={500}
+            bg={useColorModeValue("green.50", "green.900")}
+            px={6}
+            p={"3"}
+            m={1}
+            color={"green.500"}
+            rounded={"full"}
+          >
+            Coach's assisted student rank upgrading
           </Text>
-          <Text>Email: {user?.email}</Text>
-          <Text>Country: {user?.country}</Text>
-          <Text>Coach: {user?.coach ? user.coach : "Not a coach"}</Text>
-          <Text>Highest Level Attained: {user?.belt}</Text>
-          {user?.admin && (
-            <Button
-              mt={4}
-              colorScheme="teal"
-              onClick={() => navigate("/admin-work-slot")}
-            >
-              Admin Work Slot
+          <Box
+            display="flex"
+            pb={2}
+            width={{ base: "100%", md: "60%" }}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Input
+              placeholder="Search by email"
+              mr={2}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button borderRadius={20} onClick={handleSearch}>
+              🔍Search
             </Button>
-          )}
+          </Box>
+          <Box
+            display={"flex"}
+            flexDir={"column"}
+            overflow={"auto"}
+            width={"100%"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            {" "}
+            <Box
+              display={show ? "none" : "flex"}
+              flexDir={"column"}
+              width={"100%"}
+              maxH={"300px"}
+              overflow={"auto"}
+            >
+              {" "}
+              {loading ? (
+                <Box
+                  display={show ? "none" : "flex"}
+                  width={"100%"}
+                  padding="6"
+                  boxShadow="lg"
+                  bg="white"
+                >
+                  <SkeletonCircle size="10" />
+                  <SkeletonText
+                    mt="4"
+                    noOfLines={4}
+                    spacing="4"
+                    skeletonHeight="2"
+                  />
+                </Box>
+              ) : (
+                searchResult?.map((user) => (
+                  <UserListItem
+                    key={user._id}
+                    user={user}
+                    handleFunction={() => {
+                      setStudent({
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                      });
+                      setShow(true);
+                    }}
+                  />
+                ))
+              )}
+            </Box>
+            {show && (
+              <Box>
+                <Text
+                  textAlign={"center"}
+                  fontSize={"sm"}
+                  fontWeight={500}
+                  bg={useColorModeValue("green.50", "green.900")}
+                  px={3}
+                  p={"3"}
+                  m={1}
+                  color={"purple.500"}
+                  rounded={"full"}
+                >
+                  Upgrading: {student.name} {student.email}
+                </Text>{" "}
+                <PayPalScriptProvider
+                  options={{
+                    clientId:
+                      "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                  }}
+                >
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      const amount = 5.0;
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              currency_code: "USD",
+                              value: amount.toFixed(2),
+                            },
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      await handleAfterPay();
+                      return actions.order.capture().then(function (details) {
+                        toast({
+                          title: "Success",
+                          description:
+                            "Wait for WSF to send certificate to particulars.",
+                          status: "success",
+                          duration: 3000,
+                          isClosable: true,
+                          position: "bottom",
+                        });
+                      });
+                    }}
+                    onCancel={() => {
+                      setShow(false);
+                      toast({
+                        title: "Cancelled",
+                        status: "info",
+                        isClosable: true,
+                        position: "bottom",
+                      });
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </Box>
+            )}
+          </Box>
         </Box>
         {user?.provinceRequests?.length > 0 && (
           <Box
@@ -202,9 +436,9 @@ const ProfilePage = ({ user }) => {
                   fontSize={"x-small"}
                 >
                   {" "}
-                  {index + 1}.{member.provincialCoach.name} Adm:
-                  {member.provincialCoach.admission} Approvals:{" "}
-                  {member.approvals.length}
+                  {index + 1}.{member.provincialCoach?.name} Adm:
+                  {member.provincialCoach?.admission} Approvals:{" "}
+                  {member.approvals?.length}
                 </Text>
                 <Button
                   borderRadius={20}
@@ -298,6 +532,7 @@ const ProfilePage = ({ user }) => {
               m={2}
               background={"white"}
               boxShadow="base"
+              overflow="auto"
               p="6"
               rounded="md"
               bg="white"
@@ -308,6 +543,7 @@ const ProfilePage = ({ user }) => {
                 background={"transparent"}
                 _hover={{ background: "transparent", color: "green" }}
                 onClick={handleMembers}
+                fontStyle={"italic"}
               >
                 Members: {club.members.length}
               </Button>
