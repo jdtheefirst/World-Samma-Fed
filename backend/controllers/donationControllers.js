@@ -23,5 +23,33 @@ const donate = async (req, res) => {
     res.status(500).json({ error: "Donation failed" });
   }
 };
+const getProvinceFund = async (req, res) => {
+  const country = req.user.selectedCountry;
+  const province = req.user.provinces;
 
-module.exports = { donate };
+  try {
+    const fund = await ProvinceFund.find({
+      country: country,
+      province: province,
+    });
+    res.status(200).json(fund);
+  } catch (error) {
+    console.error("Error fetching province fund:", error);
+    res.status(500).json({ error: "Donation fetching failed" });
+  }
+};
+
+const getNationalFund = async (req, res) => {
+  const country = req.user.selectedCountry;
+
+  try {
+    const fund = await CountryFund.find({ country: country });
+
+    res.status(200).json(fund);
+  } catch (error) {
+    console.error("Error fetching national fund:", error);
+    res.status(500).json({ error: "Donation fetching failed" });
+  }
+};
+
+module.exports = { donate, getProvinceFund, getNationalFund };

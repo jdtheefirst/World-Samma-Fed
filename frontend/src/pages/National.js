@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Spinner, Text, useToast } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -6,14 +6,45 @@ import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
 import { getCountryFlag, getStatesOfCountry } from "../assets/state";
 import NationalInterim from "../Authentication/NationalInterim";
+import axios from "axios";
 
 const National = () => {
   const { user, national } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const flag = getCountryFlag(user?.country);
+  const [donation, setDonation] = useState(undefined);
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+
+  const getDonations = useCallback(async () => {
+    setLoading(true);
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/donate/national`, config);
+
+      setDonation(data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      toast({
+        title: "An Error Occurred!",
+        description: "Please try again later",
+        status: "warning",
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  }, [toast, user, setDonation, setLoading]);
+
+  console.log(donation);
 
   useEffect(() => {
     if (!user) navigate("/dashboard");
@@ -24,6 +55,7 @@ const National = () => {
     };
 
     fetchSubdivisions();
+    getDonations();
   }, [user]);
 
   const handleInterim = () => {
@@ -60,6 +92,11 @@ const National = () => {
           {user?.country} Samma Association {flag}
         </Text>
         <Text textAlign={""}>States</Text>
+        <Text textAlign={"center"}>
+          Account: {donation && donation.length > 0 ? donation[0].fund : "$0"}
+          {loading && <Spinner size={"sm"} />}
+        </Text>
+
         <Box
           height={"200px"}
           width={{ base: "97%", md: "70%" }}

@@ -21,6 +21,9 @@ const Provience = () => {
   const [clubs, setClubs] = useState([]);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
+  const [donation, setDonation] = useState(undefined);
+
+  const [loadiing, setLoadiing] = useState(false);
   const [show, setShow] = useState(false);
   const toast = useToast();
 
@@ -49,12 +52,38 @@ const Provience = () => {
       console.error("Error fetching or creating clubs:", error);
     }
   }, [user, setClubs, toast, setLoading]);
+  const getDonations = useCallback(async () => {
+    setLoadiing(true);
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get(`/api/donate/province`, config);
+
+      setDonation(data);
+      setLoadiing(false);
+    } catch (error) {
+      setLoadiing(false);
+      console.log(error);
+      toast({
+        title: "An Error Occurred!",
+        description: "Please try again later",
+        status: "warning",
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  }, [user, toast, setLoadiing, setDonation]);
   useEffect(() => {
     if (!user) {
       navigate("/dashboard");
       return;
     }
     fetchClubs();
+    getDonations();
   }, [fetchClubs, navigate, user]);
 
   const handleInterim = () => {
@@ -94,7 +123,10 @@ const Provience = () => {
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.provinces} Samma Association
         </Text>
-
+        <Text textAlign={"center"}>
+          Account: {donation && donation.length > 0 ? donation[0].fund : "$0"}
+          {loading && <Spinner size={"sm"} />}
+        </Text>
         <Box
           height={"200px"}
           width={{ base: "97%", md: "70%" }}
