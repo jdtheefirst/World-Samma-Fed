@@ -330,7 +330,7 @@ const AdminWorkSlot = ({ user }) => {
                     />
                     {certificateLoading && <p>Uploading passport photo...</p>}
                     <FormErrorMessage>
-                      Please select a passport photo.
+                      Please select a certificate.
                     </FormErrorMessage>
                   </FormControl>
                   <Button
