@@ -24,7 +24,7 @@ const courses = [
         title: "Lesson 1",
         video:
           "https://res.cloudinary.com/dvc7i8g1a/video/upload/v1706267491/WhatsApp_Video_2024-01-26_at_2.10.09_AM_hjvvsd.mp4",
-        notes: "Notes for Lesson 1",
+        notes: "विजया शंकरा",
       },
       {
         id: 2,

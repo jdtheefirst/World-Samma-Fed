@@ -93,7 +93,7 @@ const National = () => {
         </Text>
         <Text textAlign={""}>States</Text>
         <Text textAlign={"center"}>
-          Account: {donation && donation.length > 0 ? donation[0].fund : "$0"}
+          Account: ${donation && donation.length > 0 ? donation[0].fund : "$0"}
           {loading && <Spinner size={"sm"} />}
         </Text>
 
@@ -167,7 +167,7 @@ const National = () => {
                     handleInterim();
                   }}
                 >
-                  Interim
+                  Claim Interim leadership
                 </Button>
               )}
               {show && <NationalInterim states={subdivisions.length} />}

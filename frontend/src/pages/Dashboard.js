@@ -190,14 +190,33 @@ export const Dashboard = ({ courses }) => {
       },
     };
     try {
-      const { data } = await axios.get(
-        `/api/province/officials/${user.country}/${user.provinces}`,
-        config
-      );
-      if (data.length === 0) {
-      } else {
-        setProvince(data);
-      }
+      axiosInstance
+        .get(
+          `/api/province/officials/${user.country}/${user.provinces}`,
+          config
+        )
+        .then(async (response) => {
+          if (response.data.length === 0) {
+          } else {
+            setProvince(data);
+          }
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 401) {
+            toast({
+              title: "Your session has expired",
+              description: "Logging out in less than 8 seconds",
+              duration: 8000,
+              status: "loading",
+              position: "bottom",
+            });
+
+            setTimeout(() => {
+              localStorage.removeItem("userInfo");
+              navigate("/");
+            }, 8000);
+          }
+        });
     } catch (error) {
       console.log(error);
       toast({

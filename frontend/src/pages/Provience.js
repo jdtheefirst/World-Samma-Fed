@@ -124,7 +124,7 @@ const Provience = () => {
           {user?.provinces} Samma Association
         </Text>
         <Text textAlign={"center"}>
-          Account: {donation && donation.length > 0 ? donation[0].fund : "$0"}
+          Account: ${donation && donation.length > 0 ? donation[0].fund : "0"}
           {loading && <Spinner size={"sm"} />}
         </Text>
         <Box
@@ -213,7 +213,7 @@ const Provience = () => {
                     handleInterim();
                   }}
                 >
-                  Interim
+                  Claim Interim Leadership
                 </Button>
               )}
               {show && <ProvincialCoachForm />}

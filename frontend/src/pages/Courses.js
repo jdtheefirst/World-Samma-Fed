@@ -42,7 +42,7 @@ const CourseDetails = ({ courses, user }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/translate?text=${text}&target=${user.language}`,
+        `/api/translate?text=${text}&target=${"en"}`,
         config
       );
 
