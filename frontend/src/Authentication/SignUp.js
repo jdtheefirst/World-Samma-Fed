@@ -107,6 +107,17 @@ const Signup = () => {
   };
   const submitHandler = async () => {
     setPicLoading(true);
+    if (!name || !email || !password || !confirmpassword || !otherName || !selectedCountry || !provinces) {
+    toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+    }
     try {
       const config = {
         headers: {
@@ -292,7 +303,7 @@ const Signup = () => {
     ))}
   </Select>
 </FormControl>
-    {selectedCountry && subdivisions ? <FormControl id="provinces" isRequired>
+    {selectedCountry && subdivisions ? <FormControl id="provinces">
   <FormLabel textColor={"white"}>County/Province</FormLabel>
   <Select
     placeholder="Select your province"
@@ -310,7 +321,7 @@ const Signup = () => {
     ))}
   </Select>
 </FormControl> : 
-      <FormControl id="provinces" isRequired>
+      <FormControl id="provinces">
         <FormLabel textColor={"white"}>County/Province</FormLabel>
         <Input
           type="text"
