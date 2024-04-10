@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Text, Button, useToast } from "@chakra-ui/react";
+import { Box, Text, Button, useToast, Spinner } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
@@ -29,7 +29,6 @@ const CourseDetails = ({ courses, user }) => {
   const currentLesson = course.lessons[currentLessonIndex];
 
   const translateText = async (text) => {
-    console.log(text);
     if (!user || !text) return;
 
     try {
@@ -42,7 +41,7 @@ const CourseDetails = ({ courses, user }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `/api/translate?text=${text}&target=${"en"}`,
+        `/api/translate?text=${text}&target=${user.language}`,
         config
       );
 
@@ -85,8 +84,12 @@ const CourseDetails = ({ courses, user }) => {
         background={"white"}
       >
         <Box mb={4}>
-          <Text fontSize="20px" fontWeight="medium">
+          <Text fontSize="large" fontWeight="medium">
             {currentLesson.title}
+            <Text fontSize={"small"}>
+              {" "}
+              *Optimize Your Viewing: Switch to Fullscreen
+            </Text>
           </Text>
           <iframe
             title={`Lesson ${currentLesson.id}`}
@@ -96,14 +99,14 @@ const CourseDetails = ({ courses, user }) => {
             allowFullScreen
             style={{ maxWidth: "800px", margin: "0 auto" }}
           ></iframe>
-          <Text mt={2} textAlign={"center"}>
+          <Text mt={2} textAlign={"center"} p={2}>
             <Button
               background="transparent"
               _hover={{ backgroundColor: "transparent", color: "green" }}
               color={"purple"}
               onClick={() => translateText(currentLesson.notes)}
             >
-              translate
+              translate{loading && <Spinner size={"sm"} />}
             </Button>
             {translatedText ? translatedText : currentLesson.notes}
           </Text>

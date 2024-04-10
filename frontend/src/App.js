@@ -13,6 +13,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminWorkSlot from "./pages/AdminWorkSlot";
 import Provience from "./pages/Provience";
 import National from "./pages/National";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const courses = [
   {
@@ -24,7 +25,8 @@ const courses = [
         title: "Lesson 1",
         video:
           "https://res.cloudinary.com/dvc7i8g1a/video/upload/v1706267491/WhatsApp_Video_2024-01-26_at_2.10.09_AM_hjvvsd.mp4",
-        notes: "विजया शंकरा",
+        notes:
+          "Welcome to World-Samma, where discipline meets passion. Begin your path to mastery today. This means that the socket.io server is expected to be running at the specified path on the server side and connection allows bidirectional communication between the client and the server using the WebSocket protocol.",
       },
       {
         id: 2,
@@ -202,6 +204,7 @@ function App() {
         />
         <Route path="/province" element={<Provience user={user} />} />
         <Route path="national" element={<National />} />
+        <Route path="/accountrecovery" Component={ForgotPassword} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

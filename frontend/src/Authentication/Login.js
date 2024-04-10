@@ -180,6 +180,7 @@ const Login = () => {
         onClick={() => {
           onOpen();
         }}
+        textColor={"whitesmoke"}
       >
         Forgot password?
       </Link>
@@ -196,7 +197,6 @@ const Login = () => {
               textAlign={"center"}
               justifyContent={"center"}
               fontSize={"2xl"}
-              textColor={"white"}
             >
               Enter your Email below
             </Text>
@@ -212,7 +212,6 @@ const Login = () => {
               fontSize={"2xl"}
               placeholder={`example@mymail.com`}
               type="text"
-              textColor={"white"}
               textAlign="center"
               onChange={(e) => setForgotEmail(e.target.value)}
               value={forgotEmail}
@@ -230,7 +229,7 @@ const Login = () => {
             </Button>
           </ModalBody>
           <ModalFooter display="flex">
-            <Text textAlign={"start"} textColor={"white"}>
+            <Text textAlign={"start"}>
               A code will be sent to the above email
             </Text>
             {searching && <Spinner />}

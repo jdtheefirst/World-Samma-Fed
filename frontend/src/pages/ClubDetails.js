@@ -32,12 +32,9 @@ const ClubDetails = ({ user }) => {
   const socket = useConnectSocket(user?.token);
 
   const clubData = {
-    name: "Club Name",
-    description: "A brief description of the club.",
-    profilePicture:
-      "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709221154/wsf_prl49r.jpg", // Sample image URL
+    profilePicture: "",
     backgroundPicture:
-      "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1704379830/samma_dm0t2d.jpg", // Sample image URL
+      "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1704379830/samma_dm0t2d.jpg",
   };
   useEffect(() => {
     if (!socket) {
@@ -196,8 +193,6 @@ const ClubDetails = ({ user }) => {
       );
 
       setBroadcast((prev) => [...prev, data]);
-
-      console.log(data);
     } catch (error) {
       console.error("Error fetching Club:", error);
       console.log(error);
@@ -222,8 +217,6 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
-
-      console.log(data);
     } catch (error) {
       console.error("Error accepting request:", error);
       console.log(error);
@@ -257,8 +250,6 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
-
-      console.log(data);
     } catch (error) {
       console.error("Error accepting join request:", error);
       console.log(error);
