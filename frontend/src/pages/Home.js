@@ -75,9 +75,10 @@ function Homepage() {
         </Box>
         <Text
           textAlign={"center"}
-          fontWeight={"bold"}
           fontSize={{ base: "sm", md: "xl" }}
-          backgroundColor={"Background"}
+          bgGradient="linear(to-l, #7928CA, #FF0080)"
+          bgClip="text"
+          fontWeight="extrabold"
           m={1}
           p={5}
           borderRadius={3}

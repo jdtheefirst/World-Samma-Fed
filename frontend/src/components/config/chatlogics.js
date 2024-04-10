@@ -86,7 +86,7 @@ export function useConnectSocket(token) {
       return;
     }
 
-    const newSocket = io("http://localhost:8080", {
+    const newSocket = io("/", {
       query: { token },
     });
 
