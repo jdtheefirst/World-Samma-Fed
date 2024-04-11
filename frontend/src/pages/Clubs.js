@@ -105,7 +105,7 @@ export const Clubs = () => {
       overflowX={"auto"}
       justifyContent={"center"}
       alignItems={"center"}
-      pt={{ base: 35, md: 20 }}
+      pt={20}
     >
       <Box
         position={"fixed"}
@@ -185,26 +185,35 @@ export const Clubs = () => {
           width={{ base: "100%", md: "80%" }}
         >
           {" "}
-          {loading && <Spinner />}
-          {clubs && clubs.length > 0 ? (
-            clubs.map((club, index) => (
-              <Button
-                key={club.code}
-                width={"90%"}
-                onClick={() => navigate(`/showclub/${club._id}/${false}`)}
-              >
-                {index + 1}. Club: {club.name}, Reg no: {club.code}
-              </Button>
-            ))
+          {loading ? (
+            <Spinner />
           ) : (
             <>
-              <Text textAlign={"center"}>
-                <Image
-                  src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png"
-                  width={7}
-                />
-              </Text>
-              <Text>No Clubs in this region</Text>
+              {clubs && clubs.length > 0 ? (
+                clubs.map((club, index) => (
+                  <Button
+                    key={club.code}
+                    width={"90%"}
+                    onClick={() => navigate(`/showclub/${club._id}/${false}`)}
+                  >
+                    {index + 1}. Club: {club.name}, Reg no: {club.code}
+                  </Button>
+                ))
+              ) : (
+                <>
+                  <Text textAlign={"center"}>
+                    <Image
+                      src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png"
+                      width={7}
+                    />
+                  </Text>
+
+                  <Text fontWeight={"bold"}>
+                    No clubs available in this region yet 🚫
+                  </Text>
+                  <Text>Start your own club below and lead the way!</Text>
+                </>
+              )}
             </>
           )}
         </Box>

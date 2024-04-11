@@ -27,7 +27,7 @@ router.get("/searchuser/:email", limiter, searchUser);
 router.get("/accountrecovery/:email", limiter, forgotEmail);
 router.post("/emailrecovery/:email", limiter, recoverEmail);
 router.route("/login").post(limiter, authUser);
-// router.get("/:userEmail", limiter, authorizeUser);
+router.get("/:userEmail", limiter, authorizeUser);
 
 router.get("/:country/:provience", protect, limiter, getUsers);
 router.get(

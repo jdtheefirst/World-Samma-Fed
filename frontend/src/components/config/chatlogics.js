@@ -92,13 +92,11 @@ export function useConnectSocket(token) {
 
     newSocket.on("connect", () => {
       const email = user?.email;
-      console.log("Socket Connected", email);
+
       newSocket.emit("newConnection", { email });
     });
 
-    newSocket.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
+    newSocket.on("disconnect", () => {});
 
     socketRef.current = newSocket;
 

@@ -7,6 +7,7 @@ import {
   Text,
   useColorModeValue,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import UpperNav from "../miscellenious/upperNav";
@@ -124,8 +125,14 @@ const Provience = () => {
           {user?.provinces} Samma Association
         </Text>
         <Text textAlign={"center"}>
-          Account: ${donation && donation.length > 0 ? donation[0].fund : "0"}
-          {loading && <Spinner size={"sm"} />}
+          {loading ? (
+            <Spinner size={"sm"} />
+          ) : (
+            <Text>
+              Account: $
+              {donation && donation.length > 0 ? donation[0].fund : "0"}
+            </Text>
+          )}
         </Text>
         <Box
           height={"200px"}
@@ -138,6 +145,16 @@ const Provience = () => {
           bg="white"
         >
           {loading && <Spinner />}
+          {!loading && clubs.length === 0 && (
+            <>
+              <Text fontWeight={"bold"}>
+                No clubs available in this region yet 🚫
+              </Text>
+              <Link href="/clubs" textDecoration={"underline"}>
+                Start your own club and lead the way!
+              </Link>
+            </>
+          )}
           {clubs &&
             clubs.map((subdivision) => (
               <Button

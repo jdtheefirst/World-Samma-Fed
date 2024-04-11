@@ -72,7 +72,6 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.status === 401) {
-        // Handle 401 Unauthorized error
         toast({
           title: "Account Missing!",
           description: error.response.data.message,
@@ -82,11 +81,9 @@ const Login = () => {
           position: "bottom",
         });
       } else {
-        // Handle other errors
-        console.error("An error occurred:", error);
         toast({
           title: "An Error Occurred!",
-          description: "Please try again later.",
+          description: error.response.data.message,
           status: "error",
           duration: 5000,
           isClosable: true,

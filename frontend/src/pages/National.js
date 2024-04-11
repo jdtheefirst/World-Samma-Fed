@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Button, Spinner, Text, useToast, Link } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
@@ -33,7 +33,6 @@ const National = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log(error);
       toast({
         title: "An Error Occurred!",
         description: "Please try again later",
@@ -43,8 +42,6 @@ const National = () => {
       });
     }
   }, [toast, user, setDonation, setLoading]);
-
-  console.log(donation);
 
   useEffect(() => {
     if (!user) navigate("/dashboard");
@@ -91,13 +88,21 @@ const National = () => {
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.country} Samma Association {flag}
         </Text>
-        <Text textAlign={""}>States</Text>
-        <Text textAlign={"center"}>
-          Account: ${donation && donation.length > 0 ? donation[0].fund : "$0"}
-          {loading && <Spinner size={"sm"} />}
-        </Text>
 
+        <Text textAlign={"center"}>
+          {loading ? (
+            <Spinner size={"sm"} />
+          ) : (
+            <Text>
+              Account: $
+              {donation && donation.length > 0 ? donation[0].fund : "0"}
+            </Text>
+          )}
+        </Text>
+        <Text> States</Text>
         <Box
+          display={"flex"}
+          flexDirection={"column"}
           height={"200px"}
           width={{ base: "97%", md: "70%" }}
           overflowY={"scroll"}
@@ -110,9 +115,14 @@ const National = () => {
           {" "}
           {subdivisions &&
             subdivisions.map((subdivision) => (
-              <Button key={subdivision._id} m={1}>
+              <Link
+                href="#"
+                textDecoration={"underline"}
+                key={subdivision._id}
+                m={1}
+              >
                 {subdivision.name}
-              </Button>
+              </Link>
             ))}
         </Box>
 

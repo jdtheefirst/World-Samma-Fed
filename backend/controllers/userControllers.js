@@ -15,7 +15,7 @@ const { getNextNumber } = require("../config/getNextSequence");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
-const privateEmail = "admin@fuckmate.boo";
+const privateEmail = "support@worldsamma.org";
 
 const registerUsers = asyncHandler(async (req, res) => {
   const {
@@ -144,7 +144,7 @@ This is system's generated code, please do not reply.`,
     });
   } else {
     res.json(false);
-    throw new Error("Email not Found in the database");
+    throw new Error({ message: "Email not Found in the database" });
   }
 };
 const searchUser = async (req, res) => {
@@ -235,6 +235,7 @@ const authUser = asyncHandler(async (req, res) => {
         coach: userInfo.coach,
         certificates: userInfo.certificates,
         pic: userInfo.pic,
+        belt: userInfo.belt,
         nationalRequests: userInfo.nationalRequests,
         provinceRequests: userInfo.provinceRequests,
         token: generateToken(userInfo._id),
@@ -361,10 +362,7 @@ const deleteImage = async (req, res) => {
   }
 };
 const authorizeUser = async (req, res) => {
-  console.log("Did we just access this route?");
   const { userEmail } = req.params;
-
-  console.log(userEmail);
 
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000
