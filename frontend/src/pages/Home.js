@@ -259,33 +259,33 @@ function Homepage() {
                   alignItems={"center"}
                 >
                   {" "}
-                  <Link href="">
+                  <Link href="https://instagram.com/worldsamma">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732068/icons8-instagram-48_otbx6y.png"
                       h={6}
                     />
                   </Link>
-                  <Link href="">
+                  <Link href="#">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732067/icons8-youtube-47_mzckqt.png"
                       h={6}
                     />
                   </Link>
-                  <Link href="">
+                  <Link href="https://x.com/worldsamma">
                     <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732068/icons8-twitter-50_sgczrz.png"
+                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-x-50_i8gjn3.png"
                       h={6}
                     />
                   </Link>
-                  <Link href="">
+                  <Link href="https://facebook.com/worldsamma">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732068/icons8-facebook-48_zn7fjx.png"
                       h={6}
                     />
                   </Link>
-                  <Link href="">
+                  <Link href="https://tiktok.com/worldsamma">
                     <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732067/icons8-tiktok-50_vphmj9.png"
+                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-tiktok-50_1_sxupbm.png"
                       h={6}
                     />
                   </Link>
