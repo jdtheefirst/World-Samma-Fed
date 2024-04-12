@@ -120,12 +120,14 @@ const CourseDetails = ({ courses, user }) => {
           <Button
             onClick={goToPreviousLesson}
             disabled={currentLessonIndex === 0}
+            borderRadius={20}
           >
             Previous Lesson
           </Button>
           <Button
             onClick={goToNextLesson}
             disabled={currentLessonIndex === course.lessons.length - 1}
+            borderRadius={20}
           >
             Next Lesson
           </Button>

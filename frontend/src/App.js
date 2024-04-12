@@ -24,17 +24,159 @@ const courses = [
         id: 1,
         title: "Lesson 1",
         video:
-          "https://res.cloudinary.com/dvc7i8g1a/video/upload/v1706267491/WhatsApp_Video_2024-01-26_at_2.10.09_AM_hjvvsd.mp4",
-        notes:
-          "Welcome to World-Samma, where discipline meets passion. Begin your path to mastery today. This means that the socket.io server is expected to be running at the specified path on the server side and connection allows bidirectional communication between the client and the server using the WebSocket protocol.",
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945476/stances_e589zo.mp4",
+        notes: `.
+Attention stance.
+Natural stance.
+Horse riding stance.
+Raised rear heel stance.
+Forward leaning stance.
+Back leaning stance.
+Cat stance.
+Raised knee stance.
+Cross stance.
+Kneeling positions (one knee, both knees).
+`,
       },
       {
         id: 2,
         title: "Lesson 2",
-        video: "video_url_2",
-        notes: "Notes for Lesson 2",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945467/step_annbdf.mp4",
+        notes: `.STEPPING (each done in the forward and reverse motion)
+ 
+     .Stepping through.
+Dragging/jumping.
+Crossing over
+`,
       },
-      // Add more lessons
+      {
+        id: 3,
+        title: "Lesson 3",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
+        notes: ` PRIMARY KICKS (use the front foot)
+ 
+.Ball kick
+.Outward crescent kick
+.Inward crescent kick
+.Side kick
+.Roundhouse kick
+.Hook/whip kick
+.Back kick
+
+`,
+      },
+      {
+        id: 4,
+        title: "Lesson 4",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
+        notes: ` PRIMARY KICKS (use the front foot)
+ 
+.Ball kick
+.Outward crescent kick
+.Inward crescent kick
+.Side kick
+.Roundhouse kick
+.Hook/whip kick
+.Back kick
+
+`,
+      },
+      {
+        id: 5,
+        title: "Lesson 5",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712947059/open_hand_r1lizr.mp4",
+        notes: `
+OPEN HAND STRIKES (with each hand)
+ 
+.Chops
+.Slaps (back & front hand)
+.Pokes
+.Claws
+.Palm heel
+.Ridge hand
+`,
+      },
+      {
+        id: 6,
+        title: "Lesson 6",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945468/punches_wazdvv.mp4",
+        notes: `
+PUNCHES 
+.Front punch
+.Rear/reverse punch
+ 
+(circular, linear & back fist variations for each)
+
+`,
+      },
+      {
+        id: 7,
+        title: "Lesson 7",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945249/evasion_wloadk.mp4",
+        notes: `
+EVASION
+ 
+.Left
+.Right
+.Down
+.Up
+.Back
+`,
+      },
+      {
+        id: 8,
+        title: "Lesson 8",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945296/blocks_kxtoxv.mp4",
+        notes: `
+ BLOCKS (with each hand)
+ 
+.Inward block
+.Outward block
+.Upward block
+.Downward block
+
+`,
+      },
+      {
+        id: 9,
+        title: "Lesson 9",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945257/falling_side_akrnvl.mp4",
+        notes: `
+SAFETY FALLS
+ 
+.Side fall
+`,
+      },
+      {
+        id: 10,
+        title: "Lesson 10",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945246/falling_back_ggt6ko.mp4",
+        notes: `
+SAFETY FALLS
+ 
+.Back fall
+`,
+      },
+      {
+        id: 11,
+        title: "Lesson 11",
+        video:
+          "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945243/falling_face_sbvruy.mp4",
+        notes: `
+SAFETY FALLS
+ 
+.Face fall
+`,
+      },
     ],
   },
   {
