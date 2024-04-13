@@ -54,13 +54,6 @@ function Homepage() {
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
-            onClick={() => setGetStarted(false)}
-          >
-            Events
-          </Button>
-          <Button
-            background="transparent"
-            _hover={{ backgroundColor: "transparent", color: "green" }}
             onClick={() => {
               setShow(true);
               setGetStarted(false);
@@ -301,7 +294,11 @@ function Homepage() {
                   fontSize={"small"}
                   p={3}
                 >
-                  World Samma: Sculpting sports mastery across the globe.{" "}
+                  Samma is a modern hybrid martial art(from Eastern Africa) with
+                  its own training curriculum(cheni 6) and a distintive sparing
+                  method that combines the 3 ranges of man to man combat, that
+                  is; strike by limb (elbow, fist, knee and foot) and finally
+                  grapping.
                 </GridItem>
                 <GridItem
                   colSpan={4}
@@ -314,11 +311,9 @@ function Homepage() {
                     p={3}
                     textColor={"bisque"}
                   >
-                    © World Samma Federation 1999. All rights reserved.
-                    Headquarters: Mombasa, Kenya. Empowering individuals since
-                    1999, we are dedicated to nurturing the next generation of
-                    coaches through our online school. Join us in shaping the
-                    future of sports leadership. Terms and conditions apply.
+                    © World Samma Academy 2013. All rights reserved. Terms and
+                    conditions apply. For queries and comments email
+                    support@worldsamma.org.
                     <Text
                       textAlign={"center"}
                     >{`Copyright © 1999-${new Date().getFullYear()}`}</Text>
