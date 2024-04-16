@@ -13,9 +13,9 @@ import "../App.css";
 import Logins from "./Logins";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo1 from "../logo1edit.png";
-import logo2 from "../logo2.jpg";
-import logo3 from "../pilot.jpeg";
+import logo1 from "../final.jpeg";
+import logo2 from "../finalLogo2.jpeg";
+import logo7 from "../pilot6.png";
 
 import CoffeeModal from "../miscellenious/coffee";
 
@@ -47,7 +47,10 @@ function Homepage() {
           <Button
             background="transparent"
             _hover={{ backgroundColor: "transparent", color: "green" }}
-            onClick={() => setGetStarted(false)}
+            onClick={() => {
+              setGetStarted(null);
+              navigate("/about");
+            }}
           >
             About
           </Button>
@@ -69,34 +72,58 @@ function Homepage() {
             Login/Sign Up
           </Button>
         </Box>
-        <Text
-          textAlign={"center"}
-          fontSize={"xl"}
-          bgGradient="linear(to-l, #7928CA, #FF0080)"
-          bgClip="text"
-          fontWeight="extrabold"
-          m={1}
-          p={5}
-          borderRadius={3}
+        <Box
+          position="relative"
+          display="flex"
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          m={3}
         >
-          WORLD SAMMA FEDERATION
-        </Text>
-        <Text
-          textAlign={"center"}
-          fontSize={{ base: "sm", md: "xl" }}
-          bgGradient="linear(to-l, #7928CA, #FF0080)"
-          bgClip="text"
-          fontWeight="extrabold"
-          m={1}
-          p={5}
-          borderRadius={3}
-        >
-          Welcome to Worldsamma, where discipline meets passion. Begin your path
-          to mastery today.
-        </Text>
+          <Image
+            src={logo1}
+            boxSize={{ base: "100px", md: "200px" }}
+            alt={`Logo 1*`}
+            m={1}
+          />
+          <Text
+            textAlign={"center"}
+            fontSize={{ base: "sm", md: "xl" }}
+            bgGradient="linear(to-l, #7928CA, #FF0080)"
+            bgClip="text"
+            fontWeight="extrabold"
+            borderRadius={3}
+            position="absolute"
+            bottom={0}
+            left="50%"
+            transform="translateX(-50%)"
+            p={2}
+          >
+            WORLD SAMMA FEDERATION
+          </Text>
+          <Image
+            src={logo2}
+            boxSize={{ base: "100px", md: "200px" }}
+            alt={`Logo 2*`}
+          />
+        </Box>
+
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
-          <Logins />
+          <>
+            <Logins />
+            <Text
+              textAlign={"center"}
+              bottom={0}
+              p={6}
+              textColor={"grey"}
+              background="blackAlpha.200"
+              mt={3}
+            >
+              <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
+              All rights reserved. Terms and conditions apply. For queries and
+              comments email support@worldsamma.org.
+            </Text>
+          </>
         ) : (
           <>
             {" "}
@@ -111,37 +138,11 @@ function Homepage() {
               m={0}
             >
               <Image
-                src={logo1}
+                src={logo7}
                 position={"absolute"}
-                zIndex={-10}
-                width={"100%"}
-                boxSize={{ base: "200px", md: "200px" }}
-                alt={`Logo 1*`}
-                borderRadius="20"
-                left={"25%"}
-                top={0}
-              />
-              <Image
-                src={logo2}
-                position={"absolute"}
-                zIndex={-10}
-                width={"100%"}
-                boxSize={{ base: "200px", md: "200px" }}
+                zIndex={-1}
                 alt={`Logo 2*`}
-                borderRadius="20"
-                left={{ base: "25%", md: "50%" }}
-                bottom={0}
-              />
-              <Image
-                src={logo3}
-                position={"absolute"}
-                zIndex={-10}
-                width={"100%"}
-                boxSize={{ base: "200px", md: "200px" }}
-                alt={`Logo 2*`}
-                borderRadius="20"
-                left={{ base: "25%", md: "70%" }}
-                bottom={{ base: "35%", md: "50%" }}
+                mt={30}
               />
               <Text
                 textAlign={"center"}
@@ -238,18 +239,17 @@ function Homepage() {
                 width={"100%"}
                 height="200px"
                 templateRows="repeat(2, 1fr)"
-                // templateColumns="repeat(5, 1fr)"
                 gap={4}
                 m={2}
               >
                 <GridItem
-                  colSpan={2}
-                  background="blackAlpha.400"
-                  color={"white"}
+                  background="whitesmoke"
                   textAlign={"center"}
                   display={"flex"}
+                  flexDir={"column"}
                   justifyContent={"center"}
                   alignItems={"center"}
+                  p={2}
                 >
                   {" "}
                   <Link href="https://instagram.com/worldsamma">
@@ -261,13 +261,13 @@ function Homepage() {
                   <Link href="#">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732067/icons8-youtube-47_mzckqt.png"
-                      h={6}
+                      h={5}
                     />
                   </Link>
                   <Link href="https://x.com/worldsamma">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-x-50_i8gjn3.png"
-                      h={6}
+                      h={5}
                     />
                   </Link>
                   <Link href="https://facebook.com/worldsamma">
@@ -285,38 +285,35 @@ function Homepage() {
                 </GridItem>
                 <GridItem
                   colSpan={2}
-                  background="blackAlpha.600"
+                  background="whitesmoke"
                   display={"flex"}
                   justifyContent={"center"}
                   alignItems={"center"}
                   textAlign={"center"}
-                  textColor={"whitesmoke"}
-                  fontSize={"small"}
-                  p={3}
+                  textColor={"blackAlpha.800"}
+                  px={6}
+                  p={6}
                 >
-                  Samma is a modern hybrid martial art(from Eastern Africa) with
-                  its own training curriculum(cheni 6) and a distintive sparing
-                  method that combines the 3 ranges of man to man combat, that
-                  is; strike by limb (elbow, fist, knee and foot) and finally
-                  grapping.
+                  Samma is a modern hybrid martial art (from Eastern Africa)
+                  with its own training curriculum (cheni 6) and a distinctive
+                  sparring method that combines the three ranges of man to man
+                  combat, that is; strike by an extension/stick, strike by limb
+                  (elbow, fist, knee and foot) and finally grappling.
                 </GridItem>
                 <GridItem
                   colSpan={4}
-                  background="blackAlpha.600"
+                  background="blackAlpha.400"
                   color={"white"}
                 >
                   <Text
                     textAlign={"center"}
                     fontSize={"small"}
-                    p={3}
-                    textColor={"bisque"}
+                    p={1}
+                    textColor={"grey"}
                   >
-                    © World Samma Academy 2013. All rights reserved. Terms and
-                    conditions apply. For queries and comments email
-                    support@worldsamma.org.
-                    <Text
-                      textAlign={"center"}
-                    >{`Copyright © 1999-${new Date().getFullYear()}`}</Text>
+                    <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
+                    All rights reserved. Terms and conditions apply. For queries
+                    and comments email support@worldsamma.org.
                   </Text>
                 </GridItem>
               </Grid>

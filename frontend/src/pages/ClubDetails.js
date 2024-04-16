@@ -264,7 +264,7 @@ const ClubDetails = ({ user }) => {
       alignItems={"center"}
       width={"100%"}
       background={"white"}
-      overflowX={"hidden"}
+      overflow={"auto"}
     >
       <UpperNav />
       <Box

@@ -14,6 +14,7 @@ import AdminWorkSlot from "./pages/AdminWorkSlot";
 import Provience from "./pages/Provience";
 import National from "./pages/National";
 import ForgotPassword from "./pages/ForgotPassword";
+import AboutPage from "./pages/About";
 
 const courses = [
   {
@@ -340,6 +341,7 @@ function App() {
           path="/admin-work-slot"
           element={<AdminWorkSlot user={user} />}
         />
+        <Route path="/about" element={<AboutPage />} />
         <Route
           path="/showclub/:clubId/:liveStream"
           element={<ClubDetailes user={user} />}

@@ -54,10 +54,9 @@ const CoffeeModal = ({ isOpen, onClose }) => {
         title: data.message,
         status: "success",
       });
-      setShow(true);
     } catch (error) {
       console.error("Donation error:", error);
-      setShow(true);
+
       toast({
         title: "An Error Occurred!",
         description: "You may proceed or try again after sometime",
@@ -162,7 +161,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
 
               <Button
                 onClick={() => {
-                  handleSubmit();
+                  setShow(true);
                 }}
                 borderRadius={20}
                 m={1}
@@ -178,7 +177,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
             <PayPalScriptProvider
               options={{
                 clientId:
-                  "AWPQf5Vj892NjdxiaAeEykYYc8D62w6fxtwwtMLtR61GCuirpxfEsc6caIdpTHoV5v9GLF-f8HeWLI8S",
+                  "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
               }}
             >
               <PayPalButtons

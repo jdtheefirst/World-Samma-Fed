@@ -12,8 +12,8 @@ const provincialCoachSchema = new mongoose.Schema(
     viceChairman: {
       type: String,
     },
-    country: { type: String, required: true },
-    province: { type: String, required: true },
+    country: { type: String },
+    province: { type: String },
     provincialCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

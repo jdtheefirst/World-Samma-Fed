@@ -32,6 +32,8 @@ const ProfilePage = ({ user }) => {
   const [student, setStudent] = useState(null);
   const [show, setShow] = useState(false);
 
+  console.log(user);
+
   const requestClub = useCallback(async () => {
     if (!user.coach) {
       return;
@@ -274,167 +276,167 @@ const ProfilePage = ({ user }) => {
             )}
           </Box>
         </Box>
-        {user.certificates.length >= 8 && (
+
+        <Box
+          display="flex"
+          flexDir={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          overflow={"auto"}
+          width={"100%"}
+          m={2}
+          boxShadow="base"
+          p="6"
+          rounded="md"
+          bg="white"
+        >
+          {" "}
+          <Text
+            fontSize={"sm"}
+            fontWeight={500}
+            bg={useColorModeValue("green.50", "green.900")}
+            px={6}
+            p={"3"}
+            m={1}
+            color={"green.500"}
+            rounded={"full"}
+          >
+            Coach's assisted student rank upgrading
+          </Text>
           <Box
             display="flex"
-            flexDir={"column"}
+            pb={2}
+            width={{ base: "100%", md: "60%" }}
             justifyContent={"center"}
             alignItems={"center"}
+          >
+            <Input
+              placeholder="Search by email"
+              mr={2}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button borderRadius={20} onClick={handleSearch}>
+              🔍Search
+            </Button>
+          </Box>
+          <Box
+            display={"flex"}
+            flexDir={"column"}
             overflow={"auto"}
             width={"100%"}
-            m={2}
-            boxShadow="base"
-            p="6"
-            rounded="md"
-            bg="white"
+            justifyContent={"center"}
+            alignItems={"center"}
           >
             {" "}
-            <Text
-              fontSize={"sm"}
-              fontWeight={500}
-              bg={useColorModeValue("green.50", "green.900")}
-              px={6}
-              p={"3"}
-              m={1}
-              color={"green.500"}
-              rounded={"full"}
-            >
-              Coach's assisted student rank upgrading
-            </Text>
             <Box
-              display="flex"
-              pb={2}
-              width={{ base: "100%", md: "60%" }}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <Input
-                placeholder="Search by email"
-                mr={2}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <Button borderRadius={20} onClick={handleSearch}>
-                🔍Search
-              </Button>
-            </Box>
-            <Box
-              display={"flex"}
+              display={show ? "none" : "flex"}
               flexDir={"column"}
-              overflow={"auto"}
               width={"100%"}
-              justifyContent={"center"}
-              alignItems={"center"}
+              maxH={"300px"}
+              overflow={"auto"}
             >
               {" "}
-              <Box
-                display={show ? "none" : "flex"}
-                flexDir={"column"}
-                width={"100%"}
-                maxH={"300px"}
-                overflow={"auto"}
-              >
-                {" "}
-                {loading ? (
-                  <Box
-                    display={show ? "none" : "flex"}
-                    width={"100%"}
-                    padding="6"
-                    boxShadow="lg"
-                    bg="white"
-                  >
-                    <SkeletonCircle size="10" />
-                    <SkeletonText
-                      mt="4"
-                      noOfLines={4}
-                      spacing="4"
-                      skeletonHeight="2"
-                    />
-                  </Box>
-                ) : (
-                  searchResult?.map((user) => (
-                    <UserListItem
-                      key={user._id}
-                      user={user}
-                      handleFunction={() => {
-                        setStudent({
-                          id: user._id,
-                          name: user.name,
-                          email: user.email,
-                          pic: user.pic,
-                        });
-                        setShow(true);
-                      }}
-                    />
-                  ))
-                )}
-              </Box>
-              {show && (
-                <Box>
-                  <Text
-                    textAlign={"center"}
-                    fontSize={"sm"}
-                    fontWeight={500}
-                    bg={useColorModeValue("green.50", "green.900")}
-                    px={3}
-                    p={"3"}
-                    m={1}
-                    color={"purple.500"}
-                    rounded={"full"}
-                  >
-                    Upgrading: {student.name} {student.email}
-                    ($5 Fee)
-                  </Text>{" "}
-                  <PayPalScriptProvider
-                    options={{
-                      clientId:
-                        "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+              {loading ? (
+                <Box
+                  display={show ? "none" : "flex"}
+                  width={"100%"}
+                  padding="6"
+                  boxShadow="lg"
+                  bg="white"
+                >
+                  <SkeletonCircle size="10" />
+                  <SkeletonText
+                    mt="4"
+                    noOfLines={4}
+                    spacing="4"
+                    skeletonHeight="2"
+                  />
+                </Box>
+              ) : (
+                searchResult?.map((user) => (
+                  <UserListItem
+                    key={user._id}
+                    user={user}
+                    handleFunction={() => {
+                      setStudent({
+                        id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        pic: user.pic,
+                      });
+                      setShow(true);
                     }}
-                  >
-                    <PayPalButtons
-                      createOrder={(data, actions) => {
-                        const amount = 5.0;
-                        return actions.order.create({
-                          purchase_units: [
-                            {
-                              amount: {
-                                currency_code: "USD",
-                                value: amount.toFixed(2),
-                              },
+                  />
+                ))
+              )}
+            </Box>
+            {show && (
+              <Box>
+                <Text
+                  textAlign={"center"}
+                  fontSize={"sm"}
+                  fontWeight={500}
+                  bg={useColorModeValue("green.50", "green.900")}
+                  px={3}
+                  p={"3"}
+                  m={1}
+                  color={"purple.500"}
+                  rounded={"full"}
+                >
+                  Upgrading: {student.name} {student.email}
+                  ($5 Fee)
+                </Text>{" "}
+                <PayPalScriptProvider
+                  options={{
+                    clientId:
+                      "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                  }}
+                >
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      const amount = 5.0;
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              currency_code: "USD",
+                              value: amount.toFixed(2),
                             },
-                          ],
-                        });
-                      }}
-                      onApprove={async (data, actions) => {
-                        await handleAfterPay(student.id);
-                        return actions.order.capture().then(function (details) {
-                          toast({
-                            title: "Success",
-                            description:
-                              "Wait for WSF to send certificate to particulars.",
-                            status: "success",
-                            duration: 3000,
-                            isClosable: true,
-                            position: "bottom",
-                          });
-                        });
-                      }}
-                      onCancel={() => {
-                        setShow(false);
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={async (data, actions) => {
+                      await handleAfterPay(student.id);
+                      return actions.order.capture().then(function (details) {
                         toast({
-                          title: "Cancelled",
-                          status: "info",
+                          title: "Success",
+                          description:
+                            "Wait for WSF to send certificate to particulars.",
+                          status: "success",
+                          duration: 3000,
                           isClosable: true,
                           position: "bottom",
                         });
-                      }}
-                    />
-                  </PayPalScriptProvider>
-                </Box>
-              )}
-            </Box>
+                      });
+                    }}
+                    onCancel={() => {
+                      setShow(false);
+                      toast({
+                        title: "Cancelled",
+                        status: "info",
+                        isClosable: true,
+                        position: "bottom",
+                      });
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </Box>
+            )}
           </Box>
-        )}
+        </Box>
+
         {user?.provinceRequests?.length > 0 && (
           <Box
             textAlign={"start"}

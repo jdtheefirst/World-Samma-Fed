@@ -89,43 +89,35 @@ const acceptDecline = async (req, res) => {
     // Find the user by ID
     const user = await User.findById(userId);
 
-    // Check if the user exists and if provinceId exists in provinceRequests
-    if (
-      user &&
-      user.provinceRequests.some((request) =>
-        request.provinceId.equals(provinceId)
-      )
-    ) {
-      // Remove provinceId from provinceRequests
+    if (user && user.provinceRequests.includes(provinceId)) {
       user.provinceRequests = user.provinceRequests.filter(
-        (request) => !request.provinceId.equals(provinceId)
+        (request) => !request.equals(provinceId)
       );
       await user.save();
 
-      // Find the provincial coach by ID
       const province = await ProvincialCoach.findById(provinceId);
 
-      // Update the provincial coach based on accept value
       if (province) {
         province.requests.pull(userId);
         if (accept === "true") {
           province.approvals.push(userId);
         }
         await province.save();
+        const populatedProvince = await province
+          .populate({
+            path: "provinceRequests",
+            populate: {
+              path: "provincialCoach",
+              select: "name admission",
+            },
+          })
+          .execPopulate();
+
+        res.json(populatedProvince);
+      } else {
+        // Return empty array if province is not found
+        res.json([]);
       }
-
-      // Populate the provinceRequests field in the provincial coach and send the response
-      const populatedProvince = await province
-        .populate({
-          path: "provinceRequests",
-          populate: {
-            path: "provincialCoach",
-            select: "name admission",
-          },
-        })
-        .execPopulate();
-
-      res.json(populatedProvince);
     } else {
       res.status(404).json({ error: "User or province not found" });
     }
@@ -134,6 +126,7 @@ const acceptDecline = async (req, res) => {
     res.status(500).json({ error: "Failed to accept/decline" });
   }
 };
+
 const registerProvince = async (req, res) => {
   const { chairperson, secretary, viceChair } = req.body;
   const userId = req.user._id;
