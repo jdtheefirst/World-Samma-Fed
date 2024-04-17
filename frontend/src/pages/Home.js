@@ -235,13 +235,7 @@ function Homepage() {
               alignItems={"center"}
               width={"100%"}
             >
-              <Grid
-                width={"100%"}
-                height="200px"
-                templateRows="repeat(2, 1fr)"
-                gap={4}
-                m={2}
-              >
+              <Grid width={"100%"} height="200px" templateRows="repeat(2, 1fr)">
                 <GridItem
                   background="whitesmoke"
                   textAlign={"center"}
@@ -293,6 +287,7 @@ function Homepage() {
                   textColor={"blackAlpha.800"}
                   px={6}
                   p={6}
+                  width={"100%"}
                 >
                   Samma is a modern hybrid martial art (from Eastern Africa)
                   with its own training curriculum (cheni 6) and a distinctive

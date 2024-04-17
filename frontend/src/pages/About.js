@@ -55,8 +55,21 @@ const AboutPage = () => {
         >
           Download Our Curriculum (PDF)
         </a>
+        <Text fontSize={"sm"} textAlign={"center"}>
+          ℹ️ Help us translate the curriculum booklet into other world languages
+          by sending an editable draft to support@worldsamma.org Include your
+          name, country, and province for a credit/mention. Thanking you in
+          advance.
+        </Text>
       </Box>
-      <Text textAlign={"center"} fontSize={"small"} p={1} textColor={"grey"}>
+      <Text
+        textAlign={"center"}
+        fontSize={"small"}
+        p={1}
+        textColor={"grey"}
+        background="blackAlpha.200"
+        width={"100%"}
+      >
         <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
         All rights reserved. Terms and conditions apply. For queries and
         comments email support@worldsamma.org.
