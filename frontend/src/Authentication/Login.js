@@ -99,6 +99,7 @@ const Login = () => {
       const { data } = await axios.get(
         `/api/user/accountrecovery/${forgotEmail}`
       );
+      console.log(data);
       if (data !== false) {
         navigate("/accountrecovery");
         setVerify(data.verificationCode);

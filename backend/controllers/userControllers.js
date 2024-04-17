@@ -120,23 +120,24 @@ const forgotEmail = async (req, res) => {
     ).toString();
 
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "mail.privateemail.com",
+      port: 465, // or 587 if using STARTTLS
+      secure: true, // if using SSL/TLS
       auth: {
-        userInfo: privateEmail,
-        pass: privateEmailPass,
+        user: privateEmail, // your email address
+        pass: privateEmailPass, // your email password
       },
     });
     const mailOptions = {
       from: privateEmail,
       to: email,
       subject: "Recover Your Email",
-      text: `Your recovery code is:  ${verificationCode}
-    
-This is system's generated code, please do not reply.`,
+      text: `Your recovery code is:  ${verificationCode}\n\nThis is system's generated code, please do not reply.`,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         res.status(400).json({ message: "Email Sending Failed" });
+        console.log(error);
       } else {
         console.log("Email sent: " + info.response);
         res.status(200).json({ verificationCode, email });
@@ -147,6 +148,7 @@ This is system's generated code, please do not reply.`,
     throw new Error({ message: "Email not Found in the database" });
   }
 };
+
 const searchUser = async (req, res) => {
   const { email } = req.params;
 
