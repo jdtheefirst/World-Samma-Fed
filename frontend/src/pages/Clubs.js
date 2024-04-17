@@ -188,15 +188,23 @@ export const Clubs = () => {
           {loading ? (
             <Spinner />
           ) : (
-            <>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              maxH={"300px"}
+              width={"100%"}
+            >
               {clubs && clubs.length > 0 ? (
                 clubs.map((club, index) => (
                   <Button
                     key={club.code}
-                    width={"90%"}
+                    width={"100%"}
                     onClick={() => navigate(`/showclub/${club._id}/${false}`)}
+                    m={1}
                   >
-                    {index + 1}. Club: {club.name}, Reg no: {club.code}
+                    {index + 1}. {club.name}
                   </Button>
                 ))
               ) : (
@@ -214,7 +222,7 @@ export const Clubs = () => {
                   <Text>Start your own club below and lead the way!</Text>
                 </>
               )}
-            </>
+            </Box>
           )}
         </Box>
 

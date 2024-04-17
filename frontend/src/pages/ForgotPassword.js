@@ -59,10 +59,9 @@ export default function ForgotPassword() {
         { password },
         config
       );
-      console.log(data);
       setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
-      navigate("/chats");
+      navigate("/dashboard");
       setLoading(false);
     } catch (error) {
       console.log(error);

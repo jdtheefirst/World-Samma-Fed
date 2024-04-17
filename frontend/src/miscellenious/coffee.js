@@ -39,7 +39,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   const handleSubmit = async () => {
     if (!country || !province || !amount) {
       toast({
-        title: "Form is incomplete",
+        title: "Form was incomplete",
         status: "warning",
       });
       return;
@@ -59,7 +59,6 @@ const CoffeeModal = ({ isOpen, onClose }) => {
 
       toast({
         title: "An Error Occurred!",
-        description: "You may proceed or try again after sometime",
         status: "error",
       });
     }
@@ -154,7 +153,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 <Input
                   type="number"
                   textColor={"grey"}
-                  placeholder="Enter your donation"
+                  placeholder="$"
                   onChange={(e) => setAmount(e.target.value)}
                 />
               </FormControl>
@@ -194,6 +193,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   });
                 }}
                 onApprove={async (data, actions) => {
+                  await handleSubmit();
                   return actions.order.capture().then(function (details) {
                     toast({
                       title: "Transaction Successful",

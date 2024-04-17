@@ -255,6 +255,7 @@ const ClubDetails = ({ user }) => {
       console.log(error);
     }
   };
+  console.log(club.registered);
 
   return (
     <Box
@@ -322,7 +323,7 @@ const ClubDetails = ({ user }) => {
               marginTop={2}
             >
               Status (*
-              {club && club.registration ? "Registered" : "Not registered"})
+              {club && club.registered ? "Registered" : "Not registered"})
             </Text>
           </Box>
         </Box>
