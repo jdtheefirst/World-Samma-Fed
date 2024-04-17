@@ -322,7 +322,7 @@ const ClubDetails = ({ user }) => {
               marginTop={2}
             >
               Status (*
-              {club && club.club.registered ? "Registered" : "Not registered"})
+              {club && club.registered ? "Registered" : "Not registered"})
             </Text>
           </Box>
         </Box>
