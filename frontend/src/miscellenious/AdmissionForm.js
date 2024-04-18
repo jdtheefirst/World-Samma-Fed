@@ -427,7 +427,7 @@ const AdmissionForm = () => {
                     duration: 5000,
                   });
                 }}
-                isDisabled={formData.phoneNumber.length !== parseInt(10)}
+                isDisabled={phone.length !== parseInt(10)}
                 colorScheme="green"
               >
                 Proceed
