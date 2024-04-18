@@ -145,7 +145,7 @@ const AdmissionForm = () => {
           justifyContent="center"
           alignItems="center"
           overflow="auto"
-          width="100%"
+          width={{ base: "100%", md: "60%" }}
           m={2}
           boxShadow="base"
           p="4"

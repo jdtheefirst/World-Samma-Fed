@@ -6,8 +6,10 @@ import {
   Heading,
   Image,
   Input,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
+  Stack,
   Text,
   useColorModeValue,
   useToast,
@@ -24,6 +26,7 @@ const ProfilePage = ({ user }) => {
   const [club, setClub] = useState();
   const toast = useToast();
   const [showFollowers, setShowFollowers] = useState(false);
+  const [load, setLoad] = useState(false);
   const handleMembers = () => {
     setShowFollowers(!showFollowers);
   };
@@ -37,6 +40,7 @@ const ProfilePage = ({ user }) => {
     if (!user.coach) {
       return;
     }
+    setLoad(true);
 
     try {
       const clubId = user.coach;
@@ -51,8 +55,10 @@ const ProfilePage = ({ user }) => {
         .get(`/api/clubs/${clubId}`, config)
         .then(async (response) => {
           setClub(response.data);
+          setLoad(false);
         })
         .catch((error) => {
+          setLoad(false);
           if (error.response && error.response.status === 401) {
             toast({
               title: "Your session has expired",
@@ -70,8 +76,9 @@ const ProfilePage = ({ user }) => {
         });
     } catch (error) {
       console.error("Error fetching Club:", error);
+      setLoad(false);
     }
-  }, [user?.token, setClub]);
+  }, [user?.token, setClub, setLoad]);
 
   useEffect(() => {
     if (user) {
@@ -288,8 +295,23 @@ const ProfilePage = ({ user }) => {
               </Button>
             )}
           </Box>
+        </Box>{" "}
+        <Box
+          display="flex"
+          flexDir="column"
+          justifyContent="center"
+          alignItems="center"
+          overflow="auto"
+          width="100%"
+          m={2}
+          boxShadow="base"
+          p="4"
+          rounded="md"
+          background="white"
+        >
+          {" "}
+          <AdmissionForm />
         </Box>
-        {<AdmissionForm />}
         {user?.coach &&
           club?.registered &&
           belts.indexOf(user?.belt) >= Level && (
@@ -455,7 +477,6 @@ const ProfilePage = ({ user }) => {
               </Box>
             </Box>
           )}
-
         {user?.provinceRequests?.length > 0 && (
           <Box
             textAlign={"start"}
@@ -576,66 +597,86 @@ const ProfilePage = ({ user }) => {
         {user?.coach && club && (
           <>
             <Box
-              fontSize={"small"}
-              fontWeight={"bold"}
-              m={2}
-              background={"white"}
-              boxShadow="base"
-              overflow="auto"
-              p="6"
-              rounded="md"
-              bg="white"
+              display="flex"
+              flexDir="column"
+              justifyContent="center"
+              alignItems="center"
               width={"100%"}
+              minH={"200px"}
+              overflow={"auto"}
             >
-              <Heading mb={4}>Club Details</Heading>
-              <Text>Club Name: {club.name}</Text>
-              <Text>Club Code: {club.code}</Text>
-              <Text
-                fontSize={"sm"}
-                fontWeight={500}
-                bg={useColorModeValue("green.50", "green.900")}
-                p={2}
-                px={3}
-                color={"green.500"}
-                rounded={"full"}
-                marginTop={2}
-              >
-                Status (*
-                {club && club.registered ? "Registered" : "Not registered"})
-              </Text>
-              <Button
-                background={"transparent"}
-                _hover={{ background: "transparent", color: "green" }}
-                onClick={handleMembers}
-                fontStyle={"italic"}
-              >
-                Members: {club.members.length}
-              </Button>
-              <Text>Followers: {club.followers.length}</Text>
-              <Text>Received Likes: {club.likes.length}</Text>
+              {load ? (
+                <Stack width={"100%"}>
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                </Stack>
+              ) : (
+                <Box
+                  display="flex"
+                  flexDir="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  overflow="auto"
+                  width={{ base: "100%", md: "60%" }}
+                  m={2}
+                  boxShadow="base"
+                  p="4"
+                  rounded="md"
+                  bg="white"
+                >
+                  <Heading mb={4}>Club Details</Heading>
+                  <Text
+                    fontSize={"sm"}
+                    fontWeight={500}
+                    bg={useColorModeValue("green.50", "green.900")}
+                    p={2}
+                    px={3}
+                    color={"green.500"}
+                    rounded={"full"}
+                    marginTop={2}
+                  >
+                    Status (*
+                    {club && club.registered ? "Registered" : "Not registered"})
+                  </Text>
+                  <Text>Club Name: {club.name}</Text>
+                  <Text>Club Code: {club.code}</Text>
+                  <Button
+                    background={"transparent"}
+                    _hover={{ background: "transparent", color: "green" }}
+                    onClick={handleMembers}
+                    fontStyle={"italic"}
+                  >
+                    Members: {club.members.length}
+                  </Button>
+                  <Text>Followers: {club.followers.length}</Text>
+                  <Text>Received Likes: {club.likes.length}</Text>
+                </Box>
+              )}
+
+              {showFollowers && (
+                <Box
+                  fontSize={"medium"}
+                  fontWeight={"bold"}
+                  m={4}
+                  background={"white"}
+                  overflow={"auto"}
+                  boxShadow="base"
+                  p="6"
+                  rounded="md"
+                  bg="white"
+                  width={{ base: "100%", md: "60%" }}
+                >
+                  <Heading mb={4}>Members List</Heading>
+                  {club.members.length > 0 &&
+                    club.members.map((member, index) => (
+                      <Text fontSize={"small"} key={member._id}>
+                        {index + 1}. Name: {member.name} Adm: {member.admission}
+                      </Text>
+                    ))}
+                </Box>
+              )}
             </Box>
-            {showFollowers && (
-              <Box
-                fontSize={"medium"}
-                fontWeight={"bold"}
-                m={4}
-                background={"white"}
-                overflow={"auto"}
-                boxShadow="base"
-                p="6"
-                rounded="md"
-                bg="white"
-                width={"100%"}
-              >
-                <Heading mb={4}>Members List</Heading>
-                {club.members.length > 0 &&
-                  club.members.map((member, index) => (
-                    <Text fontSize={"small"} key={member._id}>
-                      {index + 1}. Name: {member.name} Adm: {member.admission}
-                    </Text>
-                  ))}
-              </Box>
-            )}
           </>
         )}
       </Box>
