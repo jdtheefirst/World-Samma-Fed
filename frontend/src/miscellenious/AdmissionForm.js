@@ -37,6 +37,7 @@ const AdmissionForm = () => {
   const [show, setShow] = useState(false);
   const [subdivisions, setSubdivisions] = useState([]);
   const [student, setStudent] = useState(null);
+  const [phone, setPhone] = useState("");
   const { user } = ChatState();
   const toast = useToast();
   const socket = useConnectSocket(user?.token);
@@ -407,8 +408,8 @@ const AdmissionForm = () => {
                 placeholder="i.e 0710334455"
                 textAlign={"center"}
                 type="text"
-                onChange={handleChange}
-                value={formData.phoneNumber}
+                onChange={(e) => setPhone(e.target.value)}
+                value={phone}
                 minLength={10}
                 maxLength={10}
               />
@@ -416,7 +417,7 @@ const AdmissionForm = () => {
               <Button
                 width={"100%"}
                 onClick={() => {
-                  makePaymentMpesa("500", formData.phoneNumber, user, toast);
+                  makePaymentMpesa("500", phone, user, toast);
                   setShow(false);
                   toast({
                     title: "Wait as message is sent",
