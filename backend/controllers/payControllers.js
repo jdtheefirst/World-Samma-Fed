@@ -100,6 +100,7 @@ const updateUser = async (req, res) => {
 
 const makePaymentMpesa = async (req, res) => {
   userId = req.params.userId;
+  const amount = req.query.amount;
   const phoneNumber = req.body.phoneNumber;
 
   const phone = parseInt(phoneNumber.slice(1));
@@ -152,12 +153,12 @@ const makePaymentMpesa = async (req, res) => {
         Password: `${password}`,
         Timestamp: `${timestamp}`,
         TransactionType: "CustomerBuyGoodsOnline",
-        Amount: 5900,
+        Amount: amount,
         PartyA: `254${phone}`,
         PartyB: "8863150",
         PhoneNumber: `254${phone}`,
-        CallBackURL: `https://world-samma/api/paycheck/callback`,
-        AccountReference: "Worldsamma",
+        CallBackURL: `https://worldsamma.org/api/paycheck/callback`,
+        AccountReference: "World Samma Federation",
         TransactionDesc: "Subcription",
       },
       {
@@ -186,8 +187,15 @@ const CallBackURL = async (req, res) => {
     io.emit("noPayment", nothing);
     return res.status(201).json({ message: "Invalid callback data" });
   }
-  if (Body.stkCallback.ResultDesc) {
-    res.status(201);
+  if (Body.stkCallback.CallbackMetadata.Item) {
+    const firstItem = Body.stkCallback.CallbackMetadata.Item[0];
+    const amount = firstItem.Value;
+
+    if (amount === 500) {
+      io.emit("manualRegister");
+      res.status(201);
+      return;
+    }
   }
 
   const updatedUser = await User.findById(userId);

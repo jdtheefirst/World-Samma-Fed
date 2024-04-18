@@ -17,6 +17,7 @@ import axiosInstance from "../components/config/axios";
 import axios from "axios";
 import UserListItem from "../miscellenious/Skeleton";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import AdmissionForm from "../miscellenious/AdmissionForm";
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -31,8 +32,6 @@ const ProfilePage = ({ user }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [student, setStudent] = useState(null);
   const [show, setShow] = useState(false);
-
-  console.log(user);
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -211,6 +210,20 @@ const ProfilePage = ({ user }) => {
       });
     }
   };
+  const belts = [
+    "Guest",
+    "Beginner",
+    "Yellow",
+    "Orange",
+    "Red",
+    "Purple",
+    "Green",
+    "Blue",
+    "Brown",
+    "Black",
+  ];
+
+  const Level = belts.indexOf("Black");
 
   return (
     <Box
@@ -276,166 +289,172 @@ const ProfilePage = ({ user }) => {
             )}
           </Box>
         </Box>
-
-        <Box
-          display="flex"
-          flexDir={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          overflow={"auto"}
-          width={"100%"}
-          m={2}
-          boxShadow="base"
-          p="6"
-          rounded="md"
-          bg="white"
-        >
-          {" "}
-          <Text
-            fontSize={"sm"}
-            fontWeight={500}
-            bg={useColorModeValue("green.50", "green.900")}
-            px={6}
-            p={"3"}
-            m={1}
-            color={"green.500"}
-            rounded={"full"}
-          >
-            Coach's assisted student rank upgrading
-          </Text>
-          <Box
-            display="flex"
-            pb={2}
-            width={{ base: "100%", md: "60%" }}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Input
-              placeholder="Search by email"
-              mr={2}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button borderRadius={20} onClick={handleSearch}>
-              🔍Search
-            </Button>
-          </Box>
-          <Box
-            display={"flex"}
-            flexDir={"column"}
-            overflow={"auto"}
-            width={"100%"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            {" "}
+        {<AdmissionForm />}
+        {user?.coach &&
+          club?.registered &&
+          belts.indexOf(user?.belt) >= Level && (
             <Box
-              display={show ? "none" : "flex"}
+              display="flex"
               flexDir={"column"}
-              width={"100%"}
-              maxH={"300px"}
+              justifyContent={"center"}
+              alignItems={"center"}
               overflow={"auto"}
+              width={"100%"}
+              m={2}
+              boxShadow="base"
+              p="6"
+              rounded="md"
+              bg="white"
             >
               {" "}
-              {loading ? (
+              <Text
+                fontSize={"sm"}
+                fontWeight={500}
+                bg={useColorModeValue("green.50", "green.900")}
+                px={6}
+                p={"3"}
+                m={1}
+                color={"green.500"}
+                rounded={"full"}
+              >
+                Coach's assisted student rank upgrading
+              </Text>
+              <Box
+                display="flex"
+                pb={2}
+                width={{ base: "100%", md: "60%" }}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                <Input
+                  placeholder="Search by email"
+                  mr={2}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Button borderRadius={20} onClick={handleSearch}>
+                  🔍Search
+                </Button>
+              </Box>
+              <Box
+                display={"flex"}
+                flexDir={"column"}
+                overflow={"auto"}
+                width={"100%"}
+                justifyContent={"center"}
+                alignItems={"center"}
+              >
+                {" "}
                 <Box
                   display={show ? "none" : "flex"}
+                  flexDir={"column"}
                   width={"100%"}
-                  padding="6"
-                  boxShadow="lg"
-                  bg="white"
+                  maxH={"300px"}
+                  overflow={"auto"}
                 >
-                  <SkeletonCircle size="10" />
-                  <SkeletonText
-                    mt="4"
-                    noOfLines={4}
-                    spacing="4"
-                    skeletonHeight="2"
-                  />
+                  {" "}
+                  {loading ? (
+                    <Box
+                      display={show ? "none" : "flex"}
+                      width={"100%"}
+                      padding="6"
+                      boxShadow="lg"
+                      bg="white"
+                    >
+                      <SkeletonCircle size="10" />
+                      <SkeletonText
+                        mt="4"
+                        noOfLines={4}
+                        spacing="4"
+                        skeletonHeight="2"
+                      />
+                    </Box>
+                  ) : (
+                    searchResult?.map((user) => (
+                      <UserListItem
+                        key={user._id}
+                        user={user}
+                        handleFunction={() => {
+                          setStudent({
+                            id: user._id,
+                            name: user.name,
+                            email: user.email,
+                            pic: user.pic,
+                          });
+                          setShow(true);
+                        }}
+                      />
+                    ))
+                  )}
                 </Box>
-              ) : (
-                searchResult?.map((user) => (
-                  <UserListItem
-                    key={user._id}
-                    user={user}
-                    handleFunction={() => {
-                      setStudent({
-                        id: user._id,
-                        name: user.name,
-                        email: user.email,
-                        pic: user.pic,
-                      });
-                      setShow(true);
-                    }}
-                  />
-                ))
-              )}
-            </Box>
-            {show && (
-              <Box>
-                <Text
-                  textAlign={"center"}
-                  fontSize={"sm"}
-                  fontWeight={500}
-                  bg={useColorModeValue("green.50", "green.900")}
-                  px={3}
-                  p={"3"}
-                  m={1}
-                  color={"purple.500"}
-                  rounded={"full"}
-                >
-                  Upgrading: {student.name} {student.email}
-                  ($5 Fee)
-                </Text>{" "}
-                <PayPalScriptProvider
-                  options={{
-                    clientId:
-                      "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
-                  }}
-                >
-                  <PayPalButtons
-                    createOrder={(data, actions) => {
-                      const amount = 5.0;
-                      return actions.order.create({
-                        purchase_units: [
-                          {
-                            amount: {
-                              currency_code: "USD",
-                              value: amount.toFixed(2),
-                            },
-                          },
-                        ],
-                      });
-                    }}
-                    onApprove={async (data, actions) => {
-                      await handleAfterPay(student.id);
-                      return actions.order.capture().then(function (details) {
-                        toast({
-                          title: "Success",
-                          description:
-                            "Wait for WSF to send certificate to particulars.",
-                          status: "success",
-                          duration: 3000,
-                          isClosable: true,
-                          position: "bottom",
-                        });
-                      });
-                    }}
-                    onCancel={() => {
-                      setShow(false);
-                      toast({
-                        title: "Cancelled",
-                        status: "info",
-                        isClosable: true,
-                        position: "bottom",
-                      });
-                    }}
-                  />
-                </PayPalScriptProvider>
+                {show && (
+                  <Box>
+                    <Text
+                      textAlign={"center"}
+                      fontSize={"sm"}
+                      fontWeight={500}
+                      bg={useColorModeValue("green.50", "green.900")}
+                      px={3}
+                      p={"3"}
+                      m={1}
+                      color={"purple.500"}
+                      rounded={"full"}
+                    >
+                      Upgrading: {student.name} {student.email}
+                      ($5 Fee)
+                    </Text>{" "}
+                    <PayPalScriptProvider
+                      options={{
+                        clientId:
+                          "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                      }}
+                    >
+                      <PayPalButtons
+                        createOrder={(data, actions) => {
+                          const amount = 5.0;
+                          return actions.order.create({
+                            purchase_units: [
+                              {
+                                amount: {
+                                  currency_code: "USD",
+                                  value: amount.toFixed(2),
+                                },
+                              },
+                            ],
+                          });
+                        }}
+                        onApprove={async (data, actions) => {
+                          await handleAfterPay(student.id);
+                          return actions.order
+                            .capture()
+                            .then(function (details) {
+                              toast({
+                                title: "Success",
+                                description:
+                                  "Wait for WSF to send certificate to particulars.",
+                                status: "success",
+                                duration: 3000,
+                                isClosable: true,
+                                position: "bottom",
+                              });
+                            });
+                        }}
+                        onCancel={() => {
+                          setShow(false);
+                          toast({
+                            title: "Cancelled",
+                            status: "info",
+                            isClosable: true,
+                            position: "bottom",
+                          });
+                        }}
+                      />
+                    </PayPalScriptProvider>
+                  </Box>
+                )}
               </Box>
-            )}
-          </Box>
-        </Box>
+            </Box>
+          )}
 
         {user?.provinceRequests?.length > 0 && (
           <Box
@@ -512,7 +531,7 @@ const ProfilePage = ({ user }) => {
           >
             <Heading mb={4}>National Requests</Heading>
             {user?.nationalRequests.map((member, index) => (
-              <Text
+              <Box
                 display={"flex"}
                 justifyContent={"space-between"}
                 alignItems={"center"}
@@ -550,14 +569,13 @@ const ProfilePage = ({ user }) => {
                 >
                   Decline
                 </Button>
-              </Text>
+              </Box>
             ))}
           </Box>
         )}
         {user?.coach && club && (
           <>
             <Box
-              textAlign={"center"}
               fontSize={"small"}
               fontWeight={"bold"}
               m={2}
@@ -567,9 +585,24 @@ const ProfilePage = ({ user }) => {
               p="6"
               rounded="md"
               bg="white"
+              width={"100%"}
             >
               <Heading mb={4}>Club Details</Heading>
               <Text>Club Name: {club.name}</Text>
+              <Text>Club Code: {club.code}</Text>
+              <Text
+                fontSize={"sm"}
+                fontWeight={500}
+                bg={useColorModeValue("green.50", "green.900")}
+                p={2}
+                px={3}
+                color={"green.500"}
+                rounded={"full"}
+                marginTop={2}
+              >
+                Status (*
+                {club && club.registered ? "Registered" : "Not registered"})
+              </Text>
               <Button
                 background={"transparent"}
                 _hover={{ background: "transparent", color: "green" }}
@@ -583,7 +616,6 @@ const ProfilePage = ({ user }) => {
             </Box>
             {showFollowers && (
               <Box
-                textAlign={"start"}
                 fontSize={"medium"}
                 fontWeight={"bold"}
                 m={4}
@@ -593,6 +625,7 @@ const ProfilePage = ({ user }) => {
                 p="6"
                 rounded="md"
                 bg="white"
+                width={"100%"}
               >
                 <Heading mb={4}>Members List</Heading>
                 {club.members.length > 0 &&

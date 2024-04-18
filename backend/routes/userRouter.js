@@ -16,6 +16,7 @@ const {
   getInfo,
   certificate,
   allUsers,
+  submitAdmissionForm,
 } = require("../controllers/userControllers");
 const { protect } = require("../middleware/authMiddleware");
 const { limiter } = require("../middleware/limiter");
@@ -30,6 +31,7 @@ router.route("/login").post(limiter, authUser);
 router.get("/:userEmail", limiter, authorizeUser);
 
 router.get("/:country/:provience", protect, limiter, getUsers);
+router.post("/admission", protect, limiter, submitAdmissionForm);
 router.get(
   "/:country/:provience/:name/:userId",
   protect,

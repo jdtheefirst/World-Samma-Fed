@@ -12,6 +12,7 @@ const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
 const { getUserSocket } = require("../config/socketUtils");
 const { getNextNumber } = require("../config/getNextSequence");
+const Admission = require("../models/AdmissionModel");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
@@ -272,7 +273,6 @@ const getInfo = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-  console.log("Route reached");
   const { country, provience } = req.params;
 
   if (!country || !provience) {
@@ -531,8 +531,48 @@ const certificate = async (req, res) => {
     console.log(error);
   }
 };
+const submitAdmissionForm = async (req, res) => {
+  const userId = req.user._id;
+  const {
+    firstName,
+    lastName,
+    id,
+    phoneNumber,
+    email,
+    selectedCountry,
+    provinces,
+    language,
+  } = req.body;
+
+  try {
+    if (!firstName || !lastName) {
+      throw new Error({ message: "First name and last name are required." });
+    }
+    const admCode = await getNextNumber("U", 9);
+
+    const admission = new Admission({
+      firstName,
+      lastName,
+      id,
+      phoneNumber,
+      email,
+      selectedCountry,
+      provinces,
+      language,
+      admission: admCode,
+      registrar: userId,
+    });
+
+    await admission.save();
+
+    res.status(201).json(admission);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 module.exports = {
+  submitAdmissionForm,
   authorizeUser,
   registerUsers,
   forgotEmail,

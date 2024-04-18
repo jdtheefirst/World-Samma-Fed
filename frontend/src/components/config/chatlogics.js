@@ -108,7 +108,7 @@ export function useConnectSocket(token) {
 
   return socketRef.current;
 }
-export async function makePaymentMpesa(phoneNumber, user, toast) {
+export async function makePaymentMpesa(amount, phoneNumber, user, toast) {
   if (!phoneNumber) {
     return;
   }
@@ -120,7 +120,7 @@ export async function makePaymentMpesa(phoneNumber, user, toast) {
       },
     };
     const { data } = await axios.post(
-      `/api/paycheck/makepaymentmpesa/${user._id}`,
+      `/api/paycheck/makepaymentmpesa/${user._id}?amount=${amount}`,
       { phoneNumber },
       config
     );

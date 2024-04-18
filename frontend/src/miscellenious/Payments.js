@@ -283,7 +283,7 @@ export default function Paycheck({ course }) {
                 <Button
                   width={"100%"}
                   onClick={() => {
-                    makePaymentMpesa(course.title, phoneNumber, user, toast);
+                    makePaymentMpesa("4500", phoneNumber, user, toast);
                     setShow(false);
                     toast({
                       title: "Wait as message is sent",
