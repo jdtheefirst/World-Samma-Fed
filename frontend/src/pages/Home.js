@@ -93,7 +93,7 @@ function Homepage() {
             textAlign={"center"}
             fontSize={{
               base: "md",
-              lg: "25px",
+              lg: "30px",
               md: "40px",
               xl: "60px",
             }}
@@ -103,7 +103,7 @@ function Homepage() {
             position="absolute"
             bottom={0}
             left="50%"
-            width={{ base: "60%", lg: "100%" }} // Adjust width for responsiveness
+            width={{ base: "60%", lg: "100%" }}
             transform="translateX(-50%)"
             p={"1"}
             letterSpacing={1}
