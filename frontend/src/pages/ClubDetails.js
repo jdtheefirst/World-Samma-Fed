@@ -12,6 +12,8 @@ import {
   Icon,
   useToast,
   useColorModeValue,
+  Stack,
+  Skeleton,
 } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
@@ -23,7 +25,7 @@ import { useConnectSocket } from "../components/config/chatlogics";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
-  const [club, setClub] = useState();
+  const [club, setClub] = useState(null);
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [broadcast, setBroadcast] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,7 @@ const ClubDetails = ({ user }) => {
   const clubData = {
     profilePicture: "",
     backgroundPicture:
-      "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1704379830/samma_dm0t2d.jpg",
+      "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1713518908/Samma_pkmq5v.png",
   };
   useEffect(() => {
     if (!socket) {
@@ -48,11 +50,13 @@ const ClubDetails = ({ user }) => {
       socket.off("liveSessionAvailable");
     };
   }, [socket]);
+
   const getClub = useCallback(async () => {
     if (!user || !clubId) {
       navigate("/dashboard");
       return;
     }
+    setLoading(true);
 
     try {
       const config = {
@@ -64,8 +68,9 @@ const ClubDetails = ({ user }) => {
       const { data } = await axios.get(`/api/clubs/${clubId}`, config);
       setClub(data);
 
-      console.log(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching Club:", error);
     }
   }, [user?.token, setClub, clubId]);
@@ -129,8 +134,6 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
-
-      console.log(data);
     } catch (error) {
       console.error("Error fetching Club:", error);
       console.log(error);
@@ -269,6 +272,7 @@ const ClubDetails = ({ user }) => {
       <UpperNav />
       <Box
         display={"flex"}
+        flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
         width={"100%"}
@@ -281,36 +285,39 @@ const ClubDetails = ({ user }) => {
           alt="Background"
           top={0}
           borderRadius="20"
-          width={{ base: "100%", md: "80%" }}
+          width={"100%"}
         />
 
         <Box
           display={"flex"}
-          position="absolute"
           top={10}
-          mt={{ base: "0", md: "20%" }}
           left={{ base: "0", md: "30%" }}
           textAlign="center"
           width={"100%"}
           p={4}
-          color="white"
-          zIndex={1}
         >
           <Image
-            src={clubData.profilePicture}
-            alt={`Profile*`}
+            src={user?.pic}
+            marginTop={-10}
+            alt="*Coach profile pic"
             borderRadius="full"
             boxSize={{ base: "100px", md: "200px" }}
             border="4px solid white"
-            marginBottom={4}
           />
-          <Box m={2}>
+          <Box
+            display={"flex"}
+            flexDir={"column"}
+            textAlign={"start"}
+            boxShadow="base"
+            width={{ base: "100%", md: "50%" }}
+            p="4"
+            rounded="md"
+            bg="white"
+          >
             {" "}
-            <Heading as="h2" size="lg">
+            <Heading as="h2" size="lg" textAlign={"center"}>
               {club && club.name}
             </Heading>
-            <Text>Coach Rank: {club?.coach.belt}</Text>
-            <Text>Unique Identifier: {club?.admission}</Text>
             <Text
               fontSize={"sm"}
               fontWeight={500}
@@ -319,11 +326,14 @@ const ClubDetails = ({ user }) => {
               px={3}
               color={"green.500"}
               rounded={"full"}
-              marginTop={2}
+              margin={1}
             >
-              Status (*
+              Club Status (*
               {club && club.registered ? "Registered" : "Not registered"})
             </Text>
+            <Text>Coach Highest Rank: {club?.coach.belt}</Text>
+            <Text>Coach Code : {club?.coach.admission}</Text>
+            <Text>Club Unique Identifier: {club?.code}</Text>
           </Box>
         </Box>
       </Box>
@@ -334,78 +344,88 @@ const ClubDetails = ({ user }) => {
         width={"100%"}
         background={"white"}
       >
-        <Box
-          display={"flex"}
-          flexDir={"column"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          p={0}
-          m={1}
-          zIndex={1}
-        >
-          <Button colorScheme="teal" size="md" onClick={handleFollow}>
-            {club && club.followers?.find((member) => member === user?._id)
-              ? "Unfollow"
-              : "Follow"}
-          </Button>
-          <Text fontSize={"small"}>{club && club.followers?.length}</Text>
-        </Box>
-
-        <Box
-          display={"flex"}
-          flexDir={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          fontSize={"small"}
-          p={0}
-          m={1}
-        >
-          <IconButton
-            icon={<Icon as={FaHeart} />}
-            colorScheme={
-              club && club.likes.some((member) => member === user?._id)
-                ? "green"
-                : "red"
-            }
-            size="md"
-            onClick={handleLike}
-          />
-          {club && club.likes?.length}
-        </Box>
-        <Box
-          display={"flex"}
-          flexDir={"column"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          fontSize={"small"}
-          background={"white"}
-          p={0}
-          m={1}
-        >
-          {" "}
-          <Text textAlign={"center"} mt={-1} background={"white"}>
-            <Live user={user} club={club} socket={socket} />
-            <IconButton
-              icon={<Icon as={SlUserFollow} />}
-              colorScheme={
-                club && club.clubRequests.some((member) => member === user?._id)
-                  ? "green"
-                  : "blue"
-              }
-              size="md"
+        {loading && !club ? (
+          <Stack width={"100%"} p={"6"}>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+          </Stack>
+        ) : (
+          <>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              p={0}
               m={1}
-              isDisabled={
-                club &&
-                (club.members.some((member) => member === user?._id) ||
-                  club.coach._id === user._id)
-              }
-              onClick={handleJoin}
-            />
-          </Text>
-          <Text textAlign={"center"} fontSize={"small"} mt={-1}>
-            Events
-          </Text>
-        </Box>
+            >
+              <Button colorScheme="teal" size="md" onClick={handleFollow}>
+                {club && club.followers?.find((member) => member === user?._id)
+                  ? "Unfollow"
+                  : "Follow"}
+              </Button>
+              <Text fontSize={"small"}>{club && club.followers?.length}</Text>
+            </Box>
+
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              fontSize={"small"}
+              p={0}
+              m={1}
+            >
+              <IconButton
+                icon={<Icon as={FaHeart} />}
+                colorScheme={
+                  club && club.likes.some((member) => member === user?._id)
+                    ? "green"
+                    : "red"
+                }
+                size="md"
+                onClick={handleLike}
+              />
+              {club && club.likes?.length}
+            </Box>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              fontSize={"small"}
+              background={"white"}
+              p={0}
+              m={1}
+            >
+              {" "}
+              <Text textAlign={"center"} mt={-1} background={"white"}>
+                <Live user={user} club={club} socket={socket} />
+                <IconButton
+                  icon={<Icon as={SlUserFollow} />}
+                  colorScheme={
+                    club &&
+                    club.clubRequests.some((member) => member === user?._id)
+                      ? "green"
+                      : "blue"
+                  }
+                  size="md"
+                  m={1}
+                  isDisabled={
+                    club &&
+                    (club.members.some((member) => member === user?._id) ||
+                      club.coach._id === user._id)
+                  }
+                  onClick={handleJoin}
+                />
+              </Text>
+              <Text textAlign={"center"} fontSize={"small"} mt={-1}>
+                Join
+              </Text>
+            </Box>
+          </>
+        )}
       </Flex>
       <Box
         display={"flex"}
@@ -423,6 +443,12 @@ const ClubDetails = ({ user }) => {
           width={{ base: "100%", md: "60%" }}
           borderColor="#d142f5"
           background={"white"}
+          overflow="auto"
+          boxShadow="base"
+          mt={2}
+          p="4"
+          rounded="md"
+          bg="white"
         >
           <Heading as="h3" size="md" mb={2} background={"white"}>
             Broadcast Board
@@ -433,10 +459,16 @@ const ClubDetails = ({ user }) => {
             justifyContent={"center"}
             alignItems={"center"}
             overflowY="auto"
-            height={"150px"}
+            minH={"150px"}
+            maxH={"300px"}
             borderRadius={20}
             width={"100%"}
-            p={2}
+            overflow="auto"
+            bg="white"
+            border={"2px solid white"}
+            boxShadow="dark-lg"
+            p="6"
+            rounded="md"
           >
             {broadcast && broadcast.length === 0 && (
               <Text textAlign={"center"}> No message here.</Text>

@@ -147,7 +147,6 @@ const AdmissionForm = () => {
           alignItems="center"
           overflow="auto"
           width={{ base: "100%", md: "60%" }}
-          m={2}
           boxShadow="base"
           p="4"
           rounded="md"
@@ -320,7 +319,6 @@ const AdmissionForm = () => {
           alignItems={"center"}
           overflow={"auto"}
           width={"100%"}
-          m={2}
           boxShadow="base"
           p="6"
           rounded="md"
@@ -373,7 +371,7 @@ const AdmissionForm = () => {
           </PayPalScriptProvider>
           <Button
             fontSize={"small"}
-            width={"80%"}
+            width={{ base: "80%", md: "25%" }}
             backgroundColor={"green.400"}
             color={"white"}
             onClick={() => {
@@ -393,12 +391,8 @@ const AdmissionForm = () => {
             Pay via Mpesa
           </Button>
           {show && (
-            <Box m={3}>
-              <Text
-                textAlign={"center"}
-                justifyContent={"center"}
-                fontSize={"2xl"}
-              >
+            <Box m={3} width={{ base: "80%", md: "50%" }}>
+              <Text textAlign={"center"} justifyContent={"center"}>
                 Enter Your Mpesa Phone Number
               </Text>
               <Input

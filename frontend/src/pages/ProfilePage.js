@@ -26,7 +26,6 @@ const ProfilePage = ({ user }) => {
   const [club, setClub] = useState();
   const toast = useToast();
   const [showFollowers, setShowFollowers] = useState(false);
-  const [load, setLoad] = useState(false);
   const handleMembers = () => {
     setShowFollowers(!showFollowers);
   };
@@ -40,7 +39,7 @@ const ProfilePage = ({ user }) => {
     if (!user.coach) {
       return;
     }
-    setLoad(true);
+    setLoading(true);
 
     try {
       const clubId = user.coach;
@@ -55,10 +54,10 @@ const ProfilePage = ({ user }) => {
         .get(`/api/clubs/${clubId}`, config)
         .then(async (response) => {
           setClub(response.data);
-          setLoad(false);
+          setLoading(false);
         })
         .catch((error) => {
-          setLoad(false);
+          setLoading(false);
           if (error.response && error.response.status === 401) {
             toast({
               title: "Your session has expired",
@@ -76,9 +75,9 @@ const ProfilePage = ({ user }) => {
         });
     } catch (error) {
       console.error("Error fetching Club:", error);
-      setLoad(false);
+      setLoading(false);
     }
-  }, [user?.token, setClub, setLoad]);
+  }, [user?.token, setClub, setLoading]);
 
   useEffect(() => {
     if (user) {
@@ -198,7 +197,7 @@ const ProfilePage = ({ user }) => {
         },
       };
 
-      const { data } = await axios.post(
+      await axios.post(
         `/api/submit/${studentId}?assisted=${true}`,
         { savePhoto: user.pic },
         config
@@ -279,8 +278,10 @@ const ProfilePage = ({ user }) => {
             <Text>
               Name: {user?.name} {user?.otherName}
             </Text>
+            <Text>Code: {user?.admission}</Text>
             <Text>Email: {user?.email}</Text>
             <Text>Country: {user?.country}</Text>
+            <Text>Province: {user?.provinces}</Text>
             <Text textAlign={"center"}>
               Coach: {user?.coach ? " ✔️" : "Not a coach"}
             </Text>
@@ -296,6 +297,94 @@ const ProfilePage = ({ user }) => {
             )}
           </Box>
         </Box>{" "}
+        {user?.coach && (
+          <>
+            <Box
+              display="flex"
+              flexDir="column"
+              justifyContent="center"
+              alignItems="center"
+              width={"100%"}
+              minH={"200px"}
+              overflow={"auto"}
+            >
+              {loading ? (
+                <Stack width={"100%"}>
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                  <Skeleton height="20px" />
+                </Stack>
+              ) : (
+                <Box
+                  display="flex"
+                  flexDir="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  overflow="auto"
+                  width={{ base: "100%", md: "60%" }}
+                  boxShadow="base"
+                  mt={2}
+                  p="4"
+                  rounded="md"
+                  bg="white"
+                >
+                  <Heading mb={2}>Club Details</Heading>
+                  <Text
+                    fontSize={"sm"}
+                    fontWeight={500}
+                    bg={useColorModeValue("green.50", "green.900")}
+                    p={2}
+                    px={3}
+                    color={"green.500"}
+                    rounded={"full"}
+                    margin={1}
+                    width={"90%"}
+                  >
+                    Status (*
+                    {club && club.registered ? "Registered" : "Not registered"})
+                  </Text>
+                  <Text>Club Name: {club?.name}</Text>
+                  <Text>Club Code: {club?.code}</Text>
+                  <Button
+                    background={"transparent"}
+                    _hover={{ background: "transparent", color: "green" }}
+                    onClick={handleMembers}
+                    fontStyle={"italic"}
+                  >
+                    Members: {club?.members.length}
+                  </Button>
+                  <Text>Followers: {club?.followers.length}</Text>
+                  <Text>Received Likes: {club?.likes.length}</Text>
+                </Box>
+              )}
+
+              {showFollowers && (
+                <Box
+                  display={"flex"}
+                  flexDir="column"
+                  justifyContent="center"
+                  alignItems="center"
+                  background={"white"}
+                  overflow={"auto"}
+                  boxShadow="base"
+                  p="6"
+                  mt={2}
+                  rounded="md"
+                  bg="white"
+                  width={{ base: "100%", md: "60%" }}
+                >
+                  <Heading mb={2}>Members List</Heading>
+                  {club.members.length > 0 &&
+                    club.members.map((member, index) => (
+                      <Text fontSize={"small"} key={member._id}>
+                        {index + 1}. Name: {member.name} Adm: {member.admission}
+                      </Text>
+                    ))}
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
         <Box
           display="flex"
           flexDir="column"
@@ -593,91 +682,6 @@ const ProfilePage = ({ user }) => {
               </Box>
             ))}
           </Box>
-        )}
-        {user?.coach && club && (
-          <>
-            <Box
-              display="flex"
-              flexDir="column"
-              justifyContent="center"
-              alignItems="center"
-              width={"100%"}
-              minH={"200px"}
-              overflow={"auto"}
-            >
-              {load ? (
-                <Stack width={"100%"}>
-                  <Skeleton height="20px" />
-                  <Skeleton height="20px" />
-                  <Skeleton height="20px" />
-                </Stack>
-              ) : (
-                <Box
-                  display="flex"
-                  flexDir="column"
-                  justifyContent="center"
-                  alignItems="center"
-                  overflow="auto"
-                  width={{ base: "100%", md: "60%" }}
-                  m={2}
-                  boxShadow="base"
-                  p="4"
-                  rounded="md"
-                  bg="white"
-                >
-                  <Heading mb={4}>Club Details</Heading>
-                  <Text
-                    fontSize={"sm"}
-                    fontWeight={500}
-                    bg={useColorModeValue("green.50", "green.900")}
-                    p={2}
-                    px={3}
-                    color={"green.500"}
-                    rounded={"full"}
-                    marginTop={2}
-                  >
-                    Status (*
-                    {club && club.registered ? "Registered" : "Not registered"})
-                  </Text>
-                  <Text>Club Name: {club.name}</Text>
-                  <Text>Club Code: {club.code}</Text>
-                  <Button
-                    background={"transparent"}
-                    _hover={{ background: "transparent", color: "green" }}
-                    onClick={handleMembers}
-                    fontStyle={"italic"}
-                  >
-                    Members: {club.members.length}
-                  </Button>
-                  <Text>Followers: {club.followers.length}</Text>
-                  <Text>Received Likes: {club.likes.length}</Text>
-                </Box>
-              )}
-
-              {showFollowers && (
-                <Box
-                  fontSize={"medium"}
-                  fontWeight={"bold"}
-                  m={4}
-                  background={"white"}
-                  overflow={"auto"}
-                  boxShadow="base"
-                  p="6"
-                  rounded="md"
-                  bg="white"
-                  width={{ base: "100%", md: "60%" }}
-                >
-                  <Heading mb={4}>Members List</Heading>
-                  {club.members.length > 0 &&
-                    club.members.map((member, index) => (
-                      <Text fontSize={"small"} key={member._id}>
-                        {index + 1}. Name: {member.name} Adm: {member.admission}
-                      </Text>
-                    ))}
-                </Box>
-              )}
-            </Box>
-          </>
         )}
       </Box>
     </Box>

@@ -60,15 +60,15 @@ const CourseDetails = ({ courses, user }) => {
       });
     }
   };
-  useEffect(() => {
-    if (
-      user &&
-      user.belt &&
-      user.belt.trim() + " Belt" !== course.title.trim()
-    ) {
-      navigate("/dashboard");
-    }
-  }, [user, course, navigate]);
+  // useEffect(() => {
+  //   if (
+  //     user &&
+  //     user.belt &&
+  //     user.belt.trim() + " Belt" !== course.title.trim()
+  //   ) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [user, course, navigate]);
 
   return (
     <Box backgroundColor={"white"} width={"100%"}>

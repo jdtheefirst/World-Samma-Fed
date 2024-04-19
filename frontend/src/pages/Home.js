@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo1 from "../final.jpeg";
 import logo2 from "../finalLogo2.jpeg";
-import logo7 from "../pilot6.png";
+import logo7 from "../pilot4.png";
 
 import CoffeeModal from "../miscellenious/coffee";
 
@@ -41,8 +41,11 @@ function Homepage() {
           display="flex"
           justifyContent="flex-end"
           className="sideDrawer"
-          backgroundColor={"Background"}
           width="100%"
+          boxShadow="2xl"
+          p="6"
+          rounded="md"
+          bg="white"
         >
           <Button
             background="transparent"
@@ -78,6 +81,7 @@ function Homepage() {
           justifyContent={"space-between"}
           alignItems={"center"}
           m={3}
+          background={"whitesmoke"}
         >
           <Image
             src={logo1}
@@ -87,19 +91,27 @@ function Homepage() {
           />
           <Text
             textAlign={"center"}
-            fontSize={{ base: "sm", md: "xl" }}
-            bgGradient="linear(to-l, #7928CA, #FF0080)"
-            bgClip="text"
+            fontSize={{
+              base: "md",
+              lg: "25px",
+              md: "40px",
+              xl: "60px",
+            }}
+            textColor={"yellow.400"}
             fontWeight="extrabold"
             borderRadius={3}
             position="absolute"
             bottom={0}
             left="50%"
+            width={{ base: "60%", lg: "100%" }} // Adjust width for responsiveness
             transform="translateX(-50%)"
-            p={2}
+            p={"1"}
+            letterSpacing={1}
+            textShadow="1px 1px 1px #000"
           >
             WORLD SAMMA FEDERATION
           </Text>
+
           <Image
             src={logo2}
             boxSize={{ base: "100px", md: "200px" }}
@@ -133,6 +145,11 @@ function Homepage() {
               justifyContent="center"
               alignItems={"center"}
               width="100%"
+              fontFamily="Arial, sans-serif"
+              fontSize={{ base: "md", md: "xl" }}
+              fontWeight="normal"
+              lineHeight="1.5"
+              color="black"
               position={"relative"}
               p={0}
               m={0}
@@ -146,12 +163,10 @@ function Homepage() {
               />
               <Text
                 textAlign={"center"}
-                textColor={"#f0fff0"}
-                border={"1px solid purple"}
                 width={"300px"}
                 p={{ base: 0, md: 3 }}
                 m={1}
-                boxShadow="dark-lg"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ Sign up as GUEST (for free) at this WSF Online School so to
@@ -160,12 +175,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"#f0fff0"}
-                border={"1px solid purple"}
                 width={"300px"}
                 p={{ base: 0, md: 3 }}
                 m={1}
-                boxShadow="dark-lg"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ Enrol as STUDENT(or enrol your children and/or your other
@@ -173,12 +186,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"#f0fff0"}
-                border={"1px solid purple"}
                 width={"300px"}
                 p={{ base: 0, md: 3 }}
                 m={1}
-                boxShadow="dark-lg"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ Form/register your CLUB(S) so to be enjoying the
@@ -187,12 +198,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"#f0fff0"}
-                border={"1px solid purple"}
                 width={"300px"}
                 p={{ base: 0, md: 3 }}
                 m={1}
-                boxShadow="dark-lg"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ Claim the interim leadership of PROVINCIAL SAMMA
@@ -201,12 +210,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"#f0fff0"}
-                border={"1px solid purple"}
                 width={"300px"}
                 p={{ base: 0, md: 3 }}
                 m={1}
-                boxShadow="dark-lg"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ ⭐Claim the interim leadership of NATIONAL SAMMA
