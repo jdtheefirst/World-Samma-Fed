@@ -58,11 +58,11 @@ const fetchMyClub = async (req, res) => {
       .populate({ path: "coach" })
       .populate({
         path: "membersRequests",
-        select: "name admission",
+        select: "name admission pic",
       })
       .populate({
         path: "members",
-        select: "name admission",
+        select: "name admission pic",
       });
 
     if (!populatedClub) {

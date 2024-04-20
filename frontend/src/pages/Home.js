@@ -43,7 +43,7 @@ function Homepage() {
           className="sideDrawer"
           width="100%"
           boxShadow="2xl"
-          p="6"
+          p="4"
           rounded="md"
           bg="white"
         >
@@ -65,7 +65,7 @@ function Homepage() {
               setGetStarted(false);
             }}
           >
-            Donate☕️
+            Donate
           </Button>
           <Button
             background="transparent"
@@ -80,20 +80,18 @@ function Homepage() {
           display="flex"
           justifyContent={"space-between"}
           alignItems={"center"}
-          m={3}
-          background={"whitesmoke"}
+          background="Background"
         >
           <Image
             src={logo1}
             boxSize={{ base: "100px", md: "200px" }}
             alt={`Logo 1*`}
-            m={1}
           />
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "md",
-              lg: "30px",
+              base: "20px",
+              lg: "50px",
               md: "40px",
               xl: "60px",
             }}
@@ -105,7 +103,7 @@ function Homepage() {
             left="50%"
             width={{ base: "60%", lg: "100%" }}
             transform="translateX(-50%)"
-            p={"1"}
+            p={"2"}
             letterSpacing={1}
             textShadow="1px 1px 1px #000"
           >
@@ -121,21 +119,29 @@ function Homepage() {
 
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
-          <>
+          <Box
+            minHeight="100vh"
+            display="flex"
+            flexDirection="column"
+            background={"Background"}
+          >
             <Logins />
+            <Box flex="1" />
             <Text
               textAlign={"center"}
-              bottom={0}
-              p={6}
+              p={1}
               textColor={"grey"}
-              background="blackAlpha.200"
+              background="white"
               mt={3}
+              position="sticky"
+              width="100%"
+              zIndex="10"
             >
               <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
               comments email support@worldsamma.org.
             </Text>
-          </>
+          </Box>
         ) : (
           <>
             {" "}
@@ -159,7 +165,7 @@ function Homepage() {
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                mt={30}
+                opacity={0.6}
               />
               <Text
                 textAlign={"center"}

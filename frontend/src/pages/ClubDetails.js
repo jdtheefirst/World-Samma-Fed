@@ -297,7 +297,7 @@ const ClubDetails = ({ user }) => {
           p={4}
         >
           <Image
-            src={user?.pic}
+            src={club?.coach.pic}
             marginTop={-10}
             alt="*Coach profile pic"
             borderRadius="full"

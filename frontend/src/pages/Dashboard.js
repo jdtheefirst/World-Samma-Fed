@@ -65,16 +65,10 @@ export const Dashboard = ({ courses }) => {
           if (error.response && error.response.status === 401) {
             toast({
               title: "Your session has expired",
-              description: "Logging out in less than 8 seconds",
-              duration: 8000,
-              status: "loading",
+              duration: 3000,
+              status: "warning",
               position: "bottom",
             });
-
-            setTimeout(() => {
-              localStorage.removeItem("userInfo");
-              navigate("/");
-            }, 8000);
           }
         });
     } catch (error) {
