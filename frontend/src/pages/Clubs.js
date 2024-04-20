@@ -105,7 +105,6 @@ export const Clubs = () => {
       overflowX={"auto"}
       justifyContent={"center"}
       alignItems={"center"}
-      pt={20}
     >
       <Box
         position={"fixed"}
@@ -120,7 +119,7 @@ export const Clubs = () => {
         fontSize={"large"}
         fontWeight={"bold"}
         p={3}
-        mt={14}
+        mt={20}
       >
         Country: {user?.country} {flag}
       </Text>
@@ -129,10 +128,9 @@ export const Clubs = () => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        width={"97%"}
+        width={{ base: "97%", md: "70%" }}
         backgroundColor="Background"
         boxShadow="dark-lg"
-        m={6}
         p="6"
         rounded="md"
         bg="white"

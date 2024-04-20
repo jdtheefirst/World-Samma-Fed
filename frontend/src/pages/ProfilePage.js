@@ -385,22 +385,24 @@ const ProfilePage = ({ user }) => {
             </Box>
           </>
         )}
-        <Box
-          display="flex"
-          flexDir="column"
-          justifyContent="center"
-          alignItems="center"
-          overflow="auto"
-          width="100%"
-          m={2}
-          boxShadow="base"
-          p="4"
-          rounded="md"
-          background="white"
-        >
-          {" "}
-          <AdmissionForm />
-        </Box>
+        {user?.coach && (
+          <Box
+            display="flex"
+            flexDir="column"
+            justifyContent="center"
+            alignItems="center"
+            overflow="auto"
+            width="100%"
+            m={2}
+            boxShadow="base"
+            p="4"
+            rounded="md"
+            background="white"
+          >
+            {" "}
+            <AdmissionForm />
+          </Box>
+        )}
         {user?.coach &&
           club?.registered &&
           belts.indexOf(user?.belt) >= Level && (
@@ -517,7 +519,7 @@ const ProfilePage = ({ user }) => {
                     <PayPalScriptProvider
                       options={{
                         clientId:
-                          "AZ5Pdn0aioG6OzW6n4Q7W64LxkdOhS0wEIOAn_UmF5askK41E72ejdrsHPJoFIcg0atbN-WZG14fd6oc",
+                          "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
                       }}
                     >
                       <PayPalButtons

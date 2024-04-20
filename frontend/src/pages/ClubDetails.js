@@ -95,7 +95,6 @@ const ClubDetails = ({ user }) => {
         `/api/clubs/broadcast/${clubId}/${userId}`,
         config
       );
-      console.log(data);
 
       setBroadcast(data);
       setBroadcastMessage("");
@@ -504,6 +503,7 @@ const ClubDetails = ({ user }) => {
               width={"100%"}
               justifyContent={"center"}
               alignItems={"center"}
+              overflow={"auto"}
             >
               <Heading as="h3" size="md" m={2}>
                 Number of Requests received

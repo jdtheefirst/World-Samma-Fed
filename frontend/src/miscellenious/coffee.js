@@ -176,7 +176,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
             <PayPalScriptProvider
               options={{
                 clientId:
-                  "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
+                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
               }}
             >
               <PayPalButtons

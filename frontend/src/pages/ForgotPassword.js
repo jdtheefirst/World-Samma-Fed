@@ -86,6 +86,7 @@ export default function ForgotPassword() {
         padding={5}
         backgroundColor={"Background"}
         justifyContent={"space-between"}
+        border={"1px solid purple"}
       >
         {" "}
         <Text padding={4} textAlign={"center"} fontSize={"2xl"}>

@@ -84,16 +84,18 @@ function Homepage() {
         >
           <Image
             src={logo1}
-            boxSize={{ base: "100px", md: "200px" }}
+            boxSize={{ base: "120px", md: "220px" }}
+            width={{ base: "130px", md: "230px" }}
             alt={`Logo 1*`}
           />
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "20px",
-              lg: "50px",
-              md: "40px",
-              xl: "60px",
+              base: "15px",
+              sm: "20px",
+              md: "30px",
+              lg: "40px",
+              xl: "50px",
             }}
             textColor={"yellow.400"}
             fontWeight="extrabold"
@@ -112,7 +114,7 @@ function Homepage() {
 
           <Image
             src={logo2}
-            boxSize={{ base: "100px", md: "200px" }}
+            boxSize={{ base: "120px", md: "220px" }}
             alt={`Logo 2*`}
           />
         </Box>
@@ -139,7 +141,7 @@ function Homepage() {
             >
               <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
-              comments email support@worldsamma.org.
+              comments, email support@worldsamma.org.
             </Text>
           </Box>
         ) : (
@@ -265,7 +267,7 @@ function Homepage() {
                       h={6}
                     />
                   </Link>
-                  <Link href="#">
+                  <Link href="https://www.youtube.com/@worldsammafederation">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732067/icons8-youtube-47_mzckqt.png"
                       h={5}
@@ -283,7 +285,7 @@ function Homepage() {
                       h={6}
                     />
                   </Link>
-                  <Link href="https://tiktok.com/worldsamma">
+                  <Link href="https://www.tiktok.com/search?q=worldsamma&t=1713608132427">
                     <Image
                       src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-tiktok-50_1_sxupbm.png"
                       h={6}
@@ -312,16 +314,18 @@ function Homepage() {
                   colSpan={4}
                   background="blackAlpha.400"
                   color={"white"}
+                  width={"100%"}
                 >
                   <Text
                     textAlign={"center"}
                     fontSize={"small"}
                     p={1}
                     textColor={"grey"}
+                    width={"100%"}
                   >
                     <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
                     All rights reserved. Terms and conditions apply. For queries
-                    and comments email support@worldsamma.org.
+                    and comments, email support@worldsamma.org.
                   </Text>
                 </GridItem>
               </Grid>

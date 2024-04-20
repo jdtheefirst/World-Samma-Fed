@@ -29,7 +29,6 @@ const Live = ({ user, club, socket }) => {
     const userVideoElement = currentVideo.current;
 
     if (userVideoElement) {
-      console.log("found it, user video");
     }
   }, []);
 

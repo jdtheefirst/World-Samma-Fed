@@ -196,7 +196,7 @@ export default function Paycheck({ course }) {
             <PayPalScriptProvider
               options={{
                 clientId:
-                  "AWPQf5Vj892NjdxiaAeEykYYc8D62w6fxtwwtMLtR61GCuirpxfEsc6caIdpTHoV5v9GLF-f8HeWLI8S",
+                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
               }}
             >
               <PayPalButtons
