@@ -10,41 +10,50 @@ const makeProvincialRequests = async (req, res) => {
   const { country, province } = req.body;
   const socket = getIO();
   try {
-    const myProvince = await ProvincialCoach.findOne({
+    let existingProvince = await ProvincialCoach.findOne({
       provincialCoach: userId,
     });
-    if (myProvince) {
-      myProvince.requests.push(coachId);
-      await myProvince.save();
-      const populatedProvince = await myProvince.populate(
-        "approvals",
-        "name otherName admission"
-      );
-      await User.findByIdAndUpdate(coachId, {
-        $push: { provinceRequests: myProvince._id },
-      });
-      const recipientSocketId = getUserSocket(coachId);
 
+    if (existingProvince) {
+      existingProvince.requests.push(coachId);
+      await existingProvince.save();
+
+      // Check if coachId exists in User collection
+      const userExists = await User.exists({ _id: coachId });
+
+      // Update provinceRequests based on the existence of coachId in User or Admission collection
+      if (userExists) {
+        await User.findByIdAndUpdate(coachId, {
+          $push: { provinceRequests: existingProvince._id },
+        });
+      } else {
+        await Admission.findByIdAndUpdate(coachId, {
+          $push: { provinceRequests: existingProvince._id },
+        });
+      }
+
+      const recipientSocketId = getUserSocket(coachId);
       if (recipientSocketId) {
-        const populatedProvince = await myProvince
-          .populate("provincialCoach")
-          .execPopulate();
         socket
           .to(recipientSocketId)
-          .emit("provincial request", populatedProvince);
+          .emit("provincial request", existingProvince);
         console.log(`Broadcast sent to ${coachId}`);
       } else {
         console.log(`Member ${coachId} not connected`);
       }
-      res.json(populatedProvince);
+
+      res.json(
+        existingProvince.populate("approvals", "name otherName admission")
+      );
     } else {
-      const myProvince = await ProvincialCoach.create({
+      const newProvince = await ProvincialCoach.create({
         provincialCoach: userId,
         country: country,
         province: province,
         requests: [coachId],
-      }).populate("approvals", "name otherName admission");
-      res.json(myProvince);
+      });
+
+      res.json(newProvince.populate("approvals", "name otherName admission"));
     }
   } catch (error) {
     console.error(error);
@@ -53,6 +62,7 @@ const makeProvincialRequests = async (req, res) => {
       .json({ error: "An error occurred while processing the request" });
   }
 };
+
 const fecthMyProvince = async (req, res) => {
   const userId = req.user._id;
 
@@ -69,9 +79,10 @@ const fecthMyProvince = async (req, res) => {
 };
 const getCoaches = async (req, res) => {
   const province = req.user.provinces;
+  const country = req.user.selectedCountry;
 
   try {
-    const coaches = await Club.find({ provience: province })
+    const coaches = await Club.find({ provience: province, country: country })
       .select("coach")
       .populate("coach", "name otherName admission");
     res.json(coaches);
@@ -86,8 +97,13 @@ const acceptDecline = async (req, res) => {
   const provinceId = req.params.provinceId;
 
   try {
-    // Find the user by ID
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
+    let admissionInfo = await Admission.findById(userId);
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    user = user || admissionInfo;
 
     if (user && user.provinceRequests.includes(provinceId)) {
       user.provinceRequests = user.provinceRequests.filter(

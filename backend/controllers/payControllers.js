@@ -91,18 +91,31 @@ const updateUser = async (req, res) => {
     const nextLevelIndex = belts.indexOf(userLevel) + 1;
 
     if (nextLevelIndex < belts.length) {
-      const updatedUser = await User.findByIdAndUpdate(
+      // Check if userId exists in User schema
+      let updatedUser = await User.findByIdAndUpdate(
         userId,
         { belt: belts[nextLevelIndex] },
         { new: true }
       );
 
-      if (updatedUser.belt === "Yellow") {
+      // If userId doesn't exist in User schema, check in Admission schema
+      if (!updatedUser) {
+        updatedUser = await Admission.findByIdAndUpdate(
+          userId,
+          { belt: belts[nextLevelIndex] },
+          { new: true }
+        );
+      }
+
+      // If user document is found and belt level is updated to "Yellow", update admission number
+      if (updatedUser && updatedUser.belt === "Yellow") {
         const admission = await getNextNumber("U", 9);
         updatedUser.admission = admission;
         await updatedUser.save();
+      }
 
-        return res.json(updatedUser);
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
       }
 
       return res.json(updatedUser);
@@ -197,30 +210,46 @@ const CallBackURL = async (req, res) => {
   const { Body } = req.body;
   const socket = getIO();
 
-  const io = getIO();
-  if (!userId && !subscription) {
-    return res.status(401);
-  }
-  if (!Body.stkCallback.CallbackMetadata) {
-    const nothing = "payment cancelled or insufficient amount";
-    io.emit("noPayment", nothing);
-    return res.status(201).json({ message: "Invalid callback data" });
-  }
-  if (Body.stkCallback.CallbackMetadata.Item) {
-    const firstItem = Body.stkCallback.CallbackMetadata.Item[0];
-    const amount = firstItem.Value;
+  try {
+    const userId = req.user._id;
+    const subscription = req.user.subscription; // Assuming this is where subscription is stored
 
-    if (amount === 500) {
-      io.emit("manualRegister");
-      res.status(201);
-      return;
+    // Check if userId and subscription are both available
+    if (!userId || !subscription) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  }
 
-  const updatedUser = await User.findById(userId);
+    if (!Body.stkCallback.CallbackMetadata) {
+      const nothing = "payment cancelled or insufficient amount";
+      io.emit("noPayment", nothing);
+      return res.status(400).json({ message: "Invalid callback data" });
+    }
 
-  if (updatedUser) {
-    const userLevel = updatedUser.belt;
+    if (Body.stkCallback.CallbackMetadata.Item) {
+      const firstItem = Body.stkCallback.CallbackMetadata.Item[0];
+      const amount = firstItem.Value;
+
+      if (amount === 500) {
+        io.emit("manualRegister");
+        return res
+          .status(201)
+          .json({ message: "Manual register event emitted" });
+      }
+    }
+
+    // Check if userId exists in User schema
+    let userInfo = await User.findById(userId);
+
+    // If userId doesn't exist in User schema, check in Admission schema
+    if (!userInfo) {
+      userInfo = await Admission.findById(userId);
+    }
+
+    if (!userInfo) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userLevel = userInfo.belt;
     const belts = [
       "Guest",
       "Yellow",
@@ -233,31 +262,37 @@ const CallBackURL = async (req, res) => {
       "Black",
     ];
 
-    // Find the index of the next belt level in the array
     const nextLevelIndex = belts.indexOf(userLevel) + 1;
 
-    // Check if the user's current belt level is not already at the highest level
     if (nextLevelIndex < belts.length) {
-      // Update the user's belt level
-      const updated = await User.findByIdAndUpdate(
-        userId,
-        { belt: belts[nextLevelIndex] },
-        { new: true }
-      ).select("belt");
-      const recipientSocketId = getUserSocket(userId);
+      const updatedBeltLevel = belts[nextLevelIndex];
 
+      // Update user's belt level in the corresponding schema
+      const updatedUser = await (userInfo instanceof User
+        ? User
+        : Admission
+      ).findByIdAndUpdate(userId, { belt: updatedBeltLevel }, { new: true });
+
+      const recipientSocketId = getUserSocket(userId);
       if (recipientSocketId) {
-        socket.to(recipientSocketId).emit("userUpdated", updated);
-        console.log(`Broadcast sent to ${coachId}`);
+        socket.to(recipientSocketId).emit("userUpdated", updatedUser);
+        console.log(`Broadcast sent to ${userId}`);
       } else {
-        console.log(`Member ${coachId} not connected`);
+        console.log(`Member ${userId} not connected`);
       }
+
+      return res.status(200).json({
+        message: "User belt level updated successfully",
+        userInfo: updatedUser,
+      });
     } else {
-      // Send a response indicating that the user is already at the highest belt level
-      res
+      return res
         .status(400)
         .json({ message: "User is already at the highest belt level" });
     }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

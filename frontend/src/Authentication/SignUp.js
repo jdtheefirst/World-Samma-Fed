@@ -126,7 +126,6 @@ const Signup = () => {
       !selectedCountry ||
       !otherName ||
       !provinces ||
-      !pic ||
       !language
     ) {
       toast({
@@ -229,17 +228,26 @@ const Signup = () => {
 
   return (
     <VStack spacing="3px">
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal
+        size="lg"
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+        closeOnOverlayClick={false}
+      >
         <ModalOverlay />
         <ModalContent padding={5}>
           <ModalHeader
             fontSize="medium"
             fontFamily="Work sans"
             display="flex"
+            flexDir={"column"}
             justifyContent="center"
             textAlign={"center"}
           >
-            Enter Code sent to: ~{email}~
+            {" "}
+            <Text> Enter Code sent to: ${email} </Text>
+            <Text fontSize={"sm"}>You may need to refresh your Mailbox</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -325,7 +333,7 @@ const Signup = () => {
           ))}
         </Select>
       </FormControl>
-      {selectedCountry && subdivisions ? (
+      {selectedCountry && subdivisions.length > 0 ? (
         <FormControl id="provinces" isRequired>
           <FormLabel textColor={"white"}>County/Province</FormLabel>
           <Select
@@ -456,8 +464,10 @@ const Signup = () => {
           </Stack>
         </RadioGroup>
       </FormControl>
-      <FormControl id="pic" isRequired>
-        <FormLabel textColor={"white"}>Upload your Picture</FormLabel>
+      <FormControl id="pic">
+        <FormLabel textColor={"white"}>
+          Upload your Picture(*Optional)
+        </FormLabel>
         <Input
           type="file"
           p={1.5}
@@ -471,8 +481,7 @@ const Signup = () => {
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={() => submitHandler()}
-        // generateAndVerify()
+        onClick={() => generateAndVerify()}
         isLoading={picLoading}
         isDisabled={disabled}
       >

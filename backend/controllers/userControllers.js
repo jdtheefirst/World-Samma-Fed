@@ -41,8 +41,7 @@ const registerUsers = asyncHandler(async (req, res) => {
     !otherName ||
     !provinces ||
     !language ||
-    !passport ||
-    !pic
+    !passport
   ) {
     res.status(400);
     throw new Error({ message: "Please enter all fields!" });
@@ -66,6 +65,7 @@ const registerUsers = asyncHandler(async (req, res) => {
     otherName,
     provinces,
     passport,
+    admission: "",
     WSF,
   };
 
@@ -104,17 +104,29 @@ const allUsers = asyncHandler(async (req, res) => {
         $or: [
           { name: { $regex: req.query.search, $options: "i" } },
           { email: { $regex: req.query.search, $options: "i" } },
+          { admission: { $regex: req.query.search, $options: "i" } },
         ],
       }
     : {};
 
-  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
-  res.send(users);
+  const userInfo = await User.find({ ...keyword, _id: { $ne: req.user._id } });
+  const admissionInfo = await Admission.find({
+    ...keyword,
+    _id: { $ne: req.user._id },
+  });
+
+  // Merge results from userInfo and admissionInfo into a single array
+  const allUsers = [...userInfo, ...admissionInfo];
+
+  res.send(allUsers);
 });
+
 const forgotEmail = async (req, res) => {
   const { email } = req.params;
+  let userInfo = await User.findOne({ email });
+  let admissionInfo = await Admission.findOne({ email });
 
-  const userInfo = await User.findOne({ email });
+  userInfo = userInfo || admissionInfo;
   if (userInfo) {
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
@@ -153,7 +165,11 @@ const forgotEmail = async (req, res) => {
 const searchUser = async (req, res) => {
   const { email } = req.params;
 
-  const userInfo = await User.findOne({ email });
+  let userInfo = await User.findOne({ email });
+  let admissionInfo = await Admission.findOne({ email });
+
+  userInfo = userInfo || admissionInfo;
+
   if (!userInfo) {
     res.status(201).json("Unfound");
   } else {
@@ -185,11 +201,22 @@ const recoverEmail = async (req, res) => {
   const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const userInfo = await User.findOneAndUpdate(
+  let userInfo = await User.findOneAndUpdate(
     { email: email },
     { password: hashedPassword },
     { new: true }
   );
+  let admissionInfo = await Admission.findOneAndUpdate(
+    { email: email },
+    { password: hashedPassword },
+    { new: true }
+  );
+
+  if (!userInfo && !admissionInfo) {
+    return res.status(401).json({ message: "Invalid Email or Password" });
+  }
+  userInfo = userInfo || admissionInfo;
+
   try {
     if (userInfo) {
       const responseData = {
@@ -223,9 +250,15 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const userInfo = await User.findOne({ email });
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
 
-    if (userInfo && (await userInfo.comparePassword(password))) {
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
+
+    if (await userInfo.comparePassword(password)) {
       res.json({
         _id: userInfo._id,
         admission: userInfo.admission,
@@ -248,20 +281,15 @@ const authUser = asyncHandler(async (req, res) => {
       });
     } else {
       res.status(401).json({ message: "Invalid Email or Password" });
-
-      throw new Error("Invalid Email or Password");
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 const getInfo = async (req, res) => {
-  console.log("getuserinfo route");
-
   const { userId } = req.params;
-
-  console.log("getuserinfo route");
 
   try {
     const userInfo = await User.findById(userId);
@@ -280,13 +308,22 @@ const getUsers = async (req, res) => {
   }
 
   try {
-    const allUsers = await User.find({
-      selectedCountry: country,
-      provinces: provience,
-      $and: [{ coach: null }, { physicalCoach: null }],
-    });
+    const [userInfo, admissionInfo] = await Promise.all([
+      User.find({
+        selectedCountry: country,
+        provinces: provience,
+        $and: [{ coach: null }, { physicalCoach: null }],
+      }),
+      Admission.find({
+        selectedCountry: country,
+        provinces: provience,
+        $and: [{ coach: null }, { physicalCoach: null }],
+      }),
+    ]);
 
-    res.json(allUsers);
+    const allInfo = [...userInfo, ...admissionInfo];
+
+    res.json(allInfo);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -375,7 +412,7 @@ const authorizeUser = async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-      userInfo: privateEmail,
+      user: privateEmail,
       pass: privateEmailPass,
     },
   });
@@ -431,12 +468,10 @@ const getAdsInfo = async (req, res) => {
 const clubRequests = async (req, res) => {
   const { country, provience, name, userId } = req.params;
   const socket = getIO();
-
   const loggedUser = req.user._id;
-  let club;
 
   try {
-    club = await Club.findOne({ coach: loggedUser });
+    let club = await Club.findOne({ coach: loggedUser });
 
     if (!club) {
       const clubCode = await getNextNumber("C", 8);
@@ -450,52 +485,51 @@ const clubRequests = async (req, res) => {
         provience: provience,
         clubRequests: userId,
       });
-
-      const userInfo = await User.findById(userId);
-      if (userInfo) {
-        userInfo.clubRequests.push(club._id);
-        await userInfo.save();
-      }
-      const recipientSocketId = getUserSocket(userId);
-
-      if (recipientSocketId) {
-        socket.to(recipientSocketId).emit("sent request", club);
-      } else {
-        console.log("Recipient not connected");
-      }
-
-      res.json(club);
     } else {
       club.clubRequests.push(userId);
       await club.save();
-      const populatedClub = await Club.findById(club._id).populate("members");
-
-      const userInfo = await User.findById(userId);
-      if (userInfo) {
-        userInfo.clubRequests.push(club._id);
-        await userInfo.save();
-      }
-
-      const recipientSocketId = getUserSocket(userId);
-
-      if (recipientSocketId) {
-        socket.to(recipientSocketId).emit("sent request", club);
-      } else {
-        console.log("Recipient not connected");
-      }
-
-      res.json(populatedClub);
     }
+
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
+    if (userInfo) {
+      userInfo.clubRequests.push(club._id);
+      await userInfo.save();
+    }
+
+    const populatedClub = await Club.findById(club._id).populate("members");
+
+    const recipientSocketId = getUserSocket(userId);
+    if (recipientSocketId) {
+      socket.to(recipientSocketId).emit("sent request", club);
+    } else {
+      console.log("Recipient not connected");
+    }
+
+    res.json(populatedClub);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const certificate = async (req, res) => {
   const { userId } = req.params;
   const { sendCertificate } = req.body;
   const socket = getIO();
   try {
-    const userInfo = await User.findById(userId);
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
     if (userInfo) {
       const belts = [
         "Guest",
@@ -534,8 +568,8 @@ const certificate = async (req, res) => {
 const submitAdmissionForm = async (req, res) => {
   const userId = req.user._id;
   const {
-    firstName,
-    lastName,
+    name,
+    otherName,
     id,
     phoneNumber,
     email,
@@ -545,14 +579,14 @@ const submitAdmissionForm = async (req, res) => {
   } = req.body;
 
   try {
-    if (!firstName || !lastName) {
+    if (!name || !otherName) {
       throw new Error({ message: "First name and last name are required." });
     }
     const admCode = await getNextNumber("U", 9);
 
     const admission = new Admission({
-      firstName,
-      lastName,
+      name,
+      otherName,
       id,
       phoneNumber,
       email,

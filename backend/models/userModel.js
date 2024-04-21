@@ -9,7 +9,6 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     pic: {
       type: String,
-
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
@@ -23,37 +22,21 @@ const userSchema = mongoose.Schema(
     coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
     certificates: { type: Array, default: [] },
     admin: { type: Boolean, default: false },
-    WSF: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: null,
-    },
+    WSF: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     physicalCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-    clubRequests: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Club",
-      },
-    ],
+    clubRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Club" }],
     provinceRequests: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "ProvincialCoach",
-      },
+      { type: mongoose.Schema.Types.ObjectId, ref: "ProvincialCoach" },
     ],
     nationalRequests: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "NationalCoach",
-      },
+      { type: mongoose.Schema.Types.ObjectId, ref: "NationalCoach" },
     ],
   },
-  { versionKey: false },
-  { timestamps: true }
+  { versionKey: false, timestamps: true }
 );
 
 userSchema.methods.comparePassword = async function (enteredPassword) {

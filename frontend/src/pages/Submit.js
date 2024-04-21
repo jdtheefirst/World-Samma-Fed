@@ -10,10 +10,11 @@ import {
   useToast,
   Box,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SubmissionPage = ({ user }) => {
   const [video, setVideo] = useState(null);
@@ -23,6 +24,7 @@ const SubmissionPage = ({ user }) => {
   const [saveVideo, setSaveVideo] = useState("");
   const [savePhoto, setSavePhoto] = useState("");
   const toast = useToast();
+  const { title } = useParams();
   const navigate = useNavigate();
 
   const handleVideoChange = (event) => {
@@ -162,6 +164,20 @@ const SubmissionPage = ({ user }) => {
       p={2}
     >
       <UpperNav />
+
+      <Text
+        fontSize={"sm"}
+        fontWeight={500}
+        bg={useColorModeValue("green.50", "green.900")}
+        p={2}
+        px={3}
+        color={"green.500"}
+        rounded={"full"}
+        margin={1}
+        width={{ base: "90%", md: "60%" }}
+      >
+        {title}
+      </Text>
       <Text textAlign={"center"} fontSize={"large"} fontWeight={"bold"}>
         Submit your work for grading(*Passport picture as proof of identity)
       </Text>

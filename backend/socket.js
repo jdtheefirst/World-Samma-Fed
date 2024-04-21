@@ -34,7 +34,14 @@ const initializeSocketIO = (server) => {
         throw new Error("Not authorized, token has expired");
       }
 
-      const user = await User.findById(decoded.id).select("-password");
+      // Check if user exists in User schema
+      let user = await User.findById(decoded.id).select("-password");
+
+      // If user not found in User schema, check in Admission schema
+      if (!user) {
+        user = await Admission.findById(decoded.id).select("-password");
+      }
+
       if (!user) {
         throw new Error("User not found");
       }
@@ -92,35 +99,61 @@ const initializeSocketIO = (server) => {
     socket.on("newConnection", async (userData) => {
       const email = userData.email;
 
-      const requests = await User.findOne({ email })
-        .populate({
-          path: "provinceRequests",
-          populate: {
-            path: "provincialCoach",
-            select: "name admission",
-          },
-        })
-        .populate({
-          path: "nationalRequests",
-          populate: {
-            path: "nationalCoach",
-            select: "name admission",
-          },
-        });
+      try {
+        let user = await User.findOne({ email })
+          .populate({
+            path: "provinceRequests",
+            populate: {
+              path: "provincialCoach",
+              select: "name admission",
+            },
+          })
+          .populate({
+            path: "nationalRequests",
+            populate: {
+              path: "nationalCoach",
+              select: "name admission",
+            },
+          });
 
-      if (requests) {
-        socket.emit("updates", requests);
-      }
+        if (!user) {
+          // If user not found in User schema, check in Admission schema
+          user = await Admission.findOne({ email })
+            .populate({
+              path: "provinceRequests",
+              populate: {
+                path: "provincialCoach",
+                select: "name admission",
+              },
+            })
+            .populate({
+              path: "nationalRequests",
+              populate: {
+                path: "nationalCoach",
+                select: "name admission",
+              },
+            });
+        }
 
-      const userId = userData._id;
-      socket.join(userId);
-      socket.emit("connected");
-      socket.userData = userData;
-      onlineUsers.add(userId);
-      io.emit("onlineUsers", Array.from(onlineUsers));
+        if (user) {
+          socket.emit("updates", user);
+        }
 
-      if (userData.isNewUser) {
-        io.emit("newUserRegistered", userData);
+        const userId = userData._id;
+        socket.join(userId);
+        socket.emit("connected");
+        socket.userData = userData;
+        onlineUsers.add(userId);
+        io.emit("onlineUsers", Array.from(onlineUsers));
+
+        if (userData.isNewUser) {
+          io.emit("newUserRegistered", userData);
+        }
+      } catch (error) {
+        console.error(error);
+        // Handle the error
+        // Emit an event to inform the client about the error
+        socket.emit("connectionError", { message: "Internal server error" });
       }
     });
 

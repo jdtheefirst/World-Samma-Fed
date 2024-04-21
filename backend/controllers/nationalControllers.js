@@ -5,47 +5,54 @@ const NationalCoach = require("../models/nationalModel");
 const ProvincialCoach = require("../models/provinceModel");
 const User = require("../models/userModel");
 
-const makeProvincialRequests = async (req, res) => {
+const makeNationalRequests = async (req, res) => {
   const userId = req.user._id;
   const { coachId } = req.params;
   const { country, province } = req.body;
   const socket = getIO();
   try {
-    const myProvince = await NationalCoach.findOne({
+    let existingNational = await NationalCoach.findOne({
       nationalCoach: userId,
     });
-    if (myProvince) {
-      myProvince.requests.push(coachId);
-      await myProvince.save();
-      const populatedProvince = await myProvince.populate(
-        "approvals",
-        "name otherName admission"
-      );
-      await User.findByIdAndUpdate(coachId, {
-        $push: { nationalRequests: myProvince._id },
-      });
-      const recipientSocketId = getUserSocket(coachId);
 
+    if (existingNational) {
+      existingNational.requests.push(coachId);
+      await existingNational.save();
+
+      // Check if coachId exists in User collection
+      const userExists = await User.exists({ _id: coachId });
+
+      // Update nationalRequests based on the existence of coachId in User or Admission collection
+      if (userExists) {
+        await User.findByIdAndUpdate(coachId, {
+          $push: { nationalRequests: existingNational._id },
+        });
+      } else {
+        await Admission.findByIdAndUpdate(coachId, {
+          $push: { nationalRequests: existingNational._id },
+        });
+      }
+
+      const recipientSocketId = getUserSocket(coachId);
       if (recipientSocketId) {
-        const populatedProvince = await myProvince
-          .populate("nationalCoach")
-          .execPopulate();
-        socket
-          .to(recipientSocketId)
-          .emit("national request", populatedProvince);
+        socket.to(recipientSocketId).emit("national request", existingNational);
         console.log(`Broadcast sent to ${coachId}`);
       } else {
         console.log(`Member ${coachId} not connected`);
       }
-      res.json(populatedProvince);
+
+      res.json(
+        existingNational.populate("approvals", "name otherName admission")
+      );
     } else {
-      const myProvince = await NationalCoach.create({
+      const newNational = await NationalCoach.create({
         nationalCoach: userId,
         country: country,
         province: province,
         requests: [coachId],
-      }).populate("approvals", "name otherName admission");
-      res.json(myProvince);
+      });
+
+      res.json(newNational.populate("approvals", "name otherName admission"));
     }
   } catch (error) {
     console.error(error);
@@ -54,6 +61,7 @@ const makeProvincialRequests = async (req, res) => {
       .json({ error: "An error occurred while processing the request" });
   }
 };
+
 const fecthMyProvince = async (req, res) => {
   const userId = req.user._id;
 
@@ -72,10 +80,11 @@ const getCoaches = async (req, res) => {
   const province = req.user.provinces;
   const country = req.user.selectedCountry;
 
-  console.log(country);
-
   try {
-    const coaches = await ProvincialCoach.find({ province: province })
+    const coaches = await ProvincialCoach.find({
+      province: province,
+      country: country,
+    })
       .select("provincialCoach")
       .populate("name otherName admission");
     res.json(coaches);
@@ -173,7 +182,7 @@ const getProvince = async (req, res) => {
   }
 };
 module.exports = {
-  makeProvincialRequests,
+  makeNationalRequests,
   fecthMyProvince,
   getCoaches,
   acceptDecline,

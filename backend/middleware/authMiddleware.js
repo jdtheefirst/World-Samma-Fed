@@ -19,7 +19,20 @@ const protect = asyncHandler(async (req, res, next) => {
         throw new Error("Not authorized, token has expired");
       }
 
-      req.user = await User.findById(decoded.id).select("-password");
+      // Check if user exists in User schema
+      let user = await User.findById(decoded.id).select("-password");
+
+      // If user not found in User schema, check in Admission schema
+      if (!user) {
+        user = await Admission.findById(decoded.id).select("-password");
+      }
+
+      if (!user) {
+        res.status(401);
+        throw new Error("Not authorized, user not found");
+      }
+
+      req.user = user;
 
       next();
     } catch (error) {

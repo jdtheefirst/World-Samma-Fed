@@ -501,13 +501,11 @@ const ClubDetails = ({ user }) => {
               display={"flex"}
               flexDir={"column"}
               width={"100%"}
+              height={"100%"}
               justifyContent={"center"}
               alignItems={"center"}
               overflow={"auto"}
             >
-              <Heading as="h3" size="md" m={2}>
-                Number of Requests received
-              </Heading>
               <Box
                 display={"flex"}
                 flexDir={"column"}
@@ -517,11 +515,16 @@ const ClubDetails = ({ user }) => {
                 borderRadius={20}
                 height={"150px"}
                 width={"100%"}
-                m={2}
                 p={2}
               >
+                <Heading as="h3" size="md" m={2}>
+                  Number of Requests received
+                </Heading>
                 {club && club.membersRequests.length === 0 && (
-                  <Text textAlign={"center"}> No requests made yet.</Text>
+                  <Text textAlign={"center"}>
+                    {" "}
+                    All requests have received responses.
+                  </Text>
                 )}
 
                 {club &&

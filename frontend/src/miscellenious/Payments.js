@@ -181,7 +181,7 @@ export default function Paycheck({ course }) {
                 color={"green.500"}
                 rounded={"full"}
               >
-                Elevate Your Craft: {course.title}
+                Elevate Your Craft: ${course.title}
               </Text>
             </Box>
           </ModalHeader>

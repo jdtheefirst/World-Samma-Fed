@@ -143,7 +143,7 @@ const ProfilePage = ({ user }) => {
     setShow(false);
     if (!search) {
       toast({
-        title: "Please Enter something in search",
+        title: "Please enter something in search",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -440,7 +440,7 @@ const ProfilePage = ({ user }) => {
                 alignItems={"center"}
               >
                 <Input
-                  placeholder="Search by email"
+                  placeholder="Search by name, email, or admission"
                   mr={2}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}

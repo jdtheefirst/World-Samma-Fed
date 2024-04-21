@@ -65,7 +65,8 @@ const AboutPage = () => {
       <Text
         textAlign={"center"}
         fontSize={"small"}
-        p={1}
+        p={"6"}
+        px={"6"}
         textColor={"grey"}
         background="blackAlpha.200"
         width={"100%"}

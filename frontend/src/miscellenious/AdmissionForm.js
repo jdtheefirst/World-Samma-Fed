@@ -24,8 +24,8 @@ import { ChatState } from "../components/Context/ChatProvider";
 
 const AdmissionForm = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
+    otherName: "",
     id: "",
     phoneNumber: "",
     email: "",
@@ -57,7 +57,7 @@ const AdmissionForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if (!formData.firstName || !formData.lastName) {
+      if (!formData.name || !formData.otherName) {
         toast({
           title: "First name and last name are required.",
           status: "warning",
@@ -78,8 +78,8 @@ const AdmissionForm = () => {
       );
       setStudent(data);
       setFormData({
-        firstName: "",
-        lastName: "",
+        name: "",
+        otherName: "",
         id: "",
         phoneNumber: "",
         email: "",
@@ -171,23 +171,23 @@ const AdmissionForm = () => {
                 createdAt: {formatMessageTime(student?.createdAt)}{" "}
               </Text>
             )}
-            <FormControl id="firstName" isRequired>
+            <FormControl id="name" isRequired>
               <FormLabel>First Name </FormLabel>
               <Input
                 type="text"
-                name="firstName"
+                name="name"
                 placeholder="Student's first name"
-                value={formData.firstName}
+                value={formData.name}
                 onChange={handleChange}
               />
             </FormControl>
-            <FormControl id="lastName" isRequired>
+            <FormControl id="otherName" isRequired>
               <FormLabel>Last Name </FormLabel>
               <Input
                 type="text"
-                name="lastName"
+                name="otherName"
                 placeholder="Student's last name"
-                value={formData.lastName}
+                value={formData.otherName}
                 onChange={handleChange}
               />
             </FormControl>
@@ -304,7 +304,7 @@ const AdmissionForm = () => {
               onClick={() => setShowPaypal(true)}
               mt={4}
               colorScheme="teal"
-              isDisabled={!formData.firstName || !formData.lastName}
+              isDisabled={!formData.name || !formData.otherName}
             >
               Submit
             </Button>
@@ -392,14 +392,11 @@ const AdmissionForm = () => {
           </Button>
           {show && (
             <Box m={3} width={{ base: "80%", md: "50%" }}>
-              <Text textAlign={"center"} justifyContent={"center"}>
-                Enter Your Mpesa Phone Number
-              </Text>
               <Input
                 fontSize={"small"}
                 color={"green.400"}
                 fontWeight={"bold"}
-                placeholder="i.e 0710334455"
+                placeholder="Enter Your Mpesa Phone Number"
                 textAlign={"center"}
                 type="text"
                 onChange={(e) => setPhone(e.target.value)}

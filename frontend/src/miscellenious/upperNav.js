@@ -50,7 +50,7 @@ function UpperNav() {
         w="100%"
         p={3}
         paddingBottom={2}
-        boxShadow="lg"
+        boxShadow="2xl"
         zIndex={10}
         top={0}
         position={"fixed"}

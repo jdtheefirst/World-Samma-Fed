@@ -15,18 +15,23 @@ const CourseDetails = ({ courses, user }) => {
   const toast = useToast();
 
   const goToNextLesson = () => {
+    setTranslatedText("");
     if (currentLessonIndex < course.lessons.length - 1) {
       setCurrentLessonIndex((prevIndex) => prevIndex + 1);
     }
+    if (currentLessonIndex + 1 === course.lessons.length) {
+      navigate(`/courses/${id}/submit/${course.title}`);
+    }
   };
+  const currentLesson = course.lessons[currentLessonIndex];
 
   const goToPreviousLesson = () => {
+    setTranslatedText("");
+
     if (currentLessonIndex > 0) {
       setCurrentLessonIndex((prevIndex) => prevIndex - 1);
     }
   };
-
-  const currentLesson = course.lessons[currentLessonIndex];
 
   const translateText = async (text) => {
     if (!user || !text) return;
@@ -85,7 +90,7 @@ const CourseDetails = ({ courses, user }) => {
       >
         <Box mb={4}>
           <Text fontSize="large" fontWeight="medium">
-            {currentLesson.title}
+            {currentLesson.title}/{course.lessons.length}
             <Text fontSize={"small"}>
               {" "}
               *Optimize Your Viewing: Switch to Fullscreen
@@ -99,14 +104,15 @@ const CourseDetails = ({ courses, user }) => {
             allowFullScreen
             style={{ maxWidth: "800px", margin: "0 auto" }}
           ></iframe>
-          <Text mt={2} textAlign={"center"} p={2}>
+          <Text mt={2} textAlign={"center"} p={2} width={"100%"}>
             <Button
               background="transparent"
               _hover={{ backgroundColor: "transparent", color: "green" }}
               color={"purple"}
               onClick={() => translateText(currentLesson.notes)}
+              textDecoration={"underline"}
             >
-              translate{loading && <Spinner size={"sm"} />}
+              Translate{loading && <Spinner size={"sm"} />}
             </Button>
             {translatedText ? translatedText : currentLesson.notes}
           </Text>

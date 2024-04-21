@@ -26,17 +26,16 @@ const courses = [
         title: "Lesson 1",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945476/stances_e589zo.mp4",
-        notes: `.
-Attention stance.
-Natural stance.
-Horse riding stance.
-Raised rear heel stance.
-Forward leaning stance.
-Back leaning stance.
-Cat stance.
-Raised knee stance.
-Cross stance.
-Kneeling positions (one knee, both knees).
+        notes: `.Attention stance
+.Natural stance
+.Horse riding stance
+.Raised rear heel stance
+.Forward leaning stance
+.Back leaning stance
+.Cat stance
+.Raised knee stance
+.Cross stance
+.Kneeling positions (one knee, both knees).
 `,
       },
       {
@@ -45,19 +44,16 @@ Kneeling positions (one knee, both knees).
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945467/step_annbdf.mp4",
         notes: `.STEPPING (each done in the forward and reverse motion)
- 
-     .Stepping through.
-Dragging/jumping.
-Crossing over
-`,
+     .Stepping through
+     .Dragging/jumping
+     .Crossing over`,
       },
       {
         id: 3,
         title: "Lesson 3",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
-        notes: ` PRIMARY KICKS (use the front foot)
- 
+        notes: `PRIMARY KICKS (use the front foot)
 .Ball kick
 .Outward crescent kick
 .Inward crescent kick
@@ -65,7 +61,6 @@ Crossing over
 .Roundhouse kick
 .Hook/whip kick
 .Back kick
-
 `,
       },
       {
@@ -73,8 +68,7 @@ Crossing over
         title: "Lesson 4",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
-        notes: ` PRIMARY KICKS (use the front foot)
- 
+        notes: `PRIMARY KICKS (use the front foot)
 .Ball kick
 .Outward crescent kick
 .Inward crescent kick
@@ -90,9 +84,7 @@ Crossing over
         title: "Lesson 5",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712947059/open_hand_r1lizr.mp4",
-        notes: `
-OPEN HAND STRIKES (with each hand)
- 
+        notes: `OPEN HAND STRIKES (with each hand)
 .Chops
 .Slaps (back & front hand)
 .Pokes
@@ -120,9 +112,7 @@ PUNCHES
         title: "Lesson 7",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945249/evasion_wloadk.mp4",
-        notes: `
-EVASION
- 
+        notes: `EVASION
 .Left
 .Right
 .Down
@@ -135,14 +125,11 @@ EVASION
         title: "Lesson 8",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945296/blocks_kxtoxv.mp4",
-        notes: `
- BLOCKS (with each hand)
- 
+        notes: `BLOCKS (with each hand)
 .Inward block
 .Outward block
 .Upward block
 .Downward block
-
 `,
       },
       {
@@ -150,9 +137,7 @@ EVASION
         title: "Lesson 9",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945257/falling_side_akrnvl.mp4",
-        notes: `
-SAFETY FALLS
- 
+        notes: `SAFETY FALLS
 .Side fall
 `,
       },
@@ -161,9 +146,7 @@ SAFETY FALLS
         title: "Lesson 10",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945246/falling_back_ggt6ko.mp4",
-        notes: `
-SAFETY FALLS
- 
+        notes: `SAFETY FALLS
 .Back fall
 `,
       },
@@ -172,9 +155,7 @@ SAFETY FALLS
         title: "Lesson 11",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945243/falling_face_sbvruy.mp4",
-        notes: `
-SAFETY FALLS
- 
+        notes: `SAFETY FALLS
 .Face fall
 `,
       },
@@ -333,7 +314,7 @@ function App() {
         />
         <Route path="/clubs" element={<Clubs />} />
         <Route
-          path="/courses/:id/submit"
+          path="/courses/:id/submit/:title"
           element={<SubmissionPage user={user} />}
         />
         <Route path="/profile" element={<ProfilePage user={user} />} />

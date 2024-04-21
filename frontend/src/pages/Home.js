@@ -131,6 +131,7 @@ function Homepage() {
             <Box flex="1" />
             <Text
               textAlign={"center"}
+              fontSize={"x-small"}
               p={1}
               textColor={"grey"}
               background="white"
@@ -319,7 +320,7 @@ function Homepage() {
                   <Text
                     textAlign={"center"}
                     fontSize={"small"}
-                    p={1}
+                    p={"6"}
                     textColor={"grey"}
                     width={"100%"}
                   >

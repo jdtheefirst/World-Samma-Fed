@@ -297,10 +297,18 @@ const fetchRequests = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const user = await User.findById(userId).populate({
+    let user = await User.findById(userId).populate({
       path: "clubRequests",
       select: "name _id",
     });
+
+    // If user not found in User schema, check in Admission schema
+    if (!user) {
+      user = await Admission.findById(userId).populate({
+        path: "clubRequests",
+        select: "name _id",
+      });
+    }
 
     if (user) {
       const clubs = user.clubRequests.map((club) => ({
@@ -316,11 +324,17 @@ const fetchRequests = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const declineRequests = async (req, res) => {
   const { userId, clubId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    let user = await User.findById(userId);
+
+    // If user not found in User schema, check in Admission schema
+    if (!user) {
+      user = await Admission.findById(userId);
+    }
 
     if (user) {
       const clubRequestToRemove = user.clubRequests.find(
