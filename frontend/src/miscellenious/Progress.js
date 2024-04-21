@@ -74,7 +74,7 @@ const Progress = ({ userBelt }) => {
     `${black}`,
   ];
   const progress = [
-    "Guest",
+    "Guest" || undefined,
     "Beginner",
     "Yellow",
     "Orange",

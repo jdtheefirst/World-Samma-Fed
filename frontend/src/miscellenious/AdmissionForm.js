@@ -7,7 +7,12 @@ import {
   FormLabel,
   Image,
   Input,
+  InputGroup,
+  InputRightElement,
+  Radio,
+  RadioGroup,
   Select,
+  Stack,
   Text,
   useColorModeValue,
   useToast,
@@ -21,6 +26,7 @@ import {
   useConnectSocket,
 } from "../components/config/chatlogics";
 import { ChatState } from "../components/Context/ChatProvider";
+import UploadPicture from "./PicLogic";
 
 const AdmissionForm = () => {
   const [formData, setFormData] = useState({
@@ -32,17 +38,30 @@ const AdmissionForm = () => {
     selectedCountry: "",
     provinces: "",
     language: "",
+    password: "",
+    confirmpassword: "",
+    gender: "",
   });
   const [showPaypal, setShowPaypal] = useState(false);
   const [show, setShow] = useState(false);
   const [subdivisions, setSubdivisions] = useState([]);
   const [student, setStudent] = useState(null);
   const [phone, setPhone] = useState("");
+  const [pic, setPic] = useState("");
+  const [register, setRegister] = useState(false);
   const { user } = ChatState();
+  const [picLoading, setPicLoading] = useState(false);
   const toast = useToast();
   const socket = useConnectSocket(user?.token);
+  const handleClick = () => setShow(!show);
 
   const handleChange = (e) => {
+    console.log("Event:", e);
+    if (!e || !e.target) {
+      console.log("Event or target is undefined.");
+      return;
+    }
+
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -57,13 +76,6 @@ const AdmissionForm = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if (!formData.name || !formData.otherName) {
-        toast({
-          title: "First name and last name are required.",
-          status: "warning",
-        });
-        return;
-      }
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -73,7 +85,10 @@ const AdmissionForm = () => {
 
       const { data } = await axios.post(
         "/api/user/admission",
-        formData,
+        {
+          ...formData,
+          pic: pic,
+        },
         config
       );
       setStudent(data);
@@ -86,7 +101,11 @@ const AdmissionForm = () => {
         selectedCountry: "",
         provinces: "",
         language: "",
+        password: "",
+        confirmpassword: "",
+        gender: "",
       });
+      setPic("");
       setShowPaypal(false);
       setSubdivisions([]);
     } catch (error) {
@@ -136,6 +155,57 @@ const AdmissionForm = () => {
       socket.off("manualRegister", handleManualRegister);
     };
   }, [socket]);
+
+  const handleShow = () => {
+    const {
+      name,
+      otherName,
+      selectedCountry,
+      provinces,
+      language,
+      id,
+      phoneNumber,
+      email,
+      password,
+      confirmpassword,
+      gender,
+    } = formData;
+    console.log(pic);
+
+    if (
+      !name ||
+      !otherName ||
+      !selectedCountry ||
+      !provinces ||
+      !language ||
+      !id ||
+      !phoneNumber ||
+      !email ||
+      !password ||
+      !confirmpassword ||
+      !gender ||
+      !pic
+    ) {
+      toast({
+        title: "Please fill all the required fields.",
+        status: "warning",
+      });
+      return;
+    }
+
+    if (password !== confirmpassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    setShowPaypal(true);
+  };
 
   return (
     <>
@@ -215,7 +285,7 @@ const AdmissionForm = () => {
                 ))}
               </Select>
             </FormControl>
-            {formData.selectedCountry && subdivisions ? (
+            {formData.selectedCountry && subdivisions.length > 0 ? (
               <FormControl id="provinces" isRequired>
                 <FormLabel>County/Province</FormLabel>
                 <Select
@@ -242,13 +312,15 @@ const AdmissionForm = () => {
                 </Select>
               </FormControl>
             ) : (
-              <FormControl id="provinces" isRequired>
+              <FormControl id="province" isRequired>
                 <FormLabel>County/Province/state</FormLabel>
                 <Input
                   type="text"
                   placeholder="Province"
                   value={formData.provinces}
-                  onChange={handleChange}
+                  onChange={(e) =>
+                    setFormData({ ...formData, provinces: e.target.value })
+                  }
                 />
               </FormControl>
             )}
@@ -283,7 +355,7 @@ const AdmissionForm = () => {
             <FormControl id="phoneNumber">
               <FormLabel>Phone Number</FormLabel>
               <Input
-                type="tel"
+                type="number"
                 name="phoneNumber"
                 placeholder="Student's phone number (optional)"
                 value={formData.phoneNumber}
@@ -300,11 +372,75 @@ const AdmissionForm = () => {
                 onChange={handleChange}
               />
             </FormControl>
+            <FormControl id="password" isRequired>
+              <FormLabel>Password</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  type={show ? "text" : "password"}
+                  placeholder="Enter Password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      password: e.target.value,
+                    })
+                  }
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? "Hide" : "Show"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl id="confirmPassword" isRequired>
+              <FormLabel>Confirm Password</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  type={show ? "text" : "password"}
+                  placeholder="Confirm password"
+                  value={formData.confirmpassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmpassword: e.target.value,
+                    })
+                  }
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handleClick}>
+                    {show ? "Hide" : "Show"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <RadioGroup
+              value={formData.gender}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  gender: value,
+                })
+              }
+              isRequired
+            >
+              <Stack direction="row">
+                <Radio value="male">Male</Radio>
+                <Radio value="female">Female</Radio>
+              </Stack>
+            </RadioGroup>
+
+            <UploadPicture
+              setPic={setPic}
+              isLoading={picLoading}
+              color={"black"}
+            />
+
             <Button
-              onClick={() => setShowPaypal(true)}
+              onClick={() => handleShow()}
               mt={4}
               colorScheme="teal"
-              isDisabled={!formData.name || !formData.otherName}
+              isDisabled={!formData.name || !formData.otherName || picLoading}
             >
               Submit
             </Button>

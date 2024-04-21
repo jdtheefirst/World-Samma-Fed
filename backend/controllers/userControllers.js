@@ -65,7 +65,6 @@ const registerUsers = asyncHandler(async (req, res) => {
     otherName,
     provinces,
     passport,
-    admission: "",
     WSF,
   };
 

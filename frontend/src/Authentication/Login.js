@@ -140,7 +140,7 @@ const Login = () => {
           value={email}
           textColor={"white"}
           type="email"
-          placeholder="Enter Your Email Address or Admission Number"
+          placeholder="Email Address or Admission Number"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>

@@ -34,6 +34,7 @@ const ProfilePage = ({ user }) => {
   const [searchResult, setSearchResult] = useState([]);
   const [student, setStudent] = useState(null);
   const [show, setShow] = useState(false);
+  const [register, setRegister] = useState(false);
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -386,6 +387,17 @@ const ProfilePage = ({ user }) => {
           </>
         )}
         {user?.coach && (
+          <Text textAlign={"center"} width={"100%"}>
+            <Button
+              background={"purple.400"}
+              onClick={() => setRegister(!register)}
+            >
+              Register Students Manually
+            </Button>
+            {register && `↓`}
+          </Text>
+        )}
+        {register && (
           <Box
             display="flex"
             flexDir="column"

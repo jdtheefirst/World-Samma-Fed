@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { countries, languages } from "countries-list";
 import { useNavigate } from "react-router-dom";
 import { getStatesOfCountry } from "../assets/state";
+import UploadPicture from "../miscellenious/PicLogic";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -67,7 +68,8 @@ const Signup = () => {
       !confirmpassword ||
       !otherName ||
       !selectedCountry ||
-      !provinces
+      !provinces ||
+      !pic
     ) {
       toast({
         title: "Please Fill all the Fields",
@@ -126,7 +128,8 @@ const Signup = () => {
       !selectedCountry ||
       !otherName ||
       !provinces ||
-      !language
+      !language ||
+      !pic
     ) {
       toast({
         title: "Please fill all the required fields.",
@@ -175,48 +178,6 @@ const Signup = () => {
     }
   };
 
-  const postDetails = (pics) => {
-    setPicLoading(true);
-    if (pics === undefined) {
-      toast({
-        title: "Please Select an Image!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      return;
-    }
-
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
-      let data = new FormData();
-      data.append("file", pics);
-      data.append("upload_preset", "RocketChat");
-      fetch("https://api.cloudinary.com/v1_1/dvc7i8g1a/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setPic(data.url.toString());
-
-          setPicLoading(false);
-        })
-        .catch((err) => {
-          setPicLoading(false);
-        });
-    } else {
-      toast({
-        title: "Please Select an Image!",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setPicLoading(false);
-      return;
-    }
-  };
   useEffect(() => {
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(selectedCountry);
@@ -246,7 +207,7 @@ const Signup = () => {
             textAlign={"center"}
           >
             {" "}
-            <Text> Enter Code sent to: ${email} </Text>
+            <Text> Enter Code sent to: {email} </Text>
             <Text fontSize={"sm"}>You may need to refresh your Mailbox</Text>
           </ModalHeader>
           <ModalCloseButton />
@@ -464,18 +425,12 @@ const Signup = () => {
           </Stack>
         </RadioGroup>
       </FormControl>
-      <FormControl id="pic">
-        <FormLabel textColor={"white"}>
-          Upload your Picture(*Optional)
-        </FormLabel>
-        <Input
-          type="file"
-          p={1.5}
-          textColor={"white"}
-          accept="image/*"
-          onChange={(e) => postDetails(e.target.files[0])}
-        />
-      </FormControl>
+      <UploadPicture
+        onUpload={(url) => setPic(url)}
+        isLoading={picLoading}
+        isDisabled={disabled}
+        color={"white"}
+      />
 
       <Button
         colorScheme="blue"

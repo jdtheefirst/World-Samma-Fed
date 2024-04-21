@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema(
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
-    admission: { type: String, default: "Guest" },
+    admission: { type: String },
     selectedCountry: { type: String },
     gender: { type: String },
     provinces: { type: String },
