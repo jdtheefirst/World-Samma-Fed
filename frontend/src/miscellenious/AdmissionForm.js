@@ -53,6 +53,7 @@ const AdmissionForm = () => {
   const [picLoading, setPicLoading] = useState(false);
   const toast = useToast();
   const socket = useConnectSocket(user?.token);
+
   const handleClick = () => setShow(!show);
 
   const handleChange = (e) => {
@@ -432,7 +433,7 @@ const AdmissionForm = () => {
 
             <UploadPicture
               setPic={setPic}
-              isLoading={picLoading}
+              setPicLoading={setPicLoading}
               color={"black"}
             />
 
@@ -441,6 +442,7 @@ const AdmissionForm = () => {
               mt={4}
               colorScheme="teal"
               isDisabled={!formData.name || !formData.otherName || picLoading}
+              isLoading={picLoading}
             >
               Submit
             </Button>

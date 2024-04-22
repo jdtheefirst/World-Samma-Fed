@@ -44,6 +44,15 @@ const progressAnimation = keyframes`
   }
 `;
 
+const blinkingAnimation = keyframes`
+  0%, 100% {
+    background-color: #ed7d66; /* Slightly less green color */
+  }
+  50% {
+    background-color: #66d171; /* Default green color */
+  }
+`;
+
 const ProgressArrow = styled.div`
   position: absolute;
   bottom: 0;
@@ -58,8 +67,10 @@ const ProgressArrow = styled.div`
   margin: 0;
   padding: 0;
   width: ${({ level }) => (level + 1) * 10}%;
-  animation: ${progressAnimation} 2s ease-in-out;
+  animation: ${progressAnimation} 2s ease-in-out,
+    ${blinkingAnimation} 3s ease-in-out infinite;
 `;
+
 const Progress = ({ userBelt }) => {
   const progressLevels = [
     "Guest",

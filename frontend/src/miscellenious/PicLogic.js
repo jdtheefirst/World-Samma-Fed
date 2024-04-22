@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { FormControl, FormLabel, Input, Spinner } from "@chakra-ui/react";
+import { FormControl, FormLabel, Input, useToast } from "@chakra-ui/react";
 
-const UploadPicture = ({ isLoading, color, setPic }) => {
-  const [picLoading, setPicLoading] = useState(false);
+const UploadPicture = ({ setPicLoading, color, setPic }) => {
+  const toast = useToast();
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -31,8 +31,12 @@ const UploadPicture = ({ isLoading, color, setPic }) => {
           setPicLoading(false);
         });
     } else {
-      // Handle invalid file type
       setPicLoading(false);
+
+      toast({
+        title: "Invalid file type",
+        status: "warning",
+      });
     }
   };
 
@@ -46,9 +50,7 @@ const UploadPicture = ({ isLoading, color, setPic }) => {
         placeholder="Select a passport photo"
         accept="image/*"
         onChange={handleFileChange}
-        isLoading={isLoading || picLoading}
       />
-      {picLoading && <Spinner size={"sm"} />}
     </FormControl>
   );
 };

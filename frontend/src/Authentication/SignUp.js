@@ -426,9 +426,8 @@ const Signup = () => {
         </RadioGroup>
       </FormControl>
       <UploadPicture
-        onUpload={(url) => setPic(url)}
-        isLoading={picLoading}
-        isDisabled={disabled}
+        setPic={setPic}
+        setPicLoading={setPicLoading}
         color={"white"}
       />
 

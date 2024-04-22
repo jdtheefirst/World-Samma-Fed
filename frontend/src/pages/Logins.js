@@ -23,7 +23,13 @@ const Logins = () => {
       }}
       marginTop={"30px"}
     >
-      <Box bg="black" w="100%" p={4} borderRadius="lg" borderWidth="1px">
+      <Box
+        bg="blackAlpha.500"
+        w="100%"
+        p={4}
+        borderRadius="lg"
+        borderWidth="1px"
+      >
         <Tabs isFitted variant="soft-rounded">
           <TabList mb="1em">
             <Tab textColor={"white"}>Login</Tab>
