@@ -34,6 +34,13 @@ export default function Paycheck({ course }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const socket = useConnectSocket(user?.token);
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+  const overlay = React.useState(<OverlayOne />);
 
   useEffect(() => {
     if (!socket) return;
@@ -156,7 +163,7 @@ export default function Paycheck({ course }) {
         isOpen={isOpen}
         isCentered
       >
-        <ModalOverlay />
+        {overlay}
         <ModalContent width={"calc(100% - 20px)"}>
           <ModalHeader
             fontSize="40px"
@@ -181,7 +188,7 @@ export default function Paycheck({ course }) {
                 color={"green.500"}
                 rounded={"full"}
               >
-                Elevate Your Craft: ${course.title}
+                Elevate Your Craft: {course.title}
               </Text>
             </Box>
           </ModalHeader>

@@ -16,6 +16,9 @@ import { useNavigate } from "react-router-dom";
 import logo1 from "../final.jpeg";
 import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
+import logo8 from "../headquaters.jpeg";
+import logo9 from "../sammahouse.jpeg";
+import { FaArrowCircleRight } from "react-icons/fa";
 
 import CoffeeModal from "../miscellenious/coffee";
 
@@ -232,9 +235,90 @@ function Homepage() {
             </Box>
             <Box
               display={"flex"}
+              flexDirection={"column"}
               justifyContent={"center"}
               alignItems={"center"}
             >
+              <Box
+                display={"flex"}
+                flexDirection={{ base: "column", md: "row" }}
+                alignItems={"center"}
+                justifyContent={"center"}
+                width={"100%"}
+                minH={{ base: "400px", md: "200px" }}
+                position={"relative"}
+                m={1}
+              >
+                <Box
+                  flex={"1"}
+                  position={"relative"}
+                  mb={{ base: "20px", md: "0" }}
+                  onClick={() => setShow(true)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Image
+                    src={logo9}
+                    boxSize={{ base: "300px", md: "400px" }}
+                    borderRadius={2}
+                    mx={"auto"}
+                    mb={"10px"}
+                    boxShadow="dark-lg"
+                    p="6"
+                    rounded="md"
+                    bg="white"
+                  />
+                  <Text
+                    textAlign={"center"}
+                    textColor={"goldenrod"}
+                    px={{ base: "20px", md: "0" }}
+                  >
+                    Your donation is crucial in realizing our ambitious vision.
+                    We aim to construct a larger training facility to
+                    accommodate more individuals, empowering countless lives.
+                  </Text>
+                </Box>
+                <Box
+                  flex={"1"}
+                  position={"relative"}
+                  mb={{ base: "20px", md: "0" }}
+                  onClick={() => setShow(true)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Image
+                    src={logo8}
+                    boxSize={{ base: "300px", md: "400px" }}
+                    borderRadius={2}
+                    mx={"auto"}
+                    mb={"10px"}
+                    boxShadow="dark-lg"
+                    p="6"
+                    rounded="md"
+                    bg="white"
+                  />
+                  <Text
+                    textAlign={"center"}
+                    textColor={"goldenrod"}
+                    px={{ base: "20px", md: "0" }}
+                  >
+                    Additionally, your support will contribute to the
+                    establishment of our international Samma headquarters, a
+                    pivotal step towards expanding our reach and impact
+                    globally. Together, we can turn dreams into reality. Thank
+                    you for your generosity in advance.
+                  </Text>
+                </Box>
+                <FaArrowCircleRight
+                  style={{
+                    fontSize: { base: "3rem", md: "1rem" },
+                    position: "absolute",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 3,
+                    display: { base: "block", md: "none" },
+                  }}
+                />
+              </Box>
+
               <Button
                 borderRadius={20}
                 backgroundColor={"#a432a8"}

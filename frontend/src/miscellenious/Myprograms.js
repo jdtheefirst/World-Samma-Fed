@@ -5,17 +5,10 @@ import {
   Button,
   Link,
   useColorModeValue,
-  Image,
 } from "@chakra-ui/react";
-import black from "../blackBelt.png";
-import blue from "../blueBelt.png";
-import brown from "../brownBelt.png";
-import green from "../greenBelt.png";
-import orange from "../orangeBelt.png";
-import purple from "../pupleBelt.png";
-import red from "../redBelt.png";
-import yellow from "../yellowBelt.png";
+
 import Paycheck from "./Payments";
+import { GiBlackBelt } from "react-icons/gi";
 
 const MyPrograms = ({ courses, user }) => {
   const handleDownload = (title, url) => {
@@ -24,28 +17,18 @@ const MyPrograms = ({ courses, user }) => {
     a.download = `${title}BeltCertificate.pdf`;
     a.click();
   };
+
   const progressLevels = [
-    yellow,
-    orange,
-    red,
-    purple,
-    green,
-    blue,
-    brown,
-    black,
+    `yellow`,
+    `orange`,
+    `red`,
+    `purple`,
+    `green`,
+    `blue`,
+    `brown`,
+    `black`,
   ];
-  const belts = [
-    "Guest",
-    "Beginner",
-    "Yellow",
-    "Orange",
-    "Red",
-    "Purple",
-    "Green",
-    "Blue",
-    "Brown",
-    "Black",
-  ];
+
   return (
     <Box
       display={"flex"}
@@ -74,7 +57,9 @@ const MyPrograms = ({ courses, user }) => {
           <Box>
             <Text fontSize={"larger"} fontWeight={"medium"}>
               <Text>{course.title}</Text>
-              <Image src={progressLevels[index]} alt="Belt" />
+              <GiBlackBelt
+                style={{ color: progressLevels[index], fontSize: "3rem" }}
+              />
             </Text>
             {course.title === user?.belt && (
               <Link
@@ -108,12 +93,12 @@ const MyPrograms = ({ courses, user }) => {
                 fontSize={"sm"}
                 fontWeight={400}
                 bg={useColorModeValue("green.50", "green.900")}
-                p={1}
+                p={3}
                 px={3}
                 color={"green.500"}
                 rounded={"full"}
               >
-                $45 Only
+                $12 Only
               </Text>
             </Box>
           )}

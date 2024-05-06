@@ -1,5 +1,8 @@
 import React from "react";
-import { Box, Text, Center, Link } from "@chakra-ui/react";
+import { Box, Text, Center, Link, Image } from "@chakra-ui/react";
+import logo8 from "../Mombasa.jpg";
+import logo9 from "../Nairobi.jpg";
+import { CiLocationOn } from "react-icons/ci";
 
 const AboutPage = () => {
   return (
@@ -49,7 +52,7 @@ const AboutPage = () => {
           punch, knee, kick and finally grappling).
         </Text>
         <a
-          href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1713249048/Samma_1_aprej8.pdf"
+          href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1715025413/sammaV3_cnof4v.pdf"
           download
           style={{ textDecoration: "none", color: "blue" }} // Adjust color as needed
         >
@@ -61,7 +64,89 @@ const AboutPage = () => {
           name, country, and province for a credit/mention. Thanking you in
           advance.
         </Text>
+        <Box
+          display={"flex"}
+          flexDirection={{ base: "column", md: "row" }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          width={"100%"}
+          minH={{ base: "400px", md: "200px" }}
+          position={"relative"}
+        >
+          <Box
+            flex={"1"}
+            position={"relative"}
+            mb={{ base: "20px", md: "0" }}
+            onClick={() => setShow(true)}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              src={logo9}
+              boxSize={{ base: "300px", md: "400px" }}
+              borderRadius={2}
+              mx={"auto"}
+              mb={"10px"}
+              boxShadow="dark-lg"
+              p="6"
+              rounded="md"
+              bg="white"
+            />
+            <Text
+              textAlign={"center"}
+              textColor={"goldenrod"}
+              px={{ base: "20px", md: "0" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CiLocationOn
+                style={{
+                  color: "red",
+                }}
+              />{" "}
+              Nairobi, Kenya
+            </Text>
+          </Box>
+          <Box
+            flex={"1"}
+            position={"relative"}
+            mb={{ base: "20px", md: "0" }}
+            onClick={() => setShow(true)}
+            style={{ cursor: "pointer" }}
+          >
+            <Image
+              src={logo8}
+              boxSize={{ base: "300px", md: "400px" }}
+              borderRadius={2}
+              mx={"auto"}
+              mb={"10px"}
+              boxShadow="dark-lg"
+              p="6"
+              rounded="md"
+              bg="white"
+            />
+            <Text
+              textColor={"goldenrod"}
+              px={{ base: "20px", md: "0" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CiLocationOn
+                style={{
+                  color: "red",
+                }}
+              />
+              Mombasa, Kenya
+            </Text>
+          </Box>
+        </Box>
       </Box>
+
       <Text
         textAlign={"center"}
         fontSize={"small"}

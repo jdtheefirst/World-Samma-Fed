@@ -179,9 +179,6 @@ const AdmissionForm = () => {
       !selectedCountry ||
       !provinces ||
       !language ||
-      !id ||
-      !phoneNumber ||
-      !email ||
       !password ||
       !confirmpassword ||
       !gender ||

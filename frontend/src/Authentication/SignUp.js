@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { countries, languages } from "countries-list";
 import { useNavigate } from "react-router-dom";
 import { getStatesOfCountry } from "../assets/state";
@@ -32,6 +32,13 @@ const Signup = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+  const overlay = React.useState(<OverlayOne />);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -196,7 +203,7 @@ const Signup = () => {
         isCentered
         closeOnOverlayClick={false}
       >
-        <ModalOverlay />
+        {overlay}
         <ModalContent padding={5}>
           <ModalHeader
             fontSize="medium"

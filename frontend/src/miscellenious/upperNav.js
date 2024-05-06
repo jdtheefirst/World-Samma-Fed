@@ -21,10 +21,17 @@ import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import Requests from "./Requests";
+import React from "react";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
-
+  const OverlayOne = () => (
+    <DrawerOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+  const overlay = React.useState(<OverlayOne />);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
@@ -160,7 +167,7 @@ function UpperNav() {
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
+        {overlay}
         <DrawerContent>
           <DrawerHeader
             borderBottomWidth="1px"

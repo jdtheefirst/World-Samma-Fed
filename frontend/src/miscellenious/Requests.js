@@ -12,9 +12,10 @@ import {
   Text,
   Flex,
   Box,
+  Spinner,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +23,13 @@ const Requests = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [clubRequests, setClubRequests] = useState([]);
   const [loading, setLoading] = useState(false);
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+  const overlay = React.useState(<OverlayOne />);
   const { user } = ChatState();
   const navigate = useNavigate();
 
@@ -29,6 +37,7 @@ const Requests = () => {
     if (!user) {
       return;
     }
+
     try {
       const config = {
         headers: {
@@ -55,6 +64,7 @@ const Requests = () => {
     if (!user || !clubId) {
       return;
     }
+    setLoading(true);
     try {
       const config = {
         headers: {
@@ -67,7 +77,9 @@ const Requests = () => {
         config
       );
       setClubRequests(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching club requests/decline:", error);
     }
   };
@@ -99,7 +111,7 @@ const Requests = () => {
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
+        {overlay}
         <ModalContent>
           <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
           <ModalCloseButton />
@@ -129,7 +141,7 @@ const Requests = () => {
                     background={"#f05e56"}
                     onClick={() => declineRequest(club._id)}
                   >
-                    Decline
+                    {loading ? <Spinner size={"small"} /> : `Decline`}
                   </Button>
                 </Box>
               ))

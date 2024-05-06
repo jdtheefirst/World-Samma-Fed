@@ -273,20 +273,51 @@ const ProfilePage = ({ user }) => {
             boxSize={{ base: "100px", md: "200px" }}
             border="4px solid white"
           />
-          <Box textAlign={"center"} fontSize={"md"} fontFamily={"cursive"}>
+          <Box fontSize={"md"} fontFamily={"monospace"}>
             {" "}
             <Heading mb={4}>Profile</Heading>
-            <Text>
-              Name: {user?.name} {user?.otherName}
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Name:
+              </Text>
+              {user?.name} {user?.otherName}
             </Text>
-            <Text>Code: {user?.admission}</Text>
-            <Text>Email: {user?.email}</Text>
-            <Text>Country: {user?.country}</Text>
-            <Text>Province: {user?.provinces}</Text>
-            <Text textAlign={"center"}>
-              Coach: {user?.coach ? " ✔️" : "Not a coach"}
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Code:
+              </Text>{" "}
+              {user?.admission}
             </Text>
-            <Text>Highest Level Attained: {user?.belt}</Text>
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Email:
+              </Text>{" "}
+              {user?.email}
+            </Text>
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Country:
+              </Text>{" "}
+              {user?.country}
+            </Text>
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Province:
+              </Text>{" "}
+              {user?.provinces}
+            </Text>
+            <Text display={"flex"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Coach:
+              </Text>
+              {user?.coach ? " ✔️" : "Not a coach"}
+            </Text>
+            <Text display={"flex"} flexWrap={"wrap"}>
+              <Text fontFamily={"fantasy"} px={1}>
+                Highest Level Attained:
+              </Text>{" "}
+              {user?.belt}
+            </Text>
             {user?.admin && (
               <Button
                 mt={4}

@@ -1,16 +1,7 @@
-import { Image, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import styled from "styled-components";
 import { keyframes } from "styled-components";
-import black from "../blackBelt.png";
-import blue from "../blueBelt.png";
-import brown from "../brownBelt.png";
-import green from "../greenBelt.png";
-import orange from "../orangeBelt.png";
-import purple from "../pupleBelt.png";
-import red from "../redBelt.png";
-import yellow from "../yellowBelt.png";
-import beginner from "../beginner.png";
-
+import { GiBlackBelt } from "react-icons/gi";
 const ProgressContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -74,15 +65,15 @@ const ProgressArrow = styled.div`
 const Progress = ({ userBelt }) => {
   const progressLevels = [
     "Guest",
-    `${beginner}`,
-    `${yellow}`,
-    `${orange}`,
-    `${red}`,
-    `${purple}`,
-    `${green}`,
-    `${blue}`,
-    `${brown}`,
-    `${black}`,
+    `grey`,
+    `yellow`,
+    `orange`,
+    `red`,
+    `purple`,
+    `green`,
+    `blue`,
+    `brown`,
+    `black`,
   ];
   const progress = [
     "Guest" || undefined,
@@ -109,7 +100,11 @@ const Progress = ({ userBelt }) => {
             fontSize={{ base: "10px", md: "md" }}
             textAlign="center"
           >
-            {index > 0 ? <Image src={belt} alt="Belt" height={5} /> : belt}
+            {index > 0 ? (
+              <GiBlackBelt style={{ color: belt, fontSize: "1.5rem" }} />
+            ) : (
+              belt
+            )}
           </Text>
         </ProgressSlot>
       ))}

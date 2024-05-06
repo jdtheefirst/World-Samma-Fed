@@ -65,7 +65,7 @@ const FloatingChat = ({ onClose }) => {
         position: "bottom-left",
       });
     } else if (selectedChatOption === "Provincial Coach" && !province) {
-      navigate("/provincial");
+      navigate("/province");
       toast({
         title: "Provincial Samma Association seat is empty!",
         description: "Apply for Interim",
@@ -206,10 +206,13 @@ const FloatingChat = ({ onClose }) => {
       bottom="0"
       right="1"
       height={"90vh"}
-      width={{ base: "95%", lg: "350px" }}
-      border="1px solid #d80eeb"
+      width={{ base: "95%", lg: "450px" }}
       background={"white"}
       borderRadius={4}
+      boxShadow="dark-lg"
+      p="6"
+      rounded="md"
+      bg="white"
     >
       <Button p={2} onClick={handleChatClose}>
         X
@@ -288,7 +291,7 @@ const FloatingChat = ({ onClose }) => {
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
-            width={"96%"}
+            width={"90%"}
             background={"white"}
           >
             <Input

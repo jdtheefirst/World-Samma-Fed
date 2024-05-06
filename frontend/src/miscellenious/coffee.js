@@ -71,10 +71,17 @@ const CoffeeModal = ({ isOpen, onClose }) => {
 
     fetchSubdivisions();
   }, [country]);
+  const OverlayOne = () => (
+    <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+  );
+  const overlay = React.useState(<OverlayOne />);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm">
-      <ModalOverlay />
+      {overlay}
       <ModalContent>
         <ModalHeader bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">
           Donation details
