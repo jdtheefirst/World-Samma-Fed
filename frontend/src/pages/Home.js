@@ -171,14 +171,14 @@ function Homepage() {
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                opacity={0.6}
+                opacity={0.3}
               />
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: 0, md: 3 }}
+                p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="base"
+                boxShadow="2xl"
                 rounded="md"
               >
                 ⭐ Sign up as GUEST (for free) at this WSF Online School so to
@@ -188,9 +188,9 @@ function Homepage() {
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: 0, md: 3 }}
+                p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="base"
+                boxShadow="2xl"
                 rounded="md"
               >
                 ⭐ ⭐ Enrol as STUDENT(or enrol your children and/or your other
@@ -199,9 +199,9 @@ function Homepage() {
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: 0, md: 3 }}
+                p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="base"
+                boxShadow="2xl"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ Form/register your CLUB(S) so to be enjoying the
@@ -211,9 +211,9 @@ function Homepage() {
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: 0, md: 3 }}
+                p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="base"
+                boxShadow="2xl"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ Claim the interim leadership of PROVINCIAL SAMMA
@@ -223,9 +223,9 @@ function Homepage() {
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: 0, md: 3 }}
+                p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="base"
+                boxShadow="2xl"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ ⭐Claim the interim leadership of NATIONAL SAMMA
@@ -267,11 +267,7 @@ function Homepage() {
                     rounded="md"
                     bg="white"
                   />
-                  <Text
-                    textAlign={"center"}
-                    textColor={"goldenrod"}
-                    px={{ base: "20px", md: "0" }}
-                  >
+                  <Text textAlign={"center"} px={{ base: "20px", md: "0" }}>
                     Your donation is crucial in realizing our ambitious vision.
                     We aim to construct a larger training facility to
                     accommodate more individuals, empowering countless lives.
@@ -295,11 +291,7 @@ function Homepage() {
                     rounded="md"
                     bg="white"
                   />
-                  <Text
-                    textAlign={"center"}
-                    textColor={"goldenrod"}
-                    px={{ base: "20px", md: "0" }}
-                  >
+                  <Text textAlign={"center"} px={{ base: "20px", md: "0" }}>
                     Additionally, your support will contribute to the
                     establishment of our international Samma headquarters, a
                     pivotal step towards expanding our reach and impact
