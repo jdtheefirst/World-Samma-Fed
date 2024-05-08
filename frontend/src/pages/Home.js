@@ -106,7 +106,7 @@ function Homepage() {
             position="absolute"
             bottom={0}
             left="50%"
-            width={{ base: "60%", lg: "100%" }}
+            width={{ base: "50%", lg: "100%" }}
             transform="translateX(-50%)"
             p={"2"}
             letterSpacing={1}
@@ -258,7 +258,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo9}
-                    boxSize={{ base: "300px", md: "400px" }}
+                    boxSize={{ base: "350px", md: "400px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -267,7 +267,16 @@ function Homepage() {
                     rounded="md"
                     bg="white"
                   />
-                  <Text textAlign={"center"} px={{ base: "20px", md: "0" }}>
+                  <Text
+                    textAlign={"center"}
+                    bgGradient="linear(to-l, #7928CA, #FF0080)"
+                    bgClip="text"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    p={"3"}
+                    m={3}
+                    px={{ base: "10px", md: "0" }}
+                  >
                     Your donation is crucial in realizing our ambitious vision.
                     We aim to construct a larger training facility to
                     accommodate more individuals, empowering countless lives.
@@ -282,7 +291,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo8}
-                    boxSize={{ base: "300px", md: "400px" }}
+                    boxSize={{ base: "350px", md: "400px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -291,12 +300,21 @@ function Homepage() {
                     rounded="md"
                     bg="white"
                   />
-                  <Text textAlign={"center"} px={{ base: "20px", md: "0" }}>
-                    Additionally, your support will contribute to the
-                    establishment of our international Samma headquarters, a
-                    pivotal step towards expanding our reach and impact
-                    globally. Together, we can turn dreams into reality. Thank
-                    you for your generosity in advance.
+                  <Text
+                    textAlign={"center"}
+                    bgGradient="linear(to-l, #7928CA, #FF0080)"
+                    bgClip="text"
+                    fontSize="sm"
+                    fontWeight="bold"
+                    p={"3"}
+                    m={3}
+                    px={{ base: "10px", md: "0" }}
+                  >
+                    Your support will help establish our international Samma
+                    headquarters and build a world-class event facility. This
+                    marks a crucial step in expanding our global impact.
+                    Together, let's turn dreams into reality. Thank you for your
+                    generosity.
                   </Text>
                 </Box>
                 <FaArrowCircleRight
@@ -315,7 +333,8 @@ function Homepage() {
                 borderRadius={20}
                 backgroundColor={"#a432a8"}
                 onClick={() => setGetStarted(true)}
-                m={1}
+                m={"6"}
+                color={"white"}
               >
                 Get Started
               </Button>
