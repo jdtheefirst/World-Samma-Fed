@@ -18,9 +18,13 @@ import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
 import logo8 from "../headquaters.jpeg";
 import logo9 from "../sammahouse.jpeg";
-import { FaArrowCircleRight } from "react-icons/fa";
+import { FaArrowCircleRight, FaArrowAltCircleDown } from "react-icons/fa";
+import { FcDonate } from "react-icons/fc";
+import { BiDonateHeart } from "react-icons/bi";
 
 import CoffeeModal from "../miscellenious/coffee";
+import ParticlesPage from "./Particles";
+import { CiLocationOn } from "react-icons/ci";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
@@ -39,7 +43,7 @@ function Homepage() {
 
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
-      <Box display="flex" flexDir={"column"} width="100%">
+      <Box display="flex" flexDir={"column"} width="100%" zIndex={2}>
         <Box
           display="flex"
           justifyContent="flex-end"
@@ -48,7 +52,7 @@ function Homepage() {
           boxShadow="2xl"
           p="4"
           rounded="md"
-          bg="white"
+          bg="whitesmoke"
         >
           <Button
             background="transparent"
@@ -83,7 +87,7 @@ function Homepage() {
           display="flex"
           justifyContent={"space-between"}
           alignItems={"center"}
-          background="Background"
+          bg="background"
         >
           <Image
             src={logo1}
@@ -114,21 +118,20 @@ function Homepage() {
           >
             WORLD SAMMA FEDERATION
           </Text>
-
           <Image
             src={logo2}
             boxSize={{ base: "120px", md: "220px" }}
             alt={`Logo 2*`}
           />
         </Box>
-
+        <ParticlesPage />
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
           <Box
-            minHeight="100vh"
+            height="100%"
             display="flex"
             flexDirection="column"
-            background={"Background"}
+            bg="whitesmoke"
           >
             <Logins />
             <Box flex="1" />
@@ -255,6 +258,7 @@ function Homepage() {
                   mb={{ base: "20px", md: "0" }}
                   onClick={() => setShow(true)}
                   style={{ cursor: "pointer" }}
+                  m={"3"}
                 >
                   <Image
                     src={logo9}
@@ -268,19 +272,60 @@ function Homepage() {
                     bg="white"
                   />
                   <Text
+                    px={{ base: "20px", md: "0" }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CiLocationOn
+                      style={{
+                        color: "red",
+                      }}
+                    />
+                    Mombasa, Kenya(Current HQs)
+                  </Text>
+                  <Text
                     textAlign={"center"}
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
-                    fontSize="sm"
-                    fontWeight="bold"
                     p={"3"}
                     m={3}
                     px={{ base: "10px", md: "0" }}
                   >
+                    <FcDonate style={{ fontSize: "6rem" }} />
                     Your donation is crucial in realizing our ambitious vision.
                     We aim to construct a larger training facility to
                     accommodate more individuals, empowering countless lives.
+                    <Box
+                      display={{ base: "flex", md: "none" }}
+                      justifyContent={"center"}
+                      alignContent={"center"}
+                    >
+                      {" "}
+                      <FaArrowAltCircleDown
+                        style={{
+                          fontSize: "3rem",
+                          color: "orange",
+                        }}
+                      />
+                    </Box>
                   </Text>
+                </Box>
+                <Box
+                  display={{ base: "none", md: "flex" }}
+                  marginTop={-200}
+                  justifyContent={"center"}
+                  alignContent={"center"}
+                >
+                  {" "}
+                  <FaArrowCircleRight
+                    style={{
+                      fontSize: "3rem",
+                      color: "orange",
+                    }}
+                  />
                 </Box>
                 <Box
                   flex={"1"}
@@ -304,35 +349,27 @@ function Homepage() {
                     textAlign={"center"}
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
-                    fontSize="sm"
-                    fontWeight="bold"
                     p={"3"}
-                    m={3}
                     px={{ base: "10px", md: "0" }}
                   >
-                    Your support will help establish our international Samma
-                    headquarters and build a world-class event facility. This
-                    marks a crucial step in expanding our global impact.
-                    Together, let's turn dreams into reality. Thank you for your
-                    generosity.
+                    <BiDonateHeart
+                      style={{ fontSize: "6rem", color: "green" }}
+                    />
+                    Your support will help establish our international samma
+                    headquarters and build a world-class events facility. This
+                    is a crucial step in expanding our global impact of bringing
+                    people of nations together in thrilling sporting activities,
+                    fostering international friendships, business connections
+                    and promoting sports tourism. Thanking you in advance for
+                    your generosity.
                   </Text>
                 </Box>
-                <FaArrowCircleRight
-                  style={{
-                    fontSize: { base: "3rem", md: "1rem" },
-                    position: "absolute",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    zIndex: 3,
-                    display: { base: "block", md: "none" },
-                  }}
-                />
               </Box>
 
               <Button
                 borderRadius={20}
-                backgroundColor={"#a432a8"}
                 onClick={() => setGetStarted(true)}
+                bgGradient="linear(to-l, #7928CA, #FF0080)"
                 m={"6"}
                 color={"white"}
               >

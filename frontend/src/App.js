@@ -15,6 +15,7 @@ import Provience from "./pages/Provience";
 import National from "./pages/National";
 import ForgotPassword from "./pages/ForgotPassword";
 import AboutPage from "./pages/About";
+import ParticlesPage from "./pages/Particles";
 
 const courses = [
   {
@@ -302,10 +303,12 @@ function App() {
   if (!user && userInfo) {
     setUser(userInfo);
   }
+
   return (
     <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/particles" element={<ParticlesPage />} />
         <Route path="/login" element={<Logins />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route

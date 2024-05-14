@@ -134,12 +134,12 @@ const Login = () => {
   return (
     <VStack spacing="10px">
       <FormControl id="email" isRequired>
-        <FormLabel textColor={"white"}>Email Address</FormLabel>
+        <FormLabel textColor={"white"}>Email Address/Code</FormLabel>
         <Input
           value={email}
           textColor={"white"}
           type="email"
-          placeholder="Email Address or Admission Number"
+          placeholder="Email Address or code"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
@@ -205,10 +205,8 @@ const Login = () => {
             justifyContent="space-between"
           >
             <Input
-              fontSize={"2xl"}
-              placeholder={`example@mymail.com`}
+              placeholder={`example@gmail.com`}
               type="text"
-              textAlign="center"
               onChange={(e) => setForgotEmail(e.target.value)}
               value={forgotEmail}
             />
