@@ -17,7 +17,7 @@ const UploadPicture = ({ setPicLoading, color, setPic }) => {
     if (file.type === "image/jpeg" || file.type === "image/png") {
       let data = new FormData();
       data.append("file", file);
-      data.append("upload_preset", "RocketChat");
+      data.append("upload_preset", "worldsamma");
       fetch("https://api.cloudinary.com/v1_1/dvc7i8g1a/image/upload", {
         method: "post",
         body: data,

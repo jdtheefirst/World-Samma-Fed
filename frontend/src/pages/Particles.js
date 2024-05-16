@@ -20,7 +20,7 @@ const ParticlesPage = () => {
       options={{
         background: {
           color: {
-            value: "transparent", // Set background color to transparent
+            value: "transparent",
           },
         },
         fpsLimit: 120,
@@ -72,7 +72,7 @@ const ParticlesPage = () => {
               enable: true,
               area: 800,
             },
-            value: 80,
+            value: 15,
           },
           opacity: {
             value: 0.5,

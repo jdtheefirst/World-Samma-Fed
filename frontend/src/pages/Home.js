@@ -18,6 +18,7 @@ import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
 import logo8 from "../headquaters.jpeg";
 import logo9 from "../sammahouse.jpeg";
+import logo10 from "../Equity.png";
 import { FaArrowCircleRight, FaArrowAltCircleDown } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
@@ -262,7 +263,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo9}
-                    boxSize={{ base: "350px", md: "400px" }}
+                    boxSize={{ base: "300px", md: "350px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -291,7 +292,7 @@ function Homepage() {
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
-                    m={3}
+                    m={"6"}
                     px={{ base: "10px", md: "0" }}
                   >
                     <FcDonate style={{ fontSize: "6rem" }} />
@@ -300,10 +301,49 @@ function Homepage() {
                     accommodate more individuals, empowering countless lives.
                     <Box
                       display={{ base: "flex", md: "none" }}
+                      flexDir={"column"}
                       justifyContent={"center"}
-                      alignContent={"center"}
+                      alignItems={"center"}
+                      width={"100%"}
                     >
-                      {" "}
+                      <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                        mt={"6"}
+                      >
+                        {" "}
+                        <Image
+                          height={20}
+                          width={"auto"}
+                          src={logo10}
+                          alt={""}
+                          loading="lazy"
+                        />
+                        <Text fontSize={"large"} color={"black"} p={"3"}>
+                          Equity Bank Account Number:{" "}
+                          <Text fontWeight={"extrabold"}>0250164349965</Text>,
+                          Account Name: World Samma Academy
+                        </Text>
+                      </Box>
+
+                      <Box
+                        display={"flex"}
+                        justifyContent={"center"}
+                        alignItems={"center"}
+                      >
+                        {" "}
+                        <Image
+                          height={20}
+                          width={"auto"}
+                          src={
+                            "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1694007922/mpesa_ppfs6p.png"
+                          }
+                          alt={""}
+                          loading="lazy"
+                        />{" "}
+                        <Text p={"6"}>Mpesa Till Number: 858447</Text>
+                      </Box>
                       <FaArrowAltCircleDown
                         style={{
                           fontSize: "3rem",
@@ -315,17 +355,62 @@ function Homepage() {
                 </Box>
                 <Box
                   display={{ base: "none", md: "flex" }}
-                  marginTop={-200}
+                  flexDir={"column"}
                   justifyContent={"center"}
-                  alignContent={"center"}
+                  alignItems={"center"}
+                  width={"40%"}
+                  mt={-200}
                 >
-                  {" "}
                   <FaArrowCircleRight
                     style={{
                       fontSize: "3rem",
                       color: "orange",
                     }}
                   />
+                  <Box
+                    display={"flex"}
+                    flexDir={"column"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                  >
+                    {" "}
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      {" "}
+                      <Image
+                        height={20}
+                        width={"auto"}
+                        src={logo10}
+                        alt={""}
+                        loading="lazy"
+                      />
+                      <Text fontSize={"large"} color={"black"} p={"3"}>
+                        Equity Bank Account Number:{" "}
+                        <Text fontWeight={"extrabold"}>0250164349965</Text>,
+                        Account Name: World Samma Academy
+                      </Text>
+                    </Box>
+                    <Box
+                      display={"flex"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      {" "}
+                      <Image
+                        height={20}
+                        width={"auto"}
+                        src={
+                          "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1694007922/mpesa_ppfs6p.png"
+                        }
+                        alt={""}
+                        loading="lazy"
+                      />{" "}
+                      <Text p={"6"}>Mpesa Till Number: 858447</Text>
+                    </Box>
+                  </Box>
                 </Box>
                 <Box
                   flex={"1"}
@@ -336,7 +421,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo8}
-                    boxSize={{ base: "350px", md: "400px" }}
+                    boxSize={{ base: "300px", md: "350px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -351,6 +436,7 @@ function Homepage() {
                     bgClip="text"
                     p={"3"}
                     px={{ base: "10px", md: "0" }}
+                    marginLeft={{ base: 0, md: "-300px" }}
                   >
                     <BiDonateHeart
                       style={{ fontSize: "6rem", color: "green" }}
