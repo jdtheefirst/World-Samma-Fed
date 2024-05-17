@@ -92,14 +92,14 @@ function Homepage() {
         >
           <Image
             src={logo1}
-            boxSize={{ base: "120px", md: "220px" }}
-            width={{ base: "130px", md: "230px" }}
+            boxSize={{ base: "80px", md: "220px" }}
+            width={{ base: "90px", md: "230px" }}
             alt={`Logo 1*`}
           />
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "15px",
+              base: "20px",
               sm: "20px",
               md: "30px",
               lg: "40px",
@@ -111,17 +111,17 @@ function Homepage() {
             position="absolute"
             bottom={0}
             left="50%"
-            width={{ base: "50%", lg: "100%" }}
+            width={{ base: "60%", lg: "100%" }}
             transform="translateX(-50%)"
             p={"2"}
             letterSpacing={1}
-            textShadow="1px 1px 1px #000"
+            textShadow="2px 2px 2px #000"
           >
             WORLD SAMMA FEDERATION
           </Text>
           <Image
             src={logo2}
-            boxSize={{ base: "120px", md: "220px" }}
+            boxSize={{ base: "80px", md: "220px" }}
             alt={`Logo 2*`}
           />
         </Box>
@@ -180,10 +180,11 @@ function Homepage() {
               <Text
                 textAlign={"center"}
                 width={"300px"}
-                p={{ base: "3", md: "6" }}
+                p={{ base: "2", md: "6" }}
                 m={1}
-                boxShadow="2xl"
+                boxShadow="base"
                 rounded="md"
+                mt={"20px"}
               >
                 ⭐ Sign up as GUEST (for free) at this WSF Online School so to
                 follow your favorite clubs and be enjoying the splendid
@@ -191,10 +192,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                width={"300px"}
+                width={"325px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="2xl"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ Enrol as STUDENT(or enrol your children and/or your other
@@ -202,10 +203,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                width={"300px"}
+                width={"350px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="2xl"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ Form/register your CLUB(S) so to be enjoying the
@@ -214,10 +215,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                width={"300px"}
+                width={"375px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="2xl"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ Claim the interim leadership of PROVINCIAL SAMMA
@@ -226,10 +227,10 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                width={"300px"}
+                width={"400px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
-                boxShadow="2xl"
+                boxShadow="base"
                 rounded="md"
               >
                 ⭐ ⭐ ⭐ ⭐ ⭐Claim the interim leadership of NATIONAL SAMMA
@@ -320,10 +321,15 @@ function Homepage() {
                           alt={""}
                           loading="lazy"
                         />
-                        <Text fontSize={"large"} color={"black"} p={"3"}>
-                          Equity Bank Account Number:{" "}
-                          <Text fontWeight={"extrabold"}>0250164349965</Text>,
-                          Account Name: World Samma Academy
+                        <Text fontSize={"large"} p={"2"}>
+                          Equity Bank Account Number: <br />
+                          <Text fontWeight={"extrabold"} color={"black"}>
+                            0250164349965
+                          </Text>
+                          <br /> Account Name: <br />{" "}
+                          <Text fontWeight={"extrabold"} color={"black"}>
+                            World Samma Academy
+                          </Text>
                         </Text>
                       </Box>
 
@@ -342,7 +348,12 @@ function Homepage() {
                           alt={""}
                           loading="lazy"
                         />{" "}
-                        <Text p={"6"}>Mpesa Till Number: 858447</Text>
+                        <Text p={"6"}>
+                          Mpesa Till Number: <br />
+                          <Text fontWeight={"extrabold"} color={"black"}>
+                            858447
+                          </Text>{" "}
+                        </Text>
                       </Box>
                       <FaArrowAltCircleDown
                         style={{
@@ -387,10 +398,15 @@ function Homepage() {
                         alt={""}
                         loading="lazy"
                       />
-                      <Text fontSize={"large"} color={"black"} p={"3"}>
-                        Equity Bank Account Number:{" "}
-                        <Text fontWeight={"extrabold"}>0250164349965</Text>,
-                        Account Name: World Samma Academy
+                      <Text fontSize={"large"} p={"2"}>
+                        Equity Bank Account Number: <br />
+                        <Text fontWeight={"extrabold"} color={"black"}>
+                          0250164349965
+                        </Text>
+                        <br /> Account Name: <br />{" "}
+                        <Text fontWeight={"extrabold"} color={"black"}>
+                          World Samma Academy
+                        </Text>
                       </Text>
                     </Box>
                     <Box
@@ -408,7 +424,12 @@ function Homepage() {
                         alt={""}
                         loading="lazy"
                       />{" "}
-                      <Text p={"6"}>Mpesa Till Number: 858447</Text>
+                      <Text p={"6"} color={"black"}>
+                        Mpesa Till Number <br />
+                        <Text color={"black"} fontWeight={"extrabold"}>
+                          858447
+                        </Text>
+                      </Text>
                     </Box>
                   </Box>
                 </Box>
