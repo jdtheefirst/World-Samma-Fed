@@ -132,7 +132,7 @@ function Homepage() {
             height="100%"
             display="flex"
             flexDirection="column"
-            bg="whitesmoke"
+            bg="background"
           >
             <Logins />
             <Box flex="1" />
@@ -175,11 +175,12 @@ function Homepage() {
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                opacity={0.3}
+                opacity={0.5}
               />
               <Text
                 textAlign={"center"}
                 width={"300px"}
+                textColor={"green"}
                 p={{ base: "2", md: "6" }}
                 m={1}
                 boxShadow="base"
@@ -192,6 +193,7 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
+                textColor={"green"}
                 width={"325px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -203,6 +205,7 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
+                textColor={"green"}
                 width={"350px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -215,6 +218,7 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
+                textColor={"green"}
                 width={"375px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -227,6 +231,7 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
+                textColor={"green"}
                 width={"400px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -264,7 +269,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo9}
-                    boxSize={{ base: "300px", md: "350px" }}
+                    boxSize={{ base: "250px", md: "300px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -441,8 +446,10 @@ function Homepage() {
                   style={{ cursor: "pointer" }}
                 >
                   <Image
-                    src={logo8}
-                    boxSize={{ base: "300px", md: "350px" }}
+                    src={
+                      "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1716192064/kumbi.jpg"
+                    }
+                    boxSize={{ base: "250px", md: "300px" }}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
