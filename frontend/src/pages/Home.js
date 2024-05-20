@@ -179,8 +179,10 @@ function Homepage() {
               />
               <Text
                 textAlign={"center"}
+                fontSize={"md"}
+                textColor={"#f2f5fa"}
                 width={"300px"}
-                textColor={"green"}
+                bg="blackAlpha.500"
                 p={{ base: "2", md: "6" }}
                 m={1}
                 boxShadow="base"
@@ -193,7 +195,9 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"green"}
+                bg="blackAlpha.500"
+                fontSize={"md"}
+                textColor={"#f2f5fa"}
                 width={"325px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -205,7 +209,9 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"green"}
+                bg="blackAlpha.500"
+                fontSize={"md"}
+                textColor={"#f2f5fa"}
                 width={"350px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -218,7 +224,9 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"green"}
+                bg="blackAlpha.500"
+                fontSize={"md"}
+                textColor={"#f2f5fa"}
                 width={"375px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -231,7 +239,9 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                textColor={"green"}
+                bg="blackAlpha.500"
+                fontSize={"md"}
+                textColor={"#f2f5fa"}
                 width={"400px"}
                 p={{ base: "3", md: "6" }}
                 m={1}
@@ -276,7 +286,7 @@ function Homepage() {
                     boxShadow="dark-lg"
                     p="6"
                     rounded="md"
-                    bg="white"
+                    bg="blackAlpha.400"
                   />
                   <Text
                     px={{ base: "20px", md: "0" }}
@@ -456,7 +466,7 @@ function Homepage() {
                     boxShadow="dark-lg"
                     p="6"
                     rounded="md"
-                    bg="white"
+                    bg="blackAlpha.400"
                   />
                   <Text
                     textAlign={"center"}
