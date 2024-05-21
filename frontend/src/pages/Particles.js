@@ -25,7 +25,7 @@ const ParticlesPage = () => {
         interactivity: {
           events: {
             onClick: {
-              enable: true,
+              enable: false,
               mode: "push",
             },
             onHover: {
@@ -59,7 +59,7 @@ const ParticlesPage = () => {
             direction: "none",
             enable: true,
             outModes: {
-              default: "bounce",
+              default: "out",
             },
             random: false,
             speed: 2,
@@ -70,7 +70,7 @@ const ParticlesPage = () => {
               enable: true,
               area: 800,
             },
-            value: 15,
+            value: 30,
           },
           opacity: {
             value: 0.5,

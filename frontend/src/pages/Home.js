@@ -5,7 +5,6 @@ import {
   GridItem,
   Text,
   Link,
-  IconButton,
   Image,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
@@ -16,7 +15,8 @@ import { useNavigate } from "react-router-dom";
 import logo1 from "../final.jpeg";
 import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
-import logo8 from "../headquaters.jpeg";
+
+import logo11 from "../team.png";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
 import { FaArrowCircleRight, FaArrowAltCircleDown } from "react-icons/fa";
@@ -92,8 +92,8 @@ function Homepage() {
         >
           <Image
             src={logo1}
-            boxSize={{ base: "80px", md: "220px" }}
-            width={{ base: "90px", md: "230px" }}
+            boxSize={{ base: "80px", md: "180px" }}
+            width={{ base: "90px", md: "190px" }}
             alt={`Logo 1*`}
           />
           <Text
@@ -121,7 +121,8 @@ function Homepage() {
           </Text>
           <Image
             src={logo2}
-            boxSize={{ base: "80px", md: "220px" }}
+            boxSize={{ base: "80px", md: "180px" }}
+            width={{ base: "90px", md: "190px" }}
             alt={`Logo 2*`}
           />
         </Box>
@@ -129,8 +130,10 @@ function Homepage() {
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
           <Box
-            height="100%"
             display="flex"
+            width={"100%"}
+            justifyContent={"center"}
+            alignItems={"center"}
             flexDirection="column"
             bg="background"
           >
@@ -167,14 +170,24 @@ function Homepage() {
               lineHeight="1.5"
               color="black"
               position={"relative"}
-              p={0}
-              m={0}
             >
               <Image
                 src={logo7}
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
+                opacity={0.5}
+                top={{ md: 1 }}
+                bottom={0}
+              />
+              <Image
+                display={{ base: "flex", md: "none" }}
+                src={logo11}
+                position={"absolute"}
+                width={"80%"}
+                zIndex={-1}
+                alt={`Logo 2*`}
+                top={35}
                 opacity={0.5}
               />
               <Text
@@ -279,7 +292,7 @@ function Homepage() {
                 >
                   <Image
                     src={logo9}
-                    boxSize={{ base: "250px", md: "300px" }}
+                    boxSize={"250px"}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}
@@ -459,7 +472,7 @@ function Homepage() {
                     src={
                       "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1716192064/kumbi.jpg"
                     }
-                    boxSize={{ base: "250px", md: "300px" }}
+                    boxSize={"250px"}
                     borderRadius={2}
                     mx={"auto"}
                     mb={"10px"}

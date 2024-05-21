@@ -16,6 +16,8 @@ import National from "./pages/National";
 import ForgotPassword from "./pages/ForgotPassword";
 import AboutPage from "./pages/About";
 import ParticlesPage from "./pages/Particles";
+import { useEffect } from "react";
+import InstallButton from "./components/config/InstallButton";
 
 const courses = [
   {
@@ -300,12 +302,36 @@ PUNCHES
 function App() {
   const { user, setUser } = ChatState();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  if (!user && userInfo) {
-    setUser(userInfo);
-  }
+
+  useEffect(() => {
+    if (!user && userInfo) {
+      setUser(userInfo);
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/service-worker.js")
+          .then((registration) => {
+            console.log("SW registered: ", registration);
+          })
+          .catch((registrationError) => {
+            console.log("SW registration failed: ", registrationError);
+          });
+      });
+    }
+  }, [user, userInfo, setUser]);
 
   return (
     <div className="App">
+      <InstallButton
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 1000,
+        }}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/particles" element={<ParticlesPage />} />
