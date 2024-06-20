@@ -24,7 +24,7 @@ const Logins = () => {
       marginTop={"30px"}
     >
       <Box
-        bg="blackAlpha.500"
+        background={"#FF416C"}
         w="100%"
         p={4}
         borderRadius="lg"

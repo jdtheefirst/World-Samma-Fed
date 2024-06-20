@@ -196,6 +196,10 @@ const Signup = () => {
 
   return (
     <VStack spacing="3px">
+      <div>
+              <h1>Hello there!</h1>
+              <p>Enter your personal details and start journey with us</p>
+            </div>
       <Modal
         size="lg"
         onClose={onClose}
@@ -250,7 +254,6 @@ const Signup = () => {
           <ModalFooter display="flex">
             <Text
               textAlign={"center"}
-              textColor={"white"}
               justifyContent={"center"}
               color={code !== inputCode ? "red" : "green"}
             >
@@ -260,33 +263,32 @@ const Signup = () => {
         </ModalContent>
       </Modal>
       <FormControl id="first-name" isRequired>
-        <FormLabel textColor={"white"}>First name</FormLabel>
+        <FormLabel>First name</FormLabel>
         <Input
           placeholder="Enter Your First Name"
-          textColor={"white"}
+
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
 
       <FormControl id="other-name" isRequired>
-        <FormLabel textColor={"white"}>Other name</FormLabel>
+        <FormLabel >Other name</FormLabel>
         <Input
           placeholder="Enter Your Other Name"
-          textColor={"white"}
+
           value={otherName}
           onChange={(e) => setOtherName(e.target.value)}
         />
       </FormControl>
       <FormControl id="country" isRequired>
-        <FormLabel textColor="white">Country</FormLabel>
+        <FormLabel>Country</FormLabel>
         <Select
           placeholder="Select your country"
           display={"flex"}
           justifyContent={"center"}
           alignItems={"center"}
           width={"100%"}
-          textColor={"white"}
           value={selectedCountry}
           onChange={(e) => setSelectedCountry(e.target.value)}
         >
@@ -309,7 +311,6 @@ const Signup = () => {
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
-            textColor={"white"}
             width={"100%"}
             value={provinces}
             onChange={(e) => setProvinces(e.target.value)}
@@ -328,10 +329,9 @@ const Signup = () => {
         </FormControl>
       ) : (
         <FormControl id="provinces" isRequired>
-          <FormLabel textColor={"white"}>County/Province</FormLabel>
+          <FormLabel>County/Province</FormLabel>
           <Input
             type="text"
-            textColor={"white"}
             placeholder="Province"
             onChange={(e) => setProvinces(e.target.value)}
           />
@@ -339,10 +339,9 @@ const Signup = () => {
       )}
 
       <FormControl id="email" isRequired>
-        <FormLabel textColor={"white"}>Email Address</FormLabel>
+        <FormLabel>Email Address</FormLabel>
         <Input
           type="email"
-          textColor={"white"}
           placeholder="Enter Your Email Address"
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -353,7 +352,6 @@ const Signup = () => {
             m={0}
             color={"green.400"}
             userSelect={"none"}
-            textColor={"white"}
           >
             Your email is for login only. No ads
           </FormLabel>
@@ -362,11 +360,10 @@ const Signup = () => {
         )}
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel textColor={"white"}>Password</FormLabel>
+        <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
-            textColor={"white"}
             placeholder="Enter Password"
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -378,12 +375,11 @@ const Signup = () => {
         </InputGroup>
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel textColor={"white"}>Confirm Password</FormLabel>
+        <FormLabel>Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
             placeholder="Confirm password"
-            textColor={"white"}
             onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
@@ -394,20 +390,18 @@ const Signup = () => {
         </InputGroup>
       </FormControl>
       <FormControl id="id/passport" isRequired>
-        <FormLabel textColor={"white"}>Id/Passport</FormLabel>
+        <FormLabel>Id/Passport</FormLabel>
         <Input
           type="number"
-          textColor={"white"}
           placeholder="passport no:"
           value={passport}
           onChange={(e) => setPassport(e.target.value)}
         />
       </FormControl>
       <FormControl id="language" isRequired>
-        <FormLabel textColor={"white"}>Language</FormLabel>
+        <FormLabel>Language</FormLabel>
         <Select
           placeholder="Select language"
-          textColor={"grey"}
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
         >
@@ -419,11 +413,10 @@ const Signup = () => {
         </Select>
       </FormControl>
       <FormControl id="gender" isRequired>
-        <FormLabel textColor={"white"}>Gender</FormLabel>
+        <FormLabel>Gender</FormLabel>
         <RadioGroup
           onChange={setGender}
           value={gender}
-          textColor={"white"}
           isRequired
         >
           <Stack direction="row">

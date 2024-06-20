@@ -1,10 +1,12 @@
 import React from "react";
-import { Box, Text, Center, Link, Image } from "@chakra-ui/react";
+import { Box, Text, Center, Link, Image, Button } from "@chakra-ui/react";
 import logo8 from "../Mombasa.jpg";
 import logo9 from "../Nairobi.jpg";
 import { CiLocationOn } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 const AboutPage = () => {
+  const navigate = useNavigate()
   return (
     <Center
       display={"flex"}
@@ -22,6 +24,13 @@ const AboutPage = () => {
           Welcome to our website. Learn more about us!
         </text>
       </Box>
+      <Button  onClick={() => {
+              navigate("/")
+            }}
+            _hover={{ backgroundColor: "transparent", color: "gold", fontSize: "small" }}
+            background="transparent"
+            color={"blue"}
+            border={"none"}>Go back</Button>
 
       <Box
         textAlign="center"

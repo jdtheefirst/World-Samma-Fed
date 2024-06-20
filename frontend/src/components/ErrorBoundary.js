@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
           display={"flex"}
           justifyContent="center"
           alignItems="center"
-          backgroundColor={"white"}
+          background={"black"}
           width={"100%"}
           height={"100%"}
         >

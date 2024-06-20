@@ -60,3 +60,17 @@
     transform: rotate(360deg);
   }
 }
+.rocket-animation {
+	animation: fly 1s ease-in-out infinite alternate;
+  bottom: 0;
+
+  }
+  
+  @keyframes fly {
+	0% {
+	  transform: translateX(0);
+	}
+	100% {
+	  transform: translateX(-20px);
+	}
+  }

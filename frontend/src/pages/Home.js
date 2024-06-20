@@ -6,6 +6,11 @@ import {
   Text,
   Link,
   Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -15,17 +20,16 @@ import { useNavigate } from "react-router-dom";
 import logo1 from "../final.jpeg";
 import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
-
-import logo11 from "../team.png";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
-import { FaArrowCircleRight, FaArrowAltCircleDown } from "react-icons/fa";
+import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
+import { HamburgerIcon } from "@chakra-ui/icons";
 
 import CoffeeModal from "../miscellenious/coffee";
-import ParticlesPage from "./Particles";
 import { CiLocationOn } from "react-icons/ci";
+import TestimonialsCarousel from "../components/Carousel";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
@@ -44,56 +48,73 @@ function Homepage() {
 
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
-      <Box display="flex" flexDir={"column"} width="100%" zIndex={2}>
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          className="sideDrawer"
-          width="100%"
-          boxShadow="2xl"
-          p="4"
-          rounded="md"
-          bg="whitesmoke"
-        >
-          <Button
-            background="transparent"
-            _hover={{ backgroundColor: "transparent", color: "green" }}
+      <Box display="flex" flexDir={"column"} width="100%">
+      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#FF416C"} p={{base: "2", md: "4"}} rounded="md" position={"fixed"} zIndex={20}>
+        <Text textAlign={"start"} width={"100%" } fontSize={{base: "medium", md: "x-large"}} fontWeight={"bold"} textColor={"white"}>Samma - All in One Martial Arts</Text>
+      <FaRocket className="rocket-animation" size={20} />
+      <Menu>
+        <MenuButton as={IconButton} icon={<HamburgerIcon />} variant="outline" colorScheme="white" />
+        <MenuList background={"#FF416C"} border={"none"}>
+          <MenuItem
             onClick={() => {
-              setGetStarted(null);
               navigate("/about");
             }}
+            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            background="transparent"
+            color={"white"}
+            border={"none"}
           >
             About
-          </Button>
-          <Button
-            background="transparent"
-            _hover={{ backgroundColor: "transparent", color: "green" }}
+          </MenuItem>
+          <MenuItem
             onClick={() => {
               setShow(true);
               setGetStarted(false);
             }}
+            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            background="transparent"
+            color={"white"}
+            border={"none"}
           >
             Donate
-          </Button>
-          <Button
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setShow(false);
+              setGetStarted(false);
+        
+            }}
+            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
             background="transparent"
-            _hover={{ backgroundColor: "transparent", color: "green" }}
-            onClick={() => setGetStarted(true)}
+            color={"white"}
+            border={"none"}
           >
-            Login/Sign Up
-          </Button>
-        </Box>
+            Home
+          </MenuItem>
+          <MenuItem
+            onClick={() => setGetStarted(true)}
+            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            background="transparent"
+            color={"white"}
+            border={"none"}
+          >
+            Get Started
+          </MenuItem>
+        </MenuList>
+      </Menu>
+    </Box>
         <Box
           position="relative"
           display="flex"
           justifyContent={"space-between"}
           alignItems={"center"}
-          bg="background"
+          mt={70}
         >
           <Image
             src={logo1}
             boxSize={{ base: "80px", md: "180px" }}
             width={{ base: "90px", md: "190px" }}
+            borderRadius={10}
             alt={`Logo 1*`}
           />
           <Text
@@ -109,13 +130,13 @@ function Homepage() {
             fontWeight="extrabold"
             borderRadius={3}
             position="absolute"
-            bottom={0}
+            bottom={{base: -5, md: 0}}
             left="50%"
             width={{ base: "60%", lg: "100%" }}
             transform="translateX(-50%)"
             p={"2"}
             letterSpacing={1}
-            textShadow="2px 2px 2px #000"
+            textShadow={{base: "none", md: "2px 2px 2px #000"}}
           >
             WORLD SAMMA FEDERATION
           </Text>
@@ -124,9 +145,9 @@ function Homepage() {
             boxSize={{ base: "80px", md: "180px" }}
             width={{ base: "90px", md: "190px" }}
             alt={`Logo 2*`}
+            borderRadius={10}
           />
         </Box>
-        <ParticlesPage />
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
         {getStarted ? (
           <Box
@@ -135,17 +156,12 @@ function Homepage() {
             justifyContent={"center"}
             alignItems={"center"}
             flexDirection="column"
-            bg="background"
           >
             <Logins />
             <Box flex="1" />
             <Text
               textAlign={"center"}
               fontSize={"x-small"}
-              p={1}
-              textColor={"grey"}
-              background="white"
-              mt={3}
               position="sticky"
               width="100%"
               zIndex="10"
@@ -167,38 +183,27 @@ function Homepage() {
               fontFamily="Arial, sans-serif"
               fontSize={{ base: "md", md: "xl" }}
               fontWeight="normal"
-              lineHeight="1.5"
-              color="black"
               position={"relative"}
             >
+    
+
               <Image
                 src={logo7}
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
+                height={{ md: "50%"}}
                 opacity={0.5}
-                top={{ md: 1 }}
-                bottom={0}
-              />
-              <Image
-                display={{ base: "flex", md: "none" }}
-                src={logo11}
-                position={"absolute"}
-                width={"80%"}
-                zIndex={-1}
-                alt={`Logo 2*`}
-                top={35}
-                opacity={0.5}
+                bottom={{base: "50%"}}
               />
               <Text
                 textAlign={"center"}
                 fontSize={"md"}
-                textColor={"#f2f5fa"}
                 width={"300px"}
-                bg="blackAlpha.500"
                 p={{ base: "2", md: "6" }}
-                m={1}
+                m={{ base: "4", md: "1" }}
                 boxShadow="base"
+                textColor={"#000000"}
                 rounded="md"
                 mt={"20px"}
               >
@@ -208,12 +213,11 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                bg="blackAlpha.500"
                 fontSize={"md"}
-                textColor={"#f2f5fa"}
                 width={"325px"}
+                textColor={"#000000"}
                 p={{ base: "3", md: "6" }}
-                m={1}
+                m={{ base: "4", md: "1" }}
                 boxShadow="base"
                 rounded="md"
               >
@@ -222,12 +226,11 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                bg="blackAlpha.500"
                 fontSize={"md"}
-                textColor={"#f2f5fa"}
                 width={"350px"}
+                textColor={"#000000"}
                 p={{ base: "3", md: "6" }}
-                m={1}
+                m={{ base: "4", md: "1" }}
                 boxShadow="base"
                 rounded="md"
               >
@@ -237,12 +240,11 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                bg="blackAlpha.500"
                 fontSize={"md"}
-                textColor={"#f2f5fa"}
                 width={"375px"}
                 p={{ base: "3", md: "6" }}
-                m={1}
+                textColor={"#000000"}
+                m={{ base: "4", md: "1" }}
                 boxShadow="base"
                 rounded="md"
               >
@@ -252,12 +254,12 @@ function Homepage() {
               </Text>
               <Text
                 textAlign={"center"}
-                bg="blackAlpha.500"
                 fontSize={"md"}
-                textColor={"#f2f5fa"}
                 width={"400px"}
                 p={{ base: "3", md: "6" }}
-                m={1}
+                m={{ base: "4", md: "1" }}
+                mb={"4"}
+                textColor={"#000000"}
                 boxShadow="base"
                 rounded="md"
               >
@@ -265,6 +267,7 @@ function Homepage() {
                 ASSOCIATION for much more benefits which includes managing an
                 increased percentage from donations to WSF via the site.
               </Text>
+              <TestimonialsCarousel/>
             </Box>
             <Box
               display={"flex"}
@@ -302,7 +305,7 @@ function Homepage() {
                     bg="blackAlpha.400"
                   />
                   <Text
-                    px={{ base: "20px", md: "0" }}
+                   
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -321,7 +324,6 @@ function Homepage() {
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
-                    m={"6"}
                     px={{ base: "10px", md: "0" }}
                   >
                     <FcDonate style={{ fontSize: "6rem" }} />
@@ -335,13 +337,7 @@ function Homepage() {
                       alignItems={"center"}
                       width={"100%"}
                     >
-                      <Box
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                        mt={"6"}
-                      >
-                        {" "}
+                     
                         <Image
                           height={20}
                           width={"auto"}
@@ -349,7 +345,7 @@ function Homepage() {
                           alt={""}
                           loading="lazy"
                         />
-                        <Text fontSize={"large"} p={"2"}>
+                        <Text fontSize={"large"}>
                           Equity Bank Account Number: <br />
                           <Text fontWeight={"extrabold"} color={"black"}>
                             0250164349965
@@ -359,14 +355,6 @@ function Homepage() {
                             World Samma Academy
                           </Text>
                         </Text>
-                      </Box>
-
-                      <Box
-                        display={"flex"}
-                        justifyContent={"center"}
-                        alignItems={"center"}
-                      >
-                        {" "}
                         <Image
                           height={20}
                           width={"auto"}
@@ -376,13 +364,14 @@ function Homepage() {
                           alt={""}
                           loading="lazy"
                         />{" "}
-                        <Text p={"6"}>
+                        <Text >
                           Mpesa Till Number: <br />
                           <Text fontWeight={"extrabold"} color={"black"}>
                             858447
                           </Text>{" "}
                         </Text>
-                      </Box>
+
+                     
                       <FaArrowAltCircleDown
                         style={{
                           fontSize: "3rem",
@@ -397,8 +386,8 @@ function Homepage() {
                   flexDir={"column"}
                   justifyContent={"center"}
                   alignItems={"center"}
-                  width={"40%"}
-                  mt={-200}
+               
+                 
                 >
                   <FaArrowCircleRight
                     style={{
@@ -426,7 +415,7 @@ function Homepage() {
                         alt={""}
                         loading="lazy"
                       />
-                      <Text fontSize={"large"} p={"2"}>
+                      <Text fontSize={"large"}>
                         Equity Bank Account Number: <br />
                         <Text fontWeight={"extrabold"} color={"black"}>
                           0250164349965
@@ -452,6 +441,7 @@ function Homepage() {
                         alt={""}
                         loading="lazy"
                       />{" "}
+
                       <Text p={"6"} color={"black"}>
                         Mpesa Till Number <br />
                         <Text color={"black"} fontWeight={"extrabold"}>
@@ -464,7 +454,6 @@ function Homepage() {
                 <Box
                   flex={"1"}
                   position={"relative"}
-                  mb={{ base: "20px", md: "0" }}
                   onClick={() => setShow(true)}
                   style={{ cursor: "pointer" }}
                 >
@@ -475,19 +464,32 @@ function Homepage() {
                     boxSize={"250px"}
                     borderRadius={2}
                     mx={"auto"}
-                    mb={"10px"}
                     boxShadow="dark-lg"
                     p="6"
                     rounded="md"
                     bg="blackAlpha.400"
                   />
+                     <Text
+                   
+                   style={{
+                     display: "flex",
+                     alignItems: "center",
+                     justifyContent: "center",
+                   }}
+                 >
+                   <CiLocationOn
+                     style={{
+                       color: "red",
+                     }}
+                   />
+                   Mombasa, Kenya(Proposed Design)
+                 </Text>
                   <Text
                     textAlign={"center"}
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
                     px={{ base: "10px", md: "0" }}
-                    marginLeft={{ base: 0, md: "-300px" }}
                   >
                     <BiDonateHeart
                       style={{ fontSize: "6rem", color: "green" }}
@@ -507,7 +509,7 @@ function Homepage() {
                 borderRadius={20}
                 onClick={() => setGetStarted(true)}
                 bgGradient="linear(to-l, #7928CA, #FF0080)"
-                m={"6"}
+                m={{base: "2"}}
                 color={"white"}
               >
                 Get Started
@@ -520,7 +522,7 @@ function Homepage() {
               alignItems={"center"}
               width={"100%"}
             >
-              <Grid width={"100%"} height="200px" templateRows="repeat(2, 1fr)">
+              <Grid width={"100%"} templateRows="repeat(1, 1fr)">
                 <GridItem
                   background="whitesmoke"
                   textAlign={"center"}
@@ -571,7 +573,7 @@ function Homepage() {
                   textAlign={"center"}
                   textColor={"blackAlpha.800"}
                   px={6}
-                  p={6}
+                 
                   width={"100%"}
                 >
                   Samma is a modern hybrid martial art (from Eastern Africa)
@@ -581,15 +583,15 @@ function Homepage() {
                   (elbow, fist, knee and foot) and finally grappling.
                 </GridItem>
                 <GridItem
-                  colSpan={4}
-                  background="blackAlpha.400"
+                  colSpan={3}
+                  background={"white"}
                   color={"white"}
                   width={"100%"}
                 >
                   <Text
                     textAlign={"center"}
-                    fontSize={"small"}
-                    p={"6"}
+                     fontSize={"small"}
+                    background={"white"}
                     textColor={"grey"}
                     width={"100%"}
                   >

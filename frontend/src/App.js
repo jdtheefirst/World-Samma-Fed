@@ -15,7 +15,6 @@ import Provience from "./pages/Provience";
 import National from "./pages/National";
 import ForgotPassword from "./pages/ForgotPassword";
 import AboutPage from "./pages/About";
-import ParticlesPage from "./pages/Particles";
 import { useEffect } from "react";
 import InstallButton from "./components/config/InstallButton";
 
@@ -334,7 +333,6 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/particles" element={<ParticlesPage />} />
         <Route path="/login" element={<Logins />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route

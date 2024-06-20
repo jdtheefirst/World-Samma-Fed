@@ -133,24 +133,29 @@ const Login = () => {
 
   return (
     <VStack spacing="10px">
+      <div>
+              <h1>Welcome Back!</h1>
+              <p>To keep connected with us please login with your personal info</p>
+         
+            </div>
       <FormControl id="email" isRequired>
-        <FormLabel textColor={"white"}>Email Address/Code</FormLabel>
+        <FormLabel>Email Address/Code</FormLabel>
         <Input
           value={email}
-          textColor={"white"}
+         
           type="email"
           placeholder="Email Address or code"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel textColor={"white"}>Password</FormLabel>
+        <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={show ? "text" : "password"}
-            textColor={"white"}
+           
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
