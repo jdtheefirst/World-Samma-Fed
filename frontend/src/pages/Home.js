@@ -22,7 +22,7 @@ import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
-import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, } from "react-icons/fa";
+import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaSquareFull, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
 import { HamburgerIcon } from "@chakra-ui/icons";
@@ -30,6 +30,7 @@ import { HamburgerIcon } from "@chakra-ui/icons";
 import CoffeeModal from "../miscellenious/coffee";
 import { CiLocationOn } from "react-icons/ci";
 import TestimonialsCarousel from "../components/Carousel";
+import PollComponent from "../components/Polls";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
@@ -49,8 +50,8 @@ function Homepage() {
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
       <Box display="flex" flexDir={"column"} width="100%">
-      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#FF416C"} p={{base: "2", md: "4"}} rounded="md" position={"fixed"} zIndex={20}>
-        <Text textAlign={"start"} width={"100%" } fontSize={{base: "medium", md: "x-large"}} fontWeight={"bold"} textColor={"white"}>Samma - All in One Martial Arts</Text>
+      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#FF416C"} p={{base: "2", md: "4"}} position={"fixed"} zIndex={20}>
+        <Text display={"flex"}textAlign={"start"} width={"100%" } fontSize={{base: "medium", md: "x-large"}} fontWeight={"bold"}><strong style={{textShadow: "2px 2px 2px white"}}>Samma</strong> - All in One Martial Art.</Text>
       <FaRocket className="rocket-animation" size={20} />
       <Menu>
         <MenuButton as={IconButton} icon={<HamburgerIcon />} variant="outline" colorScheme="white" />
@@ -192,9 +193,9 @@ function Homepage() {
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                height={{ md: "50%"}}
+                height={{ md: "30%"}}
                 opacity={0.5}
-                bottom={{base: "50%"}}
+                bottom={{base: "50%", md: "70%"}}
               />
               <Text
                 textAlign={"center"}
@@ -268,6 +269,7 @@ function Homepage() {
                 increased percentage from donations to WSF via the site.
               </Text>
               <TestimonialsCarousel/>
+              <PollComponent/>
             </Box>
             <Box
               display={"flex"}

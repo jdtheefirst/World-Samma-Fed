@@ -8,6 +8,7 @@ const messageRouter = require("./routes/messageRoute");
 const submitRouter = require("./routes/submitRouter");
 const provinceRouter = require("./routes/provinceRouter");
 const nationalRouter = require("./routes/nationalRouter");
+const voteRouter = require("./routes/voteRouter");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
@@ -39,6 +40,7 @@ app.use("/api/province", provinceRouter);
 app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
+app.use("/api/poll", voteRouter);
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
