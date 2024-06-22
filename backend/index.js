@@ -22,6 +22,7 @@ const app = express();
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT;
 const server = app.listen(

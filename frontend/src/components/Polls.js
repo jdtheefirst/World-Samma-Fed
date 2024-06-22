@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Text, Stack, Progress } from '@chakra-ui/react';
+import { Box, Text, Stack } from '@chakra-ui/react';
+import { CiCircleQuestion } from "react-icons/ci";
 import axios from 'axios';
 
 const PollComponent = () => {
@@ -7,7 +8,6 @@ const PollComponent = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [votes, setVotes] = useState([]);
   const [totalVotes, setTotalVotes] = useState(0);
-  const [showOptions, setShowOptions] = useState(false);
 
   const fetchPoll = useCallback(async () => {
     try {
@@ -36,6 +36,10 @@ const PollComponent = () => {
       setSelectedOption(index);
       alert('Vote recorded!');
     } catch (error) {
+      if(error.response.status === 429){
+        alert("You can only vote once per hour.");
+        return;
+      }
       alert(error.response.data.message);
     }
   };
@@ -45,48 +49,50 @@ const PollComponent = () => {
     return ((votes[index] / totalVotes) * 100).toFixed(1);
   };
 
-  if (!poll) return <Text>Loading...</Text>;
+  if (!poll) return <Text>Loading poll...</Text>;
 
   return (
-    <Box p={4} bg="gray.100" borderRadius="md" boxShadow="md" onClick={() => setShowOptions(true)}>
-      <Text fontSize="2xl" mb={4}>{poll.question}</Text>
-      {showOptions && (
-        <Stack spacing={4}>
-          {poll.options.map((opt, index) => (
-            <Box
-              key={index}
-              bg={selectedOption === index ? 'teal.500' : 'gray.300'}
-              p={2}
-              borderRadius="md"
-              cursor="pointer"
-              onClick={() => handleVote(index)}
-              position="relative"
-            >
-              <Text fontSize="lg" fontWeight="bold">
-                {opt.option}
+    <Box p={4} width={{base: "100%", md: "80%"}} boxShadow="base" mb={4}>
+      <CiCircleQuestion fontSize={"50px"} />
+      <Text textAlign={"center"} fontWeight={"extrabold"}>Poll</Text>
+      <Text fontSize="large"  p={4} mb={4} textAlign="center">{poll.question}</Text>
+      <Stack spacing={4}>
+        {poll.options.map((opt, index) => (
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            key={index}
+            p={2}
+            borderRadius="md"
+            cursor="pointer"
+            onClick={() => handleVote(index)}
+            position="relative"
+            bg="gray.300"
+          >
+            <Text width={"100%"} textAlign={"start"} fontSize="lg" fontWeight="bold">
+              {opt.option}
+            </Text>
+            {selectedOption !== null && (
+              <Box
+                position="absolute"
+                top="0"
+                left="0"
+                height="100%"
+                width={`${calculatePercentage(index)}%`}
+                bg="teal.500"
+                borderRadius="md"
+                opacity="0.5"
+              />
+            )}
+            {selectedOption !== null && (
+              <Text width={"100%"} textAlign={"end"} fontSize="sm" fontWeight="bold" mt={1}>
+                {calculatePercentage(index)}%
               </Text>
-              {selectedOption !== null && (
-                <Progress
-                  value={calculatePercentage(index)}
-                  size="sm"
-                  colorScheme="teal"
-                  borderRadius="md"
-                  position="absolute"
-                  top="0"
-                  left="0"
-                  height="100%"
-                  opacity="0.5"
-                />
-              )}
-              {selectedOption !== null && (
-                <Text fontSize="sm" fontWeight="bold" mt={1}>
-                  {calculatePercentage(index)}%
-                </Text>
-              )}
-            </Box>
-          ))}
-        </Stack>
-      )}
+            )}
+          </Box>
+        ))}
+      </Stack>
     </Box>
   );
 };

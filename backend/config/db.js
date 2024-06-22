@@ -22,13 +22,11 @@ const connectDB = async () => {
       });
 
       await poll.save();
-      console.log('Poll seeded!');
     };
 
     // Call seedPoll function to seed the poll data
     await seedPoll();
   } catch (error) {
-    console.log(`Error: ${error.message}`);
     process.exit(1); // Correct exit code
   }
 };

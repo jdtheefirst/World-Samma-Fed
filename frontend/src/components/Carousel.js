@@ -27,7 +27,6 @@ const testimonials = [
 const TestimonialsCarousel = () => {
   return (
     <Carousel
-      showArrows={true}
       showStatus={false}
       showThumbs={false}
       infiniteLoop={true}
@@ -51,7 +50,7 @@ const TestimonialsCarousel = () => {
               bottom="0"
               left="0"
               right="0"
-              height="30px"
+              height="5rem"
               background="linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)"
               borderBottomLeftRadius="full"
               borderBottomRightRadius="full"
@@ -61,7 +60,7 @@ const TestimonialsCarousel = () => {
         <Box textAlign={"center"} width={{base: "100%", md: "50%"}}> <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
             {testimonial.name}
           </Text>
-          <Text mt={2}>{testimonial.comment}</Text></Box>
+          <Text mt={2} p={'3'}>{testimonial.comment}</Text></Box>
       </Box>
     ))}
 

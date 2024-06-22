@@ -1,19 +1,16 @@
 const pollModel = require("../models/pollModel");
 
 const fetchVotes = async (req, res) => {
-    console.log("we may have a request!")
 
     try {
       const poll = await pollModel.findOne();
       res.json(poll);
     } catch (error) {
-        console.log(error)
       res.status(500).json({ message: error.message });
     }
   };
 
   const makeVote = async (req, res) => {
-    console.log("we have a request!")
     const { option } = req.body;
     
     try {
@@ -29,7 +26,6 @@ const fetchVotes = async (req, res) => {
   
       res.json(poll);
     } catch (error) {
-        console.log(error)
       res.status(500).json({ message: error.message });
     }
   };
