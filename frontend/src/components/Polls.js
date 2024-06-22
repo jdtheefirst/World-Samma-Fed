@@ -56,12 +56,12 @@ const PollComponent = () => {
       <CiCircleQuestion fontSize={"50px"} />
       <Text textAlign={"center"} fontWeight={"extrabold"}>Poll</Text>
       <Text fontSize="large"  p={4} mb={4} textAlign="center">{poll.question}</Text>
-      <Stack>
+      <Stack  display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}>
         {poll.options.map((opt, index) => (
           <Box
-            display={"flex"}
-            justifyContent={"center"}
-            alignItems={"center"}
+            width={{base: "100%", md: "80%"}}
             key={index}
             p={2}
             borderRadius="md"
@@ -86,7 +86,7 @@ const PollComponent = () => {
               />
             )}
             {selectedOption !== null && (
-              <Text width={"100%"} textAlign={"end"} fontSize="sm" fontWeight="bold" mt={1}>
+              <Text width={"100%"} textAlign={"end"} fontSize="sm" m={0} p={0}>
                 {calculatePercentage(index)}%
               </Text>
             )}
