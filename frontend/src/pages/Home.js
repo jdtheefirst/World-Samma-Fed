@@ -195,7 +195,7 @@ function Homepage() {
                 alt={`Logo 2*`}
                 height={{ md: "30%"}}
                 opacity={0.5}
-                bottom={{base: "50%", md: "70%"}}
+                bottom={{base: "60%", md: "70%"}}
               />
               <Text
                 textAlign={"center"}
@@ -285,7 +285,7 @@ function Homepage() {
                 width={"100%"}
                 minH={{ base: "400px", md: "200px" }}
                 position={"relative"}
-                m={1}
+              
               >
                 <Box
                   flex={"1"}

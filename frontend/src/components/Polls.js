@@ -61,6 +61,7 @@ const PollComponent = () => {
             alignItems={"center"}>
         {poll.options.map((opt, index) => (
           <Box
+           display={"flex"}
             width={{base: "100%", md: "80%"}}
             key={index}
             p={2}

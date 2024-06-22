@@ -26,6 +26,7 @@ const testimonials = [
 
 const TestimonialsCarousel = () => {
   return (
+    <Box overflow={"hidden"}>
     <Carousel
       showStatus={false}
       showThumbs={false}
@@ -57,7 +58,7 @@ const TestimonialsCarousel = () => {
             />
           </Box>
         </Box>
-        <Box textAlign={"center"} width={{base: "100%", md: "50%"}}> <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
+        <Box textAlign={"center"} width={{base: "80%", md: "50%"}}> <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
             {testimonial.name}
           </Text>
           <Text mt={2} p={'3'}>{testimonial.comment}</Text></Box>
@@ -65,6 +66,7 @@ const TestimonialsCarousel = () => {
     ))}
 
     </Carousel>
+    </Box>
   );
 };
 
