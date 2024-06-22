@@ -43,7 +43,7 @@ const AboutPage = () => {
           15th March 2011 (in Mombasa City Centre): Formation of the Society of
           African Mixed Martial Arts and use of SAMMA as its acronym (acronym
           inspired by east African street slang word for a flip, "sama"). Then
-          making of cheni 6 curriculum begun with "designing" of the tamati
+          making of cheni 6 curriculum began with "designing" of the tamati
           (sign out) pattern.
         </Text>
         <Text fontSize="xl" fontWeight={"bold"} mb={4}>
@@ -69,7 +69,7 @@ const AboutPage = () => {
         </a>
         <Text fontSize={"sm"} textAlign={"center"}>
           ℹ️ Help us translate the curriculum booklet into other world languages
-          by sending an editable draft to support@worldsamma.org Include your
+          by sending an editable draft to the email: support@worldsamma.org. Include your
           name, country, and province for a credit/mention. Thanking you in
           advance.
         </Text>

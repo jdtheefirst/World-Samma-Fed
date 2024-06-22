@@ -56,7 +56,7 @@ const PollComponent = () => {
       <CiCircleQuestion fontSize={"50px"} />
       <Text textAlign={"center"} fontWeight={"extrabold"}>Poll</Text>
       <Text fontSize="large"  p={4} mb={4} textAlign="center">{poll.question}</Text>
-      <Stack spacing={4}>
+      <Stack>
         {poll.options.map((opt, index) => (
           <Box
             display={"flex"}
