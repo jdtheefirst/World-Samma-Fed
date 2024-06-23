@@ -14,10 +14,10 @@ const connectDB = async () => {
       const poll = new pollModel({
         question: "From which year would you prefer that Samma Pigano (three ranges of man-to-man combat) becomes a full Olympic Sport?",
         options: [
-          { option: '2024' },
-          { option: '2028' },
-          { option: '2032' },
-          { option: 'I have no idea' },
+          { option: 'a. 2024' },
+          { option: 'b. 2028' },
+          { option: 'c. 2032' },
+          { option: 'd. I have no idea' },
         ],
       });
 

@@ -25,7 +25,7 @@ import logo10 from "../Equity.png";
 import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaSquareFull, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 import CoffeeModal from "../miscellenious/coffee";
 import { CiLocationOn } from "react-icons/ci";
@@ -50,19 +50,30 @@ function Homepage() {
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
       <Box display="flex" flexDir={"column"} width="100%">
-      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#FF416C"} p={{base: "2", md: "4"}} position={"fixed"} zIndex={20}>
-        <Text display={"flex"}textAlign={"start"} width={"100%" } fontSize={{base: "medium", md: "x-large"}} fontWeight={"bold"}><strong style={{textShadow: "2px 2px 2px white"}}>Samma</strong> - All in One Martial Art.</Text>
+      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#2d1950"} p={{base: "2", md: "4"}} position={"fixed"} zIndex={20}>
+      <Text
+  display={"flex"}
+  textColor={"whitesmoke"}
+  textAlign={"start"}
+  width={"100%"}
+  fontSize={{ base: "medium", md: "x-large" }}
+  fontWeight={"bold"}
+>
+  <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
+    SAMMA
+  </strong>
+  {'\u00A0'}- One Martial Art
+</Text>
       <FaRocket className="rocket-animation" size={20} />
       <Menu>
-        <MenuButton as={IconButton} icon={<HamburgerIcon />} variant="outline" colorScheme="white" />
-        <MenuList background={"#FF416C"} border={"none"}>
+        <MenuButton as={IconButton} icon={<GiHamburgerMenu style={{color: "white", fontSize: "30px"}} />} variant="outline" colorScheme="#2d1950"/>
+        <MenuList borderRadius={"none"}>
           <MenuItem
             onClick={() => {
               navigate("/about");
             }}
-            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            _hover={{ backgroundColor: "transparent", fontSize: "small" }}
             background="transparent"
-            color={"white"}
             border={"none"}
           >
             About
@@ -72,9 +83,8 @@ function Homepage() {
               setShow(true);
               setGetStarted(false);
             }}
-            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            _hover={{ backgroundColor: "transparent", fontSize: "small" }}
             background="transparent"
-            color={"white"}
             border={"none"}
           >
             Donate
@@ -85,18 +95,16 @@ function Homepage() {
               setGetStarted(false);
         
             }}
-            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            _hover={{ backgroundColor: "transparent", fontSize: "small" }}
             background="transparent"
-            color={"white"}
             border={"none"}
           >
             Home
           </MenuItem>
           <MenuItem
             onClick={() => setGetStarted(true)}
-            _hover={{ backgroundColor: "transparent", color: "yellow", fontSize: "small" }}
+            _hover={{ backgroundColor: "transparent", fontSize: "small" }}
             background="transparent"
-            color={"white"}
             border={"none"}
           >
             Get Started
@@ -165,7 +173,7 @@ function Homepage() {
               fontSize={"x-small"}
               position="sticky"
               width="100%"
-              zIndex="10"
+              mt={'6'}
             >
               <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
@@ -575,7 +583,7 @@ function Homepage() {
                   textAlign={"center"}
                   textColor={"blackAlpha.800"}
                   px={6}
-                 
+                
                   width={"100%"}
                 >
                   Samma is a modern hybrid martial art (from Eastern Africa)
@@ -596,6 +604,7 @@ function Homepage() {
                     background={"white"}
                     textColor={"grey"}
                     width={"100%"}
+                    mt={"6"}
                   >
                     <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
                     All rights reserved. Terms and conditions apply. For queries

@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
+import { Box, VStack } from "@chakra-ui/layout";
 import {
   Radio,
   RadioGroup,
@@ -196,10 +196,10 @@ const Signup = () => {
 
   return (
     <VStack spacing="3px">
-      <div>
+     <Box mb={"6"}>
               <h1>Hello there!</h1>
               <p>Enter your personal details and start journey with us</p>
-            </div>
+      </Box>
       <Modal
         size="lg"
         onClose={onClose}
@@ -218,8 +218,8 @@ const Signup = () => {
             textAlign={"center"}
           >
             {" "}
-            <Text> Enter Code sent to: {email} </Text>
-            <Text fontSize={"sm"}>You may need to refresh your Mailbox</Text>
+            <Text> Enter the code sent to: {email} </Text>
+            <Text fontSize={"sm"}>You may need to refresh your mailbox.</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
@@ -257,7 +257,7 @@ const Signup = () => {
               justifyContent={"center"}
               color={code !== inputCode ? "red" : "green"}
             >
-              Please Enter the Exact Code Recieved
+              Please Enter the exact code recieved.
             </Text>
           </ModalFooter>
         </ModalContent>
@@ -265,7 +265,7 @@ const Signup = () => {
       <FormControl id="first-name" isRequired>
         <FormLabel>First name</FormLabel>
         <Input
-          placeholder="Enter Your First Name"
+          placeholder="Enter your first name"
 
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -275,11 +275,91 @@ const Signup = () => {
       <FormControl id="other-name" isRequired>
         <FormLabel >Other name</FormLabel>
         <Input
-          placeholder="Enter Your Other Name"
+          placeholder="Enter your other name"
 
           value={otherName}
           onChange={(e) => setOtherName(e.target.value)}
         />
+      </FormControl>
+      <FormControl id="email" isRequired>
+        <FormLabel>Email Address</FormLabel>
+        <Input
+          type="email"
+          placeholder="Enter your email address"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        
+        {email ? (
+          <FormLabel
+            fontSize={"2xs"}
+            style={{
+              animation: "slideInFromTop 0.5s forwards",
+            }}
+            p={0}
+            m={0}
+            color={"green.400"}
+            userSelect={"none"}
+          >
+            Your email is for certification and login only. No ads
+          </FormLabel>
+        ) : (
+          ""
+        )}
+      </FormControl>
+      <FormControl id="password" isRequired>
+        <FormLabel>Password</FormLabel>
+        <InputGroup size="md">
+          <Input
+            type={show ? "text" : "password"}
+            placeholder="Enter password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={handleClick}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+      <FormControl id="password" isRequired>
+        <FormLabel>Confirm Password</FormLabel>
+        <InputGroup size="md">
+          <Input
+            type={show ? "text" : "password"}
+            placeholder="Confirm password"
+            onChange={(e) => setConfirmpassword(e.target.value)}
+          />
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={handleClick}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+      <FormControl id="id/passport" isRequired>
+        <FormLabel>Id/Passport</FormLabel>
+        <Input
+          type="number"
+          placeholder="Passport"
+          value={passport}
+          onChange={(e) => setPassport(e.target.value)}
+        />
+        {passport ? (
+  <FormLabel
+    fontSize={"2xs"}
+    style={{
+      animation: "slideInFromTop 0.5s forwards",
+    }}
+    p={0}
+    m={0}
+    color={"green.400"}
+    userSelect={"none"}
+  >
+    Your sensitive information is used solely for certification purposes.
+  </FormLabel>
+) : (
+  ""
+)}
       </FormControl>
       <FormControl id="country" isRequired>
         <FormLabel>Country</FormLabel>
@@ -337,67 +417,6 @@ const Signup = () => {
           />
         </FormControl>
       )}
-
-      <FormControl id="email" isRequired>
-        <FormLabel>Email Address</FormLabel>
-        <Input
-          type="email"
-          placeholder="Enter Your Email Address"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        {email ? (
-          <FormLabel
-            fontSize={"2xs"}
-            p={0}
-            m={0}
-            color={"green.400"}
-            userSelect={"none"}
-          >
-            Your email is for login only. No ads
-          </FormLabel>
-        ) : (
-          ""
-        )}
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={show ? "text" : "password"}
-            placeholder="Enter Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
-        <InputGroup size="md">
-          <Input
-            type={show ? "text" : "password"}
-            placeholder="Confirm password"
-            onChange={(e) => setConfirmpassword(e.target.value)}
-          />
-          <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-      </FormControl>
-      <FormControl id="id/passport" isRequired>
-        <FormLabel>Id/Passport</FormLabel>
-        <Input
-          type="number"
-          placeholder="passport no:"
-          value={passport}
-          onChange={(e) => setPassport(e.target.value)}
-        />
-      </FormControl>
       <FormControl id="language" isRequired>
         <FormLabel>Language</FormLabel>
         <Select
@@ -428,7 +447,6 @@ const Signup = () => {
       <UploadPicture
         setPic={setPic}
         setPicLoading={setPicLoading}
-        color={"white"}
       />
 
       <Button

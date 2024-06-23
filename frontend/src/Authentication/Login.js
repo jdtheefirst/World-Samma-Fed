@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-import { VStack } from "@chakra-ui/layout";
+import { Box, VStack } from "@chakra-ui/layout";
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -133,29 +133,28 @@ const Login = () => {
 
   return (
     <VStack spacing="10px">
-      <div>
+      <Box mb={"6"}>
               <h1>Welcome Back!</h1>
               <p>To keep connected with us please login with your personal info</p>
          
-            </div>
-      <FormControl id="email" isRequired>
-        <FormLabel>Email Address/Code</FormLabel>
+            </Box>
+      <FormControl id="email-login" isRequired>
+        <FormLabel>Email address/Code</FormLabel>
         <Input
           value={email}
          
           type="email"
-          placeholder="Email Address or code"
+          placeholder="Enter email or code here"
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id="password" isRequired>
+      <FormControl id="password-login" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup size="md">
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={show ? "text" : "password"}
-           
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
@@ -210,7 +209,7 @@ const Login = () => {
             justifyContent="space-between"
           >
             <Input
-              placeholder={`example@gmail.com`}
+              placeholder={`Enter your email here`}
               type="text"
               onChange={(e) => setForgotEmail(e.target.value)}
               value={forgotEmail}

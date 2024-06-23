@@ -62,6 +62,7 @@
 }
 .rocket-animation {
 	animation: fly 1s ease-in-out infinite alternate;
+  color: aliceblue;
   bottom: 0;
 
   }
@@ -74,3 +75,15 @@
 	  transform: translateX(-20px);
 	}
   }
+  
+  @keyframes slideInFromTop {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  

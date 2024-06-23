@@ -24,16 +24,16 @@ const Logins = () => {
       marginTop={"30px"}
     >
       <Box
-        background={"#FF416C"}
+        background={"whitesmoke"}
         w="100%"
         p={4}
         borderRadius="lg"
         borderWidth="1px"
       >
         <Tabs isFitted variant="soft-rounded">
-          <TabList mb="1em">
-            <Tab textColor={"white"}>Login</Tab>
-            <Tab textColor={"white"}>Sign Up</Tab>
+          <TabList>
+            <Tab >Login</Tab>
+            <Tab >Sign Up</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>
