@@ -173,7 +173,7 @@ const Login = () => {
       >
         Login
       </Button>
-      <GoogleOAuthProvider clientId="342739457184-a1r49fblh6n0ir6uvl3526kmmdj3d15d.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="940835071660-da44he72t3otp7cbn96vlg5pb753tv73.apps.googleusercontent.com">
         <GoogleLoginButton />
       </GoogleOAuthProvider>
       <Link

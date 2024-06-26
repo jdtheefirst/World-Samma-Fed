@@ -43,6 +43,7 @@ const TestimonialsCarousel = () => {
               borderRadius="full"
               src={testimonial.image}
               alt={testimonial.name}
+              loading="lazy"
               width="100%"
               height="auto"
             />

@@ -1,50 +1,60 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { Button, Image, useToast, Text, Box } from "@chakra-ui/react";
-import { ChatState } from "../components/Context/ChatProvider";
+import { Button, useToast, Box } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 
 const GoogleLoginButton = () => {
   const navigate = useNavigate();
   const toast = useToast();
-  const [tryAgain, setTryAgain] = useState(false);
-  const { email, setEmail, name, setName, setPic } = ChatState();
+  const [email, setEmail] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const submitHandler = async () => {
-    if (email && name) {
+  const submitHandler = useCallback(async (email) => {
+    
+    if (email) {
+      setLoading(true);
       try {
         const { data } = await axios.get(`/api/user/searchuser/${email}`);
-
         if (data === "Unfound") {
           toast({
-            title: "Your account doesn't exist!",
+            title: "Account doesn't exist!",
+            description: "Create a new account with us, sign up.",
             status: "info",
-            duration: 5000,
+            duration: 10000,
             position: "bottom",
           });
         } else {
           localStorage.setItem("userInfo", JSON.stringify(data));
-
           navigate("/dashboard");
         }
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
         toast({
-          title: "Error Occurred, please try again later",
-          description: "If this persists, log in using your email and password",
+          title: "Error occurred during login",
+          description:
+            "An error occurred while fetching user data. Please try again.",
           status: "error",
           duration: 5000,
           position: "bottom",
         });
       }
     }
-  };
+  }, [navigate, toast]);
+
+  useEffect(() => {
+    if (email) {
+      submitHandler(email);
+    }
+  }, [email, submitHandler]);
+
   const googleLogin = useGoogleLogin({
     clientId:
-      "342739457184-a1r49fblh6n0ir6uvl3526kmmdj3d15d.apps.googleusercontent.com",
+      "940835071660-da44he72t3otp7cbn96vlg5pb753tv73.apps.googleusercontent.com",
     onSuccess: async (tokenResponse) => {
       const { access_token } = tokenResponse;
-
       try {
         const { data } = await axios.get(
           "https://www.googleapis.com/oauth2/v3/userinfo",
@@ -54,19 +64,44 @@ const GoogleLoginButton = () => {
             },
           }
         );
-        const parts = data.name.split(" ");
-        setName(parts[0]);
-        setEmail(data.email);
-        setPic(data.picture);
-        await submitHandler();
+        setEmail(data.email); 
       } catch (error) {
-        console.log(error);
+        toast({
+          title: "Error occurred during login",
+          description: "Try another way.",
+          status: "error",
+          duration: 5000,
+          position: "bottom",
+        });
       }
     },
     onError: (error) => {
-      console.error("Login error:", error);
+      console.error("Google login error:", error);
+      toast({
+        title: "Login error",
+        description: "An error occurred during Google login. Please try again.",
+        status: "error",
+        duration: 5000,
+        position: "bottom",
+      });
     },
   });
+
+  const handleGoogleLogin = async () => {
+    try {
+      await googleLogin(); // Trigger Google login flow
+    } catch (error) {
+      console.error("Google login error:", error);
+      toast({
+        title: "Google login error",
+        description:
+          "An error occurred during Google login. Please try again.",
+        status: "error",
+        duration: 5000,
+        position: "bottom",
+      });
+    }
+  };
 
   return (
     <Box
@@ -76,27 +111,15 @@ const GoogleLoginButton = () => {
       width={"100%"}
     >
       <Button
-        onClick={() => {
-          googleLogin();
-          setTryAgain((prev) => !prev);
-        }}
+        onClick={handleGoogleLogin}
         display={"flex"}
         justifyContent={"center"}
         width={"100%"}
+        isLoading={loading}
       >
-        <Image
-          height={5}
-          margin={1}
-          src="https://developers.google.com/identity/images/g-logo.png"
-          alt=""
-        />
+        <FcGoogle />
         Sign in with Google
       </Button>
-      <Text fontSize={"15px"} color={"red.400"} p={0} m={0}>
-        {tryAgain
-          ? "Oops! Login unsuccessful. Please give it another shot."
-          : ""}
-      </Text>
     </Box>
   );
 };

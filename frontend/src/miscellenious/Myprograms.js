@@ -19,7 +19,7 @@ const MyPrograms = ({ courses, user }) => {
   };
 
   const progressLevels = [
-    `yellow`,
+    `#baba30`,
     `orange`,
     `red`,
     `purple`,

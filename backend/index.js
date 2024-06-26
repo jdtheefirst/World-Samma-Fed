@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRouter");
@@ -15,10 +16,19 @@ const useTranslator = require("./routes/translateRouter");
 const path = require("path");
 const bodyParser = require("body-parser");
 const { initializeSocketIO } = require("./socket");
+const helmet = require("helmet");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
+
 const app = express();
+
+// Use Helmet to set security headers
+app.use(helmet({
+  crossOriginEmbedderPolicy: true,
+  crossOriginOpenerPolicy: { policy: "same-origin" },
+  crossOriginResourcePolicy: { policy: "same-origin" },
+}));
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -31,7 +41,7 @@ const server = app.listen(
 );
 
 initializeSocketIO(server);
-
+app.use(cors());
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/message", messageRouter);

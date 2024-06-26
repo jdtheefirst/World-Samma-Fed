@@ -11,6 +11,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  chakra,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -22,13 +23,17 @@ import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
-import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaSquareFull, } from "react-icons/fa";
+import brushImage from "../brushImage.jpg"
+import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaTiktok, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { FaXTwitter } from "react-icons/fa6";
+
+
 
 import CoffeeModal from "../miscellenious/coffee";
-import { CiLocationOn } from "react-icons/ci";
+import { CiFacebook, CiInstagram, CiLocationOn, CiYoutube } from "react-icons/ci";
 import TestimonialsCarousel from "../components/Carousel";
 import PollComponent from "../components/Polls";
 
@@ -46,6 +51,21 @@ function Homepage() {
   const handleCloseModal = () => {
     setShow(false);
   };
+
+const BrushText = ({ children }) => (
+  <chakra.span
+    backgroundImage={`url(${brushImage})`}
+    backgroundRepeat="no-repeat"
+    backgroundSize="cover"
+    backgroundPosition="center"
+    display="inline-block"
+    padding="0 5px"
+    fontSize="x-large" fontWeight="extrabold" fontFamily="sans-serif"
+    p={"6"}
+  >
+    {children}
+  </chakra.span>
+);
 
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
@@ -124,6 +144,7 @@ function Homepage() {
             boxSize={{ base: "80px", md: "180px" }}
             width={{ base: "90px", md: "190px" }}
             borderRadius={10}
+            loading="lazy"
             alt={`Logo 1*`}
           />
           <Text
@@ -154,6 +175,7 @@ function Homepage() {
             boxSize={{ base: "80px", md: "180px" }}
             width={{ base: "90px", md: "190px" }}
             alt={`Logo 2*`}
+            loading="lazy"
             borderRadius={10}
           />
         </Box>
@@ -168,18 +190,25 @@ function Homepage() {
           >
             <Logins />
             <Box flex="1" />
+            <Box display={"flex"} justifyContent={"space-around"} width={"80"}><Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
+                  Privacy Policy
+                  </Link>
+                  <Link href="https://www.termsfeed.com/live/d75005a6-b516-48aa-b247-31df645410b7" target="_blank" rel="noopener noreferrer" p={1}>
+                  Terms and Conditions
+                  </Link>
+            </Box>
             <Text
               textAlign={"center"}
-              fontSize={"x-small"}
+              fontSize={"small"}
               position="sticky"
               width="100%"
               mt={'6'}
             >
-              <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
+              <Text mb={'3'}>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
               comments, email support@worldsamma.org.
             </Text>
-          </Box>
+             </Box>
         ) : (
           <>
             {" "}
@@ -194,16 +223,15 @@ function Homepage() {
               fontWeight="normal"
               position={"relative"}
             >
-    
-
               <Image
                 src={logo7}
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                height={{ md: "30%"}}
+                height={{base: "", md: "30%"}}
                 opacity={0.5}
-                bottom={{base: "60%", md: "70%"}}
+                loading="lazy"
+                bottom={"70%"}
               />
               <Text
                 textAlign={"center"}
@@ -285,6 +313,7 @@ function Homepage() {
               justifyContent={"center"}
               alignItems={"center"}
             >
+               <BrushText>Donations and Support</BrushText>
               <Box
                 display={"flex"}
                 flexDirection={{ base: "column", md: "row" }}
@@ -299,27 +328,26 @@ function Homepage() {
                   flex={"1"}
                   position={"relative"}
                   mb={{ base: "20px", md: "0" }}
-                  onClick={() => setShow(true)}
-                  style={{ cursor: "pointer" }}
-                  m={"3"}
                 >
                   <Image
                     src={logo9}
                     boxSize={"250px"}
                     borderRadius={2}
+                    onClick={() => setShow(true)}
+                    style={{ cursor: "pointer" }}
                     mx={"auto"}
                     mb={"10px"}
+                    loading="lazy"
                     boxShadow="dark-lg"
                     p="6"
                     rounded="md"
                     bg="blackAlpha.400"
                   />
                   <Text
-                   
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
+                      justifyContent: "center"
                     }}
                   >
                     <CiLocationOn
@@ -334,10 +362,12 @@ function Homepage() {
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
+                    m={1}
                     px={{ base: "10px", md: "0" }}
                   >
-                    <FcDonate style={{ fontSize: "6rem" }} />
+                    <FcDonate style={{ fontSize: "3rem" }} />
                     Your donation is crucial in realizing our ambitious vision.
+                    <br/> <br/> 
                     We aim to construct a larger training facility to
                     accommodate more individuals, empowering countless lives.
                     <Box
@@ -375,7 +405,7 @@ function Homepage() {
                           loading="lazy"
                         />{" "}
                         <Text >
-                          Mpesa Till Number: <br />
+                          Mpesa Till Number:
                           <Text fontWeight={"extrabold"} color={"black"}>
                             858447
                           </Text>{" "}
@@ -396,7 +426,7 @@ function Homepage() {
                   flexDir={"column"}
                   justifyContent={"center"}
                   alignItems={"center"}
-               
+                  marginTop= "-3rem"
                  
                 >
                   <FaArrowCircleRight
@@ -453,7 +483,7 @@ function Homepage() {
                       />{" "}
 
                       <Text p={"6"} color={"black"}>
-                        Mpesa Till Number <br />
+                        Mpesa Till Number: <br />
                         <Text color={"black"} fontWeight={"extrabold"}>
                           858447
                         </Text>
@@ -464,8 +494,7 @@ function Homepage() {
                 <Box
                   flex={"1"}
                   position={"relative"}
-                  onClick={() => setShow(true)}
-                  style={{ cursor: "pointer" }}
+                  m={1}
                 >
                   <Image
                     src={
@@ -475,6 +504,8 @@ function Homepage() {
                     borderRadius={2}
                     mx={"auto"}
                     boxShadow="dark-lg"
+                    onClick={() => setShow(true)}
+                    style={{ cursor: "pointer" }}
                     p="6"
                     rounded="md"
                     bg="blackAlpha.400"
@@ -499,17 +530,19 @@ function Homepage() {
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
+                    m={1}
                     px={{ base: "10px", md: "0" }}
                   >
                     <BiDonateHeart
-                      style={{ fontSize: "6rem", color: "green" }}
+                      style={{ fontSize: "3rem", color: "green" }}
                     />
                     Your support will help establish our international samma
-                    headquarters and build a world-class events facility. This
-                    is a crucial step in expanding our global impact of bringing
+                    headquarters and build a world-class events facility. <br/> <br/> 
+                    Expanding our global impact of bringing
                     people of nations together in thrilling sporting activities,
                     fostering international friendships, business connections
-                    and promoting sports tourism. Thanking you in advance for
+                    and promoting sports tourism.
+                    <br/> <br/>  Thanking you in advance for
                     your generosity.
                   </Text>
                 </Box>
@@ -543,35 +576,20 @@ function Homepage() {
                   p={2}
                 >
                   {" "}
-                  <Link href="https://instagram.com/worldsamma">
-                    <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732068/icons8-instagram-48_otbx6y.png"
-                      h={6}
-                    />
+                  <Link href="https://instagram.com/worldsamma" target="_blank" rel="noopener noreferrer"  p={2}>
+                  <CiInstagram />
                   </Link>
-                  <Link href="https://www.youtube.com/@worldsammafederation">
-                    <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732067/icons8-youtube-47_mzckqt.png"
-                      h={5}
-                    />
+                  <Link href="https://www.youtube.com/@worldsammafederation"  target="_blank" rel="noopener noreferrer" p={2}>
+                  <CiYoutube />
                   </Link>
-                  <Link href="https://x.com/worldsamma">
-                    <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-x-50_i8gjn3.png"
-                      h={5}
-                    />
+                  <Link href="https://x.com/worldsamma" target="_blank" rel="noopener noreferrer" p={2}>
+                 <FaXTwitter />
+                 </Link>
+                  <Link href="https://facebook.com/worldsamma" target="_blank" rel="noopener noreferrer" p={2}>
+                  <CiFacebook />
                   </Link>
-                  <Link href="https://facebook.com/worldsamma">
-                    <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712732068/icons8-facebook-48_zn7fjx.png"
-                      h={6}
-                    />
-                  </Link>
-                  <Link href="https://www.tiktok.com/search?q=worldsamma&t=1713608132427">
-                    <Image
-                      src="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1712951829/icons8-tiktok-50_1_sxupbm.png"
-                      h={6}
-                    />
+                  <Link href="https://www.tiktok.com/@worldsamma" target="_blank" rel="noopener noreferrer" p={2}>
+                  <FaTiktok />
                   </Link>
                 </GridItem>
                 <GridItem
@@ -593,24 +611,33 @@ function Homepage() {
                   (elbow, fist, knee and foot) and finally grappling.
                 </GridItem>
                 <GridItem
+                  colSpan={3}           
+                  width={"100%"}
+                >
+                  <Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={2} >
+                  Privacy Policy
+                  </Link>
+                  <Link href="https://www.termsfeed.com/live/d75005a6-b516-48aa-b247-31df645410b7" target="_blank" rel="noopener noreferrer" p={2}>
+                  Terms and Conditions
+                  </Link>
+                </GridItem> 
+                <GridItem
                   colSpan={3}
-                  background={"white"}
-                  color={"white"}
                   width={"100%"}
                 >
                   <Text
                     textAlign={"center"}
-                     fontSize={"small"}
-                    background={"white"}
+                    fontSize={"small"}
                     textColor={"grey"}
                     width={"100%"}
-                    mt={"6"}
+                    mt={"3"}
                   >
                     <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
                     All rights reserved. Terms and conditions apply. For queries
                     and comments, email support@worldsamma.org.
                   </Text>
-                </GridItem>
+                 
+                </GridItem>   
               </Grid>
             </Box>
           </>

@@ -12,7 +12,7 @@ import chat from "../chat.png";
 import axiosInstance from "../components/config/axios";
 import axios from "axios";
 
-export const Dashboard = ({ courses }) => {
+const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
   const {
     user,
@@ -334,3 +334,4 @@ export const Dashboard = ({ courses }) => {
     </Box>
   );
 };
+export default Dashboard;

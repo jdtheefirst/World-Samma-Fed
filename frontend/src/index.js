@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, {} from 'react';
 import "./index.css";
 import "./setup";
 import reportWebVitals from "./reportWebVitals";
@@ -6,18 +6,15 @@ import { ChakraProvider } from "@chakra-ui/react";
 import ChatProvider from "./components/Context/ChatProvider";
 import { BrowserRouter } from "react-router-dom";
 import { createRoot } from "react-dom/client";
-import LoadingSpinner from './components/Loading';
+import App from './App';
 
 const domNode = document.getElementById("root");
-const App = lazy(() => import('./App'));
 const root = createRoot(domNode);
 root.render(
   <ChakraProvider>
     <BrowserRouter>
       <ChatProvider>
-      <Suspense fallback={<LoadingSpinner/>}>
           <App />
-        </Suspense>
       </ChatProvider>
     </BrowserRouter>
   </ChakraProvider>

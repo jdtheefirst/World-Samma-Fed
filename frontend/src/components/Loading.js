@@ -9,6 +9,7 @@ const LoadingSpinner = () => {
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
+      width={"100%"}
       height="100vh"
       background="rgba(255, 255, 255, 0.8)"
     >

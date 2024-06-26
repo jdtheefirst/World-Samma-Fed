@@ -66,7 +66,7 @@ const Progress = ({ userBelt }) => {
   const progressLevels = [
     "Guest",
     `grey`,
-    `yellow`,
+    `#baba30`,
     `orange`,
     `red`,
     `purple`,
@@ -110,7 +110,7 @@ const Progress = ({ userBelt }) => {
       ))}
       <ProgressArrow level={level}>
         {" "}
-        <Text fontSize={"small"} p={1}>
+        <Text textAlign={"center"} fontSize={"small"} p={1}>
           {(level + 1) * 10}%
         </Text>{" "}
       </ProgressArrow>

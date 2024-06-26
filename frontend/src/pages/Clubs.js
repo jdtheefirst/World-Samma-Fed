@@ -17,7 +17,7 @@ import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import { ClubRegistration } from "../Authentication/club";
 
-export const Clubs = () => {
+export default function Clubs(){
   const { user, club } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const [clubs, setClubs] = useState([]);

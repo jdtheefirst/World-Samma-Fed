@@ -6,15 +6,12 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
-  Radio,
-  RadioGroup,
-  Stack,
-  useToast,
-  Input,
   FormControl,
   FormLabel,
   Select,
+  Input,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { getStatesOfCountry } from "../assets/state";
@@ -24,9 +21,7 @@ import axios from "axios";
 const CoffeeModal = ({ isOpen, onClose }) => {
   const toast = useToast();
   const [country, setCountry] = useState("");
-
   const [amount, setAmount] = useState(0);
-
   const [province, setProvince] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
   const [show, setShow] = useState(false);
@@ -56,13 +51,13 @@ const CoffeeModal = ({ isOpen, onClose }) => {
       });
     } catch (error) {
       console.error("Donation error:", error);
-
       toast({
         title: "An Error Occurred!",
         status: "error",
       });
     }
   };
+
   useEffect(() => {
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(country);
@@ -71,13 +66,13 @@ const CoffeeModal = ({ isOpen, onClose }) => {
 
     fetchSubdivisions();
   }, [country]);
-  const OverlayOne = () => (
+
+  const overlay = (
     <ModalOverlay
       bg="blackAlpha.300"
       backdropFilter="blur(10px) hue-rotate(90deg)"
     />
   );
-  const overlay = React.useState(<OverlayOne />);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="sm">
@@ -119,7 +114,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   ))}
                 </Select>
               </FormControl>
-              {country && subdivisions ? (
+              {country && subdivisions.length > 0 ? (
                 <FormControl id="provinces" isRequired>
                   <FormLabel textColor={"grey"}>County/Province</FormLabel>
                   <Select
@@ -132,16 +127,15 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                   >
-                    {subdivisions &&
-                      subdivisions.map((subdivision) => (
-                        <option
-                          key={subdivision.value}
-                          value={subdivision.value}
-                          style={{ color: "black" }}
-                        >
-                          {subdivision.name}
-                        </option>
-                      ))}
+                    {subdivisions.map((subdivision) => (
+                      <option
+                        key={subdivision.value}
+                        value={subdivision.value}
+                        style={{ color: "black" }}
+                      >
+                        {subdivision.name}
+                      </option>
+                    ))}
                   </Select>
                 </FormControl>
               ) : (
@@ -156,7 +150,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 </FormControl>
               )}
               <FormControl isRequired textColor={"grey"}>
-                <FormLabel>Donate</FormLabel>{" "}
+                <FormLabel>Donate</FormLabel>
                 <Input
                   type="number"
                   textColor={"grey"}
@@ -164,11 +158,8 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   onChange={(e) => setAmount(e.target.value)}
                 />
               </FormControl>
-
               <Button
-                onClick={() => {
-                  setShow(true);
-                }}
+                onClick={() => setShow(true)}
                 borderRadius={20}
                 m={1}
                 background={"purple"}

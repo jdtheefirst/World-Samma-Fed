@@ -1,22 +1,23 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Logins from "./pages/Logins";
-import { Dashboard } from "./pages/Dashboard";
-import CourseDetails from "./pages/Courses";
-import { Clubs } from "./pages/Clubs";
-import ClubDetailes from "./pages/ClubDetails";
 import { ChatState } from "./components/Context/ChatProvider";
-import SubmissionPage from "./pages/Submit";
-import ProfilePage from "./pages/ProfilePage";
-import AdminWorkSlot from "./pages/AdminWorkSlot";
-import Provience from "./pages/Provience";
-import National from "./pages/National";
-import ForgotPassword from "./pages/ForgotPassword";
-import AboutPage from "./pages/About";
-import { useEffect } from "react";
-import InstallButton from "./components/config/InstallButton";
+import { Suspense, lazy, useEffect } from "react";
+const Home = lazy(() => import('./pages/Home'));
+const Logins = lazy(() => import('./pages/Logins'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const CourseDetails = lazy(() => import('./pages/Courses'));
+const Clubs = lazy(() => import('./pages/Clubs'));
+const SubmissionPage = lazy(() => import('./pages/Submit'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const AdminWorkSlot = lazy(() => import('./pages/AdminWorkSlot'));
+const AboutPage = lazy(() => import('./pages/About'));
+const ClubDetailes = lazy(() => import('./pages/ClubDetails'));
+const Provience = lazy(() => import('./pages/Provience'));
+const National = lazy(() => import('./pages/National'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+import LoadingSpinner from './components/Loading';
+
 
 const courses = [
   {
@@ -323,43 +324,25 @@ function App() {
 
   return (
     <div className="App">
-      <InstallButton
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          zIndex: 1000,
-        }}
-      />
+    <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Logins />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
-        <Route
-          path="/courses/:id"
-          element={<CourseDetails courses={courses} user={user} />}
-        />
+        <Route path="/courses/:id" element={<CourseDetails courses={courses} user={user} />} />
         <Route path="/clubs" element={<Clubs />} />
-        <Route
-          path="/courses/:id/submit/:title"
-          element={<SubmissionPage user={user} />}
-        />
+        <Route path="/courses/:id/submit/:title" element={<SubmissionPage user={user} />} />
         <Route path="/profile" element={<ProfilePage user={user} />} />
-        <Route
-          path="/admin-work-slot"
-          element={<AdminWorkSlot user={user} />}
-        />
+        <Route path="/admin-work-slot" element={<AdminWorkSlot user={user} />} />
         <Route path="/about" element={<AboutPage />} />
-        <Route
-          path="/showclub/:clubId/:liveStream"
-          element={<ClubDetailes user={user} />}
-        />
+        <Route path="/showclub/:clubId/:liveStream" element={<ClubDetailes user={user} />} />
         <Route path="/province" element={<Provience user={user} />} />
-        <Route path="national" element={<National />} />
-        <Route path="/accountrecovery" Component={ForgotPassword} />
+        <Route path="/national" element={<National />} />
+        <Route path="/accountrecovery" element={<ForgotPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </div>
+    </Suspense>
+  </div>
   );
 }
 

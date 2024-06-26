@@ -1,9 +1,7 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { ChatState } from "../Context/ChatProvider";
-
-let socketInstance;
 
 export const isSameSenderMargin = (messages, m, i, userId) => {
   const isCurrentUserSender = m.sender?.$oid === userId;

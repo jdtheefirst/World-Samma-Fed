@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Text,
@@ -19,7 +19,6 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { useState, useEffect } from "react";
 import {
   makePaymentMpesa,
   useConnectSocket,
@@ -34,13 +33,13 @@ export default function Paycheck({ course }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const socket = useConnectSocket(user?.token);
-  const OverlayOne = () => (
+  
+  const overlay = (
     <ModalOverlay
       bg="blackAlpha.300"
       backdropFilter="blur(10px) hue-rotate(90deg)"
     />
   );
-  const overlay = React.useState(<OverlayOne />);
 
   useEffect(() => {
     if (!socket) return;
@@ -70,6 +69,7 @@ export default function Paycheck({ course }) {
       socket.off("noPayment");
     };
   }, [setUser, toast, socket]);
+
   const handleAfterPay = async () => {
     if (!user) {
       return;
