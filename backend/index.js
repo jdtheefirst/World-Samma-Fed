@@ -55,10 +55,11 @@ app.use(cors(corsOptions));
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
-    "default-src 'self'; img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; style-src 'self' 'unsafe-inline';"
+    "default-src 'self'; script-src 'self' https://accounts.google.com; img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; style-src 'self' 'unsafe-inline';"
   );
   next();
 });
+
 
 // Routes
 app.use("/api/user", userRoutes);
