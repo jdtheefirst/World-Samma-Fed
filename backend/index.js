@@ -41,7 +41,23 @@ const server = app.listen(
 );
 
 initializeSocketIO(server);
-app.use(cors());
+
+const corsOptions = {
+  origin: ['https://worldsamma.org'],
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com;"
+  );
+  next();
+});
+
+
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/message", messageRouter);
