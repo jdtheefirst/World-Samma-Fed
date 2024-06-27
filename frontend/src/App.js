@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import { ChatState } from "./components/Context/ChatProvider";
 import { Suspense, lazy, useEffect } from "react";
 const Home = lazy(() => import('./pages/Home'));
-const Logins = lazy(() => import('./pages/Logins'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const CourseDetails = lazy(() => import('./pages/Courses'));
 const Clubs = lazy(() => import('./pages/Clubs'));
@@ -327,7 +326,6 @@ function App() {
     <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Logins />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route path="/courses/:id" element={<CourseDetails courses={courses} user={user} />} />
         <Route path="/clubs" element={<Clubs />} />

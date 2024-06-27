@@ -20,7 +20,7 @@ const GoogleLoginButton = () => {
         if (data === "Unfound") {
           toast({
             title: "Account doesn't exist!",
-            description: "Create a new account with us, sign up.",
+            description: "Please create a new account with us, sign up.",
             status: "info",
             duration: 10000,
             position: "bottom",
@@ -76,7 +76,6 @@ const GoogleLoginButton = () => {
       }
     },
     onError: (error) => {
-      console.error("Google login error:", error);
       toast({
         title: "Login error",
         description: "An error occurred during Google login. Please try again.",
@@ -91,7 +90,6 @@ const GoogleLoginButton = () => {
     try {
       await googleLogin(); // Trigger Google login flow
     } catch (error) {
-      console.error("Google login error:", error);
       toast({
         title: "Google login error",
         description:

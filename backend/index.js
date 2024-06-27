@@ -23,6 +23,7 @@ connectDB();
 
 const app = express();
 
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
@@ -30,28 +31,30 @@ app.set('trust proxy', 1);
 const PORT = process.env.PORT;
 const server = app.listen(
   PORT,
-  () => console.log(`Server running on PORT ${PORT}...`)
+  console.log(`Server running on PORT ${PORT}...`)
 );
 
 initializeSocketIO(server);
 
-// Helmet configuration to set security headers
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: { policy: "same-origin" },
   crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
 
-// CORS configuration
+
 const corsOptions = {
-  origin: ['https://worldsamma.org', 'https://res.cloudinary.com', 'https://via.placeholder.com'],
+  origin: [
+    'https://worldsamma.org',
+    'https://res.cloudinary.com',
+    'https://via.placeholder.com',
+    'https://accounts.google.com'
+  ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
-
 app.use(cors(corsOptions));
 
-// CSP configuration
 app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -60,8 +63,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-// Routes
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/message", messageRouter);
@@ -72,7 +73,6 @@ app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
-
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
