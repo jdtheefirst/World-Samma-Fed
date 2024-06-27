@@ -7,6 +7,7 @@ import ChatProvider from "./components/Context/ChatProvider";
 import { BrowserRouter } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import App from './App';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const domNode = document.getElementById("root");
 const root = createRoot(domNode);
@@ -14,7 +15,9 @@ root.render(
   <ChakraProvider>
     <BrowserRouter>
       <ChatProvider>
-          <App />
+        <GoogleOAuthProvider clientId='940835071660-da44he72t3otp7cbn96vlg5pb753tv73.apps.googleusercontent.com'>
+          <App/>
+        </GoogleOAuthProvider>
       </ChatProvider>
     </BrowserRouter>
   </ChakraProvider>

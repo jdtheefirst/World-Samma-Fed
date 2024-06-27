@@ -20,8 +20,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import GoogleLoginButton from "./Google";
 import { ChatState } from "../components/Context/ChatProvider";
 
@@ -173,9 +171,7 @@ const Login = () => {
       >
         Login
       </Button>
-      <GoogleOAuthProvider clientId="940835071660-da44he72t3otp7cbn96vlg5pb753tv73.apps.googleusercontent.com">
         <GoogleLoginButton />
-      </GoogleOAuthProvider>
       <Link
         onClick={() => {
           onOpen();

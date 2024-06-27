@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
-import { Button, useToast, Box } from "@chakra-ui/react";
+import { Button, useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
@@ -20,7 +20,7 @@ const GoogleLoginButton = () => {
         if (data === "Unfound") {
           toast({
             title: "Account doesn't exist!",
-            description: "Please create a new account with us, sign up.",
+            description: "Create a new account with us, sign up.",
             status: "info",
             duration: 10000,
             position: "bottom",
@@ -64,6 +64,7 @@ const GoogleLoginButton = () => {
             },
           }
         );
+
         setEmail(data.email); 
       } catch (error) {
         toast({
@@ -86,30 +87,9 @@ const GoogleLoginButton = () => {
     },
   });
 
-  const handleGoogleLogin = async () => {
-    try {
-      await googleLogin(); // Trigger Google login flow
-    } catch (error) {
-      toast({
-        title: "Google login error",
-        description:
-          "An error occurred during Google login. Please try again.",
-        status: "error",
-        duration: 5000,
-        position: "bottom",
-      });
-    }
-  };
-
   return (
-    <Box
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"center"}
-      width={"100%"}
-    >
       <Button
-        onClick={handleGoogleLogin}
+        onClick={googleLogin}
         display={"flex"}
         justifyContent={"center"}
         width={"100%"}
@@ -118,7 +98,6 @@ const GoogleLoginButton = () => {
         <FcGoogle />
         Sign in with Google
       </Button>
-    </Box>
   );
 };
 
