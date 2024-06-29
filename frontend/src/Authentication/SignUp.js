@@ -75,7 +75,6 @@ const Signup = () => {
       !confirmpassword ||
       !otherName ||
       !selectedCountry ||
-      !provinces ||
       !pic
     ) {
       toast({
@@ -134,7 +133,6 @@ const Signup = () => {
       !gender ||
       !selectedCountry ||
       !otherName ||
-      !provinces ||
       !language ||
       !pic
     ) {
@@ -385,7 +383,7 @@ const Signup = () => {
       </FormControl>
       {selectedCountry && subdivisions.length > 0 ? (
         <FormControl id="provinces" isRequired>
-          <FormLabel textColor={"white"}>County/Province</FormLabel>
+          <FormLabel>County/Province/State</FormLabel>
           <Select
             placeholder="Select your province"
             display={"flex"}
@@ -412,7 +410,7 @@ const Signup = () => {
           <FormLabel>County/Province</FormLabel>
           <Input
             type="text"
-            placeholder="Province"
+            placeholder="Leave blank if not applicable"
             onChange={(e) => setProvinces(e.target.value)}
           />
         </FormControl>

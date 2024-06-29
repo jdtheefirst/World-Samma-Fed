@@ -233,6 +233,7 @@ function UpperNav() {
                 justifyContent={"left"}
                 background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
+                isDisabled={!user.provinces}
                 onClick={() => {
                   navigate("/province");
                   onClose();

@@ -48,7 +48,10 @@ const corsOptions = {
     'https://worldsamma.org',
     'https://res.cloudinary.com',
     'https://via.placeholder.com',
-    'https://accounts.google.com'
+    'https://accounts.google.com',
+    'https://www.paypal.com',
+    'https://sandbox.safaricom.co.ke',
+    'https://api.safaricom.co.ke'
   ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization'],

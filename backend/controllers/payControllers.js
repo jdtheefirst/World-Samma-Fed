@@ -7,9 +7,6 @@ const { getNextNumber } = require("../config/getNextSequence");
 
 dotenv.config({ path: "./secrets.env" });
 
-let userId;
-let subscription;
-
 async function generateAccessToken() {
   const { PAYPAL_CLIENT_ID, PAYPAL_APP_SECRET } = process.env;
   const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_APP_SECRET}`).toString(

@@ -55,6 +55,14 @@ const FloatingChat = ({ onClose }) => {
   }, [user, national, province, setRank]);
 
   useEffect(() => {
+    if (user.provinces === undefined) {
+      setChatOptions((prevOptions) =>
+        prevOptions.filter((option) => option !== "Provincial Coach")
+      );
+    }
+  }, [user.provinces]);
+
+  useEffect(() => {
     if (selectedChatOption === "Coach" && !user?.physicalCoach) {
       navigate("/clubs");
       toast({

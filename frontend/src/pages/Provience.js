@@ -29,8 +29,13 @@ const Provience = () => {
   const toast = useToast();
 
   const fetchClubs = useCallback(async () => {
+
     if (!user) {
       navigate("/dashboard");
+      return;
+    }
+    if(!user.provinces){
+      toast({title: "Country results only!"})
       return;
     }
     setLoading(true);
