@@ -180,23 +180,23 @@ const Login = () => {
         Forgot password?
       </Link>
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered closeOnOverlayClick={false}>
-        <ModalOverlay />
+      <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
         <ModalContent padding={5}>
           <ModalHeader
             fontSize="40px"
             fontFamily="Work sans"
             display="flex"
-            justifyContent="center"
+            flexDir={"column"}
+            justifyContent="space-between"
+            alignItems={"center"}
+            mb={"6"}
           >
-            <Text
-              textAlign={"center"}
-              justifyContent={"center"}
-              fontSize={"2xl"}
-            >
-              Enter your Email below
-            </Text>
-            <Text fontSize={"sm"}> Vist your mailbox and refresh.</Text>
-            <Text fontSize={"sm"}> Please do not close this modal.</Text>
+           <Text textAlign={"center"} justifyContent={"center"} fontSize={"2xl"}>
+  Enter your Email below
+</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody

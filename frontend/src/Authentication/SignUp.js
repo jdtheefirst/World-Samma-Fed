@@ -32,14 +32,6 @@ const Signup = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const OverlayOne = () => (
-    <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
-  const overlay = React.useState(<OverlayOne />);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [confirmpassword, setConfirmpassword] = useState("");
@@ -205,21 +197,28 @@ const Signup = () => {
         isCentered
         closeOnOverlayClick={false}
       >
-        {overlay}
+        <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
         <ModalContent padding={5}>
-          <ModalHeader
-            fontSize="medium"
-            fontFamily="Work sans"
-            display="flex"
-            flexDir={"column"}
-            justifyContent="center"
-            textAlign={"center"}
-          >
-            {" "}
-            <Text> Enter the code sent to: {email} </Text>
-            <Text fontSize={"sm"}> Vist your mailbox and refresh.</Text>
-            <Text fontSize={"sm"}> Please do not close this modal.</Text>
-          </ModalHeader>
+        <ModalHeader
+  fontFamily="Work Sans"
+  display="flex"
+  flexDir={"column"}
+  justifyContent="space-between"
+  alignItems={"center"}
+  textAlign={"center"}
+  mb={"6"}
+>
+  <Text fontSize={"2xl"} mb={"3"} width={"100%"}> Enter the code sent to: <br/> <strong style={{color: "green"}}>{email}</strong></Text>
+  <Text fontSize={"sm"}>
+    ✔️ Visit your mailbox and refresh.
+  </Text>
+  <Text fontSize={"sm"}>
+    ⚠️ Please do not close this modal.
+  </Text>
+</ModalHeader>
           <ModalCloseButton />
           <ModalBody
             display="flex"

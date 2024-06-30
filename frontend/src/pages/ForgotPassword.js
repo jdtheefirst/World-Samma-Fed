@@ -9,6 +9,7 @@ import {
   Text,
   InputRightElement,
   useToast,
+  Link,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -87,6 +88,7 @@ export default function ForgotPassword() {
         backgroundColor={"Background"}
         justifyContent={"space-between"}
         border={"1px solid purple"}
+        mt={"6"}
       >
         {" "}
         <Text padding={4} textAlign={"center"} fontSize={"2xl"}>
@@ -96,7 +98,7 @@ export default function ForgotPassword() {
           onChange={(e) => setVerifyPassword(e.target.value)}
           color={verify === verifyPassword ? "green" : "red.400"}
           value={verifyPassword}
-          placeholder="enter the exact code here"
+          placeholder="Enter the exact code here..."
           textAlign={"center"}
           maxLength={6}
         />
@@ -142,6 +144,27 @@ export default function ForgotPassword() {
           Change Password
         </Button>
       </Box>
+      <Box flex="1" mt={"6"} />
+      <Box>
+            <Box display={"flex"} flexDir={"column"} alignItems={"center"} justifyContent={"space-around"} width={"100%"} ><Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
+                  Privacy Policy
+                  </Link>
+                  <Link href="https://www.termsfeed.com/live/d75005a6-b516-48aa-b247-31df645410b7" target="_blank" rel="noopener noreferrer" p={1}>
+                  Terms and Conditions
+                  </Link>
+            </Box>
+            <Text
+              textAlign={"center"}
+              fontSize={"small"}
+              position="sticky"
+              width="100%"
+              mt={'6'}
+            >
+              <Text mb={'3'}>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
+              All rights reserved. Terms and conditions apply. For queries and
+              comments, email support@worldsamma.org.
+            </Text>
+       </Box>
     </VStack>
   );
 }

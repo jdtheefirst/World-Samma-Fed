@@ -189,8 +189,7 @@ const BrushText = ({ children }) => (
             flexDirection="column"
           >
             <Logins />
-            <Box flex="1" />
-            <Box display={"flex"} justifyContent={"space-around"} width={"80"}><Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
+            <Box display={"flex"} justifyContent={"space-around"} width={"80"} mt={"6"} ><Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
                   Privacy Policy
                   </Link>
                   <Link href="https://www.termsfeed.com/live/d75005a6-b516-48aa-b247-31df645410b7" target="_blank" rel="noopener noreferrer" p={1}>
@@ -617,6 +616,7 @@ const BrushText = ({ children }) => (
                 <GridItem
                   colSpan={3}           
                   width={"100%"}
+                  mt={"6"}
                 >
                   <Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={2} >
                   Privacy Policy
