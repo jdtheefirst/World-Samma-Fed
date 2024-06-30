@@ -27,46 +27,47 @@ const testimonials = [
 const TestimonialsCarousel = () => {
   return (
     <Box overflow={"hidden"}>
-    <Carousel
-      showStatus={false}
-      showThumbs={false}
-      infiniteLoop={true}
-      autoPlay={true}
-      interval={5000}
-      transitionTime={2000}
-    >
-         {testimonials.map((testimonial) => (
-      <Box key={testimonial.id} display="flex" flexDir={"column"} justifyContent="center" alignItems="center" mb={6}>
-        <Box position="relative" width="30%" p={4} borderRadius="md" textAlign="center">
-          <Box position="relative" mb={4}>
-            <Image
-              borderRadius="full"
-              src={testimonial.image}
-              alt={testimonial.name}
-              loading="lazy"
-              width="100%"
-              height="auto"
-            />
-            <Box
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              height={{base: "3rem", md: "5rem"}}
-              background="linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)"
-              borderBottomLeftRadius="full"
-              borderBottomRightRadius="full"
-            />
+      <Carousel
+        showStatus={false}
+        showThumbs={false}
+        infiniteLoop={true}
+        autoPlay={true}
+        interval={5000}
+        transitionTime={2000}
+      >
+        {testimonials.map((testimonial) => (
+          <Box key={testimonial.id} display="flex" flexDir={"column"} justifyContent="center" alignItems="center" mb={6}>
+            <Box position="relative" width={{ base: "80%", md: "30%" }} p={4} borderRadius="md" textAlign="center">
+              <Box position="relative" mb={4}>
+                <Image
+                  borderRadius="full"
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  loading="lazy"
+                  width="100%"
+                  height="auto"
+                />
+                <Box
+                  position="absolute"
+                  bottom="0"
+                  left="0"
+                  right="0"
+                  height={{ base: "3rem", md: "5rem" }}
+                  background="linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)"
+                  borderBottomLeftRadius="full"
+                  borderBottomRightRadius="full"
+                />
+              </Box>
+            </Box>
+            <Box textAlign={"center"} width={{ base: "80%", md: "50%" }}>
+              <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
+                {testimonial.name}
+              </Text>
+              <Text mt={2} p={'3'}>{testimonial.comment}</Text>
+            </Box>
           </Box>
-        </Box>
-        <Box textAlign={"center"} width={{base: "80%", md: "50%"}}> <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
-            {testimonial.name}
-          </Text>
-          <Text mt={2} p={'3'}>{testimonial.comment}</Text></Box>
-      </Box>
-    ))}
-
-    </Carousel>
+        ))}
+      </Carousel>
     </Box>
   );
 };

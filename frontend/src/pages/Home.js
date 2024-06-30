@@ -141,8 +141,8 @@ const BrushText = ({ children }) => (
         >
           <Image
             src={logo1}
-            boxSize={{ base: "80px", md: "180px" }}
-            width={{ base: "90px", md: "190px" }}
+            boxSize={{ base: "60px", md: "120px" }}
+            width={{ base: "65px", md: "130px" }}
             borderRadius={10}
             loading="lazy"
             alt={`Logo 1*`}
@@ -150,7 +150,7 @@ const BrushText = ({ children }) => (
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "20px",
+              base: "21px",
               sm: "20px",
               md: "30px",
               lg: "40px",
@@ -166,14 +166,14 @@ const BrushText = ({ children }) => (
             transform="translateX(-50%)"
             p={"2"}
             letterSpacing={1}
-            textShadow={{base: "none", md: "2px 2px 2px #000"}}
+            textShadow={{base: "1px 1px 1px #000", md: "2px 2px 2px #000"}}
           >
             WORLD SAMMA FEDERATION
           </Text>
           <Image
             src={logo2}
-            boxSize={{ base: "80px", md: "180px" }}
-            width={{ base: "90px", md: "190px" }}
+            boxSize={{ base: "60px", md: "120px" }}
+            width={{ base: "70px", md: "140px" }}
             alt={`Logo 2*`}
             loading="lazy"
             borderRadius={10}
@@ -228,7 +228,7 @@ const BrushText = ({ children }) => (
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                height={{base: "", md: "30%"}}
+                height={{base: "15%", md: "30%"}}
                 opacity={0.5}
                 loading="lazy"
                 bottom={"70%"}

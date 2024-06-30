@@ -176,7 +176,6 @@ const Login = () => {
         onClick={() => {
           onOpen();
         }}
-        textColor={"whitesmoke"}
       >
         Forgot password?
       </Link>

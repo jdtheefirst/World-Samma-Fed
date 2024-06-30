@@ -32,7 +32,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   }));
 
   const handleSubmit = async () => {
-    if (!country || !province || !amount) {
+    if (!country|| !amount) {
       toast({
         title: "Form was incomplete",
         status: "warning",
@@ -139,12 +139,12 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   </Select>
                 </FormControl>
               ) : (
-                <FormControl id="provinces" isRequired>
+                <FormControl id="provinces">
                   <FormLabel textColor={"grey"}>County/Province</FormLabel>
                   <Input
                     type="text"
                     textColor={"grey"}
-                    placeholder="Province"
+                    placeholder="Leave blank if not applicable..."
                     onChange={(e) => setProvince(e.target.value)}
                   />
                 </FormControl>
@@ -163,6 +163,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 borderRadius={20}
                 m={1}
                 background={"purple"}
+                isDisabled={!country}
                 color={"white"}
                 _hover={{ color: "black", background: "green" }}
               >

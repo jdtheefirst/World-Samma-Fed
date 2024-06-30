@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Box, Text, Stack } from '@chakra-ui/react';
+import { Box, Text, Stack, Spinner } from '@chakra-ui/react';
 import { CiCircleQuestion } from "react-icons/ci";
 import axios from 'axios';
 import LoadingSpinner from './Loading';
@@ -50,7 +50,7 @@ const PollComponent = () => {
     return ((votes[index] / totalVotes) * 100).toFixed(1);
   };
 
-  if (!poll) return <LoadingSpinner/>;
+  if (!poll) return <Text textAlign={"center"} p={"6"}>Loading poll...<Spinner size={"sm"}/></Text>;
 
   return (
     <Box p={4} width={{base: "100%", md: "80%"}} boxShadow="base" mb={4}  backgroundColor="#934cce5e"

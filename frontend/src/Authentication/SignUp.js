@@ -406,11 +406,11 @@ const Signup = () => {
           </Select>
         </FormControl>
       ) : (
-        <FormControl id="provinces" isRequired>
+        <FormControl id="provinces">
           <FormLabel>County/Province</FormLabel>
           <Input
             type="text"
-            placeholder="Leave blank if not applicable"
+            placeholder="Leave blank if not applicable..."
             onChange={(e) => setProvinces(e.target.value)}
           />
         </FormControl>

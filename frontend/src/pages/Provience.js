@@ -35,7 +35,7 @@ const Provience = () => {
       return;
     }
     if(!user.provinces){
-      toast({title: "Country results only!"})
+      navigate("/dashboard");
       return;
     }
     setLoading(true);
