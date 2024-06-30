@@ -25,14 +25,15 @@
 </head>
 <body>
   <div id="root"></div>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-ZFWT8RB2MQ');
-</script>
+  <!-- External script with nonce -->
+  <script nonce="{nonce}" async src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ"></script>
+  <!-- Inline script with nonce -->
+  <script nonce="{nonce}">
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-ZFWT8RB2MQ');
+  </script>
 </body>
 </html>

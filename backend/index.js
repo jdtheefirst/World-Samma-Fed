@@ -17,6 +17,8 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { initializeSocketIO } = require("./socket");
 const helmet = require("helmet");
+const crypto = require('crypto');
+const nonce = crypto.randomBytes(16).toString('base64');
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -67,10 +69,10 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' https://accounts.google.com https://www.googletagmanager.com; " +
+    "script-src 'self' https://accounts.google.com https://www.googletagmanager.com 'nonce-" + nonce + "'; " +
     "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; " +
     "style-src 'self' 'unsafe-inline'; " +
-    "connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke;" // Added connect-src
+    "connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke;"
   );
   next();
 });
