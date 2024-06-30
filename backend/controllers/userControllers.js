@@ -139,12 +139,32 @@ const forgotEmail = async (req, res) => {
         pass: privateEmailPass, // your email password
       },
     });
+
     const mailOptions = {
       from: privateEmail,
       to: email,
       subject: "Recover Your Email",
-      text: `Your recovery code is:  ${verificationCode}\n\nThis is system's generated code, please do not reply.`,
+      html: `
+        <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #333;">Recover Your Email</h2>
+          <p>Hello,</p>
+          <p>You have requested to recover your email associated with our service.</p>
+          <p>Your recovery code is: <strong>${verificationCode}</strong></p>
+          <p>If you did not request this change, please contact support immediately.</p>
+          <p>Stay connected and follow us on social media:</p>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+          </ul>
+          <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
+          <p>Thank you for being a part of our community.</p> 
+        </div>
+      `,
     };
+
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         res.status(400).json({ message: "Email Sending Failed" });
@@ -398,6 +418,7 @@ const deleteImage = async (req, res) => {
       .json({ error: "An error occurred while deleting the image" });
   }
 };
+
 const authorizeUser = async (req, res) => {
   const { userEmail } = req.params;
 
@@ -414,14 +435,31 @@ const authorizeUser = async (req, res) => {
       pass: privateEmailPass,
     },
   });
+
   const mailOptions = {
     from: privateEmail,
     to: userEmail,
     subject: "Verify Your Email",
-    text: `Your verification code is:  ${verificationCode}
-    
-This is system's generated code, please do not reply.`,
+    html: `
+      <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
+        <h2 style="color: #333;">Verify Your Email</h2>
+        <p>Your verification code is: <strong>${verificationCode}</strong></p>
+        <p>This is a system-generated code, please do not reply.</p>
+        <p>Join the Society of African Mixed Martial Arts (SAMMA) and be part of a vibrant community!</p>
+        <p>Stay connected and follow us on social media:</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+        </ul>
+        <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
+        <p>Thank you for being a part of our community.</p>
+      </div>
+    `,
   };
+
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       res.status(400).json({ message: "Email Sending Failed" });
@@ -432,6 +470,9 @@ This is system's generated code, please do not reply.`,
     }
   });
 };
+
+
+
 const getAdsInfo = async (req, res) => {
   const acceptLanguage = req.headers["accept-language"] || "en-US";
   const referrer = req.headers.referer || "unknown";

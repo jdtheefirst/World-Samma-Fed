@@ -217,7 +217,8 @@ const Signup = () => {
           >
             {" "}
             <Text> Enter the code sent to: {email} </Text>
-            <Text fontSize={"sm"}>You may need to refresh your mailbox.</Text>
+            <Text fontSize={"sm"}> Vist your mailbox and refresh.</Text>
+            <Text fontSize={"sm"}> Please do not close this modal.</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody

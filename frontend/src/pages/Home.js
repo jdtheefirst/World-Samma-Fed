@@ -82,7 +82,7 @@ const BrushText = ({ children }) => (
   <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
     SAMMA
   </strong>
-  {'\u00A0'}- One Martial Art
+  {'\u00A0'}- All-In-One Martial Art
 </Text>
       <FaRocket className="rocket-animation" size={20} />
       <Menu>

@@ -179,7 +179,7 @@ const Login = () => {
       >
         Forgot password?
       </Link>
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
+      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent padding={5}>
           <ModalHeader
@@ -195,6 +195,8 @@ const Login = () => {
             >
               Enter your Email below
             </Text>
+            <Text fontSize={"sm"}> Vist your mailbox and refresh.</Text>
+            <Text fontSize={"sm"}> Please do not close this modal.</Text>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody
