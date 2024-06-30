@@ -36,8 +36,8 @@ const TestimonialsCarousel = () => {
         transitionTime={2000}
       >
         {testimonials.map((testimonial) => (
-          <Box key={testimonial.id} display="flex" flexDir={"column"} justifyContent="center" alignItems="center" mb={6}>
-            <Box position="relative" width={{ base: "80%", md: "30%" }} p={4} borderRadius="md" textAlign="center">
+          <Box key={testimonial.id} display="flex" flexDir={"column"} justifyContent="center" alignItems="center" mb={6}  mt={'6'}>
+            <Box position="relative" width={{ base: "50%", md: "25%" }} p={4} borderRadius="md" textAlign="center">
               <Box position="relative" mb={4}>
                 <Image
                   borderRadius="full"

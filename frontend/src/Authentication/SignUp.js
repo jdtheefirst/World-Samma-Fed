@@ -228,7 +228,7 @@ const Signup = () => {
           >
             <Input
               fontSize={"medium"}
-              placeholder={`i.e 126413`}
+              placeholder={`Enter the code here...`}
               type="text"
               textAlign="center"
               onChange={(e) => setInputCode(e.target.value)}
@@ -274,7 +274,6 @@ const Signup = () => {
         <FormLabel >Other name</FormLabel>
         <Input
           placeholder="Enter your other name"
-
           value={otherName}
           onChange={(e) => setOtherName(e.target.value)}
         />

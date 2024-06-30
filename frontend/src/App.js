@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { ChatState } from "./components/Context/ChatProvider";
 import { Suspense, lazy, useEffect } from "react";
 const Home = lazy(() => import('./pages/Home'));
@@ -298,6 +298,20 @@ PUNCHES
   },
 ];
 
+const RouteChangeTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (window.gtag) {
+      window.gtag('config', 'G-ZFWT8RB2MQ', {
+        page_path: location.pathname,
+      });
+    }
+  }, [location]);
+
+  return null;
+};
+
 function App() {
   const { user, setUser } = ChatState();
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -311,6 +325,7 @@ function App() {
   return (
     <div className="App">
     <Suspense fallback={<LoadingSpinner />}>
+    <RouteChangeTracker/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />

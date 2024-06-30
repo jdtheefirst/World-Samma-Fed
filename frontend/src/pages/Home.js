@@ -228,16 +228,20 @@ const BrushText = ({ children }) => (
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                height={{base: "15%", md: "30%"}}
+                height={{base: "15%", md: "25%"}}
                 opacity={0.5}
                 loading="lazy"
+                border={"2px solid #2d1950"}
+                rounded="md"
+                bg="blackAlpha.400"
+                borderRadius={"full"}
                 bottom={"70%"}
               />
               <Text
                 textAlign={"center"}
                 fontSize={"md"}
                 width={"300px"}
-                p={{ base: "2", md: "6" }}
+                p={{ base: "3", md: "6" }}
                 m={{ base: "4", md: "1" }}
                 boxShadow="base"
                 textColor={"#000000"}

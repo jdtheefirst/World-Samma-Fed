@@ -5,12 +5,14 @@ const pollModel = require("../models/pollModel");
 const connectDB = async () => {
   const URL = process.env.MONGO_URI;
   try {
-    const connect = await mongoose.connect(URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    console.log('Connected to database');
+  
+    mongoose.connect(URL)
+  .then(() => {
+    console.log('MongoDB connected');
+  })
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+  });
 
     const seedPoll = async () => {
       const existingPoll = await pollModel.findOne();

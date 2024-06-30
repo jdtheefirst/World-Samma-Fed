@@ -39,7 +39,6 @@ const registerUsers = asyncHandler(async (req, res) => {
     !gender ||
     !selectedCountry ||
     !otherName ||
-    !provinces ||
     !language ||
     !passport
   ) {
@@ -426,7 +425,7 @@ This is system's generated code, please do not reply.`,
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       res.status(400).json({ message: "Email Sending Failed" });
-      console.log(error);
+      console.log("This is the error", error);
     } else {
       console.log("Email sent: " + info.response);
       res.status(200).json(verificationCode);

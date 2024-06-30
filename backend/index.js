@@ -52,10 +52,15 @@ const corsOptions = {
     'https://www.paypal.com',
     'https://sandbox.safaricom.co.ke',
     'https://api.safaricom.co.ke',
+    'https://www.googletagmanager.com',
+    'mail.privateemail.com',
+    'http://1482.digitaldsp.com',
+    'https://api.cloudinary.com',
   ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
+
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {

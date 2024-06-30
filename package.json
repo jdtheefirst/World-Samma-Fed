@@ -35,5 +35,9 @@
     "react-focus-lock": "^2.11.0",
     "react-responsive-carousel": "^3.2.23",
     "socket.io": "^4.7.4"
-  }
+  },
+    "resolutions": {
+      "punycode": "^2.0.0"
+    }
+  
 }
