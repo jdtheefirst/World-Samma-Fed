@@ -128,7 +128,6 @@ const updateUser = async (req, res) => {
 };
 
 const makePaymentMpesa = async (req, res) => {
-  userId = req.params.userId;
   const amount = req.query.amount;
   const phoneNumber = req.body.phoneNumber;
 

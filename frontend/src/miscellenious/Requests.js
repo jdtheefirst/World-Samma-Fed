@@ -60,6 +60,7 @@ const Requests = () => {
       fetchClubRequests();
     }
   }, [user, fetchClubRequests]);
+  
   const declineRequest = async (clubId) => {
     if (!user || !clubId) {
       return;

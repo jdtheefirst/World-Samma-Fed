@@ -56,7 +56,7 @@ const PollComponent = () => {
     <Box p={4} width={{base: "100%", md: "80%"}} boxShadow="base" mb={4}  backgroundColor="#934cce5e"
     borderColor="#934cce5e" borderRadius={20}>
       <CiCircleQuestion fontSize={"50px"} />
-      <Text textAlign={"center"} fontWeight={"extrabold"}>Poll</Text>
+      <Text textAlign={"center"} fontWeight={"extrabold"}>POLL</Text>
       <Text fontSize="large"  p={4} mb={4} textAlign="center">{poll.question}</Text>
       <Stack  display={"flex"}
             justifyContent={"center"}

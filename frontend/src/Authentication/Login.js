@@ -63,11 +63,12 @@ const Login = () => {
         { email, password },
         config
       );
+      console.log(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
-
       navigate("/dashboard");
     } catch (error) {
+      console.log(error);
       setLoading(false);
       if (error.response && error.response.status === 401) {
         toast({
@@ -114,6 +115,7 @@ const Login = () => {
         setDisable(false);
       }, 30000);
     } catch (error) {
+      console.log(error);
       setSearching(false);
       setTimeout(() => {
         setDisable(false);

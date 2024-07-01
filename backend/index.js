@@ -17,8 +17,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { initializeSocketIO } = require("./socket");
 const helmet = require("helmet");
-const crypto = require('crypto');
-const nonce = crypto.randomBytes(16).toString('base64');
+const crypto = require("crypto");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -38,13 +37,14 @@ const server = app.listen(
 
 initializeSocketIO(server);
 
+// Helmet configuration
 app.use(helmet({
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: { policy: "same-origin" },
   crossOriginResourcePolicy: { policy: "cross-origin" },
 }));
 
-
+// CORS configuration
 const corsOptions = {
   origin: [
     'https://worldsamma.org',
@@ -55,6 +55,7 @@ const corsOptions = {
     'https://sandbox.safaricom.co.ke',
     'https://api.safaricom.co.ke',
     'https://www.googletagmanager.com',
+    'https://pagead2.googlesyndication.com',
     'mail.privateemail.com',
     'http://1482.digitaldsp.com',
     'https://api.cloudinary.com',
@@ -65,17 +66,27 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Content Security Policy configuration
 app.use((req, res, next) => {
+  // Generate a nonce for this request
+  const nonce = crypto.randomBytes(16).toString("base64");
+
+  // Set CSP headers
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' https://accounts.google.com https://www.googletagmanager.com 'nonce-" + nonce + "'; " +
-    "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com; " +
+    "script-src 'self' https://accounts.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com 'nonce-" + nonce + "'; " +
+    "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; " +
     "style-src 'self' 'unsafe-inline'; " +
+    "frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; " +
     "connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke;"
   );
+
+  // Proceed to the next middleware
   next();
 });
+
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);

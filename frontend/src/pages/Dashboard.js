@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { Box, Button, IconButton, Image, useToast } from "@chakra-ui/react";
+import { Box, Button, IconButton, useToast } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import Progress from "../miscellenious/Progress";
 import MyPrograms from "../miscellenious/Myprograms";
@@ -8,9 +8,10 @@ import FloatingChat from "../miscellenious/FloatingChat";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
-import chat from "../chat.png";
 import axiosInstance from "../components/config/axios";
 import axios from "axios";
+import AdComponent from "../components/Ads";
+import { MdOutlineFiberSmartRecord, MdOutlineMarkUnreadChatAlt } from "react-icons/md";
 
 const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -43,7 +44,7 @@ const Dashboard = ({ courses }) => {
   }, [setUser, navigate]);
 
   const requestClub = useCallback(async () => {
-    if (!user.coach) {
+    if (!user?.coach) {
       return;
     }
 
@@ -62,14 +63,6 @@ const Dashboard = ({ courses }) => {
           setClub(response.data);
         })
         .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            toast({
-              title: "Your session has expired",
-              duration: 3000,
-              status: "warning",
-              position: "bottom",
-            });
-          }
         });
     } catch (error) {
       console.error("Error fetching Club:", error);
@@ -199,7 +192,7 @@ const Dashboard = ({ courses }) => {
           if (error.response && error.response.status === 401) {
             toast({
               title: "Your session has expired",
-              description: "Logging out in less than 8 seconds",
+              description: "Logging out in 8 seconds",
               duration: 8000,
               status: "loading",
               position: "bottom",
@@ -213,13 +206,6 @@ const Dashboard = ({ courses }) => {
         });
     } catch (error) {
       console.log(error);
-      toast({
-        title: "An Error Occurred!",
-        description: "Try again after sometime.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
     }
     try {
       const { data } = await axios.get(
@@ -253,12 +239,13 @@ const Dashboard = ({ courses }) => {
   }, [fetchClubs, navigate, user]);
 
   return (
-    <Box width="100%" height="100%" background="white" position="relative">
-      <ErrorBoundary fallback={<p>Something went wrong</p>} userSelect="none">
+    <ErrorBoundary fallback={<p style={{color: "white"}}>Something went wrong</p>} userSelect="none">
+    <Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDir={"column"} width="100%"background="white" position="relative">
+
         <Box position="fixed" background="Background" zIndex={10} width="100%">
           <UpperNav />
         </Box>
-        <Box mt={20}>
+        <Box width={"100%"} mt={{base: "58rem", md: "70rem"}}>
           <Progress userBelt={user?.belt} />
         </Box>
         <MyPrograms courses={courses} user={user} />
@@ -280,11 +267,8 @@ const Dashboard = ({ courses }) => {
                 border={"1px solid #d24ce0"}
                 borderRadius={20}
               >
-                Live Clubs{"   "}
-                <Image
-                  src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709910225/icons8-live-video-on_kr3qci.gif"
-                  height={6}
-                />
+                Live Clubs{'\u00A0'}
+                <MdOutlineFiberSmartRecord style={{fontSize: "30px"}}/>
               </Button>
             )}
             {show &&
@@ -313,25 +297,23 @@ const Dashboard = ({ courses }) => {
         <IconButton
           display={chatOpen ? "none" : "flex"}
           position="fixed"
-          bottom={0}
+          bottom={10}
           right={10}
           icon={
-            <Image
-              src={chat}
-              alt="Chat"
-              width={isHovered ? "60px" : "40px"}
-              transition="width 0.3s ease-in-out"
-            />
+            <MdOutlineMarkUnreadChatAlt style={{width: isHovered ? "60px" : "40px",
+            transition: "width 0.3s ease-in-out", color: "teal", fontSize: "30px"}} />
           }
           backgroundColor="white"
+          border={"1px solid black"}
           _hover={{ backgroundColor: "white" }}
           onClick={() => setChatOpen(true)}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           borderRadius={20}
         />
-      </ErrorBoundary>
+        <AdComponent/>
     </Box>
+   </ErrorBoundary>
   );
 };
 export default Dashboard;

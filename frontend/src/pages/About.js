@@ -40,23 +40,32 @@ const AboutPage = () => {
         p={5}
       >
         <Text fontSize="xl" mb={4}>
-          15th March 2011 (in Mombasa City Centre): Formation of the Society of
+        <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
+    15th March 2011 (in Mombasa City Centre):
+  </strong>
+  {'\u00A0'}
+           Formation of the Society of
           African Mixed Martial Arts and use of SAMMA as its acronym (acronym
           inspired by east African street slang word for a flip, "sama"). Then
           making of cheni 6 curriculum began with "designing" of the tamati
           (sign out) pattern.
         </Text>
-        <Text fontSize="xl" fontWeight={"bold"} mb={4}>
-          Society of African Mixed Martial Arts(SAMMA)
-        </Text>
         <Text fontSize="xl" mb={4}>
-          1st August 2013 (in Mombasa North Coast): Transformation of SAMMA to a
+        <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
+   1st August 2013 (in Mombasa North Coast):
+  </strong>
+  {'\u00A0'}
+          Transformation of SAMMA to a
           martial art after the completion of the main contents of cheni 6
           curriculum. Immediate formation of the World Samma Federation (WSF) to
           unify and voice for wasamma (samma exponents) worldwide.
         </Text>
         <Text fontSize="xl" mb={4}>
-          March 2021: Introduction of samma pigano (sparring) method at Kenya
+        <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
+     March 2021:
+  </strong>
+  {'\u00A0'}
+          Introduction of samma pigano (sparring) method at Kenya
           Coast, that is; THREE ranges of man to man combat (stick, elbow,
           punch, knee, kick and finally grappling).
         </Text>

@@ -10,7 +10,6 @@ const ProgressContainer = styled.div`
   width: 100%;
   padding: 0;
   margin: 0;
-  border: 1px solid #ccc;
 `;
 
 const ProgressSlot = styled.div`

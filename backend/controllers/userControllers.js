@@ -46,56 +46,63 @@ const registerUsers = asyncHandler(async (req, res) => {
     throw new Error({ message: "Please enter all fields!" });
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists, login");
-  }
-  const WSF = await User.findOne({ admin: true });
-  const user = {
-    name,
-    email,
-    password,
-    passport,
-    language,
-    gender,
-    pic,
-    selectedCountry,
-    otherName,
-    provinces,
-    passport,
-    WSF,
-  };
-
-  const userInfo = await User.create(user);
-
-  if (userInfo) {
-    const responseData = {
-      _id: userInfo._id,
-      name: userInfo.name,
-      otherName: userInfo.otherName,
-      admission: userInfo.admission,
-      email: userInfo.email,
-      gender: userInfo.gender,
-      country: userInfo.selectedCountry,
-      provinces: userInfo.provinces,
-      pic: userInfo.pic,
-      belt: userInfo.belt,
-      physicalCoach: userInfo.physicalCoach,
-      coach: userInfo.coach,
-      certificates: userInfo.certificates,
-      clubRequests: userInfo.clubRequests,
-      wsf: userInfo.WSF,
-      language: userInfo.language,
-      token: generateToken(userInfo._id),
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exists, login");
+    }
+    const WSF = await User.findOne({ admin: true });
+    const user = {
+      name,
+      email,
+      password,
+      passport,
+      language,
+      gender,
+      pic,
+      selectedCountry,
+      otherName,
+      provinces,
+      passport,
+      WSF,
     };
-
-    res.status(201).json(responseData);
-  } else {
-    res.status(400);
-    throw new Error("Failed to create the account, try again after some time.");
+  
+    const userInfo = await User.create(user);
+  
+    if (userInfo) {
+      const responseData = {
+        _id: userInfo._id,
+        name: userInfo.name,
+        otherName: userInfo.otherName,
+        admission: userInfo.admission,
+        email: userInfo.email,
+        gender: userInfo.gender,
+        country: userInfo.selectedCountry,
+        provinces: userInfo.provinces,
+        pic: userInfo.pic,
+        belt: userInfo.belt,
+        physicalCoach: userInfo.physicalCoach,
+        coach: userInfo.coach,
+        certificates: userInfo.certificates,
+        clubRequests: userInfo.clubRequests,
+        wsf: userInfo.WSF,
+        language: userInfo.language,
+        token: generateToken(userInfo._id),
+      };
+  
+      res.status(201).json(responseData);
+    } else {
+      res.status(400);
+      throw new Error("Failed to create the account, try again after some time.");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500);
+    
   }
 });
+
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
@@ -153,11 +160,11 @@ const forgotEmail = async (req, res) => {
           <p>If you did not request this change, please contact support immediately.</p>
           <p>Stay connected and follow us on social media:</p>
           <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
-            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
             <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
             <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
-            <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
           </ul>
           <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
           <p>Thank you for being a part of our community.</p> 
@@ -266,6 +273,7 @@ const recoverEmail = async (req, res) => {
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password)
 
   try {
     let userInfo = await User.findOne({ email: email });
@@ -301,7 +309,7 @@ const authUser = asyncHandler(async (req, res) => {
       res.status(401).json({ message: "Invalid Email or Password" });
     }
   } catch (error) {
-    console.log(error);
+    console.log("We have an error", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -445,14 +453,14 @@ const authorizeUser = async (req, res) => {
         <h2 style="color: #333;">Verify Your Email</h2>
         <p>Your verification code is: <strong>${verificationCode}</strong></p>
         <p>This is a system-generated code, please do not reply.</p>
-        <p>Join the Society of African Mixed Martial Arts (SAMMA) and be part of a vibrant community!</p>
+        <p>Join the World Samma Federation and be part of a vibrant community!</p>
         <p>Stay connected and follow us on social media:</p>
         <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
           <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
           <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
-          <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
-          <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
-          <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
         </ul>
         <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
         <p>Thank you for being a part of our community.</p>

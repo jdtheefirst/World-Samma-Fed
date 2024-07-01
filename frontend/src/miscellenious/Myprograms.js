@@ -30,11 +30,11 @@ const MyPrograms = ({ courses, user }) => {
   ];
 
   return (
-    <Box
+    <Box 
       display={"flex"}
       flexDir={"column"}
-      alignItems="center"
-      justifyContent="space-between"
+      alignItems={"center"}
+      justifyContent={"center"}
       width="100%"
       p={4}
       backgroundColor={"white"}
