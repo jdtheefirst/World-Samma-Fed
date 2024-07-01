@@ -239,80 +239,75 @@ const Dashboard = ({ courses }) => {
   }, [fetchClubs, navigate, user]);
 
   return (
-    <ErrorBoundary fallback={<p style={{color: "white"}}>Something went wrong</p>} userSelect="none">
-    <Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDir={"column"} width="100%"background="white" position="relative">
-        <Box position="fixed" background="Background" zIndex={10} width="100%">
-          <UpperNav />
-        </Box>
-        <Box width={"100%"} mt={{base: "58rem", md: "70rem"}}>
+    <ErrorBoundary fallback={<p style={{ color: "white" }}>Something went wrong</p>} userSelect="none">
+      <Box display="flex" alignItems="center" justifyContent="center" flexDir="column" width="100%" background="white" position="relative">
+        <UpperNav />
+        <Box width="100%" mt={20}>
           <Progress userBelt={user?.belt} />
         </Box>
         <MyPrograms courses={courses} user={user} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}
         {live.length > 0 && (
-          <Box
-            position="fixed"
-            top={90}
-            right={50}
-            borderRadius={20}
-            border={"1px solid #d24ce0"}
-          >
+          <Box position="fixed" top="90px" right="50px" borderRadius="20px" border="1px solid #d24ce0">
             {!show && (
               <Button
                 backgroundColor="white"
                 _hover={{ backgroundColor: "white" }}
                 onClick={() => setShow(true)}
-                width={"100%"}
-                border={"1px solid #d24ce0"}
-                borderRadius={20}
+                width="100%"
+                border="1px solid #d24ce0"
+                borderRadius="20px"
               >
                 Live Clubs{'\u00A0'}
-                <MdOutlineFiberSmartRecord style={{fontSize: "30px"}}/>
+                <MdOutlineFiberSmartRecord style={{ fontSize: "30px" }} />
               </Button>
             )}
             {show &&
               live.map((liveItem) => (
                 <Button
                   key={liveItem._id}
-                  textAlign={"center"}
-                  width={"100%"}
+                  textAlign="center"
+                  width="100%"
                   backgroundColor="white"
                   _hover={{ backgroundColor: "white" }}
                   onClick={() => {
-                    setLive((prevLive) =>
-                      prevLive.filter((n) => n !== liveItem)
-                    );
+                    setLive((prevLive) => prevLive.filter((n) => n !== liveItem));
                     navigate(`/showclub/${liveItem._id}/${true}`);
                     setShow(false);
                   }}
-                  borderRadius={20}
+                  borderRadius="20px"
                 >
                   {`${liveItem.name} are live...`}
                 </Button>
               ))}
           </Box>
         )}
-
         <IconButton
           display={chatOpen ? "none" : "flex"}
           position="fixed"
-          bottom={10}
-          right={10}
+          bottom="10px"
+          right="10px"
           icon={
-            <MdOutlineMarkUnreadChatAlt style={{width: isHovered ? "60px" : "40px",
-            transition: "width 0.3s ease-in-out", color: "teal", fontSize: "30px"}} />
+            <MdOutlineMarkUnreadChatAlt
+              style={{
+                width: isHovered ? "60px" : "40px",
+                transition: "width 0.3s ease-in-out",
+                color: "teal",
+                fontSize: "30px",
+              }}
+            />
           }
           backgroundColor="white"
-          border={"1px solid black"}
+          border="1px solid black"
           _hover={{ backgroundColor: "white" }}
           onClick={() => setChatOpen(true)}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          borderRadius={20}
+          borderRadius="20px"
         />
-        <AdComponent/>
-    </Box>
-   </ErrorBoundary>
+        <AdComponent />
+      </Box>
+    </ErrorBoundary>
   );
 };
 export default Dashboard;

@@ -6,7 +6,6 @@ import {
   Text,
   useToast,
   IconButton,
-  Image,
   Spinner,
 } from "@chakra-ui/react";
 import ScrollableChat from "./ScrollableChat";
@@ -14,6 +13,7 @@ import { ChatState } from "../components/Context/ChatProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useConnectSocket } from "../components/config/chatlogics";
+import { IoIosSend } from "react-icons/io";
 
 const FloatingChat = ({ onClose }) => {
   const toast = useToast();
@@ -28,6 +28,7 @@ const FloatingChat = ({ onClose }) => {
   const [sender, setSender] = useState(null);
   const [loading, setLoading] = useState();
   const [rank, setRank] = useState(false);
+  const [sending, setSending] = useState(false);
   const {
     user,
     selectedChat,
@@ -72,7 +73,10 @@ const FloatingChat = ({ onClose }) => {
         duration: 5000,
         position: "bottom-left",
       });
+      setSelectedChatOption(null)
+      return;
     } else if (selectedChatOption === "Provincial Coach" && !province) {
+      setSelectedChatOption(null)
       navigate("/province");
       toast({
         title: "Provincial Samma Association seat is empty!",
@@ -81,7 +85,9 @@ const FloatingChat = ({ onClose }) => {
         duration: 5000,
         position: "bottom-left",
       });
+      return
     } else if (selectedChatOption === "National Coach" && !national) {
+      setSelectedChatOption(null)
       navigate("/national");
       toast({
         title: "National Samma Association seat is empty!",
@@ -90,6 +96,7 @@ const FloatingChat = ({ onClose }) => {
         duration: 5000,
         position: "bottom-left",
       });
+      return;
     }
   }, [selectedChatOption, navigate, user, national, province, toast]);
 
@@ -148,8 +155,13 @@ const FloatingChat = ({ onClose }) => {
   }, [selectedChat, setSender]);
 
   const sendMessage = async (event) => {
-    if ((event && event.key === "Enter") || !event) {
+  
+    if ((event && event.type === "click") || event && event.key === "Enter") {
+  
+      setSending(true);
+  
       if (!selectedChatOption && !rank) {
+        console.log("Select a recipient: Please choose whom you want to chat with.");
         toast({
           title: "Select a recipient",
           description: "Please choose whom you want to chat with.",
@@ -158,9 +170,12 @@ const FloatingChat = ({ onClose }) => {
           isClosable: true,
           position: "bottom",
         });
+        setSending(false);
         return;
       }
+  
       if (rank && !selectedChat) {
+        console.log("Select a recipient: Please choose whom you want to reply to.");
         toast({
           title: "Select a recipient",
           description: "Please choose whom you want to reply to.",
@@ -169,9 +184,10 @@ const FloatingChat = ({ onClose }) => {
           isClosable: true,
           position: "bottom",
         });
+        setSending(false);
         return;
       }
-
+  
       try {
         const userId = user._id;
         const config = {
@@ -180,17 +196,20 @@ const FloatingChat = ({ onClose }) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
+  
         setNewMessage("");
         const { data } = await axios.post(
           "/api/message",
           { sender: sender, content: newMessage, userId },
           config
         );
-
+  
         setMessages((prevMessages) => [...prevMessages, data]);
-
+  
         socket.emit("new message", data);
+        setSending(false);
       } catch (error) {
+        setSending(false);
         console.log(error);
         toast({
           title: "Failed to send the Message",
@@ -203,6 +222,7 @@ const FloatingChat = ({ onClose }) => {
       }
     }
   };
+  
   const handleChatClose = () => {
     onClose();
   };
@@ -221,6 +241,7 @@ const FloatingChat = ({ onClose }) => {
       p="6"
       rounded="md"
       bg="white"
+      zIndex={11}
     >
       <Button p={2} onClick={handleChatClose}>
         X
@@ -307,8 +328,8 @@ const FloatingChat = ({ onClose }) => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <IconButton onClick={() => sendMessage()} p={0} m={1}>
-              <Image src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1707479527/icons8-send-24_higtsx.png" />
+            <IconButton isLoading={sending} onClick={(event) => sendMessage(event)} p={0} m={1}>
+            <IoIosSend/>
             </IconButton>
           </Box>
         </Box>
