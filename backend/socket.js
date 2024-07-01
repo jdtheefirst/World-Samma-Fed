@@ -71,9 +71,9 @@ const initializeSocketIO = (server) => {
       ) {
         onlineClubs.add(clubId);
         socket.join(clubId);
-        socket.broadcast.to(clubId).emit("liveSessionStarted", club.name);
+        io.broadcast.to(clubId).emit("liveSessionStarted", club.name);
 
-        socket.to(clubId).emit("startSignal");
+        io.to(clubId).emit("startSignal");
       }
     });
 
@@ -86,20 +86,23 @@ const initializeSocketIO = (server) => {
 
     socket.on("new message", (newMessageReceived) => {
       const recipientSocketId = getUserSocket(newMessageReceived.recipient._id);
-
+    
       if (recipientSocketId) {
-        socket
-          .to(recipientSocketId)
-          .emit("message received", newMessageReceived);
+        io.to(recipientSocketId).emit("message received", newMessageReceived);
       } else {
         console.log("Recipient not connected");
       }
     });
+    
 
     socket.on("newConnection", async (userData) => {
+      socket.join(userData._id);
+      socket.emit("connected");
+      
       const email = userData.email;
-
+    
       try {
+        // First, try to find the user in the User schema
         let user = await User.findOne({ email })
           .populate({
             path: "provinceRequests",
@@ -115,9 +118,9 @@ const initializeSocketIO = (server) => {
               select: "name admission",
             },
           });
-
+    
+        // If user not found in User schema, check in Admission schema
         if (!user) {
-          // If user not found in User schema, check in Admission schema
           user = await Admission.findOne({ email })
             .populate({
               path: "provinceRequests",
@@ -134,28 +137,38 @@ const initializeSocketIO = (server) => {
               },
             });
         }
-
+    
+        // If user is found, emit the user data back to the client
         if (user) {
           socket.emit("updates", user);
         }
-
+    
+        // Join the user to their specific room using their ID
         const userId = userData._id;
         socket.join(userId);
+    
+        // Emit a connected event to the client
         socket.emit("connected");
+    
+        // Store userData in the socket instance
         socket.userData = userData;
+    
+        // Add the user to the online users set
         onlineUsers.add(userId);
+    
+        // Broadcast the updated list of online users to all connected clients
         io.emit("onlineUsers", Array.from(onlineUsers));
-
+    
+        // If the user is new, emit a newUserRegistered event
         if (userData.isNewUser) {
           io.emit("newUserRegistered", userData);
         }
       } catch (error) {
         console.error(error);
-        // Handle the error
-        // Emit an event to inform the client about the error
+        // Handle the error by emitting a connectionError event to the client
         socket.emit("connectionError", { message: "Internal server error" });
       }
-    });
+    });    
 
     socket.on("typing", (room) => socket.in(room).emit("typing"));
     socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));

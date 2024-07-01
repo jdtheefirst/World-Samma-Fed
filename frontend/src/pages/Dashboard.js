@@ -241,7 +241,6 @@ const Dashboard = ({ courses }) => {
   return (
     <ErrorBoundary fallback={<p style={{color: "white"}}>Something went wrong</p>} userSelect="none">
     <Box display={"flex"} alignItems={"center"} justifyContent={"center"} flexDir={"column"} width="100%"background="white" position="relative">
-
         <Box position="fixed" background="Background" zIndex={10} width="100%">
           <UpperNav />
         </Box>

@@ -34,6 +34,7 @@ export default function Clubs(){
       return;
     }
     setLoading(true);
+    setClubs([]);
     try {
       const config = {
         headers: {
@@ -49,6 +50,8 @@ export default function Clubs(){
       setLoading(false);
     } catch (error) {
       console.error("Error fetching or creating clubs:", error);
+      setClubs([]);
+      setLoading(false);
     }
   }, [user, setClubs, provience]);
 

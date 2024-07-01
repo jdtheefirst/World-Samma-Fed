@@ -313,14 +313,7 @@ const RouteChangeTracker = () => {
 };
 
 function App() {
-  const { user, setUser } = ChatState();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-  useEffect(() => {
-    if (!user && userInfo) {
-      setUser(userInfo);
-    }
-  }, [user, userInfo, setUser]);
+  const { user } = ChatState();
 
   return (
     <div className="App">

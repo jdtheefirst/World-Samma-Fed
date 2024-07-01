@@ -23,13 +23,6 @@ const Requests = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [clubRequests, setClubRequests] = useState([]);
   const [loading, setLoading] = useState(false);
-  const OverlayOne = () => (
-    <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
-  const overlay = React.useState(<OverlayOne />);
   const { user } = ChatState();
   const navigate = useNavigate();
 
@@ -60,7 +53,7 @@ const Requests = () => {
       fetchClubRequests();
     }
   }, [user, fetchClubRequests]);
-  
+
   const declineRequest = async (clubId) => {
     if (!user || !clubId) {
       return;
@@ -112,7 +105,10 @@ const Requests = () => {
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
-        {overlay}
+      <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
         <ModalContent>
           <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
           <ModalCloseButton />
@@ -130,6 +126,7 @@ const Requests = () => {
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   width={"100%"}
+                  key={index}
                 >
                   <Button
                     key={club._id}

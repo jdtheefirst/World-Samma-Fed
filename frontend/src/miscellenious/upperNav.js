@@ -25,18 +25,12 @@ import React from "react";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
-  const OverlayOne = () => (
-    <DrawerOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
-  const overlay = React.useState(<OverlayOne />);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+    setNotification([]);
     navigate("/");
   };
 
@@ -167,14 +161,18 @@ function UpperNav() {
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-        {overlay}
+      <DrawerOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
         <DrawerContent>
           <DrawerHeader
             borderBottomWidth="1px"
             display={"flex"}
             justifyContent={"space-between"}
           >
-            Dashboard <CloseButton onClick={onClose} />
+            Dashboard
+            <CloseButton onClick={onClose} />
           </DrawerHeader>
           <DrawerBody
             display={"flex"}

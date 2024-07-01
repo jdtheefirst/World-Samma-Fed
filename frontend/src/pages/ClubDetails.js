@@ -230,7 +230,7 @@ const ClubDetails = ({ user }) => {
       navigate("/dashboard");
       return;
     }
-    if (club.membersRequests.some((member) => member._id === user?._id)) {
+    if (club?.membersRequests.some((member) => member._id === user?._id)) {
       toast({
         title: "Request to join already sent.",
         description: "Please wait for Coach to reply.",
@@ -265,7 +265,8 @@ const ClubDetails = ({ user }) => {
       justifyContent={"flex-start"}
       alignItems={"center"}
       width={"100%"}
-      background={"white"}
+      background={"whitesmoke"}
+      minH={"100vh"}
       overflow={"auto"}
     >
       <UpperNav />
@@ -277,7 +278,7 @@ const ClubDetails = ({ user }) => {
         width={"100%"}
         mt={"50"}
         position="relative"
-        background={"white"}
+        background={"whitesmoke"}
       >
         <Image
           src={clubData.backgroundPicture}
@@ -420,7 +421,7 @@ const ClubDetails = ({ user }) => {
                 />
               </Text>
               <Text textAlign={"center"} fontSize={"small"} mt={-1}>
-                Join
+                {club?.membersRequests.some((member) => member._id === user?._id) ? "Sent": "Join"}
               </Text>
             </Box>
           </>

@@ -273,7 +273,6 @@ const recoverEmail = async (req, res) => {
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password)
 
   try {
     let userInfo = await User.findOne({ email: email });
