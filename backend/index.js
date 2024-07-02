@@ -95,7 +95,7 @@ app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
 
-const __dirname1 = path.resolve(__dirname, "worldNext");
+const __dirname1 = path.resolve(__dirname, ".../");
 
 if (process.env.NODE_ENV === "production") {
   // Serve static files from the frontend build directory
