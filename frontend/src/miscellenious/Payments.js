@@ -33,13 +33,6 @@ export default function Paycheck({ course }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const socket = useConnectSocket(user?.token);
-  
-  const overlay = (
-    <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
 
   useEffect(() => {
     if (!socket) return;
@@ -163,52 +156,31 @@ export default function Paycheck({ course }) {
         isOpen={isOpen}
         isCentered
       >
-        {overlay}
-        <ModalContent width={"calc(100% - 20px)"}>
-          <ModalHeader
-            fontSize="40px"
-            fontFamily="Work sans"
-            display="flex"
-            flexDirection={"column"}
-            justifyContent="center"
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              p={0}
-              m={0}
+        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
+        <ModalContent display="flex" flexDirection="column" justifyContent="center" width={"100%"}>
+          <ModalHeader fontSize="40px" fontFamily="Work sans">
+            <Text
+              textAlign={"center"}
+              fontSize={"sm"}
+              fontWeight={500}
+              p={2}
+              px={3}
+              color={"green.500"}
+              rounded={"full"}
             >
-              <Text
-                fontSize={"sm"}
-                fontWeight={500}
-                bg={useColorModeValue("green.100", "green.900")}
-                p={2}
-                px={3}
-                color={"green.500"}
-                rounded={"full"}
-              >
-                Elevate Your Craft: {course.title}
-              </Text>
-            </Box>
+              Elevate Your Craft: {course.title}
+            </Text>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="space-between"
-            width={"100%"}
-          >
+          <ModalBody flexDirection="column" alignItems="center" justifyContent="center" width={"100%"}>
             <PayPalScriptProvider
               options={{
-                clientId:
-                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+                clientId: "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
               }}
             >
               <PayPalButtons
                 createOrder={(data, actions) => {
-                  const amount = 45.0;
+                  const amount = 12.0;
                   return actions.order.create({
                     purchase_units: [
                       {
@@ -236,7 +208,7 @@ export default function Paycheck({ course }) {
                 onCancel={() => {
                   toast({
                     title: "Cancelled",
-                    description: "Subscription Unsuccessfull",
+                    description: "Subscription Unsuccessful",
                     status: "info",
                     isClosable: true,
                     position: "bottom",
@@ -246,9 +218,8 @@ export default function Paycheck({ course }) {
             </PayPalScriptProvider>
             <Button
               fontSize={"small"}
-              width={"80%"}
-              backgroundColor={"green.400"}
-              color={"white"}
+              width={"100%"}
+              bg={useColorModeValue("green.100", "green.900")}
               onClick={() => {
                 setShow(true);
               }}
@@ -267,11 +238,7 @@ export default function Paycheck({ course }) {
             </Button>
             {show && (
               <Box m={3}>
-                <Text
-                  textAlign={"center"}
-                  justifyContent={"center"}
-                  fontSize={"2xl"}
-                >
+                <Text textAlign={"center"} justifyContent={"center"} fontSize={"2xl"}>
                   Enter Your Mpesa Phone Number
                 </Text>
                 <Input

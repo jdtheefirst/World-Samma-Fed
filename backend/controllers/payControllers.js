@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const { getUserSocket } = require("../config/socketUtils");
 const { getIO } = require("../socket");
 const { getNextNumber } = require("../config/getNextSequence");
+const Transaction = require("../models/TransactionModel");
 
 dotenv.config({ path: "./secrets.env" });
 
@@ -129,6 +130,7 @@ const updateUser = async (req, res) => {
 
 const makePaymentMpesa = async (req, res) => {
   const amount = req.query.amount;
+  const userId = req.user._id;
   const phoneNumber = req.body.phoneNumber;
 
   const phone = parseInt(phoneNumber.slice(1));
@@ -185,7 +187,7 @@ const makePaymentMpesa = async (req, res) => {
         PartyA: `254${phone}`,
         PartyB: "8863150",
         PhoneNumber: `254${phone}`,
-        CallBackURL: `https://worldsamma.org/api/paycheck/callback`,
+        CallBackURL: `https://worldsamma.org/api/paycheck/callback${userId}`,
         AccountReference: "World Samma Federation",
         TransactionDesc: "Subcription",
       },
@@ -196,6 +198,15 @@ const makePaymentMpesa = async (req, res) => {
         },
       }
     );
+
+    await Transaction.create({
+      userId,
+      amount,
+      phone,
+      transactionId: data.CheckoutRequestID,
+      status: "Pending",
+    });
+
     res.json(data);
   } catch (error) {
     console.log("My Error", error);
@@ -203,46 +214,47 @@ const makePaymentMpesa = async (req, res) => {
 };
 
 const CallBackURL = async (req, res) => {
+  const { userId } = req.params;
   const { Body } = req.body;
   const socket = getIO();
 
-  try {
-    const userId = req.user._id;
-    const subscription = req.user.subscription; // Assuming this is where subscription is stored
+  const recipientSocketId = getUserSocket(userId);
 
-    // Check if userId and subscription are both available
-    if (!userId || !subscription) {
-      return res.status(401).json({ message: "Unauthorized" });
+  try {
+    // Find the transaction using the CheckoutRequestID from the callback
+    const transaction = await Transaction.findOne({
+      userId,
+      transactionId: Body.stkCallback.CheckoutRequestID,
+    });
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
     }
 
     if (!Body.stkCallback.CallbackMetadata) {
-      const nothing = "payment cancelled or insufficient amount";
-      io.emit("noPayment", nothing);
+      const nothing = "Payment cancelled or insufficient amount";
+      socket.to(recipientSocketId).emit("noPayment", nothing);
+      await Transaction.findByIdAndUpdate(transaction._id, { status: "Failed" });
       return res.status(400).json({ message: "Invalid callback data" });
     }
 
-    if (Body.stkCallback.CallbackMetadata.Item) {
-      const firstItem = Body.stkCallback.CallbackMetadata.Item[0];
-      const amount = firstItem.Value;
+    const amount = Body.stkCallback.CallbackMetadata.Item[0].Value;
 
-      if (amount === 500) {
-        io.emit("manualRegister");
-        return res
-          .status(201)
-          .json({ message: "Manual register event emitted" });
-      }
-    }
+    // Update transaction status to 'Completed' and update the amount
+    await Transaction.findByIdAndUpdate(transaction._id, {
+      status: "Completed",
+      amount,
+    });
 
-    // Check if userId exists in User schema
-    let userInfo = await User.findById(userId);
-
-    // If userId doesn't exist in User schema, check in Admission schema
-    if (!userInfo) {
-      userInfo = await Admission.findById(userId);
-    }
-
+    // Update user subscription or other details
+    const userInfo = await User.findById(userId) || await Admission.findById(userId);
     if (!userInfo) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    if (amount === 500) {
+      socket.to(recipientSocketId).emit("manualRegister");
+      return res.status(201).json({ message: "Manual register event emitted" });
     }
 
     const userLevel = userInfo.belt;
@@ -264,12 +276,10 @@ const CallBackURL = async (req, res) => {
       const updatedBeltLevel = belts[nextLevelIndex];
 
       // Update user's belt level in the corresponding schema
-      const updatedUser = await (userInfo instanceof User
-        ? User
-        : Admission
-      ).findByIdAndUpdate(userId, { belt: updatedBeltLevel }, { new: true });
+      const updatedUser = await (userInfo instanceof User ? User : Admission)
+        .findByIdAndUpdate(userId, { belt: updatedBeltLevel }, { new: true });
 
-      const recipientSocketId = getUserSocket(userId);
+      // Emit socket event
       if (recipientSocketId) {
         socket.to(recipientSocketId).emit("userUpdated", updatedUser);
         console.log(`Broadcast sent to ${userId}`);
@@ -278,13 +288,11 @@ const CallBackURL = async (req, res) => {
       }
 
       return res.status(200).json({
-        message: "User belt level updated successfully",
+        message: "User updated successfully",
         userInfo: updatedUser,
       });
     } else {
-      return res
-        .status(400)
-        .json({ message: "User is already at the highest belt level" });
+      return res.status(400).json({ message: "User is already at the highest belt level" });
     }
   } catch (error) {
     console.error(error);

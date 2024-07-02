@@ -12,6 +12,7 @@ import {
   Input,
   Button,
   useToast,
+  Text,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { getStatesOfCountry } from "../assets/state";
@@ -20,9 +21,9 @@ import axios from "axios";
 
 const CoffeeModal = ({ isOpen, onClose }) => {
   const toast = useToast();
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState("_");
   const [amount, setAmount] = useState(0);
-  const [province, setProvince] = useState("");
+  const [province, setProvince] = useState("_");
   const [subdivisions, setSubdivisions] = useState([]);
   const [show, setShow] = useState(false);
 
@@ -75,11 +76,13 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="sm">
+    <Modal isOpen={isOpen} onClose={onClose} size="md">
       {overlay}
-      <ModalContent>
-        <ModalHeader bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">
-          Donation details
+      <ModalContent p={"6"}>
+        <ModalHeader p={0} m={0}  textAlign={"center"}>
+          <Text bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">Donation details </Text>
+          <br/> Country: <strong style={{color: "teal"}}>{country}</strong> <br/> State: <strong style={{color: "teal"}}>{province}</strong>
+          <br/> Donation: <strong style={{color: "teal"}}>${amount}</strong>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody
@@ -103,9 +106,9 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
                 >
-                  {countryOptions.map((option) => (
+                  {countryOptions.map((option, index) => (
                     <option
-                      key={option.value}
+                      key={index}
                       value={option.value}
                       style={{ color: "black" }}
                     >
@@ -127,9 +130,9 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                   >
-                    {subdivisions.map((subdivision) => (
+                    {subdivisions.map((subdivision, index) => (
                       <option
-                        key={subdivision.value}
+                        key={index}
                         value={subdivision.value}
                         style={{ color: "black" }}
                       >
@@ -161,17 +164,20 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               <Button
                 onClick={() => setShow(true)}
                 borderRadius={20}
-                m={1}
-                background={"purple"}
+                mt={"6"}
+                background={"teal"}
                 isDisabled={!country}
                 color={"white"}
-                _hover={{ color: "black", background: "green" }}
+                width={"100%"}
+                _hover={{ background: "green" }}
               >
-                Done
+                Pay
               </Button>
             </>
           )}
-          {show && (
+         
+        </ModalBody>
+        {show && (
             <PayPalScriptProvider
               options={{
                 clientId:
@@ -217,7 +223,6 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               />
             </PayPalScriptProvider>
           )}
-        </ModalBody>
       </ModalContent>
     </Modal>
   );
