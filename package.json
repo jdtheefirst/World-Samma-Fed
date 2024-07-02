@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "description": "world-samma",
   "main": "index.js",
+
   "scripts": {
-    "start": "concurrently \"npm run frontend\" \"npm run backend\"",
-    "frontend": "cd frontend && npm start",
-    "backend": "cd backend && node backend/index.js",
-    "render-build": "cd frontend && npm install && npm run build",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
-  },
+  "start": "concurrently \"npm run frontend\" \"npm run backend\"",
+  "frontend": "cd frontend && npm start",
+  "backend": "cd backend && nodemon index.js",
+  "render-build": "cd frontend && npm install && npm run build",
+  "heroku-postbuild": "cd frontend && npm install && npm run build"
+},
+
   "heroku-run-build-script": true,
   "author": "jdtheefirst",
   "license": "ISC",
