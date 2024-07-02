@@ -95,15 +95,15 @@ app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
 
-const __dirname1 = path.resolve(__dirname, "backend");
+const __dirname1 = path.resolve(__dirname, "worldNext");
 
 if (process.env.NODE_ENV === "production") {
   // Serve static files from the frontend build directory
-  app.use(express.static(path.join(__dirname1, "../frontend/build")));
+  app.use(express.static(path.join(__dirname1, "frontend", "build")));
 
   // Serve index.html for all other routes
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname1, "../frontend/build", "index.html"));
+    res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"));
   });
 } else {
   // Development mode API response
