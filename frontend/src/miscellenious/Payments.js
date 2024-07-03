@@ -172,7 +172,7 @@ export default function Paycheck({ course }) {
             </Text>
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody flexDirection="column" alignItems="center" justifyContent="center" width={"100%"}>
+          <ModalBody>
             <PayPalScriptProvider
               options={{
                 clientId: "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",

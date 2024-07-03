@@ -21,9 +21,9 @@ import axios from "axios";
 
 const CoffeeModal = ({ isOpen, onClose }) => {
   const toast = useToast();
-  const [country, setCountry] = useState("_");
+  const [country, setCountry] = useState("");
   const [amount, setAmount] = useState(0);
-  const [province, setProvince] = useState("_");
+  const [province, setProvince] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
   const [show, setShow] = useState(false);
 
@@ -33,7 +33,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   }));
 
   const handleSubmit = async () => {
-    if (!country|| !amount) {
+    if (!country || !amount) {
       toast({
         title: "Form was incomplete",
         status: "warning",
@@ -65,7 +65,11 @@ const CoffeeModal = ({ isOpen, onClose }) => {
       setSubdivisions(states);
     };
 
-    fetchSubdivisions();
+    if (country) {
+      fetchSubdivisions();
+    } else {
+      setSubdivisions([]);
+    }
   }, [country]);
 
   const overlay = (
@@ -79,10 +83,13 @@ const CoffeeModal = ({ isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       {overlay}
       <ModalContent p={"6"}>
-        <ModalHeader p={0} m={0}  textAlign={"center"}>
-          <Text bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">Donation details </Text>
-          <br/> Country: <strong style={{color: "teal"}}>{country}</strong> <br/> State: <strong style={{color: "teal"}}>{province}</strong>
-          <br/> Donation: <strong style={{color: "teal"}}>${amount}</strong>
+        <ModalHeader p={0} m={0} textAlign={"center"}>
+          <Text bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">
+            Donation details
+          </Text>
+          <br /> Country: <strong style={{ color: "teal" }}>{country}</strong>{" "}
+          <br /> State: <strong style={{ color: "teal" }}>{province}</strong>
+          <br /> Donation: <strong style={{ color: "teal" }}>${amount}</strong>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody
@@ -166,7 +173,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 borderRadius={20}
                 mt={"6"}
                 background={"teal"}
-                isDisabled={!country}
+                isDisabled={!country || !amount}
                 color={"white"}
                 width={"100%"}
                 _hover={{ background: "green" }}
@@ -175,54 +182,64 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               </Button>
             </>
           )}
-         
         </ModalBody>
         {show && (
-            <PayPalScriptProvider
-              options={{
-                clientId:
-                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
-              }}
-            >
-              <PayPalButtons
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    purchase_units: [
-                      {
-                        amount: {
-                          currency_code: "USD",
-                          value: amount,
-                        },
+          <PayPalScriptProvider
+            options={{
+              "client-id":
+                "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+            }}
+          >
+            <PayPalButtons
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        currency_code: "USD",
+                        value: amount,
                       },
-                    ],
-                  });
-                }}
-                onApprove={async (data, actions) => {
-                  await handleSubmit();
-                  return actions.order.capture().then(function (details) {
-                    toast({
-                      title: "Transaction Successful",
-                      description: "Thank you for your support!",
-                      status: "success",
-                      duration: 3000,
-                      isClosable: true,
-                      position: "bottom",
-                    });
-                  });
-                }}
-                onCancel={() => {
+                    },
+                  ],
+                });
+              }}
+              onApprove={async (data, actions) => {
+                await handleSubmit();
+                return actions.order.capture().then(function (details) {
                   toast({
-                    title: "Transaction Canceled",
-                    description: "Thank you for considering!",
-                    status: "info",
+                    title: "Transaction Successful",
+                    description: "Thank you for your support!",
+                    status: "success",
                     duration: 3000,
                     isClosable: true,
                     position: "bottom",
                   });
-                }}
-              />
-            </PayPalScriptProvider>
-          )}
+                });
+              }}
+              onCancel={() => {
+                toast({
+                  title: "Transaction Canceled",
+                  description: "Thank you for considering!",
+                  status: "info",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              }}
+              onError={(err) => {
+                console.error("PayPal error:", err);
+                toast({
+                  title: "Transaction Error",
+                  description: "An error occurred with the PayPal transaction.",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              }}
+            />
+          </PayPalScriptProvider>
+        )}
       </ModalContent>
     </Modal>
   );
