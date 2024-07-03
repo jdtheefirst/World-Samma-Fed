@@ -24,12 +24,11 @@ connectDB();
 
 const app = express();
 
-
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('trust proxy', 1);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 const server = app.listen(
   PORT,
   console.log(`Server running on PORT ${PORT}...`)
@@ -81,9 +80,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
-
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
 app.use("/api/message", messageRouter);
@@ -94,24 +90,20 @@ app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
+
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "frontend/build")));
+  app.use(express.static(path.join(__dirname1, "../frontend/build")));
 
   app.get("*", (req, res) => {
-    res.sendFile(
-      path.resolve(__dirname1, ".", "frontend", "build", "index.html")
-    );
+    res.sendFile(path.resolve(__dirname1, "../frontend/build", "index.html"));
   });
 } else {
   app.get("/", (req, res) => {
     res.send("API is running..");
   });
 }
-console.log('Current working directory:', __dirname1);
-console.log('Resolved build path:', path.resolve(__dirname1, 'frontend', 'build', 'index.html'));
 
 app.use(notFound);
 app.use(errorHandler);
-// "start": "concurrently \"npm run frontend\" \"npm run backend\"",
