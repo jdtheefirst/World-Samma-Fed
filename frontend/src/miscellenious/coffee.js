@@ -25,7 +25,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   const [amount, setAmount] = useState(0);
   const [province, setProvince] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
-  const [show, setShow] = useState(false);
+  const [showPayPalButtons, setShowPayPalButtons] = useState(false);
 
   const countryOptions = Object.entries(countries).map(([code, country]) => ({
     value: country.name,
@@ -72,23 +72,20 @@ const CoffeeModal = ({ isOpen, onClose }) => {
     }
   }, [country]);
 
-  const overlay = (
-    <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
-  );
+  const handlePayButtonClick = () => {
+    setShowPayPalButtons(true);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
-      {overlay}
+      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
       <ModalContent p={"6"}>
         <ModalHeader p={0} m={0} textAlign={"center"}>
           <Text bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">
             Donation details
           </Text>
-          <br /> Country: <strong style={{ color: "teal" }}>{country}</strong>{" "}
-          <br /> State: <strong style={{ color: "teal" }}>{province}</strong>
+          <br /> Country: <strong style={{ color: "teal" }}>{country}</strong> <br /> State:{" "}
+          <strong style={{ color: "teal" }}>{province}</strong>
           <br /> Donation: <strong style={{ color: "teal" }}>${amount}</strong>
         </ModalHeader>
         <ModalCloseButton />
@@ -99,7 +96,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
           flexDirection={"column"}
           width={"100%"}
         >
-          {!show && (
+          {!showPayPalButtons && (
             <>
               <FormControl id="country" isRequired>
                 <FormLabel textColor="grey">Country</FormLabel>
@@ -114,11 +111,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                   onChange={(e) => setCountry(e.target.value)}
                 >
                   {countryOptions.map((option, index) => (
-                    <option
-                      key={index}
-                      value={option.value}
-                      style={{ color: "black" }}
-                    >
+                    <option key={index} value={option.value} style={{ color: "black" }}>
                       {option.label}
                     </option>
                   ))}
@@ -138,11 +131,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                     onChange={(e) => setProvince(e.target.value)}
                   >
                     {subdivisions.map((subdivision, index) => (
-                      <option
-                        key={index}
-                        value={subdivision.value}
-                        style={{ color: "black" }}
-                      >
+                      <option key={index} value={subdivision.value} style={{ color: "black" }}>
                         {subdivision.name}
                       </option>
                     ))}
@@ -169,7 +158,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 />
               </FormControl>
               <Button
-                onClick={() => setShow(true)}
+                onClick={handlePayButtonClick}
                 borderRadius={20}
                 mt={"6"}
                 background={"teal"}
@@ -182,64 +171,64 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               </Button>
             </>
           )}
-        </ModalBody>
-        {show && (
-          <PayPalScriptProvider
-            options={{
-              "client-id":
-                "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
-            }}
-          >
-            <PayPalButtons
-              createOrder={(data, actions) => {
-                return actions.order.create({
-                  purchase_units: [
-                    {
-                      amount: {
-                        currency_code: "USD",
-                        value: amount,
-                      },
-                    },
-                  ],
-                });
+          {showPayPalButtons && (
+            <PayPalScriptProvider
+              options={{
+                "client-id":
+                  "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
               }}
-              onApprove={async (data, actions) => {
-                await handleSubmit();
-                return actions.order.capture().then(function (details) {
+            >
+              <PayPalButtons
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          currency_code: "USD",
+                          value: amount,
+                        },
+                      },
+                    ],
+                  });
+                }}
+                onApprove={async (data, actions) => {
+                  await handleSubmit();
+                  return actions.order.capture().then(function (details) {
+                    toast({
+                      title: "Transaction Successful",
+                      description: "Thank you for your support!",
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom",
+                    });
+                  });
+                }}
+                onCancel={() => {
                   toast({
-                    title: "Transaction Successful",
-                    description: "Thank you for your support!",
-                    status: "success",
+                    title: "Transaction Canceled",
+                    description: "Thank you for considering!",
+                    status: "info",
                     duration: 3000,
                     isClosable: true,
                     position: "bottom",
                   });
-                });
-              }}
-              onCancel={() => {
-                toast({
-                  title: "Transaction Canceled",
-                  description: "Thank you for considering!",
-                  status: "info",
-                  duration: 3000,
-                  isClosable: true,
-                  position: "bottom",
-                });
-              }}
-              onError={(err) => {
-                console.error("PayPal error:", err);
-                toast({
-                  title: "Transaction Error",
-                  description: "An error occurred with the PayPal transaction.",
-                  status: "error",
-                  duration: 3000,
-                  isClosable: true,
-                  position: "bottom",
-                });
-              }}
-            />
-          </PayPalScriptProvider>
-        )}
+                }}
+                onError={(err) => {
+                  console.error("PayPal error:", err);
+                  toast({
+                    title: "Transaction Error",
+                    description: "An error occurred with the PayPal transaction.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "bottom",
+                  });
+                }}
+              />
+            </PayPalScriptProvider>
+          )}
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
