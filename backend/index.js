@@ -15,8 +15,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
-const helmet = require("helmet");
-const fs = require("fs");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -33,14 +31,6 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}...`);
 });
 initializeSocketIO(server);
-
-// Helmet middleware for security headers
-app.use(helmet({
-  contentSecurityPolicy: false, // disable CSP if you want to set it manually
-}));
-app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));
-app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 // API routes
 app.use("/api/user", userRoutes);
