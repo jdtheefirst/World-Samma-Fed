@@ -71,7 +71,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     `default-src 'self'; ` +
-    `script-src 'self' 'nonce-${nonce}' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com 'unsafe-inline'; ` +
+    `script-src 'self' 'nonce-${nonce}' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com https://tpc.googlesyndication.com; ` +
     `img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; ` +
     `style-src 'self' 'unsafe-inline'; ` +
     `frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; ` +
@@ -79,6 +79,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 
 // API routes
 app.use("/api/user", userRoutes);
