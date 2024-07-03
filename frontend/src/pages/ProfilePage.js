@@ -20,6 +20,8 @@ import axios from "axios";
 import UserListItem from "../miscellenious/Skeleton";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import AdmissionForm from "../miscellenious/AdmissionForm";
+import { GoDotFill } from "react-icons/go";
+import { FaLock, FaLockOpen } from "react-icons/fa";
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -236,35 +238,36 @@ const ProfilePage = ({ user }) => {
     <Box
       display={"flex"}
       width={"100%"}
-      justifyContent={"center"}
+      minH={"100vh"}
+      justifyContent={"start"}
       flexDir={"column"}
       overflow={"auto"}
       alignItems={"center"}
-      background={"white"}
+      bg={"whitesmoke"}
     >
-      <UpperNav /> <Text>worldsamma</Text>
+      <UpperNav />
       <Box
         display={"flex"}
-        flexWrap={"wrap"}
+        flexDir={'column'}
         width={{ base: "100%", md: "80%" }}
-        height={"100%"}
         boxShadow="dark-lg"
         p="6"
         rounded="md"
-        bg="white"
-        mt={"10"}
+        bg="whitesmoke"
+        mt={20}
         fontStyle={"italic"}
         overflow="auto"
       >
         <Box
           display={"flex"}
+          flexWrap={"wrap"}
           textAlign={"start"}
           boxShadow="base"
           width={"100%"}
           p="0"
           rounded="md"
-          bg="white"
-        >
+          bg="whitesmoke"
+         >
           {" "}
           <Image
             src={user?.pic}
@@ -275,45 +278,45 @@ const ProfilePage = ({ user }) => {
           />
           <Box fontSize={"md"} fontFamily={"monospace"}>
             {" "}
-            <Heading mb={4}>Profile</Heading>
+            <Heading textAlign={"center"} mb={4} color={"teal"}>Profile</Heading>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Name:
               </Text>
               {user?.name} {user?.otherName}
             </Text>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Code:
               </Text>{" "}
-              {user?.admission}
+              {user?.admission ? user?.admission : `Not enrolled: ${user?.belt}`}
             </Text>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Email:
               </Text>{" "}
               {user?.email}
             </Text>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Country:
               </Text>{" "}
               {user?.country}
             </Text>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Province:
               </Text>{" "}
               {user?.provinces}
             </Text>
             <Text display={"flex"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Coach:
               </Text>
               {user?.coach ? " ✔️" : "Not a coach"}
             </Text>
             <Text display={"flex"} flexWrap={"wrap"}>
-              <Text fontFamily={"fantasy"} px={1}>
+              <Text fontWeight={"bold"} px={1}>
                 Highest Level Attained:
               </Text>{" "}
               {user?.belt}
@@ -329,6 +332,29 @@ const ProfilePage = ({ user }) => {
             )}
           </Box>
         </Box>{" "}
+        <Text width={"100%"} textAlign={"center"} p={"3"}>Access all features in one place</Text>
+<Box display={"flex"} flexWrap={"wrap"} width={"100%"} p={"3"}>
+  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+    <GoDotFill />
+    <Text p={2}>Live stream competitions</Text>
+    <FaLockOpen style={{color: "green"}} />
+  </Text>
+  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+    <GoDotFill />
+    <Text p={2}>Become a coach = 50%+ Revenue</Text>
+    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
+  </Text>
+  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+    <GoDotFill />
+    <Text p={2}>Become a provincial coach = 70%+ Revenue</Text>
+    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
+  </Text>
+  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+    <GoDotFill />
+    <Text p={2}>Become a national coach = 90%+ Revenue</Text>
+    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
+  </Text>
+</Box>
         {user?.coach && (
           <>
             <Box
@@ -358,7 +384,7 @@ const ProfilePage = ({ user }) => {
                   mt={2}
                   p="4"
                   rounded="md"
-                  bg="white"
+                  bg="whitesmoke"
                 >
                   <Heading mb={2}>Club Details</Heading>
                   <Text
@@ -402,7 +428,7 @@ const ProfilePage = ({ user }) => {
                   p="6"
                   mt={2}
                   rounded="md"
-                  bg="white"
+                  bg="whitesmoke"
                   width={{ base: "100%", md: "60%" }}
                 >
                   <Heading mb={2}>Members List</Heading>
@@ -440,7 +466,7 @@ const ProfilePage = ({ user }) => {
             boxShadow="base"
             p="4"
             rounded="md"
-            background="white"
+            background="whitesmoke"
           >
             {" "}
             <AdmissionForm />
@@ -460,7 +486,7 @@ const ProfilePage = ({ user }) => {
               boxShadow="base"
               p="6"
               rounded="md"
-              bg="white"
+              bg="whitesmoke"
             >
               {" "}
               <Text
@@ -515,7 +541,7 @@ const ProfilePage = ({ user }) => {
                       width={"100%"}
                       padding="6"
                       boxShadow="lg"
-                      bg="white"
+                      bg="whitesmoke"
                     >
                       <SkeletonCircle size="10" />
                       <SkeletonText
@@ -622,7 +648,7 @@ const ProfilePage = ({ user }) => {
             p="4"
             height={"200px"}
             rounded="md"
-            bg="white"
+            bg="whitesmoke"
             width={"100%"}
           >
             <Heading mb={4}>Province Requests</Heading>
@@ -681,7 +707,7 @@ const ProfilePage = ({ user }) => {
             p="4"
             height={"200px"}
             rounded="md"
-            bg="white"
+            bg="whitesmoke"
             width={"100%"}
           >
             <Heading mb={4}>National Requests</Heading>

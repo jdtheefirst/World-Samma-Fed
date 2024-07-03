@@ -278,7 +278,7 @@ export default function Paycheck({ course }) {
               </Box>
             )}
           </ModalBody>
-          <ModalFooter display="flex"></ModalFooter>
+          <ModalFooter display="flex"> Wait as PayPal processes...</ModalFooter>
         </ModalContent>
       </Modal>
     </>

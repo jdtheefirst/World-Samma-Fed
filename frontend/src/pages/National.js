@@ -72,10 +72,13 @@ const National = () => {
   return (
     <Box
       display="flex"
+      justifyContent={"start"}
+      alignItems={"center"}
       flexDir="column"
-      backgroundColor="white"
+      backgroundColor="whitesmoke"
       overflowY={"auto"}
       width="100%"
+      minH={"100vh"}
     >
       <UpperNav />
       <Box
@@ -83,6 +86,7 @@ const National = () => {
         justifyContent={"center"}
         alignItems={"center"}
         flexDir={"column"}
+        width={"100%"}
         mt={20}
       >
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
@@ -94,38 +98,41 @@ const National = () => {
             <Spinner size={"sm"} />
           ) : (
             <Text>
-              Account: $
+              Account Balance: $
               {donation && donation.length > 0 ? donation[0].fund : "0"}
             </Text>
           )}
         </Text>
-        <Text> States</Text>
+        <Text p={"6"}> States</Text>
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          height={"200px"}
-          width={{ base: "97%", md: "70%" }}
-          overflowY={"scroll"}
-          m={1}
-          boxShadow="2xl"
-          p="6"
-          rounded="md"
-          bg="white"
-        >
-          {" "}
-          {subdivisions &&
-            subdivisions.map((subdivision) => (
-              <Link
-                href="#"
-                textDecoration={"underline"}
-                key={subdivision._id}
-                m={1}
-              >
-                {subdivision.name}
-              </Link>
-            ))}
-        </Box>
-
+  display="flex"
+  justifyContent="center"
+  alignItems="center"
+  flexDir="column"
+  height="200px"
+  width={{base: "97%", md: "70%"}}
+  maxWidth="100%"
+  overflowY="scroll"
+  padding="6"
+  border="1px solid grey"
+  borderRadius="5px"
+  mb={"6"}
+  bg="whitesmoke"
+  boxSizing="border-box"
+>
+  {subdivisions &&
+    subdivisions.map((subdivision, index) => (
+      <Link
+        href="#"
+        textDecoration="underline"
+        key={index}
+        p="2"
+        width="100%"
+      >
+        {subdivision.name}
+      </Link>
+    ))}
+</Box>
         <Box
           display={"flex"}
           flexDir={"column"}
@@ -135,7 +142,7 @@ const National = () => {
           m={2}
           p={4}
           rounded="md"
-          bg="white"
+          bg="whitesmoke"
           fontStyle={"italic"}
         >
           {" "}

@@ -103,20 +103,15 @@ export default function Clubs(){
     <Box
       display="flex"
       flexDir="column"
-      backgroundColor="white"
+      backgroundColor="whitesmoke"
       width="100%"
       overflowX={"auto"}
-      justifyContent={"center"}
+      justifyContent={"start"}
       alignItems={"center"}
+      minH={"100vh"}
     >
-      <Box
-        position={"fixed"}
-        background={"Background"}
-        zIndex={10}
-        width="100%"
-      >
         <UpperNav />
-      </Box>
+    
       <Text
         textAlign="center"
         fontSize={"large"}
@@ -160,9 +155,9 @@ export default function Clubs(){
             }}
           >
             {subdivisions &&
-              subdivisions.map((subdivision) => (
+              subdivisions.map((subdivision, index) => (
                 <option
-                  key={subdivision.value}
+                  key={index}
                   value={subdivision.value}
                   style={{ color: "black" }}
                 >
@@ -200,7 +195,7 @@ export default function Clubs(){
               {clubs && clubs.length > 0 ? (
                 clubs.map((club, index) => (
                   <Button
-                    key={club.code}
+                    key={index}
                     width={"100%"}
                     onClick={() => navigate(`/showclub/${club._id}/${false}`)}
                     m={1}

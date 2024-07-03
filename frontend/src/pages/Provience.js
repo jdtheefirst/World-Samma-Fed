@@ -111,9 +111,10 @@ const Provience = () => {
     <Box
       display="flex"
       flexDir="column"
-      backgroundColor="white"
+      backgroundColor="whitesmoke"
       overflowY={"auto"}
       width="100%"
+      minH={"100vh"}
     >
       <UpperNav />
       <Box
@@ -143,11 +144,8 @@ const Provience = () => {
           height={"200px"}
           width={{ base: "97%", md: "70%" }}
           overflowY={"scroll"}
-          m={1}
-          boxShadow="2xl"
           p="6"
-          rounded="md"
-          bg="white"
+          bg="whitesmoke"
         >
           {loading && <Spinner />}
           {!loading && clubs.length === 0 && (
@@ -192,7 +190,7 @@ const Provience = () => {
           m={2}
           p={4}
           rounded="md"
-          bg="white"
+          bg="whitesmoke"
           fontStyle={"italic"}
         >
           {" "}

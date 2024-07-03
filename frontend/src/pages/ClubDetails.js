@@ -262,7 +262,7 @@ const ClubDetails = ({ user }) => {
     <Box
       display={"flex"}
       flexDir={"column"}
-      justifyContent={"flex-start"}
+      justifyContent={"start"}
       alignItems={"center"}
       width={"100%"}
       background={"whitesmoke"}
@@ -276,8 +276,7 @@ const ClubDetails = ({ user }) => {
         justifyContent={"center"}
         alignItems={"center"}
         width={"100%"}
-        mt={"50"}
-        position="relative"
+        mt={20}
         background={"whitesmoke"}
       >
         <Image
@@ -312,7 +311,7 @@ const ClubDetails = ({ user }) => {
             width={{ base: "100%", md: "50%" }}
             p="4"
             rounded="md"
-            bg="white"
+            bg="whitesmoke"
           >
             {" "}
             <Heading as="h2" size="lg" textAlign={"center"}>
@@ -342,7 +341,7 @@ const ClubDetails = ({ user }) => {
         alignItems="center"
         spacing={4}
         width={"100%"}
-        background={"white"}
+        background={"whitesmoke"}
       >
         {loading && !club ? (
           <Stack width={"100%"} p={"6"}>
@@ -395,12 +394,11 @@ const ClubDetails = ({ user }) => {
               justifyContent={"center"}
               alignItems={"center"}
               fontSize={"small"}
-              background={"white"}
               p={0}
               m={1}
             >
               {" "}
-              <Text textAlign={"center"} mt={-1} background={"white"}>
+              <Text textAlign={"center"} mt={-1}>
                 <Live user={user} club={club} socket={socket} />
                 <IconButton
                   icon={<Icon as={SlUserFollow} />}
@@ -433,7 +431,6 @@ const ClubDetails = ({ user }) => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-        background={"white"}
       >
         <Box
           display={"flex"}
@@ -442,15 +439,11 @@ const ClubDetails = ({ user }) => {
           alignItems={"center"}
           width={{ base: "100%", md: "60%" }}
           borderColor="#d142f5"
-          background={"white"}
           overflow="auto"
-          boxShadow="base"
           mt={2}
           p="4"
-          rounded="md"
-          bg="white"
         >
-          <Heading as="h3" size="md" mb={2} background={"white"}>
+          <Heading as="h3" size="md" mb={2}>
             Broadcast Board
           </Heading>
           <Box
@@ -464,9 +457,7 @@ const ClubDetails = ({ user }) => {
             borderRadius={20}
             width={"100%"}
             overflow="auto"
-            bg="white"
-            border={"2px solid white"}
-            boxShadow="dark-lg"
+            border={"2px solid grey"}
             p="6"
             rounded="md"
           >
