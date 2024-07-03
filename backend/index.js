@@ -17,7 +17,6 @@ const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
 const helmet = require("helmet");
-const crypto = require("crypto");
 const fs = require("fs");
 
 dotenv.config({ path: "./secrets.env" });
@@ -67,11 +66,11 @@ app.use(cors(corsOptions));
 
 // Content Security Policy middleware
 app.use((req, res, next) => {
-  const nonce = crypto.randomBytes(16).toString("base64");
+  const nonce = "6EGEzWvXx8zfFfR8dflJ/g==";
   res.setHeader(
     "Content-Security-Policy",
     `default-src 'self'; ` +
-    `script-src 'self' 'nonce-${nonce}' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com https://tpc.googlesyndication.com; ` +
+    `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com https://tpc.googlesyndication.com; ` +
     `img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; ` +
     `style-src 'self' 'unsafe-inline'; ` +
     `frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; ` +
@@ -79,7 +78,6 @@ app.use((req, res, next) => {
   );
   next();
 });
-
 
 // API routes
 app.use("/api/user", userRoutes);
