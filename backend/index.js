@@ -64,21 +64,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Content Security Policy middleware
-app.use((req, res, next) => {
-  const nonce = "6EGEzWvXx8zfFfR8dflJ/g==";
-  res.setHeader(
-    "Content-Security-Policy",
-    `default-src 'self'; ` +
-    `script-src 'self' 'nonce-${nonce}' 'unsafe-inline' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com https://tpc.googlesyndication.com; ` +
-    `img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; ` +
-    `style-src 'self' 'unsafe-inline'; ` +
-    `frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; ` +
-    `connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke https://pagead2.googlesyndication.com;`
-  );
-  next();
-});
-
 // API routes
 app.use("/api/user", userRoutes);
 app.use("/api/paycheck", payRoutes);
@@ -108,6 +93,10 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
+// Error handling middleware
+app.use(notFound);
+app.use(errorHandler);
+
 // Catch-all route for handling any other request
 app.use("*", (req, res) => {
   const indexPath = path.join(__dirname, "../frontend/build/index.html");
@@ -120,7 +109,3 @@ app.use("*", (req, res) => {
     }
   });
 });
-
-// Error handling middleware
-app.use(notFound);
-app.use(errorHandler);
