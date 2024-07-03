@@ -46,7 +46,7 @@ app.use(helmet({
 // CORS configuration
 const corsOptions = {
   origin: [
-    'https://worldsamma.org',
+    'https://www.worldsamma.org',
     'https://res.cloudinary.com',
     'https://via.placeholder.com',
     'https://accounts.google.com',
