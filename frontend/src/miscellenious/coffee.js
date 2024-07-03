@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import axios from "axios";
+import { useToast } from "@chakra-ui/toast";
+import { FormControl, FormLabel } from "@chakra-ui/form-control";
+import { Input, Select } from "@chakra-ui/react";
+import { getStatesOfCountry } from "../assets/state";
+import { countries } from "countries-list";
 
-const CoffeeModal = ({ isOpen, onClose }) => {
+const CoffeeModal = () => {
   const toast = useToast();
   const [country, setCountry] = useState("");
   const [amount, setAmount] = useState(0);
@@ -85,16 +90,41 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               </option>
             ))}
           </select>
-          {country && (
-            <>
-              <label>Province:</label>
-              <input
-                type="text"
-                value={province}
-                onChange={(e) => setProvince(e.target.value)}
-              />
-            </>
-          )}
+              {country && subdivisions.length > 0 ? (
+                <FormControl id="provinces" isRequired>
+                  <FormLabel textColor={"grey"}>County/Province</FormLabel>
+                  <Select
+                    placeholder="Select your province"
+                    display={"flex"}
+                    justifyContent={"center"}
+                    alignItems={"center"}
+                    textColor={"grey"}
+                    width={"100%"}
+                    value={province}
+                    onChange={(e) => setProvince(e.target.value)}
+                  >
+                    {subdivisions.map((subdivision, index) => (
+                      <option
+                        key={index}
+                        value={subdivision.value}
+                        style={{ color: "black" }}
+                      >
+                        {subdivision.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <FormControl id="provinces">
+                  <FormLabel textColor={"grey"}>County/Province</FormLabel>
+                  <Input
+                    type="text"
+                    textColor={"grey"}
+                    placeholder="Leave blank if not applicable..."
+                    onChange={(e) => setProvince(e.target.value)}
+                  />
+                </FormControl>
+              )}
           <label>Donate:</label>
           <input
             type="number"
