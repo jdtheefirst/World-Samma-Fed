@@ -1,22 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Select,
-  Input,
-  Button,
-  useToast,
-  Text,
-} from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { getStatesOfCountry } from "../assets/state";
-import { countries } from "countries-list";
 import axios from "axios";
 
 const CoffeeModal = ({ isOpen, onClose }) => {
@@ -72,165 +55,115 @@ const CoffeeModal = ({ isOpen, onClose }) => {
     }
   }, [country]);
 
-  const handlePayButtonClick = () => {
-    setShowPayPalButtons(true);
-  };
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md">
-      <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
-      <ModalContent p={"6"}>
-        <ModalHeader p={0} m={0} textAlign={"center"}>
-          <Text bgGradient="linear(to-l, #7928CA, #FF0080)" bgClip="text">
-            Donation details
-          </Text>
-          <br /> Country: <strong style={{ color: "teal" }}>{country}</strong> <br /> State:{" "}
-          <strong style={{ color: "teal" }}>{province}</strong>
-          <br /> Donation: <strong style={{ color: "teal" }}>${amount}</strong>
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          flexDirection={"column"}
-          width={"100%"}
-        >
-          {!showPayPalButtons && (
+    <div style={{
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: '#fff',
+      padding: '20px',
+      boxShadow: '0px 0px 20px rgba(0, 0, 0, 0.1)',
+      zIndex: 1000,
+    }}>
+      <h2>Donation details</h2>
+      <p>
+        Country: <strong>{country}</strong>
+        <br />
+        State: <strong>{province}</strong>
+        <br />
+        Donation: <strong>${amount}</strong>
+      </p>
+      {!showPayPalButtons && (
+        <>
+          <label>Country:</label>
+          <select value={country} onChange={(e) => setCountry(e.target.value)}>
+            <option value="">Select your country</option>
+            {countryOptions.map((option, index) => (
+              <option key={index} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          {country && (
             <>
-              <FormControl id="country" isRequired>
-                <FormLabel textColor="grey">Country</FormLabel>
-                <Select
-                  placeholder="Select your country"
-                  display={"flex"}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  width={"100%"}
-                  textColor={"grey"}
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                >
-                  {countryOptions.map((option, index) => (
-                    <option key={index} value={option.value} style={{ color: "black" }}>
-                      {option.label}
-                    </option>
-                  ))}
-                </Select>
-              </FormControl>
-              {country && subdivisions.length > 0 ? (
-                <FormControl id="provinces" isRequired>
-                  <FormLabel textColor={"grey"}>County/Province</FormLabel>
-                  <Select
-                    placeholder="Select your province"
-                    display={"flex"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                    textColor={"grey"}
-                    width={"100%"}
-                    value={province}
-                    onChange={(e) => setProvince(e.target.value)}
-                  >
-                    {subdivisions.map((subdivision, index) => (
-                      <option key={index} value={subdivision.value} style={{ color: "black" }}>
-                        {subdivision.name}
-                      </option>
-                    ))}
-                  </Select>
-                </FormControl>
-              ) : (
-                <FormControl id="provinces">
-                  <FormLabel textColor={"grey"}>County/Province</FormLabel>
-                  <Input
-                    type="text"
-                    textColor={"grey"}
-                    placeholder="Leave blank if not applicable..."
-                    onChange={(e) => setProvince(e.target.value)}
-                  />
-                </FormControl>
-              )}
-              <FormControl isRequired textColor={"grey"}>
-                <FormLabel>Donate</FormLabel>
-                <Input
-                  type="number"
-                  textColor={"grey"}
-                  placeholder="$"
-                  onChange={(e) => setAmount(e.target.value)}
-                />
-              </FormControl>
-              <Button
-                onClick={handlePayButtonClick}
-                borderRadius={20}
-                mt={"6"}
-                background={"teal"}
-                isDisabled={!country || !amount}
-                color={"white"}
-                width={"100%"}
-                _hover={{ background: "green" }}
-              >
-                Pay
-              </Button>
+              <label>Province:</label>
+              <input
+                type="text"
+                value={province}
+                onChange={(e) => setProvince(e.target.value)}
+              />
             </>
           )}
-          {showPayPalButtons && (
-            <PayPalScriptProvider
-              options={{
-                "client-id":
-                  "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
-              }}
-            >
-              <PayPalButtons
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    purchase_units: [
-                      {
-                        amount: {
-                          currency_code: "USD",
-                          value: amount,
-                        },
-                      },
-                    ],
-                  });
-                }}
-                onApprove={async (data, actions) => {
-                  await handleSubmit();
-                  return actions.order.capture().then(function (details) {
-                    toast({
-                      title: "Transaction Successful",
-                      description: "Thank you for your support!",
-                      status: "success",
-                      duration: 3000,
-                      isClosable: true,
-                      position: "bottom",
-                    });
-                  });
-                }}
-                onCancel={() => {
-                  toast({
-                    title: "Transaction Canceled",
-                    description: "Thank you for considering!",
-                    status: "info",
-                    duration: 3000,
-                    isClosable: true,
-                    position: "bottom",
-                  });
-                }}
-                onError={(err) => {
-                  console.error("PayPal error:", err);
-                  toast({
-                    title: "Transaction Error",
-                    description: "An error occurred with the PayPal transaction.",
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                    position: "bottom",
-                  });
-                }}
-              />
-            </PayPalScriptProvider>
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          <label>Donate:</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <button onClick={() => setShowPayPalButtons(true)} disabled={!country || !amount}>
+            Pay
+          </button>
+        </>
+      )}
+      {showPayPalButtons && (
+        <PayPalScriptProvider
+        options={{
+          clientId:
+            "ASgI4T_UWqJJpTSaNkqcXbQ9H8ub0f_DAMR8SJByA19N4HtPK0XRgTv4xJjj4Mpx_KxenyLzBDapnJ82",
+        }}
+        >
+          <PayPalButtons
+            createOrder={(data, actions) => {
+              return actions.order.create({
+                purchase_units: [
+                  {
+                    amount: {
+                      currency_code: "USD",
+                      value: amount,
+                    },
+                  },
+                ],
+              });
+            }}
+            onApprove={async (data, actions) => {
+              await handleSubmit();
+              return actions.order.capture().then(function (details) {
+                toast({
+                  title: "Transaction Successful",
+                  description: "Thank you for your support!",
+                  status: "success",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              });
+            }}
+            onCancel={() => {
+              toast({
+                title: "Transaction Canceled",
+                description: "Thank you for considering!",
+                status: "info",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom",
+              });
+            }}
+            onError={(err) => {
+              console.error("PayPal error:", err);
+              toast({
+                title: "Transaction Error",
+                description: "An error occurred with the PayPal transaction.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+                position: "bottom",
+              });
+            }}
+          />
+        </PayPalScriptProvider>
+      )}
+    </div>
   );
 };
 
