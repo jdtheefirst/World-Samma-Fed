@@ -71,11 +71,11 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; " +
-    "script-src 'self' 'nonce-" + nonce + "' https://www.paypal.com; " +
-    "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; " +
-    "style-src 'self' 'unsafe-inline'; " +
-    "frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; " +
-    "connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke;"
+    "script-src 'self' 'nonce-" + nonce + "' https://www.paypal.com https://pagead2.googlesyndication.com https://www.googletagmanager.com https://accounts.google.com 'unsafe-inline'; " + // Added these domains and 'unsafe-inline'
+    "img-src 'self' data: https://res.cloudinary.com https://via.placeholder.com https://pagead2.googlesyndication.com; " + // No changes
+    "style-src 'self' 'unsafe-inline'; " + // No changes
+    "frame-src 'self' https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net; " + // No changes
+    "connect-src 'self' https://api.cloudinary.com https://sandbox.safaricom.co.ke https://api.safaricom.co.ke;" // No changes
   );
   next();
 });
