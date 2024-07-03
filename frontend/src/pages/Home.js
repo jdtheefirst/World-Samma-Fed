@@ -138,6 +138,7 @@ const BrushText = ({ children }) => (
           justifyContent={"space-between"}
           alignItems={"center"}
           mt={70}
+          width={"100%"}
         >
           <Image
             src={logo1}
