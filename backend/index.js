@@ -1,5 +1,4 @@
 const express = require("express");
-const cors = require("cors");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/userRouter");
@@ -37,32 +36,11 @@ initializeSocketIO(server);
 
 // Helmet middleware for security headers
 app.use(helmet({
-  crossOriginEmbedderPolicy: false,
-  crossOriginOpenerPolicy: { policy: "same-origin" },
-  crossOriginResourcePolicy: { policy: "cross-origin" },
+  contentSecurityPolicy: false, // disable CSP if you want to set it manually
 }));
-
-// CORS configuration
-const corsOptions = {
-  origin: [
-    'https://www.worldsamma.org',
-    'https://res.cloudinary.com',
-    'https://via.placeholder.com',
-    'https://accounts.google.com',
-    'https://www.paypal.com',
-    'https://sandbox.safaricom.co.ke',
-    'https://api.safaricom.co.ke',
-    'https://www.googletagmanager.com',
-    'https://pagead2.googlesyndication.com',
-    'mail.privateemail.com',
-    'http://1482.digitaldsp.com',
-    'https://api.cloudinary.com',
-  ],
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
+app.use(helmet.crossOriginEmbedderPolicy({ policy: "credentialless" }));
+app.use(helmet.crossOriginOpenerPolicy({ policy: "same-origin" }));
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 
 // API routes
 app.use("/api/user", userRoutes);
@@ -96,16 +74,3 @@ if (process.env.NODE_ENV === "production") {
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
-
-// Catch-all route for handling any other request
-app.use("*", (req, res) => {
-  const indexPath = path.join(__dirname, "../frontend/build/index.html");
-  fs.readFile(indexPath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Error reading index.html:", err);
-      res.status(500).send("Error reading index.html");
-    } else {
-      res.send(data);
-    }
-  });
-});
