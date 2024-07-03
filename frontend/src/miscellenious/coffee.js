@@ -14,6 +14,7 @@ import {
   useToast,
   Text,
 } from "@chakra-ui/react";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { getStatesOfCountry } from "../assets/state";
 import { countries } from "countries-list";
 import axios from "axios";
@@ -77,67 +78,6 @@ const CoffeeModal = ({ isOpen, onClose }) => {
       backdropFilter="blur(10px) hue-rotate(90deg)"
     />
   );
-
-  // Function to handle PayPal button setup and rendering
-  const setupPayPalButtons = () => {
-    window.paypal
-      .Buttons({
-        createOrder: function (data, actions) {
-          return actions.order.create({
-            purchase_units: [
-              {
-                amount: {
-                  currency_code: "USD",
-                  value: amount,
-                },
-              },
-            ],
-          });
-        },
-        onApprove: function (data, actions) {
-          return actions.order.capture().then(function (details) {
-            // Handle successful capture
-            handleSubmit();
-            toast({
-              title: "Transaction Successful",
-              description: "Thank you for your support!",
-              status: "success",
-              duration: 3000,
-              isClosable: true,
-              position: "bottom",
-            });
-          });
-        },
-        onCancel: function (data) {
-          toast({
-            title: "Transaction Canceled",
-            description: "Thank you for considering!",
-            status: "info",
-            duration: 3000,
-            isClosable: true,
-            position: "bottom",
-          });
-        },
-        onError: function (err) {
-          console.error("PayPal error:", err);
-          toast({
-            title: "Transaction Error",
-            description: "An error occurred with the PayPal transaction.",
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-            position: "bottom",
-          });
-        },
-      })
-      .render("#paypal-button-container");
-  };
-
-  useEffect(() => {
-    if (show) {
-      setupPayPalButtons();
-    }
-  }, [show]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="md">
@@ -243,7 +183,61 @@ const CoffeeModal = ({ isOpen, onClose }) => {
             </>
           )}
         </ModalBody>
-        <div id="paypal-button-container"></div>
+        {show && (
+          <PayPalScriptProvider
+          options={{ clientId: "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+            }}
+          >
+            <PayPalButtons
+              createOrder={(data, actions) => {
+                return actions.order.create({
+                  purchase_units: [
+                    {
+                      amount: {
+                        currency_code: "USD",
+                        value: amount,
+                      },
+                    },
+                  ],
+                });
+              }}
+              onApprove={async (data, actions) => {
+                await handleSubmit();
+                return actions.order.capture().then(function (details) {
+                  toast({
+                    title: "Transaction Successful",
+                    description: "Thank you for your support!",
+                    status: "success",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "bottom",
+                  });
+                });
+              }}
+              onCancel={() => {
+                toast({
+                  title: "Transaction Canceled",
+                  description: "Thank you for considering!",
+                  status: "info",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              }}
+              onError={(err) => {
+                console.error("PayPal error:", err);
+                toast({
+                  title: "Transaction Error",
+                  description: "An error occurred with the PayPal transaction.",
+                  status: "error",
+                  duration: 3000,
+                  isClosable: true,
+                  position: "bottom",
+                });
+              }}
+            />
+          </PayPalScriptProvider>
+        )}
       </ModalContent>
     </Modal>
   );
