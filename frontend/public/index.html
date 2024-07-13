@@ -1,47 +1,107 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <link rel="icon" href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="icon" href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#000000"/>
-  <meta name="description" content="Official site of the World Samma Federation, promoting martial arts and fostering a global community."/>
-  <link rel="manifest" href="/manifest.json"/>
+  <meta name="description" content="World Samma Federation - Your global community for martial arts and sports enthusiasts. Join us to connect, learn, and grow in your martial arts journey."/>
+  <meta name="author" content="World Samma Federation"/>
+  <meta name="publisher" content="World Samma Federation"/>
+  <meta name="keywords" content="Samma, Federation, Martial Arts, Sports, Community, Training, Events, Competitions"/>
 
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@worldsamma">
-  <meta name="twitter:title" content="World Samma Federation - Official Site">
-  <meta name="twitter:description" content="The World Samma Federation is dedicated to promoting martial arts and fostering a global community.">
-  <meta name="twitter:image" content="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg">
-
-  <!-- Open Graph data -->
-  <meta property="og:title" content="World Samma Federation - Official Site"/>
-  <meta property="og:description" content="The World Samma Federation is dedicated to promoting martial arts and fostering a global community."/>
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="World Samma Federation"/>
+  <meta property="og:description" content="World Samma Federation official site. Your global community for martial arts and sports enthusiasts."/>
   <meta property="og:image" content="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg"/>
   <meta property="og:url" content="https://worldsamma.org"/>
   <meta property="og:type" content="website"/>
 
-  <!-- Additional SEO Meta Tags -->
-  <meta name="author" content="World Samma Federation"/>
-  <meta name="publisher" content="World Samma Federation"/>
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:site" content="@worldsamma"/>
+  <meta name="twitter:title" content="World Samma Federation"/>
+  <meta name="twitter:description" content="World Samma Federation official site. Your global community for martial arts and sports enthusiasts."/>
+  <meta name="twitter:image" content="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg"/>
 
-  <!-- Keywords for SEO -->
-  <meta name="keywords" content="World Samma Federation, martial arts, global community, official site, sports federation, Samma events"/>
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "World Samma Federation",
+      "url": "https://worldsamma.org",
+      "logo": "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg",
+      "sameAs": [
+        "https://www.facebook.com/worldsamma",
+        "https://twitter.com/worldsamma",
+        "https://www.instagram.com/worldsamma"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@worldsamma.org",
+        "contactType": "Customer Support"
+      }
+    }
+  </script>
 
-  <title>World Samma Federation - Official Site</title>
+  <title>World Samma Federation</title>
 
-  <!-- Google Ads and Analytics -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" crossorigin="anonymous"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ" crossorigin="anonymous"></script>
+  <!-- Analytics and Ads -->
+  <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" crossorigin="anonymous"></script>
+  <script src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ" crossorigin="anonymous"></script>
   <script>
-    window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.dataLayer = window.dataLayer || [];
     gtag("js", new Date());
     gtag("config", "G-ZFWT8RB2MQ");
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Show loading message initially
+      document.getElementById("loading-message").style.display = "block";
+  
+      // Example of hiding the loading message after content is loaded
+      window.addEventListener("load", function() {
+        document.getElementById("loading-message").style.display = "none";
+      });
+    });
+  </script>
+  
 </head>
-<body>
-  <div id="root"></div>
+<body style="font-family: 'Arial', sans-serif; line-height: 1.6; background-color: #f4f4f4; color: #333; margin: 0; padding: 0;">
+  <div id="root">
+    <!-- Example content for SEO and user engagement -->
+    <div id="loading-message" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); color: white; font-size: 24px; display: flex; justify-content: center; align-items: center; z-index: 9999;">
+      <p>Loading...</p>
+    </div>
+    <header style="background-color: #003366; color: white; text-align: center; padding: 20px;">
+      <h1 style="font-size: 2.5em;">Welcome to the World Samma Federation</h1>
+      <p style="font-size: 1.2em; margin-top: 10px;">Your global community for martial arts and sports enthusiasts. Join us to connect, learn, and grow in your martial arts journey.</p>
+    </header>
+    <main style="padding: 20px;">
+      <section id="about" style="margin-bottom: 30px;">
+        <h2 style="color: #003366;">About Us</h2>
+        <p>The World Samma Federation is dedicated to promoting the art of Samma and supporting martial artists worldwide. Our community provides resources, training, and events for all skill levels.</p>
+      </section>
+      <section id="features" style="margin-bottom: 30px;">
+        <h2 style="color: #003366;">Features</h2>
+        <ul style="list-style-type: disc; padding-left: 20px;">
+          <li>Comprehensive training programs</li>
+          <li>Global competitions and events</li>
+          <li>Exclusive member resources</li>
+          <li>Community forums and support</li>
+        </ul>
+      </section>
+      <section id="testimonials">
+        <h2 style="color: #003366;">What Our Members Say</h2>
+        <p style="margin-bottom: 10px;">"The World Samma Federation has transformed my training experience. The resources and community support are invaluable." - Stephen ( Master at Utange Club )</p>
+        <p>"I love the global events and competitions. It's amazing to connect with martial artists from around the world." - Gib (Student at Nairobi Club)</p>
+      </section>
+    </main>
+    <footer style="background-color: #003366; color: white; text-align: center; padding: 10px;">
+      <p>&copy; 2024 World Samma Federation. All rights reserved.</p>
+    </footer>
+  </div>
 </body>
 </html>
