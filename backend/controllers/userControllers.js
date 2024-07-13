@@ -478,8 +478,6 @@ const authorizeUser = async (req, res) => {
   });
 };
 
-
-
 const getAdsInfo = async (req, res) => {
   const acceptLanguage = req.headers["accept-language"] || "en-US";
   const referrer = req.headers.referer || "unknown";

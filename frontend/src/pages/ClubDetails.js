@@ -22,6 +22,7 @@ import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
 import Live from "../miscellenious/Live";
 import { useConnectSocket } from "../components/config/chatlogics";
+import { FaRankingStar } from "react-icons/fa6";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
@@ -76,7 +77,7 @@ const ClubDetails = ({ user }) => {
   }, [user?.token, setClub, clubId]);
 
   const handleBroadcast = useCallback(async () => {
-    if (!user || !clubId) {
+    if (!clubId) {
       navigate("/dashboard");
       return;
     }
@@ -330,9 +331,10 @@ const ClubDetails = ({ user }) => {
               Club Status (*
               {club && club.registered ? "Registered" : "Not registered"})
             </Text>
-            <Text>Coach Highest Rank: {club?.coach.belt}</Text>
-            <Text>Coach Code : {club?.coach.admission}</Text>
-            <Text>Club Unique Identifier: {club?.code}</Text>
+            <Text>Coach Name: <strong>{club?.coach.name}</strong></Text>
+            <Box display={"flex"}>Coach Highest Rank: <strong>{'\u00A0'}{club?.coach.belt}</strong><FaRankingStar style={{color: "red", padding: "2", fontSize: "22px"}} /></Box>
+            <Text>Coach Code : <strong>{club?.coach.admission}</strong></Text>
+            <Text>Club Unique Identifier: <strong>{club?.code}</strong></Text>
           </Box>
         </Box>
       </Box>

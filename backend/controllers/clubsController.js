@@ -52,6 +52,7 @@ const fetchClubs = async (req, res) => {
 
 const fetchMyClub = async (req, res) => {
   const { clubId } = req.params;
+  console.log(clubId)
 
   try {
     const populatedClub = await Club.findById(clubId)

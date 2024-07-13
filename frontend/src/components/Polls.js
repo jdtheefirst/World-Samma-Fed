@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Box, Text, Stack, Spinner } from '@chakra-ui/react';
 import { CiCircleQuestion } from "react-icons/ci";
 import axios from 'axios';
-import LoadingSpinner from './Loading';
 
 const PollComponent = () => {
   const [poll, setPoll] = useState(null);

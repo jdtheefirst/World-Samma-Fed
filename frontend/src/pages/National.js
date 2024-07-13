@@ -144,6 +144,7 @@ const National = () => {
           rounded="md"
           bg="whitesmoke"
           fontStyle={"italic"}
+          width={"100%"}
         >
           {" "}
           Officials: {!national && "Viable position"}

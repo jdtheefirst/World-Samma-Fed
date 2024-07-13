@@ -333,7 +333,7 @@ const ProfilePage = ({ user }) => {
           </Box>
         </Box>{" "}
         <Text width={"100%"} textAlign={"center"} p={"3"}>Access all features in one place</Text>
-<Box display={"flex"} flexWrap={"wrap"} width={"100%"} p={"3"}>
+<Box display={"flex"} flexWrap={"wrap"} width={"100%"} p={"3"} fontSize={"small"}>
   <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
     <GoDotFill />
     <Text p={2}>Live stream competitions</Text>

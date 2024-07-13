@@ -17,7 +17,7 @@ import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import { ClubRegistration } from "../Authentication/club";
 
-export default function Clubs(){
+const Clubs = () => {
   const { user, club } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const [clubs, setClubs] = useState([]);
@@ -34,7 +34,8 @@ export default function Clubs(){
       return;
     }
     setLoading(true);
-    setClubs([]);
+    setClubs([])
+   
     try {
       const config = {
         headers: {
@@ -64,7 +65,6 @@ export default function Clubs(){
   }, [fetchClubs, navigate, user]);
 
   useEffect(() => {
-    if (!user) navigate("/dashboard");
 
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(user?.country);
@@ -72,7 +72,8 @@ export default function Clubs(){
     };
 
     fetchSubdivisions();
-  }, [user]);
+  }, [user?.country]);
+
   const handleCreateClub = () => {
     const belts = [
       "Guest",
@@ -111,7 +112,6 @@ export default function Clubs(){
       minH={"100vh"}
     >
         <UpperNav />
-    
       <Text
         textAlign="center"
         fontSize={"large"}
@@ -127,7 +127,6 @@ export default function Clubs(){
         justifyContent={"center"}
         alignItems={"center"}
         width={{ base: "97%", md: "70%" }}
-        backgroundColor="Background"
         boxShadow="dark-lg"
         p="6"
         rounded="md"
@@ -148,6 +147,7 @@ export default function Clubs(){
             justifyContent={"center"}
             alignItems={"center"}
             width={"100%"}
+            isDisabled={loading}
             value={provience}
             onChange={(e) => {
               setProvience(e.target.value);
@@ -246,3 +246,5 @@ export default function Clubs(){
     </Box>
   );
 };
+
+export default Clubs;

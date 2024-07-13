@@ -21,7 +21,7 @@ const Logins = () => {
       css={{
         animation: "slideInFromRight 0.5s ease-out",
       }}
-      marginTop={"30px"}
+      mt={"1rem"}
     >
       <Box
         background={"whitesmoke"}

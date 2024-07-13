@@ -76,9 +76,10 @@ const CourseDetails = ({ courses, user }) => {
   // }, [user, course, navigate]);
 
   return (
-    <Box backgroundColor={"white"} width={"100%"}>
+    <Box backgroundColor={"white"}
+     width={"100%"} display={"flex"} flexDir={"column"} alignItems={"center"} justifyContent={"start"} >
       <UpperNav />
-      <Text fontSize="24px" fontWeight="bold" mb={4} mt={55}>
+      <Text fontSize="24px" fontWeight="bold" mb={4} mt={20}>
         {course.title}
       </Text>
       <Box
