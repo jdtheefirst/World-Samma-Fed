@@ -69,7 +69,7 @@ const BrushText = ({ children }) => (
 
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
-      <Box display="flex" flexDir={"column"} width="100%">
+      <Box display="flex" flexDir={"column"} justifyContent="start" alignItems={"center"} minH={"100vh"} width="100%">
       <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#2d1950"} p={{base: "2", md: "4"}} position={"fixed"} zIndex={20}>
       <Text
   display={"flex"}
@@ -138,6 +138,7 @@ const BrushText = ({ children }) => (
           justifyContent={"space-between"}
           alignItems={"center"}
           mt={70}
+          width={"100%"}
         >
           <Image
             src={logo1}
