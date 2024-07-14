@@ -1,12 +1,14 @@
-import React from "react";
-import { Box, Text, Center, Link, Image, Button } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Text, Center, Image, } from "@chakra-ui/react";
 import logo8 from "../Mombasa.jpg";
 import logo9 from "../Nairobi.jpg";
 import { CiLocationOn } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
 
 const AboutPage = () => {
-  const navigate = useNavigate()
+  const [show, setShow] = useState(false);
+  const handleCloseModal = () => {
+    setShow(false);
+  };
   return (
     <Center
       display={"flex"}
@@ -15,6 +17,7 @@ const AboutPage = () => {
       background={"whitesmoke"}
       overflow={"auto"}
     >
+    {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
   <Box style={{ fontFamily: 'Arial, sans-serif', lineHeight: 1.6, backgroundColor: '#f4f4f4', color: '#333', margin: 0, padding: 4,}}>
     <div id="root">
       <header style={{ backgroundColor: '#003366', color: 'white', textAlign: 'center', padding: '20px' }}>
@@ -22,6 +25,7 @@ const AboutPage = () => {
         <p style={{ fontSize: '1.2em', marginTop: '10px' }}>Your global community for martial arts and sports enthusiasts. Join us to connect, learn, and grow in your martial arts journey.</p>
       </header>
       <main style={{ padding: '20px' }}>
+        <section><a href="/">Back</a></section>
         <section id="about" style={{ marginBottom: '30px', textAlign: "start" }}>
           <h1 style={{ color: '#003366' }}>About Us</h1>
           <p>The World Samma Federation is dedicated to promoting the art of Samma and supporting martial artists worldwide. Our community provides resources, training, and events for all skill levels.</p>
@@ -80,79 +84,108 @@ const AboutPage = () => {
           advance.
         </Text>
         </section>
-        <section style={{display: "flex", justifyContent: "center", flexDirection: {base: "column", md: "row"}, alignItems: "center"}}>
         <Box
-            flex={"1"}
-            position={"relative"}
-            mb={{ base: "20px", md: "0" }}
-            onClick={() => setShow(true)}
-            style={{ cursor: "pointer" }}
-          >
-            <Image
-              src={logo9}
-              boxSize={{ base: "300px", md: "400px" }}
-              borderRadius={2}
-              mx={"auto"}
-              mb={"10px"}
-              boxShadow="dark-lg"
-              p="6"
-              rounded="md"
-              bg="white"
-            />
-            <Text
-              textAlign={"center"}
-              textColor={"goldenrod"}
-              px={{ base: "20px", md: "0" }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <CiLocationOn
-                style={{
-                  color: "red",
-                }}
-              />{" "}
-              Nairobi, Kenya
-            </Text>
-          </Box>
-          <Box
-            flex={"1"}
-            position={"relative"}
-            mb={{ base: "20px", md: "0" }}
-            onClick={() => setShow(true)}
-            style={{ cursor: "pointer" }}
-          >
-            <Image
-              src={logo8}
-              boxSize={{ base: "300px", md: "400px" }}
-              borderRadius={2}
-              mx={"auto"}
-              mb={"10px"}
-              boxShadow="dark-lg"
-              p="6"
-              rounded="md"
-              bg="white"
-            />
-            <Text
-              textColor={"goldenrod"}
-              px={{ base: "20px", md: "0" }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <CiLocationOn
-                style={{
-                  color: "red",
-                }}
-              />
-              Mombasa, Kenya
-            </Text>
-          </Box>
-        </section>
+      display="flex"
+      flexWrap={"wrap"}
+      justifyContent={"space-evenly"}
+      flexDirection={{ base: "column", md: "row" }}
+      alignItems="center"
+    >
+      <Box
+         display={"flex"}
+         flexDir={"column"}
+         justifyContent={"center"}
+         alignItems={"center"}
+        mb={{ base: "20px", md: "0" }}
+        onClick={() => setShow(true)}
+        cursor="pointer"
+        textAlign="center"
+      >
+        <Image
+          src={logo9}
+          boxSize={{ base: "300px", md: "400px" }}
+          borderRadius={2}
+          mx="auto"
+          mb="10px"
+          boxShadow="dark-lg"
+          p="6"
+          rounded="md"
+          bg="white"
+        />
+        <Box
+         display={"flex"}
+         flexDir={"column"}
+         justifyContent={"center"}
+         alignItems={"center"}
+         textColor="goldenrod">
+          <CiLocationOn style={{ color: "red", marginRight: "5px" }} />
+          Nairobi, Kenya
+        </Box>
+      </Box>
+      
+      <Box
+        display={"flex"}
+        flexDir={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        mb={{ base: "20px", md: "0" }}
+        onClick={() => setShow(true)}
+        cursor="pointer"
+      >
+        <Image
+          src={logo8}
+          boxSize={{ base: "300px", md: "400px" }}
+          borderRadius={2}
+          mx="auto"
+          mb="10px"
+          boxShadow="dark-lg"
+          p="6"
+          rounded="md"
+          bg="white"
+        />
+        <Box
+         display={"flex"}
+         flexDir={"column"}
+         justifyContent={"center"}
+         alignItems={"center"}
+         textColor="goldenrod">
+          <CiLocationOn style={{ color: "red", marginRight: "5px" }} />
+          Mombasa, Kenya
+        </Box>
+      </Box>
+      <Box
+         display={"flex"}
+         flexDir={"column"}
+         justifyContent={"center"}
+         alignItems={"center"}
+        mb={{ base: "20px", md: "0" }}
+        onClick={() => setShow(true)}
+        cursor="pointer"
+        textAlign="center"
+      >
+        <Image
+          src={"https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720940066/training_dmljwp.jpg"}
+          boxSize={{ base: "300px", md: "400px" }}
+          borderRadius={2}
+          mx="auto"
+          mb="10px"
+          boxShadow="dark-lg"
+          p="6"
+          rounded="md"
+          bg="white"
+          loading="lazy"
+        />
+        <Box
+         display={"flex"}
+         flexDir={"column"}
+         justifyContent={"center"}
+         alignItems={"center"}
+         textColor="goldenrod">
+          <CiLocationOn style={{ color: "red", marginRight: "5px" }} />
+          Nairobi, Kenya
+        </Box>
+      </Box>
+    </Box>
       </main>
       <footer
         style={{ backgroundColor: '#003366', color: 'white', textAlign: 'center', padding: '10px', width: "100%" }}

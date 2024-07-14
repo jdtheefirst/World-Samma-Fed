@@ -1,6 +1,9 @@
 import React, {} from 'react';
 import "./index.css";
 import "./setup";
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+import 'core-js';
 import reportWebVitals from "./reportWebVitals";
 import { ChakraProvider } from "@chakra-ui/react";
 import ChatProvider from "./components/Context/ChatProvider";
