@@ -52,17 +52,22 @@ const PollComponent = () => {
   if (!poll) return <Text textAlign={"center"} p={"6"}>Loading poll...<Spinner size={"sm"}/></Text>;
 
   return (
-    <Box p={4} width={{base: "100%", md: "80%"}} boxShadow="base" mb={4}  backgroundColor="#934cce5e"
-    borderColor="#934cce5e" borderRadius={20}>
+    <Box p={4} 
+    width={{base: "100%", md: "90%"}}
+    fontSize={"small"}
+    boxShadow="base"
+    mb={4}
+    backgroundColor="#003366"
+    borderColor="#934cce5e" textColor={"whitesmoke"}>
       <CiCircleQuestion fontSize={"50px"} />
       <Text textAlign={"center"} fontWeight={"extrabold"}>POLL</Text>
-      <Text fontSize="large"  p={4} mb={4} textAlign="center">{poll.question}</Text>
+      <Text p={4} mb={4} textAlign="center">{poll.question}</Text>
       <Stack  display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}>
         {poll.options.map((opt, index) => (
           <Box
-           display={"flex"}
+            display={"flex"}
             width={{base: "100%", md: "80%"}}
             key={index}
             p={2}
@@ -71,8 +76,9 @@ const PollComponent = () => {
             onClick={() => handleVote(index)}
             position="relative"
             bg="gray.300"
+            textColor={"#003366"}
           >
-            <Text width={"100%"} textAlign={"start"} fontSize="lg" fontWeight="bold">
+            <Text width={"100%"} textAlign={"start"} fontWeight="bold">
               {opt.option}
             </Text>
             {selectedOption !== null && (
@@ -88,7 +94,7 @@ const PollComponent = () => {
               />
             )}
             {selectedOption !== null && (
-              <Text width={"100%"} textAlign={"end"} fontSize="sm" m={0} p={0}>
+              <Text width={"100%"} textAlign={"end"} m={0} p={0}>
                 {calculatePercentage(index)}%
               </Text>
             )}

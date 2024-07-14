@@ -11,7 +11,6 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  chakra,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -23,7 +22,6 @@ import logo2 from "../finalLogo2.jpeg";
 import logo7 from "../pilot4.png";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
-import brushImage from "../brushImage.jpg"
 import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaTiktok, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
@@ -51,26 +49,20 @@ function Homepage() {
   const handleCloseModal = () => {
     setShow(false);
   };
-
-const BrushText = ({ children }) => (
-  <chakra.span
-    backgroundImage={`url(${brushImage})`}
-    backgroundRepeat="no-repeat"
-    backgroundSize="cover"
-    backgroundPosition="center"
-    display="inline-block"
-    padding="0 5px"
-    fontSize="x-large" fontWeight="extrabold" fontFamily="sans-serif"
-    p={"6"}
-  >
-    {children}
-  </chakra.span>
-);
-
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
-      <Box display="flex" flexDir={"column"} justifyContent="start" alignItems={"center"} minH={"100vh"} width="100%">
-      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#2d1950"} p={{base: "2", md: "4"}} position={"fixed"} zIndex={20}>
+      <Box 
+      display="flex"
+      flexDir={"column"}
+      justifyContent="start"
+      fontFamily='Arial, sans-serif'
+      lineHeight="1.6"
+      alignItems={"center"}
+      minH={"100vh"}
+      width="100%"
+      padding="4"
+      pt={0}>
+      <Box display="flex" justifyContent="flex-end" alignItems={"center"} width="100%" boxShadow="2xl" background={"#003366"} p="4" position={"fixed"} zIndex={20}>
       <Text
   display={"flex"}
   textColor={"whitesmoke"}
@@ -144,7 +136,6 @@ const BrushText = ({ children }) => (
             src={logo1}
             boxSize={{ base: "60px", md: "120px" }}
             width={{ base: "65px", md: "130px" }}
-            borderRadius={10}
             loading="lazy"
             alt={`Logo 1*`}
           />
@@ -177,7 +168,6 @@ const BrushText = ({ children }) => (
             width={{ base: "70px", md: "140px" }}
             alt={`Logo 2*`}
             loading="lazy"
-            borderRadius={10}
           />
         </Box>
         {show && <CoffeeModal isOpen={true} onClose={handleCloseModal} />}
@@ -219,7 +209,7 @@ const BrushText = ({ children }) => (
               alignItems={"center"}
               width="100%"
               fontFamily="Arial, sans-serif"
-              fontSize={{ base: "md", md: "xl" }}
+              fontSize="small"
               fontWeight="normal"
               position={"relative"}
             >
@@ -239,7 +229,6 @@ const BrushText = ({ children }) => (
               />
               <Text
                 textAlign={"center"}
-                fontSize={"md"}
                 width={"300px"}
                 p={{ base: "3", md: "6" }}
                 m={{ base: "4", md: "1" }}
@@ -254,7 +243,6 @@ const BrushText = ({ children }) => (
               </Text>
               <Text
                 textAlign={"center"}
-                fontSize={"md"}
                 width={"325px"}
                 textColor={"#000000"}
                 p={{ base: "3", md: "6" }}
@@ -267,7 +255,6 @@ const BrushText = ({ children }) => (
               </Text>
               <Text
                 textAlign={"center"}
-                fontSize={"md"}
                 width={"350px"}
                 textColor={"#000000"}
                 p={{ base: "3", md: "6" }}
@@ -281,7 +268,6 @@ const BrushText = ({ children }) => (
               </Text>
               <Text
                 textAlign={"center"}
-                fontSize={"md"}
                 width={"375px"}
                 p={{ base: "3", md: "6" }}
                 textColor={"#000000"}
@@ -295,7 +281,6 @@ const BrushText = ({ children }) => (
               </Text>
               <Text
                 textAlign={"center"}
-                fontSize={"md"}
                 width={"400px"}
                 p={{ base: "3", md: "6" }}
                 m={{ base: "4", md: "1" }}
@@ -317,36 +302,35 @@ const BrushText = ({ children }) => (
               justifyContent={"center"}
               alignItems={"center"}
             >
-               <BrushText>Donations and Support</BrushText>
+               <Text mb={"6"}>Donations and Support</Text>
               <Box
                 display={"flex"}
                 flexDirection={{ base: "column", md: "row" }}
                 alignItems={"center"}
                 justifyContent={"center"}
                 width={"100%"}
-                minH={{ base: "400px", md: "200px" }}
                 position={"relative"}
               
               >
                 <Box
+                  margintop={0}
                   flex={"1"}
-                  position={"relative"}
                   mb={{ base: "20px", md: "0" }}
                 >
-                  <Image
-                    src={logo9}
-                    boxSize={"250px"}
-                    borderRadius={2}
-                    onClick={() => setShow(true)}
-                    style={{ cursor: "pointer" }}
-                    mx={"auto"}
-                    mb={"10px"}
-                    loading="lazy"
-                    boxShadow="dark-lg"
-                    p="6"
-                    rounded="md"
-                    bg="blackAlpha.400"
-                  />
+                 <Image
+  src={logo9}
+  width={{ base: "250px", md: "300px", lg: "350px" }}
+  height={"auto"}
+  onClick={() => setShow(true)}
+  style={{ cursor: "pointer" }}
+  mx={"auto"}
+  mb={"10px"}
+  loading="lazy"
+  boxShadow="dark-lg"
+  p="6"
+  bg="blackAlpha.400"
+/>
+
                   <Text
                     style={{
                       display: "flex",
@@ -504,14 +488,14 @@ const BrushText = ({ children }) => (
                     src={
                       "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1716192064/kumbi.jpg"
                     }
-                    boxSize={"250px"}
+                    width={{ base: "250px", md: "300px", lg: "350px" }}
+                    height={"auto"}
                     borderRadius={2}
                     mx={"auto"}
                     boxShadow="dark-lg"
                     onClick={() => setShow(true)}
                     style={{ cursor: "pointer" }}
                     p="6"
-                    rounded="md"
                     bg="blackAlpha.400"
                   />
                      <Text
@@ -527,7 +511,7 @@ const BrushText = ({ children }) => (
                        color: "red",
                      }}
                    />
-                   Mombasa, Kenya(Proposed Design)
+                   *Proposed Design
                  </Text>
                   <Text
                     textAlign={"center"}

@@ -3,6 +3,7 @@ import { Box, Text, Center, Image, } from "@chakra-ui/react";
 import logo8 from "../Mombasa.jpg";
 import logo9 from "../Nairobi.jpg";
 import { CiLocationOn } from "react-icons/ci";
+import CoffeeModal from "../miscellenious/coffee";
 
 const AboutPage = () => {
   const [show, setShow] = useState(false);
