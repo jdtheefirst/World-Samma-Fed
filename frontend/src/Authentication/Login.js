@@ -169,6 +169,7 @@ const Login = () => {
         style={{ marginTop: 15 }}
         onClick={submitHandler}
         isLoading={loading}
+        border={"none"}
       >
         Login
       </Button>
@@ -199,7 +200,7 @@ const Login = () => {
   Enter your Email below
 </Text>
           </ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton border={"none"}/>
           <ModalBody
             display="flex"
             flexDirection="column"
@@ -220,6 +221,7 @@ const Login = () => {
               }}
               colorScheme="green"
               isDisabled={disable}
+              border={"none"}
             >
               {disable ? "Try again after 30sec" : "Search for my email"}
             </Button>

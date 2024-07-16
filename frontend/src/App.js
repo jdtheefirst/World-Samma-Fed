@@ -4,6 +4,7 @@ import { ChatState } from "./components/Context/ChatProvider";
 import { Suspense, lazy, useEffect } from "react";
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Championships = lazy(() => import('./pages/InternationalChampionships'));
 const CourseDetails = lazy(() => import('./pages/Courses'));
 const Clubs = lazy(() => import('./pages/Clubs'));
 const SubmissionPage = lazy(() => import('./pages/Submit'));
@@ -279,7 +280,7 @@ PUNCHES
   },
   {
     id: 8,
-    title: "Black Belt",
+    title: "Black Belt 1",
     lessons: [
       {
         id: 1,
@@ -323,6 +324,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route path="/courses/:id" element={<CourseDetails courses={courses} user={user} />} />
+        <Route path="/championships" element={<Championships />} user={user}/>
         <Route path="/clubs" element={<Clubs />} />
         <Route path="/courses/:id/submit/:title" element={<SubmissionPage user={user} />} />
         <Route path="/profile" element={<ProfilePage user={user} />} />

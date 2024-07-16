@@ -16,6 +16,7 @@ import { getStatesOfCountry, getCountryFlag } from "../assets/state";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import { ClubRegistration } from "../Authentication/club";
+import FooterAchieves from "../components/FooterAchieves";
 
 const Clubs = () => {
   const { user, club } = ChatState();
@@ -132,6 +133,7 @@ const Clubs = () => {
         rounded="md"
         bg="white"
         fontStyle={"italic"}
+        mb={"6"}
       >
         <FormControl
           id="provinces"
@@ -169,6 +171,7 @@ const Clubs = () => {
         <Text fontSize={"larger"} fontWeight={"bold"} textColor={"darkgreen"}>
           Available Clubs in {provience}
         </Text>
+
         <Box
           display={"flex"}
           flexDir={"column"}
@@ -179,7 +182,7 @@ const Clubs = () => {
           p={0}
           borderRadius={3}
           width={{ base: "100%", md: "80%" }}
-        >
+         >
           {" "}
           {loading ? (
             <Spinner />
@@ -243,6 +246,7 @@ const Clubs = () => {
         )}
       </Box>
       {fillForm && <ClubRegistration onClose={() => setFillForm(false)} />}
+      <FooterAchieves/>
     </Box>
   );
 };

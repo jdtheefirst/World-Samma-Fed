@@ -39,10 +39,11 @@ const registerClubs = async (req, res) => {
     throw new Error("Error occurred", error);
   }
 };
+
 const fetchClubs = async (req, res) => {
-  const { country, provience } = req.params;
+  const { country, province } = req.params;
   try {
-    const clubs = await Club.find({ country, provience });
+    const clubs = await Club.find({ country, province });
 
     res.status(200).json(clubs);
   } catch (error) {
@@ -52,7 +53,6 @@ const fetchClubs = async (req, res) => {
 
 const fetchMyClub = async (req, res) => {
   const { clubId } = req.params;
-  console.log(clubId)
 
   try {
     const populatedClub = await Club.findById(clubId)

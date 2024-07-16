@@ -55,12 +55,12 @@ const MyPrograms = ({ courses, user }) => {
           borderRadius={5}
         >
           <Box>
-            <Text fontSize={"larger"} fontWeight={"medium"}>
+            <Box fontSize={"larger"} fontWeight={"medium"}>
               <Text>{course.title}</Text>
               <GiBlackBelt
                 style={{ color: progressLevels[index], fontSize: "3rem" }}
               />
-            </Text>
+            </Box>
             {course.title === user?.belt && (
               <Link
                 href={`/courses/${course.id}`}
@@ -78,6 +78,7 @@ const MyPrograms = ({ courses, user }) => {
               onClick={handleDownload(course.title, user.certificates[index])}
               borderRadius={20}
               fontSize={"small"}
+              border={"none"}
             >
               Download Certificate
             </Button>
@@ -98,7 +99,7 @@ const MyPrograms = ({ courses, user }) => {
                 color={"green.500"}
                 rounded={"full"}
               >
-                $12 Only
+                $12.00 only
               </Text>
             </Box>
           )}

@@ -6,23 +6,30 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 const testimonials = [
   {
     id: 1,
-    name: "John Doe",
-    comment: "Studying here has transformed my physical fitness and mental health!",
-    image: "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1716375455/fjxeh3icjkthsg6srcih.jpg",
+    name: "Master Geoffrey Oluoch",
+    comment: "Achieving the Black 3 belt has been a remarkable journey. The discipline and perseverance required to reach this level have not only honed my martial arts skills but also shaped my character. The World Samma Federation provides an unparalleled platform for continuous growth and excellence.",
+    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/geoffrey.jpg",
   },
   {
     id: 2,
-    name: "Jane Smith",
-    comment: "The courses are well-structured and very informative.",
-    image: "https://via.placeholder.com/150",
+    name: "Master Stephen",
+    comment: "Earning the Black 3 belt has been one of the most rewarding experiences of my life. The rigorous training and the support from the World Samma Federation have been instrumental in my development as a martial artist. I am proud to be part of such a prestigious organization.",
+    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/stephen.jpg",
   },
   {
     id: 3,
-    name: "Bob Johnson",
-    comment: "I've gained so much confidence in my skills.",
-    image: "https://via.placeholder.com/150", 
+    name: "Student Abu Bakar",
+    comment: "Completing my initial belts in the World Samma Federation has been an incredible start to my martial arts journey. The training is intense yet rewarding, and the instructors are incredibly supportive. I am excited to continue progressing and aim for higher belts.",
+    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/Abu%20Bakar.jpg",
+  },
+  {
+    id: 4,
+    name: "Student Ahmed Al-Rashid",
+    comment: "Starting my training with the World Samma Federation has been a transformative experience. The foundational skills I have acquired have given me confidence and motivation to push further. I look forward to advancing through the ranks and achieving my goals.",
+    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/IMG-20240605-WA0000_1_ffblei.jpg", // Change to the actual image URL
   },
 ];
+
 
 const TestimonialsCarousel = () => {
   return (

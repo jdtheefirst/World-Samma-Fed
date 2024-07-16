@@ -16,12 +16,14 @@ import {
   DrawerHeader,
   DrawerOverlay,
 } from "@chakra-ui/modal";
+import { TiThMenuOutline } from "react-icons/ti";
 import { BellIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import Requests from "./Requests";
 import React from "react";
+import logo7 from "../final.jpeg";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
@@ -56,20 +58,11 @@ function UpperNav() {
         top={0}
         position={"fixed"}
       >
-        <Text
-          textAlign={"center"}
-          fontSize={{ base: "small", md: "medium" }}
-          fontWeight={"bold"}
-          userSelect={"none"}
-          p={0}
-          m={0}
-          pl={3}
-        >
-          Worldsamma
-        </Text>
+        <Image src={logo7} height={12}/>
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <Button
             backgroundColor={"transparent"}
+            border={"none"}
             display={displayValue}
             visibility={textVisibility}
             _hover={{ backgroundColor: "transparent", color: "green.400" }}
@@ -81,11 +74,12 @@ function UpperNav() {
           </Button>
           <Button
             variant="ghost"
+            display={{ base: "none", md: "flex" }}
+            border={"none"}
             onClick={onOpen}
             _hover={{ backgroundColor: "transparent", color: "green.400" }}
           >
             <Text
-              display={{ base: "none", md: "flex" }}
               px={4}
               userSelect={"none"}
             >
@@ -97,7 +91,7 @@ function UpperNav() {
 
         <div>
           <Menu>
-            <MenuButton p={1} position="relative">
+            <MenuButton p={1} position="relative" border={"none"}>
               <BellIcon fontSize="2xl" p={0} m={0} />
               {notification.length > 0 && (
                 <Badge
@@ -134,6 +128,7 @@ function UpperNav() {
             <MenuButton
               as={Button}
               bg="white"
+              border={"none"}
               _hover={{ backgroundColor: "transparent" }}
               onClick={onOpen}
             >
@@ -147,11 +142,9 @@ function UpperNav() {
               ) : (
                 <IconButton
                   backgroundColor={"transparent"}
+                  border={"none"}
                   icon={
-                    <Image
-                      src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1706276791/icons8-menu-50_afv1fe.png"
-                      height={5}
-                    />
+                    <TiThMenuOutline />
                   }
                 />
               )}
@@ -172,7 +165,7 @@ function UpperNav() {
             justifyContent={"space-between"}
           >
             Dashboard
-            <CloseButton onClick={onClose} />
+            <CloseButton onClick={onClose} border={"none"} />
           </DrawerHeader>
           <DrawerBody
             display={"flex"}
@@ -190,6 +183,7 @@ function UpperNav() {
                 display={"flex"}
                 justifyContent={"left"}
                 alignItems={"center"}
+                border={"none"}
                 background={"white"}
                 m={1}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
@@ -207,6 +201,7 @@ function UpperNav() {
               </Button>
               <Button
                 justifyContent={"left"}
+                border={"none"}
                 background={"white"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 onClick={() => {
@@ -219,6 +214,7 @@ function UpperNav() {
               <Button
                 justifyContent={"start"}
                 background={"white"}
+                border={"none"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 onClick={() => {
                   navigate("/clubs");
@@ -230,6 +226,7 @@ function UpperNav() {
               <Button
                 justifyContent={"left"}
                 background={"white"}
+                border={"none"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 isDisabled={!user?.provinces}
                 onClick={() => {
@@ -242,6 +239,7 @@ function UpperNav() {
               <Button
                 background={"white"}
                 justifyContent={"left"}
+                border={"none"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
                 onClick={() => {
                   navigate("/national");
@@ -253,12 +251,16 @@ function UpperNav() {
               <Button
                 background={"white"}
                 justifyContent={"left"}
+                border={"none"}
                 _hover={{ backgroundColor: "transparent", color: "green" }}
+                onClick={()=> {
+                  navigate("/championships")
+                }}
               >
                 International Championship
               </Button>
             </Box>
-            <Button onClick={logoutHandler}>Log out</Button>
+            <Button border={"none"} onClick={logoutHandler}>Log out</Button>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

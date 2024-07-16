@@ -1,12 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Spinner, Text, useToast, Link } from "@chakra-ui/react";
+import { Box, Button, Spinner, Text, useToast, Link, useColorModeValue } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
 import { getCountryFlag, getStatesOfCountry } from "../assets/state";
 import NationalInterim from "../Authentication/NationalInterim";
 import axios from "axios";
+import EventBox from "../components/EventBoxz";
+import FooterAchieves from "../components/FooterAchieves";
 
 const National = () => {
   const { user, national } = ChatState();
@@ -16,6 +18,7 @@ const National = () => {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [clubs, setClubs] = useState([]);
   const toast = useToast();
 
   const getDonations = useCallback(async () => {
@@ -41,7 +44,37 @@ const National = () => {
         position: "bottom",
       });
     }
-  }, [toast, user, setDonation, setLoading]);
+  }, [toast, user]);
+
+  const fetchAllClubs = useCallback(async () => {
+    if (!user) {
+      navigate("/dashboard");
+      return;
+    }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    try {
+      const { data } = await axios.get(
+        `/api/national/all/${user.country}`,
+        config
+      );
+
+      setClubs(data);
+
+    } catch (error) {
+      console.error("Error fetching or creating clubs:", error);
+    }
+  }, [user, toast]);
+
+  useEffect(()=>{
+  if(user){
+  fetchAllClubs();
+  }
+  }, [fetchAllClubs, user]);
 
   useEffect(() => {
     if (!user) navigate("/dashboard");
@@ -93,7 +126,7 @@ const National = () => {
           {user?.country} Samma Association {flag}
         </Text>
 
-        <Text textAlign={"center"}>
+        <Box textAlign={"center"}>
           {loading ? (
             <Spinner size={"sm"} />
           ) : (
@@ -102,44 +135,60 @@ const National = () => {
               {donation && donation.length > 0 ? donation[0].fund : "0"}
             </Text>
           )}
-        </Text>
-        <Text p={"6"}> States</Text>
+        </Box>
+        <Text textAlign={"center"} p={"6"}> States: {subdivisions &&
+       subdivisions.length}</Text>
         <Box
-  display="flex"
-  justifyContent="center"
-  alignItems="center"
-  flexDir="column"
-  height="200px"
-  width={{base: "97%", md: "70%"}}
-  maxWidth="100%"
-  overflowY="scroll"
-  padding="6"
-  border="1px solid grey"
-  borderRadius="5px"
-  mb={"6"}
-  bg="whitesmoke"
-  boxSizing="border-box"
->
-  {subdivisions &&
-    subdivisions.map((subdivision, index) => (
-      <Link
-        href="#"
-        textDecoration="underline"
-        key={index}
-        p="2"
-        width="100%"
-      >
-        {subdivision.name}
-      </Link>
-    ))}
-</Box>
+          maxH={"20rem"}
+          width={"100%"}
+          overflowY={"scroll"}
+          p="6"
+          bg="whitesmoke"
+          mb={'6'}
+        >
+          {clubs.length === 0 && (
+            <>
+              <Text fontWeight={"bold"}>
+                No clubs available in this region yet 🚫
+              </Text>
+              <Link href="/clubs" textDecoration={"underline"}>
+                Start your own club and lead the way!
+              </Link>
+            </>
+          )}
+          {clubs &&
+            clubs.map((subdivision, index) => (
+              <Button
+                border={"none"}
+                p={'6'}
+                key={index}
+                onClick={() =>
+                  navigate(`/showclub/${subdivision._id}/${false}`)
+                }
+                width={"100%"}
+                mb={"2"}
+              >
+                {subdivision.name}
+                <Text
+                  fontSize={"xm"}
+                  bg={useColorModeValue("green.50", "green.900")}
+                  color={"green.500"}
+                  rounded={"full"}
+                  p={"2"}
+                  ml={"4"}
+                >
+                  {subdivision.registered ? "Registered" : "Unregistered"}
+                </Text>
+              </Button>
+            ))}
+        </Box>
+        <EventBox nationalPage={true}/>
         <Box
           display={"flex"}
           flexDir={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          boxShadow="dark-lg"
-          m={2}
+          boxShadow="base"
           p={4}
           rounded="md"
           bg="whitesmoke"
@@ -154,7 +203,7 @@ const National = () => {
               flexDir={"column"}
               justifyContent={"center"}
               alignItems={"center"}
-              boxShadow="dark-lg"
+              boxShadow="base"
               p="6"
               rounded="md"
               bg="white"
@@ -192,6 +241,7 @@ const National = () => {
             </>
           )}
         </Box>
+        <FooterAchieves />
       </Box>
     </Box>
   );

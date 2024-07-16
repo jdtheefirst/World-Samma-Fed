@@ -25,15 +25,13 @@ import logo10 from "../Equity.png";
 import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaTiktok, } from "react-icons/fa";
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { FaXTwitter } from "react-icons/fa6";
-
-
 
 import CoffeeModal from "../miscellenious/coffee";
 import { CiFacebook, CiInstagram, CiLocationOn, CiYoutube } from "react-icons/ci";
 import TestimonialsCarousel from "../components/Carousel";
 import PollComponent from "../components/Polls";
+import { MdMenuOpen } from "react-icons/md";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
@@ -68,7 +66,7 @@ function Homepage() {
   textColor={"whitesmoke"}
   textAlign={"start"}
   width={"100%"}
-  fontSize={{ base: "medium", md: "x-large" }}
+  fontSize={{base: "small", md: "x-large" }}
   fontWeight={"bold"}
 >
   <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
@@ -78,7 +76,7 @@ function Homepage() {
 </Text>
       <FaRocket className="rocket-animation" size={20} />
       <Menu>
-        <MenuButton as={IconButton} icon={<GiHamburgerMenu style={{color: "white", fontSize: "30px"}} />} variant="outline" colorScheme="#2d1950"/>
+        <MenuButton as={IconButton} border="none" icon={<MdMenuOpen style={{color: "white", fontSize: "30px"}} />} variant="outline" colorScheme="#2d1950"/>
         <MenuList borderRadius={"none"}>
           <MenuItem
             onClick={() => {
@@ -142,8 +140,7 @@ function Homepage() {
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "21px",
-              sm: "20px",
+              base: "small",
               md: "30px",
               lg: "40px",
               xl: "50px",
@@ -310,6 +307,7 @@ function Homepage() {
                 justifyContent={"center"}
                 width={"100%"}
                 position={"relative"}
+                fontSize={"small"}
               
               >
                 <Box
@@ -415,6 +413,7 @@ function Homepage() {
                   justifyContent={"center"}
                   alignItems={"center"}
                   marginTop= "-3rem"
+                  fontSize={"small"}
                  
                 >
                   <FaArrowCircleRight
@@ -428,7 +427,7 @@ function Homepage() {
                     flexDir={"column"}
                     justifyContent={"center"}
                     alignItems={"center"}
-                  >
+                   >
                     {" "}
                     <Box
                       display={"flex"}
@@ -483,6 +482,7 @@ function Homepage() {
                   flex={"1"}
                   position={"relative"}
                   m={1}
+                  fontSize={"small"}
                 >
                   <Image
                     src={
@@ -499,7 +499,6 @@ function Homepage() {
                     bg="blackAlpha.400"
                   />
                      <Text
-                   
                    style={{
                      display: "flex",
                      alignItems: "center",
@@ -518,6 +517,7 @@ function Homepage() {
                     bgGradient="linear(to-l, #7928CA, #FF0080)"
                     bgClip="text"
                     p={"3"}
+                    fontSize={"small"}
                     m={1}
                     px={{ base: "10px", md: "0" }}
                   >
@@ -589,7 +589,7 @@ function Homepage() {
                   textAlign={"center"}
                   textColor={"blackAlpha.800"}
                   px={6}
-                
+                  fontSize={"small"}
                   width={"100%"}
                 >
                   Samma is a modern hybrid martial art (from Eastern Africa)

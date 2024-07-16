@@ -5,9 +5,7 @@ import {
   Button,
   Spinner,
   Text,
-  useColorModeValue,
   useToast,
-  Link,
 } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import UpperNav from "../miscellenious/upperNav";
@@ -15,65 +13,31 @@ import axios from "axios";
 import ProvincialCoachForm from "../Authentication/ProvinceInterim";
 import formatMessageTime from "../components/config/formatTime";
 import { getCountryFlag } from "../assets/state";
+import EventBox from "../components/EventBoxz"
+import FooterAchieves from "../components/FooterAchieves";
 
 const Provience = () => {
   const { user, province } = ChatState();
   const [loading, setLoading] = useState(false);
-  const [clubs, setClubs] = useState([]);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
   const [donation, setDonation] = useState(undefined);
-
-  const [loadiing, setLoadiing] = useState(false);
   const [show, setShow] = useState(false);
   const toast = useToast();
 
-  const fetchClubs = useCallback(async () => {
-
-    if (!user) {
-      navigate("/dashboard");
-      return;
-    }
-    if(!user.provinces){
-      navigate("/dashboard");
-      return;
-    }
-    setLoading(true);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-
-    try {
-      const { data } = await axios.get(
-        `/api/clubs/${user.country}/${user.provinces}`,
-        config
-      );
-
-      setClubs(data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error("Error fetching or creating clubs:", error);
-    }
-  }, [user, setClubs, toast, setLoading]);
   const getDonations = useCallback(async () => {
-    setLoadiing(true);
+    setLoading(true);
     try {
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.get(`/api/donate/province`, config);
-
       setDonation(data);
-      setLoadiing(false);
+      setLoading(false);
     } catch (error) {
-      setLoadiing(false);
-      console.log(error);
+      setLoading(false);
       toast({
         title: "An Error Occurred!",
         description: "Please try again later",
@@ -82,15 +46,15 @@ const Provience = () => {
         position: "bottom",
       });
     }
-  }, [user, toast, setLoadiing, setDonation]);
+  }, [user, toast]);
+
   useEffect(() => {
-    if (!user) {
+    if (user) {
+      getDonations();
+    }else{
       navigate("/dashboard");
-      return;
     }
-    fetchClubs();
-    getDonations();
-  }, [fetchClubs, navigate, user]);
+  }, [getDonations, navigate, user]);
 
   const handleInterim = () => {
     if (user.belt !== "Black") {
@@ -111,10 +75,13 @@ const Provience = () => {
     <Box
       display="flex"
       flexDir="column"
+      alignItems={"center"}
+      justifyContent={"space-between"}
       backgroundColor="whitesmoke"
       overflowY={"auto"}
       width="100%"
       minH={"100vh"}
+      p={"6"}
     >
       <UpperNav />
       <Box
@@ -130,7 +97,7 @@ const Provience = () => {
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.provinces} Samma Association
         </Text>
-        <Text textAlign={"center"}>
+        <Box textAlign={"center"}>
           {loading ? (
             <Spinner size={"sm"} />
           ) : (
@@ -139,62 +106,20 @@ const Provience = () => {
               {donation && donation.length > 0 ? donation[0].fund : "0"}
             </Text>
           )}
-        </Text>
-        <Box
-          height={"200px"}
-          width={{ base: "97%", md: "70%" }}
-          overflowY={"scroll"}
-          p="6"
-          bg="whitesmoke"
-        >
-          {loading && <Spinner />}
-          {!loading && clubs.length === 0 && (
-            <>
-              <Text fontWeight={"bold"}>
-                No clubs available in this region yet 🚫
-              </Text>
-              <Link href="/clubs" textDecoration={"underline"}>
-                Start your own club and lead the way!
-              </Link>
-            </>
-          )}
-          {clubs &&
-            clubs.map((subdivision) => (
-              <Button
-                border={"1px solid #e803fc"}
-                m={1}
-                key={subdivision._id}
-                onClick={() =>
-                  navigate(`/showclub/${subdivision._id}/${false}`)
-                }
-              >
-                {subdivision.name}
-                <Text
-                  fontSize={"xm"}
-                  bg={useColorModeValue("green.50", "green.900")}
-                  color={"green.500"}
-                  rounded={"full"}
-                >
-                  (*
-                  {subdivision.registration ? "Registered" : "Unregistered"})
-                </Text>
-              </Button>
-            ))}
         </Box>
+        <EventBox provincePage={true}/>
         <Box
           display={"flex"}
           flexDir={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          boxShadow="dark-lg"
-          m={2}
+          boxShadow="base"
           p={4}
           rounded="md"
           bg="whitesmoke"
           fontStyle={"italic"}
+          width={"100%"}
         >
-          {" "}
-          {loading && <Spinner />}
           Officials: {!province && "Viable position"}
           {province !== null ? (
             <Box
@@ -229,6 +154,7 @@ const Provience = () => {
                   color={"white"}
                   _hover={{ color: "black" }}
                   borderRadius={20}
+                  border={"none"}
                   onClick={() => {
                     handleInterim();
                   }}
@@ -240,6 +166,7 @@ const Provience = () => {
             </>
           )}
         </Box>
+        <FooterAchieves/>
       </Box>
     </Box>
   );

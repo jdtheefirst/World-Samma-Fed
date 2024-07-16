@@ -54,6 +54,8 @@ const getProvinceFund = async (req, res) => {
 const getNationalFund = async (req, res) => {
   const country = req.user.selectedCountry;
 
+  console.log(country);
+
   try {
     const fund = await CountryFund.find({ country: country });
 

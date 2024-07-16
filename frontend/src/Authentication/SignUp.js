@@ -243,6 +243,7 @@ const Signup = () => {
                 submitHandler();
                 onClose();
               }}
+              border={"none"}
               isDisabled={code !== inputCode}
               colorScheme="green"
             >
@@ -312,7 +313,7 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
+            <Button h="1.75rem" size="sm" onClick={handleClick} border={"none"}>
               {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
@@ -327,7 +328,7 @@ const Signup = () => {
             onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
+            <Button h="1.75rem" size="sm" onClick={handleClick} border={"none"}>
               {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
@@ -453,6 +454,7 @@ const Signup = () => {
         onClick={() => generateAndVerify()}
         isLoading={picLoading}
         isDisabled={disabled}
+        border={"none"}
       >
         <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>
       </Button>

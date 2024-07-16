@@ -4,6 +4,19 @@ const { getIO } = require("../socket");
 const NationalCoach = require("../models/nationalModel");
 const ProvincialCoach = require("../models/provinceModel");
 const User = require("../models/userModel");
+const Club = require("../models/clubsModel");
+
+const fetchAllClubs = async (req, res) => {
+  const { country } = req.params;
+  try {
+    const clubs = await Club.find({ country });
+
+    res.status(200).json(clubs);
+
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const makeNationalRequests = async (req, res) => {
   const userId = req.user._id;
@@ -188,4 +201,5 @@ module.exports = {
   acceptDecline,
   registerProvince,
   getProvince,
+  fetchAllClubs,
 };

@@ -186,6 +186,7 @@ const Dashboard = ({ courses }) => {
           if (response.data.length === 0) {
           } else {
             setProvince(data);
+            console.log(data);
           }
         })
         .catch((error) => {
@@ -197,6 +198,7 @@ const Dashboard = ({ courses }) => {
               status: "loading",
               position: "bottom",
             });
+            console.log(error);
 
             setTimeout(() => {
               localStorage.removeItem("userInfo");
@@ -268,6 +270,7 @@ const Dashboard = ({ courses }) => {
                   key={liveItem._id}
                   textAlign="center"
                   width="100%"
+                  border={"none"}
                   backgroundColor="white"
                   _hover={{ backgroundColor: "white" }}
                   onClick={() => {
@@ -294,6 +297,7 @@ const Dashboard = ({ courses }) => {
                 transition: "width 0.3s ease-in-out",
                 color: "teal",
                 fontSize: "30px",
+                border: 'none',
               }}
             />
           }
@@ -305,7 +309,7 @@ const Dashboard = ({ courses }) => {
           onMouseLeave={() => setHovered(false)}
           borderRadius="20px"
         />
-        <AdComponent />
+        {/* <AdComponent /> */}
       </Box>
     </ErrorBoundary>
   );

@@ -163,6 +163,8 @@ const registerProvince = async (req, res) => {
     res.status(500).json({ error: "Failed to register province" });
   }
 };
+
+//Get officials registered passed interim
 const getProvince = async (req, res) => {
   const { country, province } = req.params;
   try {

@@ -29,6 +29,7 @@ const Logins = () => {
         p={4}
         borderRadius="lg"
         borderWidth="1px"
+        fontSize={"small"}
       >
         <Tabs isFitted variant="soft-rounded">
           <TabList>

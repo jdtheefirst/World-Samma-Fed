@@ -243,7 +243,7 @@ const FloatingChat = ({ onClose }) => {
       bg="white"
       zIndex={11}
     >
-      <Button p={2} onClick={handleChatClose}>
+      <Button p={2} onClick={handleChatClose} border={"none"}>
         X
       </Button>
       <Box
@@ -263,6 +263,8 @@ const FloatingChat = ({ onClose }) => {
                 key={option}
                 bg="transparent"
                 onClick={() => setSelectedChatOption(option)}
+                border={"none"}
+                p={'2'}
               >
                 {option}
               </Button>
@@ -291,6 +293,7 @@ const FloatingChat = ({ onClose }) => {
                   }}
                   background={"transparent"}
                   textColor={"red"}
+                  border={"none"}
                 >
                   X
                 </Button>
@@ -310,6 +313,7 @@ const FloatingChat = ({ onClose }) => {
                 onClick={() => setSelectedChatOption(null)}
                 background={"transparent"}
                 textColor={"red"}
+                border={"none"}
               >
                 X
               </Button>
@@ -328,7 +332,7 @@ const FloatingChat = ({ onClose }) => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
             />
-            <IconButton isLoading={sending} onClick={(event) => sendMessage(event)} p={0} m={1}>
+            <IconButton isLoading={sending} border={"none"} onClick={(event) => sendMessage(event)} p={0} m={1}>
             <IoIosSend/>
             </IconButton>
           </Box>
