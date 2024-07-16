@@ -8,9 +8,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Button,
-  Image,
   Text,
-  Flex,
   Box,
   Spinner,
 } from "@chakra-ui/react";
@@ -18,6 +16,7 @@ import { ChatState } from "../components/Context/ChatProvider";
 import React, { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { RiTeamLine } from "react-icons/ri";
 
 const Requests = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -83,11 +82,9 @@ const Requests = () => {
         backgroundColor={"white"}
         _hover={{ backgroundColor: "transparent" }}
         onClick={onOpen}
+        border={"none"}
       >
-        <Image
-          src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709643622/icons8-group-48_asymxw.png"
-          height={5}
-        />
+        <RiTeamLine fontSize={"20px"} />
         {clubRequests && clubRequests.length > 0 && (
           <Text
             position="absolute"
@@ -111,7 +108,7 @@ const Requests = () => {
     />
         <ModalContent>
           <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
-          <ModalCloseButton />
+          <ModalCloseButton border={"none"} />
           <ModalBody
             display={"flex"}
             justifyContent={"center"}
@@ -132,12 +129,14 @@ const Requests = () => {
                     key={club._id}
                     justifyContent={"space-between"}
                     onClick={() => navigate(`/showclub/${club._id}`)}
+                    border={"none"}
                   >
                     {index + 1}. Club Name: {club.name}
                   </Button>
                   <Button
                     background={"#f05e56"}
                     onClick={() => declineRequest(club._id)}
+                    border={"none"}
                   >
                     {loading ? <Spinner size={"small"} /> : `Decline`}
                   </Button>

@@ -20,7 +20,6 @@ const National = () => {
   const navigate = useNavigate();
   const [clubs, setClubs] = useState([]);
   const toast = useToast();
-
   const getDonations = useCallback(async () => {
     setLoading(true);
     try {
@@ -91,12 +90,12 @@ const National = () => {
   const handleInterim = () => {
     if (user.belt !== "Black") {
       toast({
-        title: `Your highest rank is ${user.belt}`,
+        title: `Your highest rank is ${user.belt}!`,
         description:
-          "Head of all National Associations must have attained Black.",
+          "Head of a National Association must have attained at least Black 1.",
         status: "info",
         isClosable: true,
-        duration: 5000,
+        duration: 10000,
       });
     } else {
       setShow(true);
@@ -144,6 +143,7 @@ const National = () => {
           overflowY={"scroll"}
           p="6"
           bg="whitesmoke"
+          fontSize={"small"}
           mb={'6'}
         >
           {clubs.length === 0 && (
@@ -156,11 +156,12 @@ const National = () => {
               </Link>
             </>
           )}
-          {clubs &&
+          {clubs.length > 0 &&
             clubs.map((subdivision, index) => (
               <Button
                 border={"none"}
-                p={'6'}
+                display={"flex"}
+                justifyContent={"space-around"}
                 key={index}
                 onClick={() =>
                   navigate(`/showclub/${subdivision._id}/${false}`)
@@ -168,14 +169,13 @@ const National = () => {
                 width={"100%"}
                 mb={"2"}
               >
-                {subdivision.name}
+                <Text fontSize={"xs"}>{subdivision.name}</Text>
                 <Text
-                  fontSize={"xm"}
+                  fontSize={"xs"}
                   bg={useColorModeValue("green.50", "green.900")}
                   color={"green.500"}
                   rounded={"full"}
                   p={"2"}
-                  ml={"4"}
                 >
                   {subdivision.registered ? "Registered" : "Unregistered"}
                 </Text>

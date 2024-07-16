@@ -61,10 +61,10 @@ const Provience = () => {
       toast({
         title: `Your highest rank is ${user.belt}`,
         description:
-          "Head of a Provincial Association must have attained Black.",
+          "Head of a Provincial Association must have attained at least Black 1.",
         status: "info",
         isClosable: true,
-        duration: 5000,
+        duration: 10000,
       });
     } else {
       setShow(true);
