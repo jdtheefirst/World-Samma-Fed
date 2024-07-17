@@ -41,12 +41,12 @@ const FloatingChat = ({ onClose }) => {
     province,
   } = ChatState();
   const navigate = useNavigate();
-
+  const adminId = "6693a995f6295b8bd90d9301";
   const socket = useConnectSocket(user?.token);
 
   useEffect(() => {
     if (
-      user?.admin ||
+      user?._id === adminId ||
       user?.coach ||
       province?.provincialCoach._id === user?._id ||
       national?.nationalCoach._id === user?._id
@@ -155,13 +155,11 @@ const FloatingChat = ({ onClose }) => {
   }, [selectedChat, setSender]);
 
   const sendMessage = async (event) => {
-  
-    if ((event && event.type === "click") || event && event.key === "Enter") {
-  
+    if ((event && event.type === "click") || (event && event.key === "Enter")) {
       setSending(true);
+      const userId = user._id;
   
       if (!selectedChatOption && !rank) {
-        console.log("Select a recipient: Please choose whom you want to chat with.");
         toast({
           title: "Select a recipient",
           description: "Please choose whom you want to chat with.",
@@ -174,11 +172,10 @@ const FloatingChat = ({ onClose }) => {
         return;
       }
   
-      if (rank && !selectedChat) {
-        console.log("Select a recipient: Please choose whom you want to reply to.");
+      if (rank && !selectedChat && userId !== adminId) {
         toast({
-          title: "Select a recipient",
-          description: "Please choose whom you want to reply to.",
+          title: "Select a recipient!",
+          description: "Please choose whom you want to reply to...",
           status: "info",
           duration: 5000,
           isClosable: true,
@@ -189,7 +186,6 @@ const FloatingChat = ({ onClose }) => {
       }
   
       try {
-        const userId = user._id;
         const config = {
           headers: {
             "Content-type": "application/json",
@@ -197,20 +193,40 @@ const FloatingChat = ({ onClose }) => {
           },
         };
   
-        setNewMessage("");
+        // Send message to backend
         const { data } = await axios.post(
           "/api/message",
           { sender: sender, content: newMessage, userId },
           config
         );
   
-        setMessages((prevMessages) => [...prevMessages, data]);
+        // Update messages state based on sender
+        if (userId === adminId) {
+          // If admin, construct the new message object
+          const newMessageObj = {
+            content: newMessage.trim(),
+            createdAt: new Date(),
+            recipient: { WSF: null, _id: '65c7549721abc4f629ae5009', name: 'Broadcast', otherName: 'Ngatia', email: 'josephmpesa23@gmail.com' },
+            sender: { _id: '6693a995f6295b8bd90d9301', name: 'j', otherName: 'e', email: 'almanobe2@gmail.com' },
+            updatedAt: "2024-07-01T16:26:45.964Z",
+            __v: 0,
+            _id: "6682d8c501209935692efb9e"
+          };
   
-        socket.emit("new message", data);
+          // Update messages state with the new message object
+          setMessages(prevMessages => [...prevMessages, newMessageObj]);
+        } else {
+          // If regular user, update messages state with the response data
+          setMessages(prevMessages => [...prevMessages, data]);
+          socket.emit("new message", data);
+        }
+  
+        // Clear input and reset sending state
         setSending(false);
+        setNewMessage("");
       } catch (error) {
+        console.error("Failed to send message:", error);
         setSending(false);
-        console.log(error);
         toast({
           title: "Failed to send the Message",
           description: "Please try again after some time",
@@ -221,7 +237,7 @@ const FloatingChat = ({ onClose }) => {
         });
       }
     }
-  };
+  };  
   
   const handleChatClose = () => {
     onClose();
@@ -234,11 +250,10 @@ const FloatingChat = ({ onClose }) => {
       bottom="0"
       right="1"
       height={"90vh"}
-      width={{ base: "95%", lg: "450px" }}
-      background={"white"}
+      width={{base: "100%", md: "60%"}}
       borderRadius={4}
       boxShadow="dark-lg"
-      p="6"
+      p="2"
       rounded="md"
       bg="white"
       zIndex={11}
@@ -250,10 +265,14 @@ const FloatingChat = ({ onClose }) => {
         p={2}
         top="0"
         left="0"
-        height="95%"
+        height="90%"
         display="flex"
         flexDir="column"
         justifyContent="center"
+        alignItems={"center"}
+        width={"100%"}
+        background={"whitesmoke"}
+        
       >
         {!selectedChatOption && !rank && (
           <Box display={"flex"} flexDir={"column"} bg="transparent">
@@ -272,9 +291,9 @@ const FloatingChat = ({ onClose }) => {
           </Box>
         )}
         {loading ? (
-          <Spinner size={"lg"} />
+          <Spinner speed='0.65s' size={"xl"} />
         ) : (
-          <ScrollableChat messages={messages} />
+         <ScrollableChat messages={messages} />
         )}
         <Box position="absolute" bottom={0} width="100%">
           {rank && (
@@ -324,8 +343,9 @@ const FloatingChat = ({ onClose }) => {
             display={"flex"}
             justifyContent={"center"}
             alignItems={"center"}
-            width={"90%"}
+            width={"100%"}
             background={"white"}
+            p={2}
           >
             <Input
               placeholder="Type your message..."

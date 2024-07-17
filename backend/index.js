@@ -62,13 +62,6 @@ if (process.env.NODE_ENV === "production") {
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname1, "../frontend/build", "index.html"));
   });
-  // app.use(express.static(path.join(__dirname1, "../frontend/build"), {
-  //   setHeaders: (res, path) => {
-  //     if (path.endsWith('.js')) {
-  //       res.setHeader('Content-Type', 'application/javascript');
-  //     }
-  //   },
-  // }));
 } else {
   // Fallback for development or other environments
   app.get("/", (req, res) => {

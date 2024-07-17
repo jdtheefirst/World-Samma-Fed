@@ -334,26 +334,26 @@ const ProfilePage = ({ user }) => {
         </Box>{" "}
         <Text width={"100%"} textAlign={"center"} p={"3"}>Access all features in one place</Text>
 <Box display={"flex"} flexWrap={"wrap"} width={"100%"} p={"3"} fontSize={"small"}>
-  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
     <GoDotFill />
-    <Text p={2}>Live stream competitions</Text>
+    <Text p={'1'}>Live stream competitions</Text>
     <FaLockOpen style={{color: "green"}} />
-  </Text>
-  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+  </Box>
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
     <GoDotFill />
-    <Text p={2}>Become a coach = 50%+ Revenue</Text>
+    <Text p={'1'}>Become a coach = 50%+ Revenue</Text>
     {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Text>
-  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+  </Box>
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
     <GoDotFill />
-    <Text p={2}>Become a provincial coach = 70%+ Revenue</Text>
+    <Text p={'1'}>Become a provincial coach = 70%+ Revenue</Text>
     {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Text>
-  <Text display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
+  </Box>
+  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
     <GoDotFill />
-    <Text p={2}>Become a national coach = 90%+ Revenue</Text>
+    <Text p={'1'}>Become a national coach = 90%+ Revenue</Text>
     {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Text>
+  </Box>
 </Box>
         {user?.coach && (
           <>

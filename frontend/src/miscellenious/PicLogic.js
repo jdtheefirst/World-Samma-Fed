@@ -42,11 +42,12 @@ const UploadPicture = ({ setPicLoading, color, setPic }) => {
 
   return (
     <FormControl id="pic">
-      <FormLabel textColor={color}>Upload your Picture(*Important)</FormLabel>
+      <FormLabel textColor={color} fontSize="small">Upload your Picture(*Important)</FormLabel>
       <Input
         type="file"
         p={1.5}
         textColor={color}
+        fontSize="small"
         placeholder="Select a passport photo"
         accept="image/*"
         onChange={handleFileChange}

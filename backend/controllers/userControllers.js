@@ -52,7 +52,8 @@ const registerUsers = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("User already exists, login");
     }
-    const WSF = await User.findOne({ admin: true });
+    const adminId = "6693a995f6295b8bd90d9301";
+    const WSF = await User.findOne({ _id: adminId });
     const user = {
       name,
       email,
@@ -146,14 +147,16 @@ const forgotEmail = async (req, res) => {
         pass: privateEmailPass, // your email password
       },
     });
+    const companyLogoUrl = 'https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg';
 
     const mailOptions = {
-      from: privateEmail,
+      from: `World Samma Federation <${privateEmail}>`,
       to: email,
       subject: "Recover Your Email",
       html: `
         <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
           <h2 style="color: #333;">Recover Your Email</h2>
+          <img src="${companyLogoUrl}" loading="eager" alt="Company Logo" style="width: 100px; margin-bottom: 20px;">
           <p>Hello,</p>
           <p>You have requested to recover your email associated with our service.</p>
           <p>Your recovery code is: <strong>${verificationCode}</strong></p>
@@ -442,14 +445,17 @@ const authorizeUser = async (req, res) => {
       pass: privateEmailPass,
     },
   });
+  const companyLogoUrl = 'https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg';
 
   const mailOptions = {
-    from: privateEmail,
+    from: `World Samma Federation <${privateEmail}>`,
     to: userEmail,
     subject: "Verify Your Email",
     html: `
       <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
         <h2 style="color: #333;">Verify Your Email</h2>
+        <img src="${companyLogoUrl}" loading="eager" alt="Company Logo" style="width: 100px; margin-bottom: 20px;">
+        <p>Hello,</p>
         <p>Your verification code is: <strong>${verificationCode}</strong></p>
         <p>This is a system-generated code, please do not reply.</p>
         <p>Join the World Samma Federation and be part of a vibrant community!</p>

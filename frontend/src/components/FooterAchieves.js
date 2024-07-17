@@ -8,24 +8,24 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Qualification Requirements:",
-          description: "To become a national coach, one must first be a provincial coach or lead a registered club in a country without provinces. They must also manage national funds and organize tournaments, seminars, and events.",
+          description: "To become a national coach, one must first be a state coach or lead a registered club in a country without states. They must be approved by other state coaches to become their national leader. Responsibilities include managing national funds and organizing tournaments, seminars, and events.",
         },
         {
           subtitle: "Interim Appointment:",
-          description: "The interim role lasts for a maximum of one year, during which the coach is responsible for managing national-level activities and ensuring smooth operations.",
+          description: "The interim role lasts for a maximum of one year, during which the coach is responsible for managing national-level activities, funds and ensuring smooth operations.",
         }
       ]
     },
     {
-      title: "Provincial Coach Role:",
+      title: "State Coach Role:",
       items: [
         {
           subtitle: "Qualification Criteria:",
-          description: "A provincial coach must be approved by 20 other coaches and lead a registered club at the provincial level. Responsibilities include organizing local tournaments, seminars, and club activities.",
+          description: "A state coach must be approved by 20 other coaches, hold a black belt, and lead a registered club at the state level. Responsibilities include organizing local tournaments, seminars, grading, and meetings along with the state committee.",
         },
         {
-          subtitle: "Local Leadership:",
-          description: "Provincial coaches play a crucial role in fostering martial arts development within their respective provinces, ensuring adherence to national guidelines and standards.",
+          subtitle: "Interim Appointment:",
+          description: "The interim role also lasts for a maximum of one year, during which the coach is responsible for managing state-level activities, funds and ensuring smooth operations.",
         }
       ]
     },

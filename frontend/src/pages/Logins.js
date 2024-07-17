@@ -24,7 +24,7 @@ const Logins = () => {
       mt={"1rem"}
     >
       <Box
-        background={"whitesmoke"}
+        background={"white"}
         w="100%"
         p={4}
         borderRadius="lg"
@@ -33,8 +33,8 @@ const Logins = () => {
       >
         <Tabs isFitted variant="soft-rounded">
           <TabList>
-            <Tab >Login</Tab>
-            <Tab >Sign Up</Tab>
+            <Tab fontSize="small">Login</Tab>
+            <Tab fontSize="small">Sign Up</Tab>
           </TabList>
           <TabPanels>
             <TabPanel>

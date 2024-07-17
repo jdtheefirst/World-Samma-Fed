@@ -262,28 +262,30 @@ const Signup = () => {
         </ModalContent>
       </Modal>
       <FormControl id="first-name" isRequired>
-        <FormLabel>First name</FormLabel>
+        <FormLabel fontSize="small">First name</FormLabel>
         <Input
           placeholder="Enter your first name"
-
+          fontSize="small"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
 
       <FormControl id="other-name" isRequired>
-        <FormLabel >Other name</FormLabel>
+        <FormLabel fontSize="small">Other name</FormLabel>
         <Input
           placeholder="Enter your other name"
           value={otherName}
+          fontSize="small"
           onChange={(e) => setOtherName(e.target.value)}
         />
       </FormControl>
       <FormControl id="email" isRequired>
-        <FormLabel>Email Address</FormLabel>
+        <FormLabel fontSize="small">Email Address</FormLabel>
         <Input
           type="email"
           placeholder="Enter your email address"
+          fontSize="small"
           onChange={(e) => setEmail(e.target.value)}
         />
         
@@ -305,66 +307,70 @@ const Signup = () => {
         )}
       </FormControl>
       <FormControl id="password" isRequired>
-        <FormLabel>Password</FormLabel>
+        <FormLabel fontSize="small">Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
             placeholder="Enter password"
+            fontSize="small"
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick} border={"none"}>
+            <Button h="1.75rem" size="sm" fontSize="small" onClick={handleClick} border={"none"}>
               {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
       <FormControl id="password-confirm" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
+        <FormLabel fontSize="small">Confirm Password</FormLabel>
         <InputGroup size="md">
           <Input
             type={show ? "text" : "password"}
             placeholder="Confirm password"
+            fontSize="small"
             onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick} border={"none"}>
+            <Button h="1.75rem" size="sm" onClick={handleClick} fontSize="small" border={"none"}>
               {show ? "Hide" : "Show"}
             </Button>
           </InputRightElement>
         </InputGroup>
       </FormControl>
       <FormControl id="id/passport" isRequired>
-        <FormLabel>Id/Passport</FormLabel>
+        <FormLabel fontSize="small">Id/Passport</FormLabel>
         <Input
           type="number"
           placeholder="Passport"
+          fontSize="small"
           value={passport}
           onChange={(e) => setPassport(e.target.value)}
         />
         {passport ? (
-  <FormLabel
-    fontSize={"2xs"}
-    style={{
-      animation: "slideInFromTop 0.5s forwards",
-    }}
-    p={0}
-    m={0}
-    color={"green.400"}
-    userSelect={"none"}
-  >
-    Your sensitive information is used solely for certification purposes.
-  </FormLabel>
-) : (
-  ""
-)}
+      <FormLabel
+       fontSize={"2xs"}
+       style={{
+       animation: "slideInFromTop 0.5s forwards",
+       }}
+       p={0}
+       m={0}
+       color={"green.400"}
+       userSelect={"none"}
+       >
+       Your sensitive information is used solely for certification purposes.
+      </FormLabel>
+      ) : (
+      ""
+      )}
       </FormControl>
       <FormControl id="country" isRequired>
-        <FormLabel>Country</FormLabel>
+        <FormLabel fontSize="small">Country</FormLabel>
         <Select
           placeholder="Select your country"
           display={"flex"}
           justifyContent={"center"}
+          fontSize="small"
           alignItems={"center"}
           width={"100%"}
           value={selectedCountry}
@@ -383,10 +389,11 @@ const Signup = () => {
       </FormControl>
       {selectedCountry && subdivisions.length > 0 ? (
         <FormControl id="provinces" isRequired>
-          <FormLabel>County/Province/State</FormLabel>
+          <FormLabel fontSize="small">County/Province/State</FormLabel>
           <Select
             placeholder="Select your province"
             display={"flex"}
+            fontSize="small"
             justifyContent={"center"}
             alignItems={"center"}
             width={"100%"}
@@ -407,19 +414,21 @@ const Signup = () => {
         </FormControl>
       ) : (
         <FormControl id="provinces">
-          <FormLabel>County/Province</FormLabel>
+          <FormLabel fontSize="small">County/Province</FormLabel>
           <Input
             type="text"
+            fontSize="small"
             placeholder="Leave blank if not applicable..."
             onChange={(e) => setProvinces(e.target.value)}
           />
         </FormControl>
       )}
       <FormControl id="language" isRequired>
-        <FormLabel>Language</FormLabel>
+        <FormLabel fontSize="small">Language</FormLabel>
         <Select
           placeholder="Select language"
           value={language}
+          fontSize="small"
           onChange={(e) => setLanguage(e.target.value)}
         >
           {languageOptions.map((option) => (
@@ -430,7 +439,7 @@ const Signup = () => {
         </Select>
       </FormControl>
       <FormControl id="gender" isRequired>
-        <FormLabel>Gender</FormLabel>
+        <FormLabel fontSize="small">Gender</FormLabel>
         <RadioGroup
           onChange={setGender}
           value={gender}
@@ -454,6 +463,7 @@ const Signup = () => {
         onClick={() => generateAndVerify()}
         isLoading={picLoading}
         isDisabled={disabled}
+        fontSize="small"
         border={"none"}
       >
         <Text> {disabled ? `Try Again after 30sec` : `Sign Up`} </Text>

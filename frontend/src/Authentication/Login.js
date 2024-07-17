@@ -138,22 +138,23 @@ const Login = () => {
          
             </Box>
       <FormControl id="email-login" isRequired>
-        <FormLabel>Email address/Code</FormLabel>
+        <FormLabel fontSize={"small"}>Email address/Code</FormLabel>
         <Input
           value={email}
-         
           type="email"
           placeholder="Enter email or code here"
+          fontSize={"small"}
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
       <FormControl id="password-login" isRequired>
-        <FormLabel>Password</FormLabel>
+        <FormLabel fontSize={"small"}>Password</FormLabel>
         <InputGroup size="md">
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={show ? "text" : "password"}
+            fontSize={"small"}
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
@@ -170,6 +171,7 @@ const Login = () => {
         onClick={submitHandler}
         isLoading={loading}
         border={"none"}
+        fontSize={"small"}
       >
         Login
       </Button>
@@ -197,8 +199,8 @@ const Login = () => {
             mb={"6"}
           >
            <Text textAlign={"center"} justifyContent={"center"} fontSize={"2xl"}>
-  Enter your Email below
-</Text>
+           Enter your Email below
+           </Text>
           </ModalHeader>
           <ModalCloseButton border={"none"}/>
           <ModalBody
@@ -209,6 +211,7 @@ const Login = () => {
           >
             <Input
               placeholder={`Enter your email here`}
+              fontSize={"small"}
               type="text"
               onChange={(e) => setForgotEmail(e.target.value)}
               value={forgotEmail}

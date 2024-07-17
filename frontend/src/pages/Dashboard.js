@@ -288,28 +288,29 @@ const Dashboard = ({ courses }) => {
         <IconButton
           display={chatOpen ? "none" : "flex"}
           position="fixed"
-          bottom="10px"
-          right="10px"
+          bottom="8%"
+          right="10%"
           icon={
             <MdOutlineMarkUnreadChatAlt
               style={{
                 width: isHovered ? "60px" : "40px",
                 transition: "width 0.3s ease-in-out",
                 color: "teal",
-                fontSize: "30px",
+                fontSize: "40px",
                 border: 'none',
               }}
             />
           }
-          backgroundColor="white"
-          border="1px solid black"
+          backgroundColor="orange"
+          p={"2"}
+          boxSize={"auto"}
+          border="none"
           _hover={{ backgroundColor: "white" }}
           onClick={() => setChatOpen(true)}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
-          borderRadius="20px"
+          borderRadius="full"
         />
-        {/* <AdComponent /> */}
       </Box>
     </ErrorBoundary>
   );

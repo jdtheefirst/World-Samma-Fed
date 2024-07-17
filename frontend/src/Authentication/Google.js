@@ -94,6 +94,8 @@ const GoogleLoginButton = () => {
         justifyContent={"center"}
         width={"100%"}
         isLoading={loading}
+        fontSize={"small"}
+        border={"none"}
       >
         <FcGoogle />
         Sign in with Google
