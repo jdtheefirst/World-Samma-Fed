@@ -321,12 +321,6 @@ const ProfilePage = ({ user }) => {
               </Text>{" "}
               {user?.belt}
             </Box>
-            <Box display={"flex"} flexWrap={"wrap"}>
-              <Button onClick={()=> {navigate("/admin")}}></Button>
-            </Box>
-            <Box display={"flex"} flexWrap={"wrap"}>
-              <Button onClick={()=> {navigate("/userstream")}}></Button>
-            </Box>
             {user?.admin && (
               <Button
                 mt={4}

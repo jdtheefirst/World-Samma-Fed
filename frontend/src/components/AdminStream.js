@@ -1,9 +1,8 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Peer from "peerjs";
 import UpperNav from "../miscellenious/upperNav";
-import "./AdminStream.css"; // Import the CSS file
-import { useConnectSocket } from "./config/chatlogics"; // Adjust path as necessary
-import { ChatState } from "./Context/ChatProvider";
+import "./AdminStream.css";
+import { useConnectSocket } from "./config/chatlogics";
 import { useNavigate } from "react-router-dom";
 
 const AdminStream = ({ user }) => {
@@ -25,12 +24,16 @@ const AdminStream = ({ user }) => {
       socket.on('disconnect', () => {
         setIsSocketConnected(false);
       });
+
+      return () => {
+        socket.off('connect');
+        socket.off('disconnect');
+      };
     }
   }, [socket]);
 
-  
   useEffect(() => {
-    if(!user) {
+    if (!user) {
       navigate("/dashboard");
       return;
     }
@@ -43,47 +46,43 @@ const AdminStream = ({ user }) => {
             video: { facingMode: { ideal: "environment" } },
             audio: true,
           });
-    
+
           if (videoRef.current) {
             videoRef.current.srcObject = stream;
           }
-    
+
           // Initialize PeerJS
           peerInstance.current = new Peer();
-    
+
           peerInstance.current.on("open", (id) => {
             setPeerId(id);
             if (socket) {
               socket.emit("wsfLiveSession", { peerId: id });
               console.log("Emitted peerId:", id);
-            } else {
-              console.error("Socket is not defined.");
             }
           });
-    
+
           peerInstance.current.on("call", (call) => {
             console.log("Received call from:", call.peer);
             // Answer the call with the local stream
             call.answer(stream);
-    
+
             call.on("stream", (remoteStream) => {
               console.log("Receiving remote stream from call");
               if (videoRef.current) {
                 videoRef.current.srcObject = remoteStream;
-              } else {
-                console.error("Video reference is not available.");
               }
             });
-    
+
             call.on("error", (err) => {
               console.error("Call error:", err);
             });
           });
-    
+
           peerInstance.current.on("error", (err) => {
             console.error("PeerJS error:", err);
           });
-    
+
           return () => {
             // Cleanup on unmount
             if (stream) {
@@ -100,11 +99,11 @@ const AdminStream = ({ user }) => {
           console.error("Error accessing media devices or initializing PeerJS.", error);
         }
       };
-    
+
       // Call initializeStream when the component mounts
       initializeStream();
-    }    
-  }, [socket, isSocketConnected]);
+    }
+  }, [isSocketConnected, navigate, socket, user]);
 
   return (
     <div className="admin-stream-container">

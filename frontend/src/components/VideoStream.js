@@ -9,19 +9,19 @@ import axios from "axios";
 const UserStream = ({ user }) => {
   const videoRef = useRef(null);
   const socket = useConnectSocket(user);
-  const peerInstanceRef = useRef(null); // Use a ref to store Peer instance
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const navigate = useNavigate();
+  let peer = null;
 
   useEffect(() => {
     if (socket) {
       setIsSocketConnected(socket.connected);
 
-      socket.on('connect', () => {
+      socket.on("connect", () => {
         setIsSocketConnected(true);
       });
 
-      socket.on('disconnect', () => {
+      socket.on("disconnect", () => {
         setIsSocketConnected(false);
       });
     }
@@ -40,7 +40,7 @@ const UserStream = ({ user }) => {
 
         if (peerId && isSocketConnected) {
           console.log("Fetched peerId from server:", peerId);
-          initializeStream(peerId);
+          setUpPeer(peerId);
         } else {
           console.error("PeerId not found or socket not connected");
         }
@@ -49,73 +49,64 @@ const UserStream = ({ user }) => {
       }
     };
 
-    const initializeStream = (peerId) => {
-      if (peerInstanceRef.current) {
+    const setUpPeer = (peerId) => {
+      if (peer) {
         console.log("Destroying previous PeerJS instance");
-        peerInstanceRef.current.destroy();
+        peer.destroy();
       }
-    
-      // Initialize PeerJS
-      peerInstanceRef.current = new Peer();
-    
-      peerInstanceRef.current.on("call", (call) => {
-        console.log("Receiving call from", call.peer);
-    
-        // Answer the call without providing a stream initially
-        call.answer(); 
-    
-        call.on("stream", (remoteStream) => {
-          console.log("Receiving remote stream from call");
-          if (videoRef.current) {
-            videoRef.current.srcObject = remoteStream;
-          } else {
-            console.error("Video reference is not available.");
-          }
-        });
-    
-        call.on("error", (err) => {
-          console.error("Call error:", err);
-        });
-      });
-    
-      peerInstanceRef.current.on("error", (err) => {
-        console.error("PeerJS error:", err);
-      });
-    
-      // Ensure the PeerJS instance is ready before making a call
-      peerInstanceRef.current.on("open", () => {
+
+      peer = new Peer();
+
+      peer.on("open", () => {
         console.log("Making call to peerId:", peerId);
-        
-    
-        // Make a call to the peerId
-        const call = peerInstanceRef.current.call(peerId, null);
-    
+
+        const call = peer.call(peerId, null);
+
         if (!call) {
           console.error("Call could not be made. Check if peerId is correct and PeerJS instance is properly initialized.");
           return;
         }
-    
+
         call.on("stream", (remoteStream) => {
           console.log("Received remote stream after call");
           if (videoRef.current) {
             videoRef.current.srcObject = remoteStream;
-          } else {
-            console.error("Video reference is not available.");
           }
         });
-    
+
         call.on("error", (err) => {
           console.error("Call error:", err);
         });
       });
-    };    
+
+      peer.on("call", (call) => {
+        console.log("Receiving call from", call.peer);
+
+        call.answer();
+
+        call.on("stream", (remoteStream) => {
+          console.log("Receiving remote stream from call");
+          if (videoRef.current) {
+            videoRef.current.srcObject = remoteStream;
+          }
+        });
+
+        call.on("error", (err) => {
+          console.error("Call error:", err);
+        });
+      });
+
+      peer.on("error", (err) => {
+        console.error("PeerJS error:", err);
+      });
+    };
 
     fetchPeerIdAndInitiateCall();
 
     return () => {
-      if (peerInstanceRef.current) {
+      if (peer) {
         console.log("Cleaning up PeerJS instance");
-        peerInstanceRef.current.destroy();
+        peer.destroy();
       }
     };
   }, [isSocketConnected, navigate, socket, user]);
@@ -130,9 +121,7 @@ const UserStream = ({ user }) => {
         </div>
         <div className="chat-container">
           <h3>Live Chat</h3>
-          <div className="chat-messages">
-            {/* Chat messages will go here */}
-          </div>
+          <div className="chat-messages"></div>
           <input type="text" placeholder="Type a message" />
         </div>
       </div>

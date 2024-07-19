@@ -35,7 +35,7 @@ const EventBox = ({nationalPage, provincePage}) => {
       >
         <GridItem>
           <Box bg="blue.50" p={4} borderRadius="md" boxShadow="sm" _hover={{ bg: 'blue.100' }} cursor={"pointer"}>
-            <Text fontSize="xl" fontWeight="bold" mb={2} color="blue.700">Events</Text>
+            <Text fontSize="xl" fontWeight="bold" mb={2} color="blue.700">Graduation Ceremonies</Text>
             <Text textAlign={"center"}>Stay updated with the latest events happening around you.</Text>
             <VStack spacing={2} maxH="40vh" overflowY="auto">
               {events.length > 0 ? (

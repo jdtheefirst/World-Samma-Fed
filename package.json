@@ -4,7 +4,7 @@
   "description": "world-samma",
   "main": "backend/index.js",
   "scripts": {
-    "start": "node backend/index.js",
+    "start": "nodemon backend/index.js",
     "frontend": "cd frontend && npm start",
     "backend": "cd backend && npm install && node index.js",
     "vercel-build": "cd frontend && npm install && npm run build",

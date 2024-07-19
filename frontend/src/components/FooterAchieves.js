@@ -8,7 +8,7 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Qualification Requirements:",
-          description: "To become a national coach, one must first be a state coach or lead a registered club in a country without states. They must be approved by other state coaches to become their national leader. Responsibilities include managing national funds and organizing tournaments, seminars, and events.",
+          description: "To become a national coach, one must first be a province coach or lead a registered club in a country without provinces. They must be approved by other province coaches to become their national leader. Responsibilities include managing national funds and organizing tournaments, seminars, and graduation ceremonies.",
         },
         {
           subtitle: "Interim Appointment:",
@@ -17,15 +17,15 @@ const FooterAchieves = () => {
       ]
     },
     {
-      title: "State Coach Role:",
+      title: "Province Coach Role:",
       items: [
         {
           subtitle: "Qualification Criteria:",
-          description: "A state coach must be approved by 20 other coaches, hold a black belt, and lead a registered club at the state level. Responsibilities include organizing local tournaments, seminars, grading, and meetings along with the state committee.",
+          description: "A province coach must be approved by 20 other coaches, hold a black belt, and lead a WSF registered club. Responsibilities include organizing local tournaments, seminars, graduation ceremonies, and meetings along with the state committee.",
         },
         {
           subtitle: "Interim Appointment:",
-          description: "The interim role also lasts for a maximum of one year, during which the coach is responsible for managing state-level activities, funds and ensuring smooth operations.",
+          description: "The interim role also lasts for a maximum of one year, during which the coach is responsible for managing province-level activities, funds and ensuring smooth operations.",
         }
       ]
     },
@@ -38,7 +38,7 @@ const FooterAchieves = () => {
         },
         {
           subtitle: "Student Registration and Training:",
-          description: "Coaches can register students and earn income per registered student. They can train students up to the belt levels they have achieved, with the requirement that they must have achieved a Black 3 belt to grade students.",
+          description: "Coaches can register students and earn income per registered student. They can train students up to the belt levels they have achieved.",
         }
       ]
     }
