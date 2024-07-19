@@ -154,10 +154,11 @@ const Provience = () => {
                   color={"white"}
                   _hover={{ color: "black" }}
                   borderRadius={20}
-                  border={"none"}
                   onClick={() => {
                     handleInterim();
                   }}
+                  border={"none"}
+                  fontSize={"small"}
                 >
                   Claim Interim Leadership
                 </Button>

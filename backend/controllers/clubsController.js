@@ -43,7 +43,12 @@ const registerClubs = async (req, res) => {
 const fetchClubs = async (req, res) => {
   const { country, province } = req.params;
   try {
-    const clubs = await Club.find({ country, province });
+    let clubs;
+    if (province) {
+      clubs = await Club.find({ country, province });
+    } else {
+      clubs = await Club.find({ country, province: { $exists: false } });
+    }
 
     res.status(200).json(clubs);
   } catch (error) {

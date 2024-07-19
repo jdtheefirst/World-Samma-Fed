@@ -279,48 +279,54 @@ const ProfilePage = ({ user }) => {
           <Box fontSize={"md"} fontFamily={"monospace"}>
             {" "}
             <Heading textAlign={"center"} mb={4} color={"teal"}>Profile</Heading>
-            <Text display={"flex"}>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Name:
               </Text>
               {user?.name} {user?.otherName}
-            </Text>
-            <Text display={"flex"}>
+            </Box>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Code:
               </Text>{" "}
               {user?.admission ? user?.admission : `Not enrolled: ${user?.belt}`}
-            </Text>
-            <Text display={"flex"}>
+            </Box>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Email:
               </Text>{" "}
               {user?.email}
-            </Text>
-            <Text display={"flex"}>
+            </Box>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Country:
               </Text>{" "}
               {user?.country}
-            </Text>
-            <Text display={"flex"}>
+            </Box>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Province:
               </Text>{" "}
               {user?.provinces}
-            </Text>
-            <Text display={"flex"}>
+            </Box>
+            <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Coach:
               </Text>
               {user?.coach ? " ✔️" : "Not a coach"}
-            </Text>
-            <Text display={"flex"} flexWrap={"wrap"}>
+            </Box>
+            <Box display={"flex"} flexWrap={"wrap"}>
               <Text fontWeight={"bold"} px={1}>
                 Highest Level Attained:
               </Text>{" "}
               {user?.belt}
-            </Text>
+            </Box>
+            <Box display={"flex"} flexWrap={"wrap"}>
+              <Button onClick={()=> {navigate("/admin")}}></Button>
+            </Box>
+            <Box display={"flex"} flexWrap={"wrap"}>
+              <Button onClick={()=> {navigate("/userstream")}}></Button>
+            </Box>
             {user?.admin && (
               <Button
                 mt={4}

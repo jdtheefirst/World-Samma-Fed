@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { ChatState } from "../Context/ChatProvider";
 
@@ -75,37 +75,52 @@ export async function getUserById(userId, token) {
   }
 }
 
-export function useConnectSocket(token) {
+let socketInstance = null;
+
+export function useConnectSocket(user) {
+  const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
-  const { user } = ChatState();
 
   useEffect(() => {
-    if (socketRef.current) {
+    if (!user || !user.token) {
       return;
     }
 
-    const newSocket = io("/", {
-      query: { token },
+    // Check if the socket already exists
+    if (socketRef.current) {
+      setSocket(socketRef.current);
+      return;
+    }
+
+    const userId = user._id;
+    const newSocket = io('/', {
+      query: { token: user.token, userId },
     });
 
-    newSocket.on("connect", () => {
-      const email = user?.email;
-
-      newSocket.emit("newConnection", { email });
+    newSocket.on('connect', () => {
+      console.log('connected');
+      setSocket(newSocket); // Set socket state after connection
     });
 
-    newSocket.on("disconnect", () => {});
+    newSocket.on('disconnect', () => {
+      console.log('Socket disconnected');
+    });
 
+    // Update socketRef with the new socket instance
     socketRef.current = newSocket;
 
+    // Clean up function to disconnect socket when the component unmounts
     return () => {
-      newSocket.disconnect();
+      if (newSocket) {
+        newSocket.disconnect();
+      }
       socketRef.current = null;
     };
-  }, [token, user?.email]);
+  }, [user]); // Only rerun if user changes
 
-  return socketRef.current;
+  return socket;
 }
+
 export async function makePaymentMpesa(amount, phoneNumber, user, toast) {
   if (!phoneNumber) {
     return;

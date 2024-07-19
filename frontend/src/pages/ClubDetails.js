@@ -32,7 +32,8 @@ const ClubDetails = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-  const socket = useConnectSocket(user?.token);
+  const socket = useConnectSocket();
+  console.log(socket);
 
   const clubData = {
     profilePicture: "",
@@ -312,10 +313,11 @@ const ClubDetails = ({ user }) => {
             width={{ base: "100%", md: "50%" }}
             p="4"
             rounded="md"
+            fontSize={"small"}
             bg="whitesmoke"
           >
             {" "}
-            <Heading as="h2" size="lg" textAlign={"center"}>
+            <Heading as="h2" size="sm" textAlign={"center"}>
               {club && club.name}
             </Heading>
             <Text
@@ -361,7 +363,7 @@ const ClubDetails = ({ user }) => {
               p={0}
               m={1}
             >
-              <Button colorScheme="teal" size="md" onClick={handleFollow}>
+              <Button colorScheme="teal" size="sm" fontSize={"small"} onClick={handleFollow}>
                 {club && club.followers?.find((member) => member === user?._id)
                   ? "Unfollow"
                   : "Follow"}
@@ -385,7 +387,7 @@ const ClubDetails = ({ user }) => {
                     ? "green"
                     : "red"
                 }
-                size="md"
+                size="sm"
                 onClick={handleLike}
               />
               {club && club.likes?.length}
@@ -410,7 +412,7 @@ const ClubDetails = ({ user }) => {
                       ? "green"
                       : "blue"
                   }
-                  size="md"
+                  size="sm"
                   m={1}
                   isDisabled={
                     club &&
@@ -445,7 +447,7 @@ const ClubDetails = ({ user }) => {
           mt={2}
           p="4"
         >
-          <Heading as="h3" size="md" mb={2}>
+          <Heading as="h3" size="sm" mb={2}>
             Broadcast Board
           </Heading>
           <Box
@@ -460,6 +462,7 @@ const ClubDetails = ({ user }) => {
             width={"100%"}
             overflow="auto"
             border={"2px solid grey"}
+            fontSize={"small"}
             p="6"
             rounded="md"
           >
@@ -468,7 +471,7 @@ const ClubDetails = ({ user }) => {
             )}
             {broadcast &&
               broadcast.map((message) => (
-                <Text
+                <Box
                   key={message._id}
                   background={"#92e0a5"}
                   textAlign={"center"}
@@ -487,7 +490,7 @@ const ClubDetails = ({ user }) => {
                     {formatMessageTime(message.createdAt)}
                   </Text>
                   {message.content}
-                </Text>
+                </Box>
               ))}
           </Box>
           {club && user && club.coach._id === user._id && (
@@ -511,11 +514,11 @@ const ClubDetails = ({ user }) => {
                 width={"100%"}
                 p={2}
               >
-                <Heading as="h3" size="md" m={2}>
+                <Heading as="h3" size="sm" m={2}>
                   Number of Requests received
                 </Heading>
                 {club && club.membersRequests.length === 0 && (
-                  <Text textAlign={"center"}>
+                  <Text textAlign={"center"} fontSize={"small"}>
                     {" "}
                     All requests have received responses.
                   </Text>

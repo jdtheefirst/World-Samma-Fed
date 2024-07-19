@@ -30,49 +30,61 @@ const Dashboard = ({ courses }) => {
   const [show, setShow] = useState(false);
   const toast = useToast();
   const [live, setLive] = useState([]);
-  const socket = useConnectSocket(user?.token);
+  const socket = useConnectSocket(user);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
     if (!userInfo) {
       navigate("/");
-      return;
     } else {
       setUser(userInfo);
     }
-  }, [setUser, navigate]);
+  }, [navigate]);
+
+  useEffect(() => {
+    if (socket) {
+      setIsSocketConnected(socket.connected);
+
+      socket.on('connect', () => {
+        setIsSocketConnected(true);
+      });
+
+      socket.on('disconnect', () => {
+        setIsSocketConnected(false);
+      });
+    }
+  }, [socket]);
 
   const requestClub = useCallback(async () => {
     if (!user?.coach) {
       return;
     }
 
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
     try {
-      const clubId = user.coach;
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-
-      axiosInstance
-        .get(`/api/clubs/${clubId}`, config)
-        .then(async (response) => {
-          setClub(response.data);
-        })
-        .catch((error) => {
-        });
+      const response = await axiosInstance.get(`/api/clubs/${user.coach}`, config);
+      setClub(response.data);
     } catch (error) {
       console.error("Error fetching Club:", error);
     }
-  }, [user?.token, setClub]);
+  }, [user]);
+
+  // Use another useEffect to call requestClub when user is set
+  useEffect(() => {
+    if (user) {
+      requestClub();
+    }
+  }, [user, requestClub]);
 
   useEffect(() => {
-    if (!socket) {
-      return;
-    }
+
+    if (isSocketConnected) {
     const showNotification = (title, options) => {
       if (Notification.permission === "granted") {
         new Notification(title, options);
@@ -105,7 +117,7 @@ const Dashboard = ({ courses }) => {
       }
     };
 
-    socket.on("message received", (newMessageReceived) => {
+    const handleMessageReceived = (newMessageReceived) => {
       setNotification([newMessageReceived, ...notification]);
       showNotification(
         "New Message",
@@ -118,9 +130,9 @@ const Dashboard = ({ courses }) => {
         }
       );
       setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-    });
+    };
 
-    socket.on("updates", (requests) => {
+    const handleUpdates = (requests) => {
       setUser((prevUser) => ({
         ...prevUser,
         belt: requests.belt,
@@ -128,8 +140,9 @@ const Dashboard = ({ courses }) => {
         provinceRequests: requests.provinceRequests,
         nationalRequests: requests.nationalRequests,
       }));
-    });
-    socket.on("provincial request", (request) => {
+    };
+
+    const handleProvincialRequest = (request) => {
       setUser((prevUser) => ({
         ...prevUser,
         provinceRequests: [
@@ -137,107 +150,113 @@ const Dashboard = ({ courses }) => {
           request.provincialCoach,
         ],
       }));
-    });
-    socket.on("national request", (request) => {
+    };
+
+    const handleNationalRequest = (request) => {
       setUser((prevUser) => ({
         ...prevUser,
-        provinceRequests: [...prevUser.nationalRequests, request.nationalCoach],
+        nationalRequests: [
+          ...prevUser.nationalRequests,
+          request.nationalCoach,
+        ],
       }));
-    });
+    };
 
-    socket.on("liveSessionStarted", (clubName) => {
+    const handleLiveSessionStarted = (clubName) => {
       setLive((prev) => ({ ...prev, clubName }));
-    });
+    };
 
-    socket.on("certificates", (certificates) => {
+    const handleCertificates = (certificates) => {
       setUser((prev) => ({
         ...prev,
         certificates: certificates.certificates,
         belt: certificates.belt,
       }));
-    });
+    };
+
+    socket.on("updates", handleUpdates);
+    socket.on("provincial request", handleProvincialRequest);
+    socket.on("national request", handleNationalRequest);
+    socket.on("liveSessionStarted", handleLiveSessionStarted);
+    socket.on("certificates", handleCertificates);
+    socket.on("message received", handleMessageReceived);
 
     return () => {
-      socket.off("updates");
-      socket.off("provincial request");
-      socket.off("liveSessionStarted");
-      socket.off("message received");
-      socket.off("certificates");
+      socket.off("updates", handleUpdates);
+      socket.off("provincial request", handleProvincialRequest);
+      socket.off("national request", handleNationalRequest);
+      socket.off("liveSessionStarted", handleLiveSessionStarted);
+      socket.off("certificates", handleCertificates);
+      socket.off("message received", handleMessageReceived);
     };
-  }, [socket, setUser, user?.token, user]);
+ }
+  }, [socket, navigate, notification, isSocketConnected]);
 
+  // Combine requests and use a stable function reference
   const fetchClubs = useCallback(async () => {
     if (!user) {
       navigate("/dashboard");
       return;
     }
+
     const config = {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
     };
-    try {
-      axiosInstance
-        .get(
-          `/api/province/officials/${user.country}/${user.provinces}`,
-          config
-        )
-        .then(async (response) => {
-          if (response.data.length === 0) {
-          } else {
-            setProvince(data);
-            console.log(data);
-          }
-        })
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            toast({
-              title: "Your session has expired",
-              description: "Logging out in 8 seconds",
-              duration: 8000,
-              status: "loading",
-              position: "bottom",
-            });
-            console.log(error);
 
-            setTimeout(() => {
-              localStorage.removeItem("userInfo");
-              navigate("/");
-            }, 8000);
-          }
-        });
-    } catch (error) {
-      console.log(error);
-    }
     try {
-      const { data } = await axios.get(
-        `/api/national/officials/${user.country}/${user.provinces}`,
-        config
-      );
+      const [provinceResponse, nationalResponse] = await Promise.all([
+        axiosInstance.get(`/api/province/officials/${user.country}/${user.provinces}`, config),
+        axiosInstance.get(`/api/national/officials/${user.country}/${user.provinces}`, config)
+      ]);
 
-      if (data.length === 0) {
-      } else {
-        setNational(data);
+      const provinceData = provinceResponse.data;
+      const nationalData = nationalResponse.data;
+
+      if (provinceData.length > 0) {
+        setProvince(provinceData);
+        console.log(provinceData);
+      }
+
+      if (nationalData.length > 0) {
+        setNational(nationalData);
       }
     } catch (error) {
-      console.log(error);
-      toast({
-        title: "An Error Occurred!",
-        description: "Try again after sometime.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  }, [user, setNational, toast, setProvince]);
+      if (error.response && error.response.status === 401) {
+        toast({
+          title: "Your session has expired",
+          description: "Logging out in 8 seconds",
+          duration: 8000,
+          status: "loading",
+          position: "bottom",
+        });
+        console.log(error);
 
+        setTimeout(() => {
+          localStorage.removeItem("userInfo");
+          navigate("/");
+        }, 8000);
+      } else {
+        console.log(error);
+        toast({
+          title: "An Error Occurred!",
+          description: "Try again after sometime.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  }, [user, navigate, toast]);
+
+  // Fetch data on mount and when user changes
   useEffect(() => {
     if (!user) {
       navigate("/dashboard");
       return;
     }
     fetchClubs();
-    requestClub();
   }, [fetchClubs, navigate, user]);
 
   return (
@@ -264,7 +283,7 @@ const Dashboard = ({ courses }) => {
                 <MdOutlineFiberSmartRecord style={{ fontSize: "30px" }} />
               </Button>
             )}
-            {show &&
+            {show && live.length > 0 &&
               live.map((liveItem) => (
                 <Button
                   key={liveItem._id}

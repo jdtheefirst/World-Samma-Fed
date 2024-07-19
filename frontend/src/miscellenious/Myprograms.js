@@ -28,7 +28,6 @@ const MyPrograms = ({ courses, user }) => {
     `brown`,
     `black`,
   ];
-
   return (
     <Box 
       display={"flex"}

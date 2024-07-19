@@ -233,6 +233,8 @@ const National = () => {
                   onClick={() => {
                     handleInterim();
                   }}
+                  border={"none"}
+                  fontSize={"small"}
                 >
                   Claim Interim leadership
                 </Button>

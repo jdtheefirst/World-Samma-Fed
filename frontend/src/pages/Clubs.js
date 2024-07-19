@@ -5,12 +5,13 @@ import {
   Button,
   FormControl,
   FormLabel,
-  Image,
   Select,
   Spinner,
   Text,
+  useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
+import { RxEyeNone } from "react-icons/rx";
 import { ChatState } from "../components/Context/ChatProvider";
 import { getStatesOfCountry, getCountryFlag } from "../assets/state";
 import UpperNav from "../miscellenious/upperNav";
@@ -22,7 +23,7 @@ const Clubs = () => {
   const { user, club } = ChatState();
   const [subdivisions, setSubdivisions] = useState([]);
   const [clubs, setClubs] = useState([]);
-  const [provience, setProvience] = useState(user?.provinces);
+  const [province, setProvince] = useState(user?.provinces);
   const [fillForm, setFillForm] = useState(false);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
@@ -45,17 +46,16 @@ const Clubs = () => {
       };
 
       const { data } = await axios.get(
-        `/api/clubs/${user.country}/${provience}`,
+        `/api/clubs/${user.country}/${province}`,
         config
       );
       setClubs(data);
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching or creating clubs:", error);
       setClubs([]);
       setLoading(false);
     }
-  }, [user, setClubs, provience]);
+  }, [user, setClubs, province]);
 
   useEffect(() => {
     if (!user) {
@@ -150,9 +150,9 @@ const Clubs = () => {
             alignItems={"center"}
             width={"100%"}
             isDisabled={loading}
-            value={provience}
+            value={province}
             onChange={(e) => {
-              setProvience(e.target.value);
+              setProvince(e.target.value);
               fetchClubs(e.target.value);
             }}
           >
@@ -169,7 +169,7 @@ const Clubs = () => {
           </Select>
         </FormControl>
         <Text fontSize={"larger"} fontWeight={"bold"} textColor={"darkgreen"}>
-          Available Clubs in {provience}
+          Available Clubs in {province}
         </Text>
 
         <Box
@@ -185,7 +185,7 @@ const Clubs = () => {
          >
           {" "}
           {loading ? (
-            <Spinner />
+            <Spinner size={"xl"} speed="0.65s" />
           ) : (
             <Box
               display={"flex"}
@@ -195,28 +195,36 @@ const Clubs = () => {
               maxH={"300px"}
               width={"100%"}
             >
-              {clubs && clubs.length > 0 ? (
+              {clubs.length > 0 ? (
                 clubs.map((club, index) => (
                   <Button
                     key={index}
                     width={"100%"}
+                    border={"none"}
                     onClick={() => navigate(`/showclub/${club._id}/${false}`)}
-                    m={1}
+                    mb={"2"}
+                    justifyContent={"space-around"}
                   >
-                    {index + 1}. {club.name}
+                <Text fontSize={"xs"}>{club.name}</Text>
+                <Text
+                  fontSize={"xs"}
+                  bg={useColorModeValue("green.50", "green.900")}
+                  color={"green.500"}
+                  rounded={"full"}
+                  p={"2"}
+                >
+                  {club?.registered ? "Registered" : "Unregistered"}
+                </Text>
                   </Button>
                 ))
               ) : (
                 <>
                   <Text textAlign={"center"}>
-                    <Image
-                      src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png"
-                      width={7}
-                    />
+                  <RxEyeNone />
                   </Text>
 
                   <Text fontWeight={"bold"}>
-                    No clubs available in this region yet 🚫
+                    No clubs available in this region yet.
                   </Text>
                   <Text>Start your own club below and lead the way!</Text>
                 </>
@@ -232,16 +240,16 @@ const Clubs = () => {
             display={"flex"}
             backgroundColor={"#c255ed"}
             borderRadius={20}
+            fontSize={"small"}
+            border={"none"}
             onClick={() => {
               handleCreateClub();
             }}
             m={2}
           >
-            <Text>
               {club && club.registered
                 ? "Continue Registering"
                 : "Register Club"}
-            </Text>
           </Button>
         )}
       </Box>

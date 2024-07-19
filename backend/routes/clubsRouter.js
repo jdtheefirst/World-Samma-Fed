@@ -18,7 +18,7 @@ const {
 const router = express.Router();
 
 router.route("/register").post(protect, limiter, registerClubs);
-router.route("/:country/:provience").get(protect, limiter, fetchClubs);
+router.route("/:country/:province").get(protect, limiter, fetchClubs);
 router.route("/:clubId").get(protect, limiter, fetchMyClub);
 router.route("/follow/:clubId/:userId").get(protect, limiter, followClub);
 router.route("/likes/:clubId/:userId").get(protect, limiter, likeClub);

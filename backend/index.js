@@ -15,6 +15,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
+const { getCurrentPeerId } = require("./config/socketUtils");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -51,6 +52,15 @@ app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
+app.get("/getPeerId", (req, res) => {
+  const peerId = getCurrentPeerId();
+  console.log(peerId);
+  if (peerId) {
+    res.json({ peerId });
+  } else {
+    res.status(404).json({ error: "No active session" });
+  }
+});
 
 // Serve static assets and React frontend in production
 const __dirname1 = path.resolve();
