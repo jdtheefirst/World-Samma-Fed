@@ -12,10 +12,11 @@ const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const path = require("path");
+const jwt = require('jsonwebtoken');
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
-const { getCurrentPeerId } = require("./config/socketUtils");
+const { getIO } = require("./socket");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -52,14 +53,29 @@ app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
-app.get("/getPeerId", (req, res) => {
-  const peerId = getCurrentPeerId();
-  console.log(peerId);
-  if (peerId) {
-    res.json({ peerId });
-  } else {
-    res.status(404).json({ error: "No active session" });
+
+app.get('/token/:order', (req, res) => {
+  const order = req.params.order;
+
+  // Check if the role is valid and handle accordingly
+  if (order !== '0' && order !== '1') {
+    return res.status(400).send({ error: 'Invalid role' });
   }
+  if(order === '1'){
+    const io = getIO();
+    io.emit("wsfSessionStarted");
+  };
+
+  const payload = {
+    app_key: process.env.sdkKey,
+    tpc: 'mytopic', // Ensure the topic name is within 200 characters
+    role_type: parseInt(order, 10),  // Role type should be an integer
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 3600,  // Token expiration time
+  };
+
+  const token = jwt.sign(payload, process.env.sdkSecret);
+  res.send({ token });
 });
 
 // Serve static assets and React frontend in production

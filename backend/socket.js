@@ -2,7 +2,7 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
 const Club = require("../backend/models/clubsModel");
-const { setUserSocket, getUserSocket, setPeerId, getCurrentPeerId } = require("./config/socketUtils");
+const { setUserSocket, getUserSocket } = require("./config/socketUtils");
 let io;
 
 const initializeSocketIO = (server) => {
@@ -58,10 +58,8 @@ const initializeSocketIO = (server) => {
     const userId = socket.user._id;
     setUserSocket(userId, socket.id);
 
-    socket.on("wsfLiveSession", ({ peerId }) => {
-      console.log("Received, working on it", userId, "Peer:", peerId);
-      setPeerId(userId, peerId); // Store the peerId
-      io.emit("wsfSessionStarted", { peerId }); // Emit an object with peerId property
+    socket.on('chat-message', (data) => {
+      io.emit('received-message', data); // Emit message to all clients
     });
 
     socket.on("startLiveSession", async (clubId) => {

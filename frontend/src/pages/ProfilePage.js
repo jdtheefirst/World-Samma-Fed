@@ -37,6 +37,7 @@ const ProfilePage = ({ user }) => {
   const [student, setStudent] = useState(null);
   const [show, setShow] = useState(false);
   const [register, setRegister] = useState(false);
+  const adminId = "6693a995f6295b8bd90d9301";
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -321,15 +322,18 @@ const ProfilePage = ({ user }) => {
               </Text>{" "}
               {user?.belt}
             </Box>
-            {user?.admin && (
+            {user?._id === adminId && 
+            <Box display={"flex"} flexWrap={"wrap"}>
               <Button
-                mt={4}
                 colorScheme="teal"
                 onClick={() => navigate("/admin-work-slot")}
+                border={"none"}
+                m={1}
               >
                 Admin Work Slot
               </Button>
-            )}
+              <Button onClick={()=> navigate("/videochat")} m={.5} border={"none"} colorScheme="red">Go Live</Button>
+            </Box>}
           </Box>
         </Box>{" "}
         <Text width={"100%"} textAlign={"center"} p={"3"}>Access all features in one place</Text>

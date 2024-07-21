@@ -31,6 +31,7 @@
     "@styled-icons/boxicons-regular": "^10.47.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "@zoom/videosdk": "^1.11.10",
     "axios": "^1.6.8",
     "countries-list": "^3.0.6",
     "peerjs": "^1.5.4",

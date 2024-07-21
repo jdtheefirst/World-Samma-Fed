@@ -1,132 +1,164 @@
-import React, { useEffect, useRef, useState } from "react";
-import Peer from "peerjs";
-import UpperNav from "../miscellenious/upperNav";
-import "./AdminStream.css";
-import { useConnectSocket } from "./config/chatlogics";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useRef, useState } from 'react';
+import ZoomVideo from '@zoom/videosdk';
+import UpperNav from '../miscellenious/upperNav';
+import { useConnectSocket } from './config/chatlogics';
+import './AdminStream.css';
+import { Avatar } from '@chakra-ui/avatar';
 
-const UserStream = ({ user }) => {
+function VideoChat({ user }) {
   const videoRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [client, setClient] = useState(null);
+  const [isSendingVideo, setIsSendingVideo] = useState(false);
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const navigate = useNavigate();
-  let peer = null;
+  const adminId = "6693a995f6295b8bd90d9301";
 
   useEffect(() => {
     if (socket) {
       setIsSocketConnected(socket.connected);
 
-      socket.on("connect", () => {
+      socket.on('connect', () => {
         setIsSocketConnected(true);
       });
 
-      socket.on("disconnect", () => {
+      socket.on('disconnect', () => {
         setIsSocketConnected(false);
+      });
+
+      socket.on("received-message", (message) => {
+        setMessages((prev) => [...prev, message]);
       });
     }
   }, [socket]);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/dashboard");
-      return;
+    if (isSocketConnected) {
+      const joinSession = async () => {
+        try {
+          const isAdmin = user?._id === adminId;
+          const response = await fetch(`/token/${isAdmin ? 1 : 0}`);
+          const data = await response.json();
+          const token = data.token;
+
+          const zoomClient = ZoomVideo.createClient();
+          await zoomClient.init('en-US', 'CDN');
+          setClient(zoomClient);
+
+          const sessionName = 'mytopic';
+          const userName = user?.name || 'Guest';
+
+          await zoomClient.join(sessionName, token, userName);
+
+          const stream = zoomClient.getMediaStream();
+
+          if (isAdmin) {
+            console.log('Admin starting video');
+            stream.startVideo({ videoElement: videoRef.current });
+            setIsSendingVideo(true);
+          } else {
+            console.log('Viewer listening for video state changes');
+
+            zoomClient.on('peer-video-state-change', (payload) => {
+              console.log('Peer video state changed:', payload);
+              if (payload.action === 'Start') {
+                stream.renderVideo(videoRef.current, payload.userId, 640, 480, 0, 0, 3);
+                setIsSendingVideo(true);
+              } else if (payload.action === 'Stop') {
+                stream.stopRenderVideo(videoRef.current, payload.userId);
+                setIsSendingVideo(false);
+              }
+            });
+
+            zoomClient.on('user-updated', (payload) => {
+              console.log('User updated:', payload);
+              if (payload.action === 'Join') {
+                payload.userList.forEach(user => {
+                  if (user.bVideoOn) {
+                    stream.renderVideo(videoRef.current, user.userId, 640, 480, 0, 0, 3);
+                    setIsSendingVideo(true);
+                  }
+                });
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error joining session or accessing stream', error);
+        }
+      };
+
+      joinSession();
+
+      const handleReceivedMessage = (message) => {
+        console.log('Received message:', message);
+        setMessages((prev) => [...prev, message]);
+      };
+
+      socket.on('received-message', handleReceivedMessage);
+
+      return () => {
+        socket.off('received-message', handleReceivedMessage);
+      };
     }
+  }, [isSocketConnected, user, socket]);
 
-    const fetchPeerIdAndInitiateCall = async () => {
-      try {
-        const response = await axios.get("/getPeerId");
-        const peerId = response.data.peerId;
+  const sendMessage = () => {
+    if (input && socket) {
+      socket.emit('chat-message', { user: user.name, pic: user.pic, content: input });
+      setInput('');
+    }
+  };
 
-        if (peerId && isSocketConnected) {
-          console.log("Fetched peerId from server:", peerId);
-          setUpPeer(peerId);
-        } else {
-          console.error("PeerId not found or socket not connected");
-        }
-      } catch (error) {
-        console.error("Failed to fetch peerId:", error);
-      }
-    };
-
-    const setUpPeer = (peerId) => {
-      if (peer) {
-        console.log("Destroying previous PeerJS instance");
-        peer.destroy();
-      }
-
-      peer = new Peer();
-
-      peer.on("open", () => {
-        console.log("Making call to peerId:", peerId);
-
-        const call = peer.call(peerId, null);
-
-        if (!call) {
-          console.error("Call could not be made. Check if peerId is correct and PeerJS instance is properly initialized.");
-          return;
-        }
-
-        call.on("stream", (remoteStream) => {
-          console.log("Received remote stream after call");
-          if (videoRef.current) {
-            videoRef.current.srcObject = remoteStream;
-          }
+  const endSession = () => {
+    if (client) {
+      client.leave()
+        .then(() => {
+          console.log('Left the session successfully');
+        })
+        .catch((error) => {
+          console.error('Failed to leave the session', error);
         });
-
-        call.on("error", (err) => {
-          console.error("Call error:", err);
-        });
-      });
-
-      peer.on("call", (call) => {
-        console.log("Receiving call from", call.peer);
-
-        call.answer();
-
-        call.on("stream", (remoteStream) => {
-          console.log("Receiving remote stream from call");
-          if (videoRef.current) {
-            videoRef.current.srcObject = remoteStream;
-          }
-        });
-
-        call.on("error", (err) => {
-          console.error("Call error:", err);
-        });
-      });
-
-      peer.on("error", (err) => {
-        console.error("PeerJS error:", err);
-      });
-    };
-
-    fetchPeerIdAndInitiateCall();
-
-    return () => {
-      if (peer) {
-        console.log("Cleaning up PeerJS instance");
-        peer.destroy();
-      }
-    };
-  }, [isSocketConnected, navigate, socket, user]);
+    }
+  };
 
   return (
     <div className="admin-stream-container">
       <UpperNav />
       <div className="stream-content">
         <div className="video-container">
-          <h2>User Stream</h2>
-          <video ref={videoRef} autoPlay playsInline />
-        </div>
-        <div className="chat-container">
-          <h3>Live Chat</h3>
-          <div className="chat-messages"></div>
-          <input type="text" placeholder="Type a message" />
+          <video ref={videoRef} style={{ width: '640px', height: '480px' }} />
+          {!isSendingVideo && <p>Waiting for video...</p>}
+          <div className="chat-container">
+            <h3>Live Chat</h3>
+            <div className="chat-messages">
+              {messages.map((msg, idx) => (
+                <li style={{ display: 'flex', justifyContent: "left", alignItems: "center" }} key={idx}>
+                  <Avatar
+                    size="sm"
+                    cursor="pointer"
+                    name={msg?.user}
+                    src={msg?.pic}
+                  />
+                  <p>{'\u00A0'}{msg?.user}:{'\u00A0'}{msg.content}</p>
+                </li>
+              ))}
+            </div>
+            <input
+              type="text"
+              placeholder="Type a message"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+              <button className='send' onClick={sendMessage}>Send</button>
+              <button className='end-session' onClick={endSession}>End Session</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default UserStream;
+export default VideoChat;

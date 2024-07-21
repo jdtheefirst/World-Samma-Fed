@@ -9,9 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import axiosInstance from "../components/config/axios";
-import axios from "axios";
+import { SiStreamlabs } from "react-icons/si";
 import AdComponent from "../components/Ads";
 import { MdOutlineFiberSmartRecord, MdOutlineMarkUnreadChatAlt } from "react-icons/md";
+//twillio code: S8ZVS4F9BYTUYWM47439RPNR
 
 const Dashboard = ({ courses }) => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -32,6 +33,7 @@ const Dashboard = ({ courses }) => {
   const [live, setLive] = useState([]);
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
+  const [wsfLive, setwsfLive] = useState(false);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -131,15 +133,8 @@ const Dashboard = ({ courses }) => {
       );
       setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
     };
-
-    const handleUpdates = (requests) => {
-      setUser((prevUser) => ({
-        ...prevUser,
-        belt: requests.belt,
-        clubRequests: requests.clubRequests,
-        provinceRequests: requests.provinceRequests,
-        nationalRequests: requests.nationalRequests,
-      }));
+    const wsfLive =  () => {
+      setwsfLive(true);
     };
 
     const handleProvincialRequest = (request) => {
@@ -174,7 +169,7 @@ const Dashboard = ({ courses }) => {
       }));
     };
 
-    socket.on("updates", handleUpdates);
+    socket.on("wsfSessionStarted", wsfLive);
     socket.on("provincial request", handleProvincialRequest);
     socket.on("national request", handleNationalRequest);
     socket.on("liveSessionStarted", handleLiveSessionStarted);
@@ -182,7 +177,7 @@ const Dashboard = ({ courses }) => {
     socket.on("message received", handleMessageReceived);
 
     return () => {
-      socket.off("updates", handleUpdates);
+      socket.off("wsfSessionStarted", wsfLive);
       socket.off("provincial request", handleProvincialRequest);
       socket.off("national request", handleNationalRequest);
       socket.off("liveSessionStarted", handleLiveSessionStarted);
@@ -330,6 +325,33 @@ const Dashboard = ({ courses }) => {
           onMouseLeave={() => setHovered(false)}
           borderRadius="full"
         />
+        {wsfLive &&  <IconButton
+          display={chatOpen ? "none" : "flex"}
+          position="fixed"
+          top="20%"
+          left="10%"
+          icon={
+            <SiStreamlabs
+              style={{
+                width: isHovered ? "60px" : "40px",
+                transition: "width 0.3s ease-in-out",
+                color: "red",
+                fontSize: "40px",
+                border: 'none',
+              }}
+            />
+          }
+          backgroundColor="black"
+          p={"2"}
+          boxSize={"auto"}
+          border="none"
+          _hover={{ backgroundColor: "white" }}
+          onClick={() => {setwsfLive(false); navigate("/videochat")}}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          borderRadius="full"
+        />}
+       
       </Box>
     </ErrorBoundary>
   );

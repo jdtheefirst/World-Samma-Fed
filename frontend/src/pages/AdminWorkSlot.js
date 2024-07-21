@@ -199,16 +199,18 @@ const AdminWorkSlot = ({ user }) => {
     <Box
       display={"flex"}
       width={"100%"}
-      justifyContent={"center"}
+      justifyContent={"start"}
       alignItems={"center"}
       flexDir={"column"}
       overflowY={"auto"}
       background={"white"}
+      p={"6"}
     >
       {" "}
       <UpperNav />
-      <Heading mt={10}>Admin Work Slot</Heading>
-      <Box>
+      <Heading mb={"6"}>World Samma Federation</Heading>
+      <Heading size={"sm"} mb={"6"}>Admin Work Slot</Heading>
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} flexDir={"column"} width={"100%"}>
         {" "}
         <Text
           textAlign={"center"}
@@ -216,10 +218,9 @@ const AdminWorkSlot = ({ user }) => {
           fontWeight={500}
           bg={useColorModeValue("green.50", "green.900")}
           p={2}
-          width={"60%"}
+          width={{base: "100%", md: "60%"}}
           color={"green.500"}
           rounded={"full"}
-          marginTop={2}
         >
           {submissions.length} submissions.
         </Text>
