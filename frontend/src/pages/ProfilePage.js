@@ -39,6 +39,8 @@ const ProfilePage = ({ user }) => {
   const [register, setRegister] = useState(false);
   const adminId = "6693a995f6295b8bd90d9301";
 
+  console.log(user);
+
   const requestClub = useCallback(async () => {
     if (!user.coach) {
       return;

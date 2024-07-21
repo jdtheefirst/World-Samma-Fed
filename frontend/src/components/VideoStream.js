@@ -27,9 +27,15 @@ function VideoChat({ user }) {
         setIsSocketConnected(false);
       });
 
-      socket.on("received-message", (message) => {
+      const handleReceivedMessage = (message) => {
         setMessages((prev) => [...prev, message]);
-      });
+      };
+
+      socket.on("received-message", handleReceivedMessage);
+
+      return () => {
+        socket.off("received-message", handleReceivedMessage);
+      };
     }
   }, [socket]);
 
@@ -57,6 +63,9 @@ function VideoChat({ user }) {
             console.log('Admin starting video');
             stream.startVideo({ videoElement: videoRef.current });
             setIsSendingVideo(true);
+
+            // Broadcast session started to all clients
+            socket.emit("wsfSessionStarted");
           } else {
             console.log('Viewer listening for video state changes');
 
@@ -82,6 +91,11 @@ function VideoChat({ user }) {
                 });
               }
             });
+
+            socket.on("wsfSessionStarted", () => {
+              console.log("Session started notification received");
+              // Handle the session start logic for participants if needed
+            });
           }
         } catch (error) {
           console.error('Error joining session or accessing stream', error);
@@ -89,17 +103,6 @@ function VideoChat({ user }) {
       };
 
       joinSession();
-
-      const handleReceivedMessage = (message) => {
-        console.log('Received message:', message);
-        setMessages((prev) => [...prev, message]);
-      };
-
-      socket.on('received-message', handleReceivedMessage);
-
-      return () => {
-        socket.off('received-message', handleReceivedMessage);
-      };
     }
   }, [isSocketConnected, user, socket]);
 
@@ -128,9 +131,8 @@ function VideoChat({ user }) {
       <div className="stream-content">
         <div className="video-container">
           <video ref={videoRef} style={{ width: '640px', height: '480px' }} />
-          {!isSendingVideo && <p>Waiting for video...</p>}
           <div className="chat-container">
-            <h3>Live Chat</h3>
+            <h3>Live Chat{!isSendingVideo && <p>Waiting for video...</p>}</h3>
             <div className="chat-messages">
               {messages.map((msg, idx) => (
                 <li style={{ display: 'flex', justifyContent: "left", alignItems: "center" }} key={idx}>
