@@ -84,7 +84,7 @@ const Requests = () => {
         onClick={onOpen}
         border={"none"}
       >
-        <RiTeamLine fontSize={"20px"} />
+        <RiTeamLine fontSize={"20px"} border={"none"}/>
         {clubRequests && clubRequests.length > 0 && (
           <Text
             position="absolute"

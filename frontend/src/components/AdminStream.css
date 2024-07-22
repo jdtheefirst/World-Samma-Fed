@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: hsl(0, 0%, 98%);
   width: 100%;
   flex-direction: column;
 }
@@ -10,8 +9,10 @@
 .stream-content {
   margin-top: 20;
   display: flex;
+  flex-wrap: wrap;
   width: 100%;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .video-container {
@@ -32,7 +33,7 @@ video {
 }
 
 .chat-container {
-  flex: 1;
+  flex: 2;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -41,10 +42,9 @@ video {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-left: 20px;
   max-width: 400px; /* Limit width for better readability */
   height: 400px;
-  overflow-y: scroll;
+  width: 10%;
 }
 
 .chat-container h3 {
@@ -126,7 +126,7 @@ input[type="text"] {
   }
 
   .video-container {
-      width: 90%;
+      width: 100%;
       margin-top: 10px; /* Corrected the typo */
   }
 

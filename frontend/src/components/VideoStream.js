@@ -59,42 +59,69 @@ function VideoChat({ user }) {
 
           const stream = zoomClient.getMediaStream();
 
+          if (videoRef.current) {
+            console.log('Video element is available');
+          } else {
+            console.error('Video element is not available');
+          }
+
           if (isAdmin) {
             console.log('Admin starting video');
-            stream.startVideo({ videoElement: videoRef.current });
-            setIsSendingVideo(true);
-
-            // Broadcast session started to all clients
-            socket.emit("wsfSessionStarted");
+            try {
+              await stream.startVideo({ videoElement: videoRef.current });
+              setIsSendingVideo(true);
+              socket.emit("wsfSessionStarted");
+            } catch (error) {
+              console.error('Error starting video:', error);
+            }
           } else {
-            console.log('Viewer listening for video state changes');
-
-            zoomClient.on('peer-video-state-change', (payload) => {
+            console.log('Viewer joining the session');
+            zoomClient.on('peer-video-state-change', async (payload) => {
               console.log('Peer video state changed:', payload);
               if (payload.action === 'Start') {
-                stream.renderVideo(videoRef.current, payload.userId, 640, 480, 0, 0, 3);
-                setIsSendingVideo(true);
+                try {
+                  setTimeout(() => {
+                    stream.renderVideo(videoRef.current, payload.userId, 640, 480, 0, 0, 3);
+                    setIsSendingVideo(true);
+                  }, 500);  // Adjust the delay as necessary
+                } catch (error) {
+                  console.error('Error rendering video:', error);
+                }
               } else if (payload.action === 'Stop') {
-                stream.stopRenderVideo(videoRef.current, payload.userId);
-                setIsSendingVideo(false);
+                try {
+                  stream.stopRenderVideo(videoRef.current, payload.userId);
+                  setIsSendingVideo(false);
+                } catch (error) {
+                  console.error('Error stopping video:', error);
+                }
               }
             });
 
             zoomClient.on('user-updated', (payload) => {
               console.log('User updated:', payload);
-              if (payload.action === 'Join') {
-                payload.userList.forEach(user => {
-                  if (user.bVideoOn) {
-                    stream.renderVideo(videoRef.current, user.userId, 640, 480, 0, 0, 3);
-                    setIsSendingVideo(true);
+              payload.forEach(user => {
+                if (user.bVideoOn) {
+                  try {
+                    setTimeout(() => {
+                      stream.renderVideo(videoRef.current, user.userId, 640, 480, 0, 0, 3);
+                      setIsSendingVideo(true);
+                    }, 500);  // Adjust the delay as necessary
+                  } catch (error) {
+                    console.error('Error rendering video on user update:', error);
                   }
-                });
-              }
+                } else {
+                  try {
+                    stream.stopRenderVideo(videoRef.current, user.userId);
+                    setIsSendingVideo(false);
+                  } catch (error) {
+                    console.error('Error stopping video on user update:', error);
+                  }
+                }
+              });
             });
 
             socket.on("wsfSessionStarted", () => {
               console.log("Session started notification received");
-              // Handle the session start logic for participants if needed
             });
           }
         } catch (error) {
@@ -132,7 +159,7 @@ function VideoChat({ user }) {
         <div className="video-container">
           <video ref={videoRef} style={{ width: '640px', height: '480px' }} />
           <div className="chat-container">
-            <h3>Live Chat{!isSendingVideo && <p>Waiting for video...</p>}</h3>
+            <h3>Live Chat{'\u00A0'}{!isSendingVideo && <p>Waiting for video...</p>}</h3>
             <div className="chat-messages">
               {messages.map((msg, idx) => (
                 <li style={{ display: 'flex', justifyContent: "left", alignItems: "center" }} key={idx}>
