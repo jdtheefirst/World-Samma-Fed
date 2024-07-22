@@ -23,7 +23,7 @@ const AboutPage = () => {
     <div id="root">
       <header style={{ backgroundColor: '#003366', color: 'white', textAlign: 'center', padding: '20px' }}>
         <h1 style={{ fontSize: '2.5em' }}>Welcome to the World Samma Federation</h1>
-        <p style={{ fontSize: '1.2em', marginTop: '10px' }}>Your global community for martial arts and sports enthusiasts. Join us to connect, learn, and grow in your martial arts journey.</p>
+        <p style={{ fontSize: '1.2em', marginTop: '10px' }}>Your global community for martial arts and other sports enthusiasts. Join us to connect, learn, and grow in your martial arts journey.</p>
       </header>
       <main style={{ padding: '20px' }}>
         <section><a href="/">Back</a></section>

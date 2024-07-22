@@ -92,7 +92,7 @@ const National = () => {
       toast({
         title: `Your highest rank is ${user.belt}!`,
         description:
-          "Head of a National Association must have attained at least Black 1.",
+          "Head of a National Association must have attained at least black belt 3.",
         status: "info",
         isClosable: true,
         duration: 10000,

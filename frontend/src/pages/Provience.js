@@ -61,7 +61,7 @@ const Provience = () => {
       toast({
         title: `Your highest rank is ${user.belt}`,
         description:
-          "Head of a Provincial Association must have attained at least Black 1.",
+          "Head of a provincial association must have attained at least black belt 1.",
         status: "info",
         isClosable: true,
         duration: 10000,

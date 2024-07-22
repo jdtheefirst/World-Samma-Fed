@@ -19,7 +19,7 @@ const InternationalChampionshipsPage = ({user}) => {
     <div style={styles?.container} >
       <main style={styles?.main}>
         <section style={styles?.eventInfo}>
-          <h2 style={styles?.eventTitle}>Upcoming International Championships</h2>
+          <h2 style={styles?.eventTitle}>Proposed International Championships</h2>
           <p style={styles?.description}>Get ready for an exciting showcase of martial arts excellence as athletes from around the globe compete in the World Samma Federation's International Championships. Experience the thrill of top-level competition, skill, and sportsmanship.</p>
           <p style={styles?.details}><strong>Date:</strong> September 15-17, 2024</p>
           <p style={styles?.details}><strong>Location:</strong> Dubai Sports City Stadium, Dubai, UAE</p>

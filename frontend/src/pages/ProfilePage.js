@@ -252,7 +252,6 @@ const ProfilePage = ({ user }) => {
         flexDir={'column'}
         width={{ base: "100%", md: "80%" }}
         boxShadow="dark-lg"
-        p="6"
         rounded="md"
         bg="whitesmoke"
         mt={20}
@@ -265,7 +264,7 @@ const ProfilePage = ({ user }) => {
           textAlign={"start"}
           boxShadow="base"
           width={"100%"}
-          p="0"
+          p="2"
           rounded="md"
           bg="whitesmoke"
          >

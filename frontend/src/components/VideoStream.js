@@ -68,29 +68,43 @@ function VideoChat({ user }) {
           if (isAdmin) {
             console.log('Admin starting video');
             try {
-              await stream.startVideo({ videoElement: videoRef.current });
-              setIsSendingVideo(true);
-              socket.emit("wsfSessionStarted");
+              if (videoRef.current instanceof HTMLVideoElement) {
+                await stream.startVideo({ videoElement: videoRef.current });
+                setIsSendingVideo(true);
+                socket.emit("wsfSessionStarted");
+              } else {
+                console.error('Expected HTMLVideoElement but got', videoRef.current);
+              }
             } catch (error) {
               console.error('Error starting video:', error);
             }
           } else {
             console.log('Viewer joining the session');
+
             zoomClient.on('peer-video-state-change', async (payload) => {
               console.log('Peer video state changed:', payload);
+
               if (payload.action === 'Start') {
                 try {
-                  setTimeout(() => {
-                    stream.renderVideo(videoRef.current, payload.userId, 640, 480, 0, 0, 3);
-                    setIsSendingVideo(true);
-                  }, 500);  // Adjust the delay as necessary
+                  if (videoRef.current instanceof HTMLVideoElement) {
+                    setTimeout(() => {
+                      stream.renderVideo(videoRef.current, payload.userId, 640, 480, 0, 0, 3);
+                      setIsSendingVideo(true);
+                    }, 500);  // Adjust the delay as necessary
+                  } else {
+                    console.error('Expected HTMLVideoElement but got', videoRef.current);
+                  }
                 } catch (error) {
                   console.error('Error rendering video:', error);
                 }
               } else if (payload.action === 'Stop') {
                 try {
-                  stream.stopRenderVideo(videoRef.current, payload.userId);
-                  setIsSendingVideo(false);
+                  if (videoRef.current instanceof HTMLVideoElement) {
+                    stream.stopRenderVideo(videoRef.current, payload.userId);
+                    setIsSendingVideo(false);
+                  } else {
+                    console.error('Expected HTMLVideoElement but got', videoRef.current);
+                  }
                 } catch (error) {
                   console.error('Error stopping video:', error);
                 }
@@ -99,25 +113,39 @@ function VideoChat({ user }) {
 
             zoomClient.on('user-updated', (payload) => {
               console.log('User updated:', payload);
-              payload.forEach(user => {
-                if (user.bVideoOn) {
-                  try {
-                    setTimeout(() => {
-                      stream.renderVideo(videoRef.current, user.userId, 640, 480, 0, 0, 3);
-                      setIsSendingVideo(true);
-                    }, 500);  // Adjust the delay as necessary
-                  } catch (error) {
-                    console.error('Error rendering video on user update:', error);
+
+              // Ensure payload is an array
+              if (Array.isArray(payload) && payload.length > 0) {
+                payload.forEach(user => {
+                  if (user.bVideoOn) {
+                    try {
+                      if (videoRef.current instanceof HTMLVideoElement) {
+                        setTimeout(() => {
+                          stream.renderVideo(videoRef.current, user.userId, 640, 480, 0, 0, 3);
+                          setIsSendingVideo(true);
+                        }, 500);  // Adjust the delay as necessary
+                      } else {
+                        console.error('Expected HTMLVideoElement but got', videoRef.current);
+                      }
+                    } catch (error) {
+                      console.error('Error rendering video on user update:', error);
+                    }
+                  } else {
+                    try {
+                      if (videoRef.current instanceof HTMLVideoElement) {
+                        stream.stopRenderVideo(videoRef.current, user.userId);
+                        setIsSendingVideo(false);
+                      } else {
+                        console.error('Expected HTMLVideoElement but got', videoRef.current);
+                      }
+                    } catch (error) {
+                      console.error('Error stopping video on user update:', error);
+                    }
                   }
-                } else {
-                  try {
-                    stream.stopRenderVideo(videoRef.current, user.userId);
-                    setIsSendingVideo(false);
-                  } catch (error) {
-                    console.error('Error stopping video on user update:', error);
-                  }
-                }
-              });
+                });
+              } else {
+                console.error('Expected payload to be an array with user data');
+              }
             });
 
             socket.on("wsfSessionStarted", () => {

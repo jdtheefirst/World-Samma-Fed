@@ -8,11 +8,11 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Qualification Requirements:",
-          description: "To become a national coach, one must first be a province coach or lead a WSF registered club in a country without provinces. They must be approved by other province coaches to become their national leader. Responsibilities include managing national funds and organizing tournaments, seminars, and graduation ceremonies.",
+          description: "To become a national coach, one must first be a WSF registered province coach or lead a WSF registered club in a country without provinces. They must be approved by other province coaches to become their national leader. Responsibilities include managing national funds and organizing international tournaments, national seminars and black belt graduation ceremonies.",
         },
         {
           subtitle: "Interim Appointment:",
-          description: "The interim role lasts for a maximum of one year, during which the coach is responsible for managing national-level activities, funds and ensuring smooth operations.",
+          description: "The interim role lasts for a maximum of one year(then elections), during which the coach is responsible for managing national-level activities, funds and ensuring smooth operations.",
         }
       ]
     },
@@ -21,11 +21,11 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Qualification Criteria:",
-          description: "A province coach must be approved by 20 other coaches, hold a black belt, and lead a WSF registered club. Responsibilities include organizing local tournaments, seminars, graduation ceremonies, and meetings along with the province committee.",
+          description: "A province coach must be approved by 20 other WSF registered coaches in his/her province, hold a black belt and lead a WSF registered club. Responsibilities include organizing local tournaments, seminars and under-belts graduation ceremonies in conjuction with the WSF province committee.",
         },
         {
           subtitle: "Interim Appointment:",
-          description: "The interim role also lasts for a maximum of one year, during which the coach is responsible for managing province-level activities, funds and ensuring smooth operations.",
+          description: "The interim role also lasts for a maximum of one year(then elections), during which the coach is responsible for managing province-level activities, funds and ensuring smooth operations.",
         }
       ]
     },
@@ -34,11 +34,11 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Club Establishment:",
-          description: "Coaches can create clubs upon completing the Orange belt. A club can be registered (badged) once it has 20 students.",
+          description: "Students can create clubs after Orange belt certification. A club can only be WSF registered (badged) once it has 20 registered students.",
         },
         {
           subtitle: "Student Registration and Training:",
-          description: "Coaches can register students and earn income per registered student. They can train students up to the belt levels they have achieved.",
+          description: "Coaches can register students and earn income per student. They can train students up to the belt levels they have achieved.",
         }
       ]
     }

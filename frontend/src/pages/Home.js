@@ -290,6 +290,15 @@ function Homepage() {
                 ASSOCIATION for much more benefits which includes managing an
                 increased percentage from donations to WSF via the site.
               </Text>
+              <Button
+                borderRadius={20}
+                onClick={() => setGetStarted(true)}
+                bgGradient="linear(to-l, #7928CA, #FF0080)"
+                m={{base: "2"}}
+                color={"white"}
+              >
+                Get Started Now!
+              </Button>
               <TestimonialsCarousel/>
               <PollComponent/>
             </Box>
@@ -488,7 +497,7 @@ function Homepage() {
                     src={
                       "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1716192064/kumbi.jpg"
                     }
-                    width={{ base: "250px", md: "300px", lg: "350px" }}
+                    width={"250px"}
                     height={"auto"}
                     borderRadius={2}
                     mx={"auto"}

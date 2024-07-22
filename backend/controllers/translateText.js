@@ -7,6 +7,7 @@ const translateText = async (req, res) => {
     const translation = await translate(text, { to: target });
     res.json(translation.text);
   } catch (error) {
+    console.log(error);
     if (error.status === 429) {
       res.status(429).json({ message: "Too many requests" });
     } else {

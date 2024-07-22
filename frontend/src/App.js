@@ -30,16 +30,16 @@ const courses = [
         title: "Lesson 1",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945476/stances_e589zo.mp4",
-        notes: `.Attention stance
-.Natural stance
-.Horse riding stance
-.Raised rear heel stance
-.Forward leaning stance
-.Back leaning stance
-.Cat stance
-.Raised knee stance
-.Cross stance
-.Kneeling positions (one knee, both knees).
+        notes: `. Attention stance
+. Natural stance
+. Horse riding stance
+. Raised rear heel stance
+. Forward leaning stance
+. Back leaning stance
+. Cat stance
+. Raised knee stance
+. Cross stance
+. Kneeling positions (one knee, both knees).
 `,
       },
       {
@@ -47,24 +47,24 @@ const courses = [
         title: "Lesson 2",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945467/step_annbdf.mp4",
-        notes: `.STEPPING (each done in the forward and reverse motion)
-     .Stepping through
-     .Dragging/jumping
-     .Crossing over`,
+        notes: `. STEPPING (each done in the forward and reverse motion)
+     . Stepping through
+     . Dragging/jumping
+     . Crossing over`,
       },
       {
         id: 3,
         title: "Lesson 3",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
-        notes: `PRIMARY KICKS (use the front foot)
-.Ball kick
-.Outward crescent kick
-.Inward crescent kick
-.Side kick
-.Roundhouse kick
-.Hook/whip kick
-.Back kick
+        notes: `. PRIMARY KICKS (use the front foot)
+. Ball kick
+. Outward crescent kick
+. Inward crescent kick
+. Side kick
+. Roundhouse kick
+. Hook/whip kick
+. Back kick
 `,
       },
       {
@@ -72,15 +72,14 @@ const courses = [
         title: "Lesson 4",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945505/primary_kicks_azlg2p.mp4",
-        notes: `PRIMARY KICKS (use the front foot)
-.Ball kick
-.Outward crescent kick
-.Inward crescent kick
-.Side kick
-.Roundhouse kick
-.Hook/whip kick
-.Back kick
-
+        notes: `. PRIMARY KICKS (use the front foot)
+. Ball kick
+. Outward crescent kick
+. Inward crescent kick
+. Side kick
+. Roundhouse kick
+. Hook/whip kick
+. Back kick
 `,
       },
       {
@@ -88,13 +87,13 @@ const courses = [
         title: "Lesson 5",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712947059/open_hand_r1lizr.mp4",
-        notes: `OPEN HAND STRIKES (with each hand)
-.Chops
-.Slaps (back & front hand)
-.Pokes
-.Claws
-.Palm heel
-.Ridge hand
+        notes: `. OPEN HAND STRIKES (with each hand)
+. Chops
+. Slaps (back & front hand)
+. Pokes
+. Claws
+. Palm heel
+. Ridge hand
 `,
       },
       {
@@ -102,13 +101,9 @@ const courses = [
         title: "Lesson 6",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945468/punches_wazdvv.mp4",
-        notes: `
-PUNCHES 
-.Front punch
-.Rear/reverse punch
- 
-(circular, linear & back fist variations for each)
-
+        notes: `. PUNCHES 
+. Front punch
+. Rear/reverse punch(circular, linear & back fist variations for each)
 `,
       },
       {
@@ -116,24 +111,22 @@ PUNCHES
         title: "Lesson 7",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945249/evasion_wloadk.mp4",
-        notes: `EVASION
-.Left
-.Right
-.Down
-.Up
-.Back
-`,
-      },
-      {
+        notes: `. EVASION
+. Left
+. Right
+. Down
+. Up
+. Back
+`,},{
         id: 8,
         title: "Lesson 8",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945296/blocks_kxtoxv.mp4",
-        notes: `BLOCKS (with each hand)
-.Inward block
-.Outward block
-.Upward block
-.Downward block
+        notes: `. BLOCKS (with each hand)
+. Inward block
+. Outward block
+. Upward block
+. Downward block
 `,
       },
       {
@@ -141,7 +134,7 @@ PUNCHES
         title: "Lesson 9",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945257/falling_side_akrnvl.mp4",
-        notes: `SAFETY FALLS
+        notes: `. SAFETY FALLS
 .Side fall
 `,
       },
@@ -159,7 +152,7 @@ PUNCHES
         title: "Lesson 11",
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945243/falling_face_sbvruy.mp4",
-        notes: `SAFETY FALLS
+        notes: `. SAFETY FALLS
 .Face fall
 `,
       },

@@ -6,13 +6,13 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 const testimonials = [
   {
     id: 1,
-    name: "Master Geoffrey Oluoch",
+    name: "Instructor Geoffrey Onyango",
     comment: "Achieving the Black 3 belt has been a remarkable journey. The discipline and perseverance required to reach this level have not only honed my martial arts skills but also shaped my character. The World Samma Federation provides an unparalleled platform for continuous growth and excellence.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/geoffrey.jpg",
   },
   {
     id: 2,
-    name: "Master Stephen",
+    name: "Instructor Stephen Munyoki",
     comment: "Earning the Black 3 belt has been one of the most rewarding experiences of my life. The rigorous training and the support from the World Samma Federation have been instrumental in my development as a martial artist. I am proud to be part of such a prestigious organization.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/stephen.jpg",
   },
@@ -24,7 +24,7 @@ const testimonials = [
   },
   {
     id: 4,
-    name: "Student Ahmed Al-Rashid",
+    name: "Student Vincent Sanya",
     comment: "Starting my training with the World Samma Federation has been a transformative experience. The foundational skills I have acquired have given me confidence and motivation to push further. I look forward to advancing through the ranks and achieving my goals.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/IMG-20240605-WA0000_1_ffblei.jpg", // Change to the actual image URL
   },
