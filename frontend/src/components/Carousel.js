@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Image } from "@chakra-ui/react";
+import { Box, Text, Image, Divider, AbsoluteCenter } from "@chakra-ui/react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
@@ -44,28 +44,30 @@ const TestimonialsCarousel = () => {
       >
         {testimonials.map((testimonial) => (
           <Box key={testimonial.id} display="flex" flexDir={"column"} justifyContent="center" alignItems="center" mb={6}  mt={{base: '6', md: '6', lg: "6%"}}>
+            <Text fontWeight={"bold"} textColor={"#003366"} fontSize={"large"} textAlign={"center"} width={"100%"}>Testimony</Text>
+            <Divider height={"2px"} background={"#003366"}/>
             <Box position="relative" width={{ base: "50%", md: "30%", lg: "30%", xl: "20%" }} p={4} borderRadius="md" textAlign="center">
             <Box position="relative" mb={4}>
-  <Image
-    borderRadius="full"
-    src={testimonial.image}
-    alt={testimonial.name}
-    loading="lazy"
-    width="100%"
-    height="auto"
-  />
-  <Box
-    position="absolute"
-    bottom="0"
-    left="0"
-    right="0"
-    height={{ base: "3rem", md: "5rem" }}
-    background="linear-gradient(to bottom, rgba(244,244,244,0) 0%, rgba(244,244,244,1) 100%)"
-    borderBottomLeftRadius="full"
-    borderBottomRightRadius="full"
-  />
-</Box>
-</Box>
+            <Image
+             borderRadius="full"
+             src={testimonial.image}
+             alt={testimonial.name}
+             loading="eager"
+             width="100%"
+             height="auto"
+           />
+            <Box
+            position="absolute"
+            bottom="0"
+            left="0"
+            right="0"
+            height={{ base: "3rem", md: "5rem" }}
+            background="linear-gradient(to bottom, rgba(244,244,244,0) 0%, rgba(244,244,244,1) 100%)"
+            borderBottomLeftRadius="full"
+            borderBottomRightRadius="full"
+            />
+            </Box>
+            </Box>
             <Box textAlign={"center"} width={{ base: "80%", md: "50%" }}>
               <Text width={"100%"} fontSize="xl" fontWeight="bold" mb={2} mt={-8}>
                 {testimonial.name}

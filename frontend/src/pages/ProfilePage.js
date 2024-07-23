@@ -331,7 +331,6 @@ const ProfilePage = ({ user }) => {
               >
                 Admin Work Slot
               </Button>
-              <Button onClick={()=> navigate("/videochat")} m={.5} border={"none"} colorScheme="red">Go Live</Button>
             </Box>}
           </Box>
         </Box>{" "}

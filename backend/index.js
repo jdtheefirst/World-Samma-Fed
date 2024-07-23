@@ -11,6 +11,7 @@ const nationalRouter = require("./routes/nationalRouter");
 const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
+const downloadRouter = require("./routes/downloadRouter");
 const path = require("path");
 const jwt = require('jsonwebtoken');
 const bodyParser = require("body-parser");
@@ -53,40 +54,17 @@ app.use("/api/national", nationalRouter);
 app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
-
-app.get('/token/:order', (req, res) => {
-  const order = req.params.order;
-
-  // Check if the role is valid and handle accordingly
-  if (order !== '0' && order !== '1') {
-    return res.status(400).send({ error: 'Invalid role' });
-  }
-  if(order === '1'){
-    const io = getIO();
-    io.emit("wsfSessionStarted");
-  };
-
-  const payload = {
-    app_key: process.env.sdkKey,
-    tpc: 'mytopic', // Ensure the topic name is within 200 characters
-    role_type: parseInt(order, 10),  // Role type should be an integer
-    iat: Math.floor(Date.now() / 1000),
-    exp: Math.floor(Date.now() / 1000) + 3600,  // Token expiration time
-  };
-
-  const token = jwt.sign(payload, process.env.sdkSecret);
-  res.send({ token });
-});
+app.use("/api/download", downloadRouter);
 
 // Serve static assets and React frontend in production
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "../frontend/build")));
+  app.use(express.static(path.join(__dirname1, "./frontend/build")));
 
   // Serve index.html for all other routes
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname1, "../frontend/build", "index.html"));
+    res.sendFile(path.resolve(__dirname1, "./frontend/build", "index.html"));
   });
 } else {
   // Fallback for development or other environments

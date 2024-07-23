@@ -11,6 +11,8 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  LinkOverlay,
+  LinkBox,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -32,11 +34,13 @@ import { CiFacebook, CiInstagram, CiLocationOn, CiYoutube } from "react-icons/ci
 import TestimonialsCarousel from "../components/Carousel";
 import PollComponent from "../components/Polls";
 import { MdMenuOpen } from "react-icons/md";
+import axios from "axios";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
+  const [count, setCount] = useState(Number);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -46,6 +50,29 @@ function Homepage() {
   }, [navigate]);
   const handleCloseModal = () => {
     setShow(false);
+  };
+  useEffect(() => {
+
+    const fetchInitialCount = async () => {
+      try {
+        const { data } = await axios.get('/api/download/count');
+        setCount(data.count);
+      } catch (error) {
+        console.error('Error fetching initial count:', error);
+      }
+    };
+
+    fetchInitialCount();
+  }, []);
+
+  // Function to handle download and increment count
+  const handleDownload = async () => {
+    try {
+      const { data } = await axios.post('/api/download/increment');
+      setCount(data.count);
+    } catch (error) {
+      alert(error.response?.data?.message || 'An error occurred while downloading.');
+    }
   };
   return (
     <ErrorBoundary fallback={<p>Something went wrong</p>}>
@@ -290,11 +317,40 @@ function Homepage() {
                 ASSOCIATION for much more benefits which includes managing an
                 increased percentage from donations to WSF via the site.
               </Text>
+              <Box display={"flex"} justifyContent={'center'} alignItems={"center"} mt={{base: "0", md: "200px"}} flexDirection={"column"} width={"100%"}>
+                <LinkBox
+                as="article"
+                maxW="sm"
+                borderWidth="1px"
+                rounded="md"
+                width={"100%"}
+                background={"green"}
+                textAlign={"center"}
+                textColor={"white"}
+                p={"2"}
+                border={"3px solid black"}
+                onClick={handleDownload}
+              >
+                <LinkOverlay
+                  userSelect={"none"}
+                  href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721742094/sammaV4.pdf"
+                  target="_blank"
+                  download
+                  fontSize={"xl"}
+                  fontWeight={"bold"}
+                >
+                Download Samma Book V4
+                </LinkOverlay>
+              </LinkBox>
+              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'}>{Intl.NumberFormat().format(count)} DOWNLOADS</Text>
+              </Box>
+              
               <Button
                 borderRadius={20}
                 onClick={() => setGetStarted(true)}
                 bgGradient="linear(to-l, #7928CA, #FF0080)"
                 m={{base: "2"}}
+                mt={"5"}
                 color={"white"}
               >
                 Get Started Now!
@@ -308,7 +364,7 @@ function Homepage() {
               justifyContent={"center"}
               alignItems={"center"}
             >
-               <Text mb={"6"}>Donations and Support</Text>
+             <Text mb={"6"}>Donations and Support</Text>
               <Box
                 display={"flex"}
                 flexDirection={{ base: "column", md: "row" }}

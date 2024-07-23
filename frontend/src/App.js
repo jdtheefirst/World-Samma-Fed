@@ -17,7 +17,6 @@ const National = lazy(() => import('./pages/National'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 import LoadingSpinner from './components/Loading';
-const VideoChat = lazy(() => import("./components/VideoStream"));
 
 
 const courses = [
@@ -316,7 +315,6 @@ function App() {
     <RouteChangeTracker/>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/videochat" element={<VideoChat user={user}/>} />
         <Route path="/dashboard" element={<Dashboard courses={courses} />} />
         <Route path="/courses/:id" element={<CourseDetails courses={courses} user={user} />} />
         <Route path="/championships" element={<Championships />} user={user}/>

@@ -193,7 +193,7 @@ const AboutPage = () => {
       >
         <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
         All rights reserved. Terms and conditions apply. For queries and
-        comments email support@worldsamma.org.
+        comments Email: support@worldsamma.org
       </footer>
     </div>
   </Box>
