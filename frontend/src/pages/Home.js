@@ -220,7 +220,7 @@ function Homepage() {
             >
               <Text mb={'3'}>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
-              comments, email support@worldsamma.org.
+              comments Email: support@worldsamma.org.
             </Text>
              </Box>
         ) : (
@@ -242,14 +242,14 @@ function Homepage() {
                 position={"absolute"}
                 zIndex={-1}
                 alt={`Logo 2*`}
-                height={{base: "15%", md: "25%"}}
+                height={'auto'}
                 opacity={0.5}
                 loading="lazy"
                 border={"2px solid #2d1950"}
                 rounded="md"
                 bg="blackAlpha.400"
                 borderRadius={"full"}
-                bottom={"70%"}
+                bottom={{base: "91%", md: "78%"}}
               />
               <Text
                 textAlign={"center"}
@@ -688,7 +688,7 @@ function Homepage() {
                   >
                     <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
                     All rights reserved. Terms and conditions apply. For queries
-                    and comments, email support@worldsamma.org.
+                    and comments Email: support@worldsamma.org.
                   </Text>
                  
                 </GridItem>   

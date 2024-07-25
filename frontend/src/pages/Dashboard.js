@@ -190,7 +190,7 @@ const Dashboard = ({ courses }) => {
   // Combine requests and use a stable function reference
   const fetchClubs = useCallback(async () => {
     if (!user) {
-      navigate("/dashboard");
+      navigate("/");
       return;
     }
 

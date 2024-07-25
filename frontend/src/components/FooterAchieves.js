@@ -8,7 +8,7 @@ const FooterAchieves = () => {
       items: [
         {
           subtitle: "Qualification Requirements:",
-          description: "To become a national coach, one must first be a WSF registered province coach or lead a WSF registered club in a country without provinces. They must be approved by other province coaches to become their national leader. Responsibilities include managing national funds and organizing international tournaments, national seminars and black belt graduation ceremonies.",
+          description: "To become a national coach, one must first be a WSF registered province coach or lead a WSF registered club in a country without provinces. They must be approved by other province coaches to become their national leader. Responsibilities include managing national funds and organizing international tournaments, national seminars and black belt graduation ceremonies in conjuction with the WSF national committee.",
         },
         {
           subtitle: "Interim Appointment:",
