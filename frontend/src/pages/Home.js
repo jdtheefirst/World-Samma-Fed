@@ -249,7 +249,7 @@ function Homepage() {
                 rounded="md"
                 bg="blackAlpha.400"
                 borderRadius={"full"}
-                bottom={{base: "91%", md: "78%"}}
+                bottom={{base: "88%", md: "74%"}}
               />
               <Text
                 textAlign={"center"}

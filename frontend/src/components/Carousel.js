@@ -44,27 +44,27 @@ const testimonials = [
     comment: "The support from the instructors at World Samma Federation is unmatched. The courses are well-structured and easy to follow, making my learning experience both enjoyable and rewarding.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721903067/peter.jpg",
   },
-  {
-    id: 7,
-    name: "Emily Clark",
-    role: "Novice Instructor - Orange Belt",
-    comment: "Being a part of the World Samma Federation has been a game-changer for me. The community is supportive, and the opportunities for growth are endless. I'm proud to be an instructor here.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/emily.jpg",
-  },
-  {
-    id: 8,
-    name: "Nicholas",
-    role: "Certified Instructor - 5th degree black belt",
-    comment: "From the moment I started my training with the World Samma Federation, I knew I was in the right place. The courses are challenging yet achievable, and the certification process is straightforward.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/michael.jpg",
-  },
-  {
-    id: 9,
-    name: "Sarah Lee",
-    role: "Certified Instructor - 1st degree black belt",
-    comment: "Becoming a coach with the World Samma Federation has allowed me to turn my passion into a profession. The training and certification programs are top-notch, and the community support is invaluable.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/sarah.jpg",
-  },
+  // {
+  //   id: 7,
+  //   name: "Emily Clark",
+  //   role: "Novice Instructor - Orange Belt",
+  //   comment: "Being a part of the World Samma Federation has been a game-changer for me. The community is supportive, and the opportunities for growth are endless. I'm proud to be an instructor here.",
+  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/emily.jpg",
+  // },
+  // {
+  //   id: 8,
+  //   name: "Nicholas",
+  //   role: "Certified Instructor - 5th degree black belt",
+  //   comment: "From the moment I started my training with the World Samma Federation, I knew I was in the right place. The courses are challenging yet achievable, and the certification process is straightforward.",
+  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/michael.jpg",
+  // },
+  // {
+  //   id: 9,
+  //   name: "Sarah Lee",
+  //   role: "Certified Instructor - 1st degree black belt",
+  //   comment: "Becoming a coach with the World Samma Federation has allowed me to turn my passion into a profession. The training and certification programs are top-notch, and the community support is invaluable.",
+  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/sarah.jpg",
+  // },
 ];
 
 const TestimonialsGrid = () => {
