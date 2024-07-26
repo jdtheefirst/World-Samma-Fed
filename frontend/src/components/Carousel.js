@@ -33,14 +33,14 @@ const testimonials = [
   {
     id: 5,
     name: "Caleb Wambua",
-    role: "Novice instructor - Brown Belt",
+    role: "Novice Instructor - Brown Belt",
     comment: "The World Samma Federation's online courses are fantastic. I've been able to enhance my skills and knowledge at my own pace, and the certification has opened up new opportunities for me.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721903067/Caleb.jpg",
   },
   {
     id: 6,
     name: "Peter Mugo",
-    role: "Novice instructor - Green Belt",
+    role: "Novice Instructor - Green Belt",
     comment: "The support from the instructors at World Samma Federation is unmatched. The courses are well-structured and easy to follow, making my learning experience both enjoyable and rewarding.",
     image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721903067/peter.jpg",
   },

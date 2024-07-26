@@ -13,6 +13,7 @@ import {
   IconButton,
   LinkOverlay,
   LinkBox,
+  Spinner,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -37,10 +38,11 @@ import { MdMenuOpen } from "react-icons/md";
 import axios from "axios";
 
 function Homepage() {
-  const [getStarted, setGetStarted] = useState();
+  const [getStarted, setGetStarted] = useState(true);
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const [count, setCount] = useState(Number);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -54,10 +56,13 @@ function Homepage() {
   useEffect(() => {
 
     const fetchInitialCount = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get('/api/download/count');
         setCount(data.count);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error('Error fetching initial count:', error);
       }
     };
@@ -108,6 +113,7 @@ function Homepage() {
           <MenuItem
             onClick={() => {
               navigate("/about");
+              setGetStarted(false);
             }}
             _hover={{ backgroundColor: "transparent", fontSize: "small" }}
             background="transparent"
@@ -204,14 +210,15 @@ function Homepage() {
             flexDirection="column"
           >
             <Logins />
-            <Box display={"flex"} justifyContent={"space-around"} width={"80"} mt={"6"} ><Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
+            <Box display={"flex"} justifyContent={"space-around"} width={"80"} mt={"6"} fontSize={"small"}>
+              <Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={1}>
                   Privacy Policy
                   </Link>
                   <Link href="https://www.termsfeed.com/live/d75005a6-b516-48aa-b247-31df645410b7" target="_blank" rel="noopener noreferrer" p={1}>
                   Terms and Conditions
                   </Link>
             </Box>
-            <Text
+            <Box
               textAlign={"center"}
               fontSize={"small"}
               position="sticky"
@@ -220,8 +227,8 @@ function Homepage() {
             >
               <Text mb={'3'}>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
               All rights reserved. Terms and conditions apply. For queries and
-              comments Email: support@worldsamma.org.
-            </Text>
+              comments Email: support@worldsamma.org
+            </Box>
              </Box>
         ) : (
           <>
@@ -342,7 +349,7 @@ function Homepage() {
                 Download Samma Book V4
                 </LinkOverlay>
               </LinkBox>
-              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'}>{Intl.NumberFormat().format(count)} DOWNLOADS</Text>
+              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'}>{loading? <Spinner speed="0.1"/> : Intl.NumberFormat().format(count)} DOWNLOADS</Text>
               </Box>
               
               <Button
@@ -381,18 +388,18 @@ function Homepage() {
                   mb={{ base: "20px", md: "0" }}
                 >
                  <Image
-  src={logo9}
-  width={{ base: "250px", md: "300px", lg: "350px" }}
-  height={"auto"}
-  onClick={() => setShow(true)}
-  style={{ cursor: "pointer" }}
-  mx={"auto"}
-  mb={"10px"}
-  loading="lazy"
-  boxShadow="dark-lg"
-  p="6"
-  bg="blackAlpha.400"
-/>
+                 src={logo9}
+                 width={{ base: "250px", md: "300px", lg: "350px" }}
+                 height={"auto"}
+                 onClick={() => setShow(true)}
+                 style={{ cursor: "pointer" }}
+                 mx={"auto"}
+                 mb={"10px"}
+                 loading="lazy"
+                 boxShadow="dark-lg"
+                 p="6"
+                 bg="blackAlpha.400"
+                />
 
                   <Text
                     style={{
@@ -575,7 +582,7 @@ function Homepage() {
                        color: "red",
                      }}
                    />
-                   *Proposed Design
+                   Proposed Design
                  </Text>
                   <Text
                     textAlign={"center"}
@@ -667,6 +674,7 @@ function Homepage() {
                   colSpan={3}           
                   width={"100%"}
                   mt={"6"}
+                  fontSize={"small"}
                 >
                   <Link href="https://www.termsfeed.com/live/95163648-013f-4f36-9a57-0c15548ad847" target="_blank" rel="noopener noreferrer" p={2} >
                   Privacy Policy
@@ -679,7 +687,7 @@ function Homepage() {
                   colSpan={3}
                   width={"100%"}
                 >
-                  <Text
+                  <Box
                     textAlign={"center"}
                     fontSize={"small"}
                     textColor={"grey"}
@@ -688,8 +696,8 @@ function Homepage() {
                   >
                     <Text>{`Copyright © World Samma Academy. 1999-${new Date().getFullYear()}`}</Text>{" "}
                     All rights reserved. Terms and conditions apply. For queries
-                    and comments Email: support@worldsamma.org.
-                  </Text>
+                    and comments Email: support@worldsamma.org
+                  </Box>
                  
                 </GridItem>   
               </Grid>

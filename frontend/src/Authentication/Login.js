@@ -131,8 +131,8 @@ const Login = () => {
   };
 
   return (
-    <VStack spacing="10px">
-      <Box mb={"6"}>
+    <VStack spacing="5px">
+      <Box mb={"6"} fontWeight={"bold"}>
               <h1>Welcome Back!</h1>
               <p>To keep connected with us please login with your personal info</p>
          

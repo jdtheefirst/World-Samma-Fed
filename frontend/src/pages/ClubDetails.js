@@ -20,8 +20,6 @@ import { SlUserFollow } from "react-icons/sl";
 import axios from "axios";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
-import Live from "../miscellenious/Live";
-import { useConnectSocket } from "../components/config/chatlogics";
 import { FaRankingStar } from "react-icons/fa6";
 
 const ClubDetails = ({ user }) => {
@@ -32,26 +30,12 @@ const ClubDetails = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
-  const socket = useConnectSocket();
-  console.log(socket);
 
   const clubData = {
     profilePicture: "",
     backgroundPicture:
       "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1713518908/Samma_pkmq5v.png",
   };
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-    socket.on("liveSessionAvailable", (clubId) => {
-      setLive(true);
-    });
-    socket.emit("other user");
-    return () => {
-      socket.off("liveSessionAvailable");
-    };
-  }, [socket]);
 
   const getClub = useCallback(async () => {
     if (!user || !clubId) {
@@ -401,9 +385,6 @@ const ClubDetails = ({ user }) => {
               p={0}
               m={1}
             >
-              {" "}
-              <Text textAlign={"center"} mt={-1}>
-                <Live user={user} club={club} socket={socket} />
                 <IconButton
                   icon={<Icon as={SlUserFollow} />}
                   colorScheme={
@@ -421,7 +402,6 @@ const ClubDetails = ({ user }) => {
                   }
                   onClick={handleJoin}
                 />
-              </Text>
               <Text textAlign={"center"} fontSize={"small"} mt={-1}>
                 {club?.membersRequests.some((member) => member._id === user?._id) ? "Sent": "Join"}
               </Text>

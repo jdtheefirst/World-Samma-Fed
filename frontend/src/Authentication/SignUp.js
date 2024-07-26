@@ -185,10 +185,10 @@ const Signup = () => {
   }, [selectedCountry]);
 
   return (
-    <VStack spacing="3px">
-     <Box mb={"6"}>
+    <VStack spacing="5px">
+     <Box mb={"6"} fontWeight={"bold"} textAlign={"center"} width={"100%"}>
               <h1>Hello there!</h1>
-              <p>Enter your personal details and start journey with us</p>
+              <p>Enter your personal details and start your journey with us. Your information is used solely for certification purposes</p>
       </Box>
       <Modal
         size="lg"
@@ -198,68 +198,76 @@ const Signup = () => {
         closeOnOverlayClick={false}
       >
         <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
+         bg="blackAlpha.300"
+         backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
         <ModalContent padding={5}>
-        <ModalHeader
-  fontFamily="Work Sans"
-  display="flex"
-  flexDir={"column"}
-  justifyContent="space-between"
-  alignItems={"center"}
-  textAlign={"center"}
-  mb={"6"}
->
-  <Text fontSize={"2xl"} mb={"3"} width={"100%"}> Enter the code sent to: <br/> <strong style={{color: "green"}}>{email}</strong></Text>
-  <Text fontSize={"sm"}>
-    ✔️ Visit your mailbox and refresh.
-  </Text>
-  <Text fontSize={"sm"}>
-    ⚠️ Please do not close this modal.
-  </Text>
-</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Input
-              fontSize={"medium"}
-              placeholder={`Enter the code here...`}
-              type="text"
-              textAlign="center"
-              onChange={(e) => setInputCode(e.target.value)}
-              value={inputCode}
-              minLength={6}
-              maxLength={6}
-            />
-            <Divider p={2} />
-            <Button
-              width={"100%"}
-              onClick={() => {
-                submitHandler();
-                onClose();
-              }}
-              border={"none"}
-              isDisabled={code !== inputCode}
-              colorScheme="green"
-            >
-              Done
-            </Button>
-          </ModalBody>
-          <ModalFooter display="flex">
-            <Text
-              textAlign={"center"}
-              justifyContent={"center"}
-              color={code !== inputCode ? "red" : "green"}
-            >
-              Please Enter the exact code recieved.
-            </Text>
-          </ModalFooter>
-        </ModalContent>
+  <ModalHeader
+    fontFamily="Work Sans"
+    display="flex"
+    flexDir="column"
+    justifyContent="space-between"
+    alignItems="center"
+    textAlign="center"
+    mb="6"
+  >
+    <Text fontSize="2xl" mb="3" width="100%">
+      For your account security, please confirm your email.
+    </Text>
+    <Text fontSize="xl" mb="3" width="100%">
+      Enter the code sent to: <br />
+      <strong style={{ color: "green" }}>{email}</strong>
+    </Text>
+    <Text fontSize="sm">
+      ✔️ Check your inbox and refresh if you don't see it.
+    </Text>
+    <Text fontSize="sm">
+      ⚠️ Please do not close this modal.
+    </Text>
+  </ModalHeader>
+  <ModalCloseButton />
+  <ModalBody
+    display="flex"
+    flexDirection="column"
+    alignItems="center"
+    justifyContent="space-between"
+    fontSize="small"
+  >
+    <Input
+      fontSize="medium"
+      placeholder="Enter the code here..."
+      type="text"
+      textAlign="center"
+      onChange={(e) => setInputCode(e.target.value)}
+      value={inputCode}
+      minLength={6}
+      maxLength={6}
+    />
+    <Divider p={2} />
+    <Button
+      width="100%"
+      onClick={() => {
+        submitHandler();
+        onClose();
+      }}
+      border="none"
+      isDisabled={code !== inputCode}
+      colorScheme="green"
+    >
+      Confirm
+    </Button>
+     </ModalBody>
+     <ModalFooter display="flex">
+     <Text
+      textAlign="center"
+      justifyContent="center"
+      color={code !== inputCode ? "red" : "green"}
+      fontSize="small"
+      >
+      Please enter the exact code you received.
+      </Text>
+     </ModalFooter>
+     </ModalContent>
       </Modal>
       <FormControl id="first-name" isRequired>
         <FormLabel fontSize="small">First name</FormLabel>
@@ -300,7 +308,7 @@ const Signup = () => {
             color={"green.400"}
             userSelect={"none"}
           >
-            Your email is for certification and login only. No ads
+            Your email is for certification and login only. A code will be sent for security.
           </FormLabel>
         ) : (
           ""
@@ -347,22 +355,6 @@ const Signup = () => {
           value={passport}
           onChange={(e) => setPassport(e.target.value)}
         />
-        {passport ? (
-      <FormLabel
-       fontSize={"2xs"}
-       style={{
-       animation: "slideInFromTop 0.5s forwards",
-       }}
-       p={0}
-       m={0}
-       color={"green.400"}
-       userSelect={"none"}
-       >
-       Your sensitive information is used solely for certification purposes.
-      </FormLabel>
-      ) : (
-      ""
-      )}
       </FormControl>
       <FormControl id="country" isRequired>
         <FormLabel fontSize="small">Country</FormLabel>

@@ -26,12 +26,12 @@ const Logins = () => {
       <Box
         background={"white"}
         w="100%"
-        p={4}
+        p={"1"}
         borderRadius="lg"
         borderWidth="1px"
         fontSize={"small"}
       >
-        <Tabs isFitted variant="soft-rounded">
+        <Tabs isFitted variant="soft-rounded" defaultIndex={1}>
           <TabList>
             <Tab fontSize="small">Login</Tab>
             <Tab fontSize="small">Sign Up</Tab>
