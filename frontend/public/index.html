@@ -48,25 +48,33 @@
   <title>World Samma Federation</title>
 
   <!-- Analytics and Ads -->
-  <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" crossorigin="anonymous"></script>
-  <script src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZFWT8RB2MQ"></script>
   <script>
-    function gtag(){dataLayer.push(arguments);}
     window.dataLayer = window.dataLayer || [];
-    gtag("js", new Date());
-    gtag("config", "G-ZFWT8RB2MQ");
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ZFWT8RB2MQ');
   </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Show loading message initially
-    document.getElementById("loading-message").style.display = "block";
+    const loadingMessage = document.getElementById("loading-message");
 
-    // Example of hiding the loading message after content is loaded
-    window.addEventListener("load", function() {
-      document.getElementById("loading-message").style.display = "none";
-    });
+    if (loadingMessage) {
+      // Show loading message initially
+      loadingMessage.style.display = "block";
+
+      // Hide the loading message after the content is loaded
+      window.addEventListener("load", function() {
+        loadingMessage.style.display = "none";
+      });
+    } else {
+      console.error("Element with ID 'loading-message' not found.");
+    }
   });
 </script>
+
 </head>
 <body style="font-family: 'Arial', sans-serif; line-height: 1.6; background-color: #f4f4f4; color: #333; margin: 0; padding: 0;">
   <div id="root">
@@ -94,8 +102,8 @@
       </section>
       <section id="testimonials">
         <h2 style="color: #003366;">What Our Members Say</h2>
-        <p style="margin-bottom: 10px;">"The World Samma Federation has transformed my training experience. The resources and community support are invaluable." - Stephen ( Master at Utange Club )</p>
-        <p>"I love the global events and competitions. It's amazing to connect with martial artists from around the world." - Sam (Student at Nairobi Club)</p>
+        <p style="margin-bottom: 10px;">"The WSF has transformed my training experience. The resources and community support are invaluable." - Stephen, Instructor at Utange Club</p>
+        <p>"I love the global events and competitions. It's amazing to connect with martial artists from around the world." - Sam, Student at Nairobi Club</p>
       </section>
       <section>
         <h2 style="color: #003366;">Our Links</h2>
@@ -105,7 +113,7 @@
           <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
           <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
           <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
-          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
           <li style="margin-bottom: 10px;"><p>Email: <strong>support@worldsamma.org</strong></p></li>
         </ul>
       </section>

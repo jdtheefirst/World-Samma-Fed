@@ -167,7 +167,7 @@ const forgotEmail = async (req, res) => {
             <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
             <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
             <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
-            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
           </ul>
           <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
           <p>Thank you for being a part of our community.</p> 
@@ -465,7 +465,7 @@ const authorizeUser = async (req, res) => {
           <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
           <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
           <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
-          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsammafederation" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
         </ul>
         <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
         <p>Thank you for being a part of our community.</p>

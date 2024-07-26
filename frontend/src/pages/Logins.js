@@ -26,7 +26,7 @@ const Logins = () => {
       <Box
         background={"white"}
         w="100%"
-        p={"1"}
+        p={"4"}
         borderRadius="lg"
         borderWidth="1px"
         fontSize={"small"}
