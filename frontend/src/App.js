@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ChatState } from "./components/Context/ChatProvider";
 import { Suspense, lazy, useEffect } from "react";
 const Home = lazy(() => import('./pages/Home'));
@@ -17,6 +17,7 @@ const National = lazy(() => import('./pages/National'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 import LoadingSpinner from './components/Loading';
+import SessionExpirationMessage from "./components/SessionExpired";
 
 
 const courses = [
@@ -308,29 +309,43 @@ const RouteChangeTracker = () => {
 
 function App() {
   const { user } = ChatState();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo === null) {
+      navigate("/");
+    } else {
+      setUser(userInfo);
+    }
+  }, [navigate]);
+
+  const renderWithSessionCheck = (Component, props = {}) => {
+    return user ? <Component user={user} {...props} /> : <SessionExpirationMessage />;
+  };
 
   return (
     <div className="App">
-    <Suspense fallback={<LoadingSpinner />}>
-    <RouteChangeTracker/>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard courses={courses} />} />
-        <Route path="/courses/:id" element={<CourseDetails courses={courses} user={user} />} />
-        <Route path="/championships" element={<Championships />} user={user}/>
-        <Route path="/clubs" element={<Clubs />} />
-        <Route path="/courses/:id/submit/:title" element={<SubmissionPage user={user} />} />
-        <Route path="/profile" element={<ProfilePage user={user} />} />
-        <Route path="/admin-work-slot" element={<AdminWorkSlot user={user} />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/showclub/:clubId/:liveStream" element={<ClubDetailes user={user} />} />
-        <Route path="/province" element={<Provience user={user} />} />
-        <Route path="/national" element={<National />} />
-        <Route path="/accountrecovery" element={<ForgotPassword />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
-  </div>
+      <Suspense fallback={<LoadingSpinner />}>
+        <RouteChangeTracker />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={renderWithSessionCheck(Dashboard, { courses })} />
+          <Route path="/courses/:id" element={renderWithSessionCheck(CourseDetails, { courses })} />
+          <Route path="/championships" element={renderWithSessionCheck(Championships)} />
+          <Route path="/clubs" element={renderWithSessionCheck(Clubs)} />
+          <Route path="/courses/:id/submit/:title" element={renderWithSessionCheck(SubmissionPage)} />
+          <Route path="/profile" element={renderWithSessionCheck(ProfilePage)} />
+          <Route path="/admin-work-slot" element={renderWithSessionCheck(AdminWorkSlot)} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/showclub/:clubId/:liveStream" element={renderWithSessionCheck(ClubDetailes)} />
+          <Route path="/province" element={renderWithSessionCheck(Provience)} />
+          <Route path="/national" element={renderWithSessionCheck(National)} />
+          <Route path="/accountrecovery" element={<ForgotPassword />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </div>
   );
 }
 

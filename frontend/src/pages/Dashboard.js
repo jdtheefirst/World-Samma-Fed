@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ErrorBoundary from "../components/ErrorBoundary";
-import { Box, Button, IconButton, useToast } from "@chakra-ui/react";
+import { Box, IconButton, useToast } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import Progress from "../miscellenious/Progress";
 import MyPrograms from "../miscellenious/Myprograms";
@@ -9,9 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import axiosInstance from "../components/config/axios";
-import { SiStreamlabs } from "react-icons/si";
-import AdComponent from "../components/Ads";
-import { MdOutlineFiberSmartRecord, MdOutlineMarkUnreadChatAlt } from "react-icons/md";
+import { MdOutlineMarkUnreadChatAlt } from "react-icons/md";
 //twillio code: S8ZVS4F9BYTUYWM47439RPNR
 
 const Dashboard = ({ courses }) => {
@@ -28,21 +26,9 @@ const Dashboard = ({ courses }) => {
   } = ChatState();
   const navigate = useNavigate();
   const [isHovered, setHovered] = useState(false);
-  const [show, setShow] = useState(false);
   const toast = useToast();
-  const [live, setLive] = useState([]);
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const [wsfLive, setwsfLive] = useState(false);
-
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (!userInfo) {
-      navigate("/");
-    } else {
-      setUser(userInfo);
-    }
-  }, [navigate]);
 
   useEffect(() => {
     if (socket) {
@@ -133,9 +119,6 @@ const Dashboard = ({ courses }) => {
       );
       setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
     };
-    const wsfLive =  () => {
-      setwsfLive(true);
-    };
 
     const handleProvincialRequest = (request) => {
       setUser((prevUser) => ({
@@ -157,10 +140,6 @@ const Dashboard = ({ courses }) => {
       }));
     };
 
-    const handleLiveSessionStarted = (clubName) => {
-      setLive((prev) => ({ ...prev, clubName }));
-    };
-
     const handleCertificates = (certificates) => {
       setUser((prev) => ({
         ...prev,
@@ -168,19 +147,14 @@ const Dashboard = ({ courses }) => {
         belt: certificates.belt,
       }));
     };
-
-    socket.on("wsfSessionStarted", wsfLive);
     socket.on("provincial request", handleProvincialRequest);
     socket.on("national request", handleNationalRequest);
-    socket.on("liveSessionStarted", handleLiveSessionStarted);
     socket.on("certificates", handleCertificates);
     socket.on("message received", handleMessageReceived);
 
     return () => {
-      socket.off("wsfSessionStarted", wsfLive);
       socket.off("provincial request", handleProvincialRequest);
       socket.off("national request", handleNationalRequest);
-      socket.off("liveSessionStarted", handleLiveSessionStarted);
       socket.off("certificates", handleCertificates);
       socket.off("message received", handleMessageReceived);
     };
@@ -263,42 +237,6 @@ const Dashboard = ({ courses }) => {
         </Box>
         <MyPrograms courses={courses} user={user} />
         {chatOpen && <FloatingChat onClose={() => setChatOpen(false)} />}
-        {live.length > 0 && (
-          <Box position="fixed" top="90px" right="50px" borderRadius="20px" border="1px solid #d24ce0">
-            {!show && (
-              <Button
-                backgroundColor="white"
-                _hover={{ backgroundColor: "white" }}
-                onClick={() => setShow(true)}
-                width="100%"
-                border="1px solid #d24ce0"
-                borderRadius="20px"
-              >
-                Live Clubs{'\u00A0'}
-                <MdOutlineFiberSmartRecord style={{ fontSize: "30px" }} />
-              </Button>
-            )}
-            {show && live.length > 0 &&
-              live.map((liveItem) => (
-                <Button
-                  key={liveItem._id}
-                  textAlign="center"
-                  width="100%"
-                  border={"none"}
-                  backgroundColor="white"
-                  _hover={{ backgroundColor: "white" }}
-                  onClick={() => {
-                    setLive((prevLive) => prevLive.filter((n) => n !== liveItem));
-                    navigate(`/showclub/${liveItem._id}/${true}`);
-                    setShow(false);
-                  }}
-                  borderRadius="20px"
-                >
-                  {`${liveItem.name} are live...`}
-                </Button>
-              ))}
-          </Box>
-        )}
         <IconButton
           display={chatOpen ? "none" : "flex"}
           position="fixed"
@@ -325,33 +263,6 @@ const Dashboard = ({ courses }) => {
           onMouseLeave={() => setHovered(false)}
           borderRadius="full"
         />
-        {wsfLive &&  <IconButton
-          display={chatOpen ? "none" : "flex"}
-          position="fixed"
-          top="20%"
-          left="10%"
-          icon={
-            <SiStreamlabs
-              style={{
-                width: isHovered ? "60px" : "40px",
-                transition: "width 0.3s ease-in-out",
-                color: "red",
-                fontSize: "40px",
-                border: 'none',
-              }}
-            />
-          }
-          backgroundColor="black"
-          p={"2"}
-          boxSize={"auto"}
-          border="none"
-          _hover={{ backgroundColor: "white" }}
-          onClick={() => {setwsfLive(false); navigate("/videochat")}}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          borderRadius="full"
-        />}
-       
       </Box>
     </ErrorBoundary>
   );
