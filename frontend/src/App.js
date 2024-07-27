@@ -313,16 +313,19 @@ function App() {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo === null) {
-      navigate("/");
-    } else {
+    if (userInfo) {
       setUser(userInfo);
     }
-  }, [navigate]);
+  }, []);
 
   const renderWithSessionCheck = (Component, props = {}) => {
-    return user ? <Component user={user} {...props} /> : <SessionExpirationMessage />;
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo === null) {
+      return <SessionExpirationMessage />;
+    }
+    return <Component {...props} user={user} />;
   };
+
 
   return (
     <div className="App">

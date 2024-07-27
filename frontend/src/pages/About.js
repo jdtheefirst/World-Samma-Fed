@@ -80,7 +80,7 @@ const AboutPage = () => {
         </a>
         <Text fontSize={"md"} textAlign={"center"} mb={"6"}>
           ℹ️ Help us translate the curriculum booklet into other world languages
-          by sending an editable draft to the email: support@worldsamma.org. Include your
+          by sending an editable draft to the Email: support@worldsamma.org. Include your
           name, country, and province for a credit/mention. Thanking you in
           advance.
         </Text>
