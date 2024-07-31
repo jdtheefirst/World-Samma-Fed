@@ -41,6 +41,7 @@ const AboutPage = () => {
           </ul>
         </section>
         <section style={{ marginBottom: '30px', textAlign: "start" }} >
+        <h1 style={{ color: '#003366' }}>Archives</h1>
         <Text fontFamily='Arial, sans-serif' mb={4}>
         <strong style={{ fontWeight: "extrabold", fontFamily: "fantacy", textEmphasis: "GrayText" }}>
         15th March 2011 (in Mombasa City Centre):
@@ -72,7 +73,7 @@ const AboutPage = () => {
           punch, knee, kick and finally grappling).
         </Text>
         <a
-          href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1715025413/sammaV3_cnof4v.pdf"
+          href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721742094/sammaV4.pdf"
           download
           style={{ textDecoration: "none", color: "blue" }} // Adjust color as needed
         >

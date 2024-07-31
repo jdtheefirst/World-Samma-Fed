@@ -1,7 +1,7 @@
 import "./App.css";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation} from "react-router-dom";
 import { ChatState } from "./components/Context/ChatProvider";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Championships = lazy(() => import('./pages/InternationalChampionships'));
@@ -308,19 +308,22 @@ const RouteChangeTracker = () => {
 };
 
 function App() {
-  const { user } = ChatState();
-  const navigate = useNavigate();
-
+  const { user, setUser } = ChatState();
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (userInfo) {
       setUser(userInfo);
     }
+    setLoading(false); // Loading is complete
   }, []);
 
   const renderWithSessionCheck = (Component, props = {}) => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo === null) {
+    if (loading) {
+      return <LoadingSpinner />; // Show loading spinner while checking session
+    }
+    if (!user) {
       return <SessionExpirationMessage />;
     }
     return <Component {...props} user={user} />;

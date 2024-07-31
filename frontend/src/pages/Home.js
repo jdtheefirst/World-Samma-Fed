@@ -36,9 +36,11 @@ import TestimonialsCarousel from "../components/Carousel";
 import PollComponent from "../components/Polls";
 import { MdMenuOpen } from "react-icons/md";
 import axios from "axios";
+import { ChatState } from "../components/Context/ChatProvider";
 
 function Homepage() {
   const [getStarted, setGetStarted] = useState(true);
+  const {setUser} = ChatState();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const [count, setCount] = useState(Number);
@@ -47,9 +49,11 @@ function Homepage() {
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (userInfo) {
+      setUser(userInfo);
       navigate("/dashboard");
     }
   }, [navigate]);
+
   const handleCloseModal = () => {
     setShow(false);
   };

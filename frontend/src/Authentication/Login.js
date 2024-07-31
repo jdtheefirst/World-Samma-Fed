@@ -63,7 +63,7 @@ const Login = () => {
         { email, password },
         config
       );
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      await localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/dashboard");
     } catch (error) {
