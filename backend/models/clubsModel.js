@@ -7,6 +7,19 @@ const clubsModel = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+<<<<<<< HEAD
+=======
+    chairman: {
+      type: String,
+    },
+
+    secretary: {
+      type: String,
+    },
+    viceChairman: {
+      type: String,
+    },
+>>>>>>> master
     code: { type: String, required: true, unique: true },
     country: { type: String },
     provience: { type: String },

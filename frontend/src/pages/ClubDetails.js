@@ -12,23 +12,37 @@ import {
   Icon,
   useToast,
   useColorModeValue,
+<<<<<<< HEAD
+=======
+  Stack,
+  Skeleton,
+>>>>>>> master
 } from "@chakra-ui/react";
 import { FaHeart } from "react-icons/fa";
 import { SlUserFollow } from "react-icons/sl";
 import axios from "axios";
 import UpperNav from "../miscellenious/upperNav";
 import formatMessageTime from "../components/config/formatTime";
+<<<<<<< HEAD
 import Live from "../miscellenious/Live";
 import { useConnectSocket } from "../components/config/chatlogics";
 
 const ClubDetails = ({ user }) => {
   const { clubId } = useParams();
   const [club, setClub] = useState();
+=======
+import { FaRankingStar } from "react-icons/fa6";
+
+const ClubDetails = ({ user }) => {
+  const { clubId } = useParams();
+  const [club, setClub] = useState(null);
+>>>>>>> master
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [broadcast, setBroadcast] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+<<<<<<< HEAD
   const socket = useConnectSocket(user?.token);
 
   const clubData = {
@@ -51,11 +65,24 @@ const ClubDetails = ({ user }) => {
       socket.off("liveSessionAvailable");
     };
   }, [socket]);
+=======
+
+  const clubData = {
+    profilePicture: "",
+    backgroundPicture:
+      "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1713518908/Samma_pkmq5v.png",
+  };
+
+>>>>>>> master
   const getClub = useCallback(async () => {
     if (!user || !clubId) {
       navigate("/dashboard");
       return;
     }
+<<<<<<< HEAD
+=======
+    setLoading(true);
+>>>>>>> master
 
     try {
       const config = {
@@ -67,14 +94,24 @@ const ClubDetails = ({ user }) => {
       const { data } = await axios.get(`/api/clubs/${clubId}`, config);
       setClub(data);
 
+<<<<<<< HEAD
       console.log(data);
     } catch (error) {
+=======
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+>>>>>>> master
       console.error("Error fetching Club:", error);
     }
   }, [user?.token, setClub, clubId]);
 
   const handleBroadcast = useCallback(async () => {
+<<<<<<< HEAD
     if (!user || !clubId) {
+=======
+    if (!clubId) {
+>>>>>>> master
       navigate("/dashboard");
       return;
     }
@@ -93,7 +130,10 @@ const ClubDetails = ({ user }) => {
         `/api/clubs/broadcast/${clubId}/${userId}`,
         config
       );
+<<<<<<< HEAD
       console.log(data);
+=======
+>>>>>>> master
 
       setBroadcast(data);
       setBroadcastMessage("");
@@ -132,8 +172,11 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
+<<<<<<< HEAD
 
       console.log(data);
+=======
+>>>>>>> master
     } catch (error) {
       console.error("Error fetching Club:", error);
       console.log(error);
@@ -196,8 +239,11 @@ const ClubDetails = ({ user }) => {
       );
 
       setBroadcast((prev) => [...prev, data]);
+<<<<<<< HEAD
 
       console.log(data);
+=======
+>>>>>>> master
     } catch (error) {
       console.error("Error fetching Club:", error);
       console.log(error);
@@ -222,8 +268,11 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
+<<<<<<< HEAD
 
       console.log(data);
+=======
+>>>>>>> master
     } catch (error) {
       console.error("Error accepting request:", error);
       console.log(error);
@@ -235,7 +284,11 @@ const ClubDetails = ({ user }) => {
       navigate("/dashboard");
       return;
     }
+<<<<<<< HEAD
     if (club.membersRequests.some((member) => member._id === user?._id)) {
+=======
+    if (club?.membersRequests.some((member) => member._id === user?._id)) {
+>>>>>>> master
       toast({
         title: "Request to join already sent.",
         description: "Please wait for Coach to reply.",
@@ -257,8 +310,11 @@ const ClubDetails = ({ user }) => {
       );
 
       setClub(data);
+<<<<<<< HEAD
 
       console.log(data);
+=======
+>>>>>>> master
     } catch (error) {
       console.error("Error accepting join request:", error);
       console.log(error);
@@ -269,39 +325,66 @@ const ClubDetails = ({ user }) => {
     <Box
       display={"flex"}
       flexDir={"column"}
+<<<<<<< HEAD
       justifyContent={"flex-start"}
       alignItems={"center"}
       width={"100%"}
       background={"white"}
       overflowX={"hidden"}
+=======
+      justifyContent={"start"}
+      alignItems={"center"}
+      width={"100%"}
+      background={"whitesmoke"}
+      minH={"100vh"}
+      overflow={"auto"}
+>>>>>>> master
     >
       <UpperNav />
       <Box
         display={"flex"}
+<<<<<<< HEAD
         justifyContent={"center"}
         alignItems={"center"}
         width={"100%"}
         mt={"50"}
         position="relative"
         background={"white"}
+=======
+        flexDir={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        width={"100%"}
+        mt={20}
+        background={"whitesmoke"}
+>>>>>>> master
       >
         <Image
           src={clubData.backgroundPicture}
           alt="Background"
           top={0}
           borderRadius="20"
+<<<<<<< HEAD
           width={{ base: "100%", md: "80%" }}
+=======
+          width={"100%"}
+>>>>>>> master
         />
 
         <Box
           display={"flex"}
+<<<<<<< HEAD
           position="absolute"
           top={10}
           mt={{ base: "0", md: "20%" }}
+=======
+          top={10}
+>>>>>>> master
           left={{ base: "0", md: "30%" }}
           textAlign="center"
           width={"100%"}
           p={4}
+<<<<<<< HEAD
           color="white"
           zIndex={1}
         >
@@ -319,6 +402,32 @@ const ClubDetails = ({ user }) => {
               {club && club.name}
             </Heading>
             <Text>Coach Rank: {club?.coach.belt}</Text>
+=======
+        >
+          <Image
+            src={club?.coach.pic}
+            marginTop={-10}
+            alt="*Coach profile pic"
+            borderRadius="full"
+            boxSize={{ base: "100px", md: "200px" }}
+            border="4px solid white"
+          />
+          <Box
+            display={"flex"}
+            flexDir={"column"}
+            textAlign={"start"}
+            boxShadow="base"
+            width={{ base: "100%", md: "50%" }}
+            p="4"
+            rounded="md"
+            fontSize={"small"}
+            bg="whitesmoke"
+          >
+            {" "}
+            <Heading as="h2" size="sm" textAlign={"center"}>
+              {club && club.name}
+            </Heading>
+>>>>>>> master
             <Text
               fontSize={"sm"}
               fontWeight={500}
@@ -327,11 +436,23 @@ const ClubDetails = ({ user }) => {
               px={3}
               color={"green.500"}
               rounded={"full"}
+<<<<<<< HEAD
               marginTop={2}
             >
               Status (*
               {club && club.registration ? "Registered" : "Not registered"})
             </Text>
+=======
+              margin={1}
+            >
+              Club Status (*
+              {club && club.registered ? "Registered" : "Not registered"})
+            </Text>
+            <Text>Coach Name: <strong>{club?.coach.name}</strong></Text>
+            <Box display={"flex"}>Coach Highest Rank: <strong>{'\u00A0'}{club?.coach.belt}</strong><FaRankingStar style={{color: "red", padding: "2", fontSize: "22px"}} /></Box>
+            <Text>Coach Code : <strong>{club?.coach.admission}</strong></Text>
+            <Text>Club Unique Identifier: <strong>{club?.code}</strong></Text>
+>>>>>>> master
           </Box>
         </Box>
       </Box>
@@ -340,6 +461,7 @@ const ClubDetails = ({ user }) => {
         alignItems="center"
         spacing={4}
         width={"100%"}
+<<<<<<< HEAD
         background={"white"}
       >
         <Box
@@ -414,6 +536,87 @@ const ClubDetails = ({ user }) => {
             Events
           </Text>
         </Box>
+=======
+        background={"whitesmoke"}
+      >
+        {loading && !club ? (
+          <Stack width={"100%"} p={"6"}>
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+            <Skeleton height="20px" />
+          </Stack>
+        ) : (
+          <>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              p={0}
+              m={1}
+            >
+              <Button colorScheme="teal" size="sm" fontSize={"small"} onClick={handleFollow}>
+                {club && club.followers?.find((member) => member === user?._id)
+                  ? "Unfollow"
+                  : "Follow"}
+              </Button>
+              <Text fontSize={"small"}>{club && club.followers?.length}</Text>
+            </Box>
+
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              fontSize={"small"}
+              p={0}
+              m={1}
+            >
+              <IconButton
+                icon={<Icon as={FaHeart} />}
+                colorScheme={
+                  club && club.likes.some((member) => member === user?._id)
+                    ? "green"
+                    : "red"
+                }
+                size="sm"
+                onClick={handleLike}
+              />
+              {club && club.likes?.length}
+            </Box>
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              fontSize={"small"}
+              p={0}
+              m={1}
+            >
+                <IconButton
+                  icon={<Icon as={SlUserFollow} />}
+                  colorScheme={
+                    club &&
+                    club.clubRequests.some((member) => member === user?._id)
+                      ? "green"
+                      : "blue"
+                  }
+                  size="sm"
+                  m={1}
+                  isDisabled={
+                    club &&
+                    (club.members.some((member) => member === user?._id) ||
+                      club.coach._id === user._id)
+                  }
+                  onClick={handleJoin}
+                />
+              <Text textAlign={"center"} fontSize={"small"} mt={-1}>
+                {club?.membersRequests.some((member) => member._id === user?._id) ? "Sent": "Join"}
+              </Text>
+            </Box>
+          </>
+        )}
+>>>>>>> master
       </Flex>
       <Box
         display={"flex"}
@@ -421,7 +624,10 @@ const ClubDetails = ({ user }) => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
+<<<<<<< HEAD
         background={"white"}
+=======
+>>>>>>> master
       >
         <Box
           display={"flex"}
@@ -430,9 +636,17 @@ const ClubDetails = ({ user }) => {
           alignItems={"center"}
           width={{ base: "100%", md: "60%" }}
           borderColor="#d142f5"
+<<<<<<< HEAD
           background={"white"}
         >
           <Heading as="h3" size="md" mb={2} background={"white"}>
+=======
+          overflow="auto"
+          mt={2}
+          p="4"
+        >
+          <Heading as="h3" size="sm" mb={2}>
+>>>>>>> master
             Broadcast Board
           </Heading>
           <Box
@@ -441,17 +655,33 @@ const ClubDetails = ({ user }) => {
             justifyContent={"center"}
             alignItems={"center"}
             overflowY="auto"
+<<<<<<< HEAD
             height={"150px"}
             borderRadius={20}
             width={"100%"}
             p={2}
+=======
+            minH={"150px"}
+            maxH={"300px"}
+            borderRadius={20}
+            width={"100%"}
+            overflow="auto"
+            border={"2px solid grey"}
+            fontSize={"small"}
+            p="6"
+            rounded="md"
+>>>>>>> master
           >
             {broadcast && broadcast.length === 0 && (
               <Text textAlign={"center"}> No message here.</Text>
             )}
             {broadcast &&
               broadcast.map((message) => (
+<<<<<<< HEAD
                 <Text
+=======
+                <Box
+>>>>>>> master
                   key={message._id}
                   background={"#92e0a5"}
                   textAlign={"center"}
@@ -470,7 +700,11 @@ const ClubDetails = ({ user }) => {
                     {formatMessageTime(message.createdAt)}
                   </Text>
                   {message.content}
+<<<<<<< HEAD
                 </Text>
+=======
+                </Box>
+>>>>>>> master
               ))}
           </Box>
           {club && user && club.coach._id === user._id && (
@@ -478,12 +712,20 @@ const ClubDetails = ({ user }) => {
               display={"flex"}
               flexDir={"column"}
               width={"100%"}
+<<<<<<< HEAD
               justifyContent={"center"}
               alignItems={"center"}
             >
               <Heading as="h3" size="md" m={2}>
                 Number of Requests received
               </Heading>
+=======
+              height={"100%"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              overflow={"auto"}
+            >
+>>>>>>> master
               <Box
                 display={"flex"}
                 flexDir={"column"}
@@ -493,11 +735,24 @@ const ClubDetails = ({ user }) => {
                 borderRadius={20}
                 height={"150px"}
                 width={"100%"}
+<<<<<<< HEAD
                 m={2}
                 p={2}
               >
                 {club && club.membersRequests.length === 0 && (
                   <Text textAlign={"center"}> No requests made yet.</Text>
+=======
+                p={2}
+              >
+                <Heading as="h3" size="sm" m={2}>
+                  Number of Requests received
+                </Heading>
+                {club && club.membersRequests.length === 0 && (
+                  <Text textAlign={"center"} fontSize={"small"}>
+                    {" "}
+                    All requests have received responses.
+                  </Text>
+>>>>>>> master
                 )}
 
                 {club &&

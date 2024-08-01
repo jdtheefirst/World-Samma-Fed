@@ -1,11 +1,15 @@
 const { getIO } = require("../socket");
 const { getUserSocket } = require("../config/socketUtils");
+<<<<<<< HEAD
 const Sequence = require("../models/Sequence");
+=======
+>>>>>>> master
 const Club = require("../models/clubsModel");
 const Broadcast = require("../models/coachBroadcast");
 const User = require("../models/userModel");
 
 const registerClubs = async (req, res) => {
+<<<<<<< HEAD
   const {
     name,
     country,
@@ -104,14 +108,59 @@ const registerClubs = async (req, res) => {
       });
 
     res.status(200).json(populatedClub);
+=======
+  const { chairperson, secretary, viceChair } = req.body;
+  const coachId = req.user._id;
+
+  const clubExists = await Club.findOne({ coach: coachId });
+  const clubData = {
+    chairman: chairperson,
+    viceChairman: viceChair,
+    secretary: secretary,
+    registered: true,
+  };
+
+  try {
+    if (clubExists) {
+      const club = await Club.findByIdAndUpdate(clubExists._id, clubData);
+      const populatedClub = await club
+        .populate({ path: "coach" })
+        .populate({
+          path: "membersRequests",
+          select: "name admission",
+        })
+        .populate({
+          path: "members",
+          select: "name admission",
+        });
+
+      res.status(200).json(populatedClub);
+    }
+    {
+      return res.status(404).json({ error: "Club not found" });
+    }
+>>>>>>> master
   } catch (error) {
     throw new Error("Error occurred", error);
   }
 };
+<<<<<<< HEAD
 const fetchClubs = async (req, res) => {
   const { country, provience } = req.params;
   try {
     const clubs = await Club.find({ country, provience });
+=======
+
+const fetchClubs = async (req, res) => {
+  const { country, province } = req.params;
+  try {
+    let clubs;
+    if (province) {
+      clubs = await Club.find({ country, province });
+    } else {
+      clubs = await Club.find({ country, province: { $exists: false } });
+    }
+>>>>>>> master
 
     res.status(200).json(clubs);
   } catch (error) {
@@ -127,11 +176,19 @@ const fetchMyClub = async (req, res) => {
       .populate({ path: "coach" })
       .populate({
         path: "membersRequests",
+<<<<<<< HEAD
         select: "name admission",
       })
       .populate({
         path: "members",
         select: "name admission",
+=======
+        select: "name admission pic",
+      })
+      .populate({
+        path: "members",
+        select: "name admission pic",
+>>>>>>> master
       });
 
     if (!populatedClub) {
@@ -230,7 +287,11 @@ const likeClub = async (req, res) => {
 };
 
 const broadcast = async (req, res) => {
+<<<<<<< HEAD
   const { clubId, coachId } = req.params;
+=======
+  const { clubId } = req.params;
+>>>>>>> master
 
   try {
     const broadcastMessages = await Broadcast.find({
@@ -366,11 +427,26 @@ const fetchRequests = async (req, res) => {
   const { userId } = req.params;
 
   try {
+<<<<<<< HEAD
     const user = await User.findById(userId).populate({
+=======
+    let user = await User.findById(userId).populate({
+>>>>>>> master
       path: "clubRequests",
       select: "name _id",
     });
 
+<<<<<<< HEAD
+=======
+    // If user not found in User schema, check in Admission schema
+    if (!user) {
+      user = await Admission.findById(userId).populate({
+        path: "clubRequests",
+        select: "name _id",
+      });
+    }
+
+>>>>>>> master
     if (user) {
       const clubs = user.clubRequests.map((club) => ({
         name: club.name,
@@ -385,11 +461,24 @@ const fetchRequests = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 const declineRequests = async (req, res) => {
   const { userId, clubId } = req.params;
 
   try {
+<<<<<<< HEAD
     const user = await User.findById(userId);
+=======
+    let user = await User.findById(userId);
+
+    // If user not found in User schema, check in Admission schema
+    if (!user) {
+      user = await Admission.findById(userId);
+    }
+>>>>>>> master
 
     if (user) {
       const clubRequestToRemove = user.clubRequests.find(

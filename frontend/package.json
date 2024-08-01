@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+<<<<<<< HEAD
   "proxy": "http://localhost:8080",
+=======
+  "proxy": "http://localhost:8080/",
+>>>>>>> master
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -26,11 +30,23 @@
     "@chakra-ui/modal": "^2.3.1",
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/toast": "^7.0.2",
+<<<<<<< HEAD
+=======
+    "@paypal/react-paypal-js": "^8.2.0",
+>>>>>>> master
     "@react-oauth/google": "^0.12.1",
     "@styled-icons/boxicons-regular": "^10.47.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+<<<<<<< HEAD
     "countries-list": "^3.0.6",
+=======
+    "@zoom/videosdk": "^1.11.10",
+    "axios": "^1.6.8",
+    "countries-list": "^3.0.6",
+    "peerjs": "^1.5.4",
+    "process": "^0.11.10",
+>>>>>>> master
     "react": "^18.2.0",
     "react-country-flag": "^3.1.0",
     "react-dom": "^18.2.0",
@@ -41,14 +57,22 @@
     "simple-peer": "^9.11.1",
     "socket.io-client": "^4.7.4",
     "styled-components": "^6.1.8",
+<<<<<<< HEAD
     "typescript": "4.9.5",
+=======
+>>>>>>> master
     "web-vitals": "^3.5.2"
   },
   "browserslist": {
     "production": [
       ">0.2%",
       "not dead",
+<<<<<<< HEAD
       "not op_mini all"
+=======
+      "not op_mini all",
+      "ie 11"
+>>>>>>> master
     ],
     "development": [
       "last 1 chrome version",

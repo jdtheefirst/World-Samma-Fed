@@ -14,5 +14,9 @@ router.post("/create-paypal-order", protect, limiter, createOrder);
 router.put("/:userId/:type/:accountType", protect, limiter, updateUser);
 
 router.post("/makepaymentmpesa/:userId", protect, limiter, makePaymentMpesa);
+<<<<<<< HEAD
 router.post("/callback", limiter, CallBackURL);
+=======
+router.post("/callback/:userId", limiter, CallBackURL);
+>>>>>>> master
 module.exports = router;

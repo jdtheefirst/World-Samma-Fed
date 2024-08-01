@@ -8,6 +8,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Button,
+<<<<<<< HEAD
   Image,
   Text,
   Flex,
@@ -17,6 +18,17 @@ import { ChatState } from "../components/Context/ChatProvider";
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+=======
+  Text,
+  Box,
+  Spinner,
+} from "@chakra-ui/react";
+import { ChatState } from "../components/Context/ChatProvider";
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { RiTeamLine } from "react-icons/ri";
+>>>>>>> master
 
 const Requests = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,6 +41,10 @@ const Requests = () => {
     if (!user) {
       return;
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
     try {
       const config = {
         headers: {
@@ -51,10 +67,18 @@ const Requests = () => {
       fetchClubRequests();
     }
   }, [user, fetchClubRequests]);
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
   const declineRequest = async (clubId) => {
     if (!user || !clubId) {
       return;
     }
+<<<<<<< HEAD
+=======
+    setLoading(true);
+>>>>>>> master
     try {
       const config = {
         headers: {
@@ -67,7 +91,13 @@ const Requests = () => {
         config
       );
       setClubRequests(data);
+<<<<<<< HEAD
     } catch (error) {
+=======
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+>>>>>>> master
       console.error("Error fetching club requests/decline:", error);
     }
   };
@@ -77,11 +107,17 @@ const Requests = () => {
         backgroundColor={"white"}
         _hover={{ backgroundColor: "transparent" }}
         onClick={onOpen}
+<<<<<<< HEAD
       >
         <Image
           src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1709643622/icons8-group-48_asymxw.png"
           height={5}
         />
+=======
+        border={"none"}
+      >
+        <RiTeamLine fontSize={"20px"} border={"none"}/>
+>>>>>>> master
         {clubRequests && clubRequests.length > 0 && (
           <Text
             position="absolute"
@@ -99,10 +135,20 @@ const Requests = () => {
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
+<<<<<<< HEAD
         <ModalOverlay />
         <ModalContent>
           <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
           <ModalCloseButton />
+=======
+      <ModalOverlay
+      bg="blackAlpha.300"
+      backdropFilter="blur(10px) hue-rotate(90deg)"
+    />
+        <ModalContent>
+          <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
+          <ModalCloseButton border={"none"} />
+>>>>>>> master
           <ModalBody
             display={"flex"}
             justifyContent={"center"}
@@ -117,19 +163,33 @@ const Requests = () => {
                   justifyContent={"space-between"}
                   alignItems={"center"}
                   width={"100%"}
+<<<<<<< HEAD
+=======
+                  key={index}
+>>>>>>> master
                 >
                   <Button
                     key={club._id}
                     justifyContent={"space-between"}
                     onClick={() => navigate(`/showclub/${club._id}`)}
+<<<<<<< HEAD
+=======
+                    border={"none"}
+>>>>>>> master
                   >
                     {index + 1}. Club Name: {club.name}
                   </Button>
                   <Button
                     background={"#f05e56"}
                     onClick={() => declineRequest(club._id)}
+<<<<<<< HEAD
                   >
                     Decline
+=======
+                    border={"none"}
+                  >
+                    {loading ? <Spinner size={"small"} /> : `Decline`}
+>>>>>>> master
                   </Button>
                 </Box>
               ))

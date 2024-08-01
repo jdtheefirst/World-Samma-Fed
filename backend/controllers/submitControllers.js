@@ -5,18 +5,30 @@ dotenv.config({ path: "./secrets.env" });
 const submitWork = async (req, res) => {
   const { userId } = req.params;
   const { savePhoto, saveVideo } = req.body;
+<<<<<<< HEAD
+=======
+  const assisted = Boolean(req.query.assisted);
+>>>>>>> master
 
   try {
     const data = {
       student: userId,
       passport: savePhoto,
       video: saveVideo,
+<<<<<<< HEAD
+=======
+      coachAssisted: assisted,
+>>>>>>> master
     };
     const work = await Work.create(data);
 
     res.json(work);
   } catch (error) {
     console.log(error);
+<<<<<<< HEAD
+=======
+    res.status(500).json({ error: "Failed to submit work" });
+>>>>>>> master
   }
 };
 

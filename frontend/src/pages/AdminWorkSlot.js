@@ -199,11 +199,16 @@ const AdminWorkSlot = ({ user }) => {
     <Box
       display={"flex"}
       width={"100%"}
+<<<<<<< HEAD
       justifyContent={"center"}
+=======
+      justifyContent={"start"}
+>>>>>>> master
       alignItems={"center"}
       flexDir={"column"}
       overflowY={"auto"}
       background={"white"}
+<<<<<<< HEAD
     >
       {" "}
       <UpperNav />
@@ -331,6 +336,156 @@ const AdminWorkSlot = ({ user }) => {
             )}
           </VStack>
         ))}
+=======
+      p={"6"}
+    >
+      {" "}
+      <UpperNav />
+      <Heading mb={"6"}>World Samma Federation</Heading>
+      <Heading size={"sm"} mb={"6"}>Admin Work Slot</Heading>
+      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} flexDir={"column"} width={"100%"}>
+        {" "}
+        <Text
+          textAlign={"center"}
+          fontSize={"sm"}
+          fontWeight={500}
+          bg={useColorModeValue("green.50", "green.900")}
+          p={2}
+          width={{base: "100%", md: "60%"}}
+          color={"green.500"}
+          rounded={"full"}
+        >
+          {submissions.length} submissions.
+        </Text>
+      </Box>
+      <Box overflow={"auto"}>
+        {submissions.length === 0 && <Text>Work will be posted here.</Text>}
+        {submissions.length > 0 &&
+          submissions.map((submission) => (
+            <VStack key={submission._id} m={3} spacing={4}>
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                ml={2}
+                width={"100%"}
+              >
+                {submission.coachAssisted && (
+                  <Text
+                    fontSize={"sm"}
+                    fontWeight={500}
+                    bg={useColorModeValue("green.50", "green.900")}
+                    px={6}
+                    p={"3"}
+                    m={1}
+                    color={"green.500"}
+                    rounded={"full"}
+                  >
+                    Coach's assisted student rank upgrading
+                  </Text>
+                )}
+                <Image
+                  src={submission.passport}
+                  alt="Passport"
+                  width="100"
+                  height="100"
+                />
+                <Box justifyContent={"start"} ml={2} textAlign={"start"}>
+                  <Heading size="md">
+                    Name: {submission.student.name}{" "}
+                    {submission.student.otherName}
+                  </Heading>
+                  <Text>Admission: {submission.student.admission}</Text>
+                  <Text>Current Rank: {submission.student.belt}</Text>
+                </Box>
+              </Box>{" "}
+              <Box>
+                <video controls width="300" height="200">
+                  <source src={submission.video} type="video/mp4" />
+                </video>
+              </Box>
+              <Box
+                display={"flex"}
+                width={{ base: "90%", md: "60%" }}
+                justifyContent={"space-between"}
+              >
+                {" "}
+                <Button
+                  isDisabled={reject}
+                  onClick={() => {
+                    setApproaved(true);
+                  }}
+                  colorScheme="green"
+                >
+                  Approve
+                </Button>
+                <Button
+                  isDisabled={approaved || submission.coachAssisted}
+                  onClick={() => {
+                    setReject(true);
+                  }}
+                  colorScheme="red"
+                >
+                  {loading && <Spinner size={"sm"} />}
+                  Reject
+                </Button>
+              </Box>
+              {reject && (
+                <>
+                  <Textarea
+                    placeholder="Please leave a message for student..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <Button
+                    onClick={() => {
+                      sendMessage();
+                      handleReject(
+                        submission._id,
+                        submission.passport,
+                        submission.video
+                      );
+                      setReceiver(submission.student._id);
+                    }}
+                  >
+                    Send Message
+                  </Button>
+                </>
+              )}
+              {approaved && (
+                <>
+                  {" "}
+                  <FormControl isInvalid={!certificate}>
+                    <FormLabel>Certificate</FormLabel>
+                    <Input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e) => setCertificate(e.target.files[0])}
+                    />
+                    {certificateLoading && <p>Uploading passport photo...</p>}
+                    <FormErrorMessage>
+                      Please select a certificate.
+                    </FormErrorMessage>
+                  </FormControl>
+                  <Button
+                    onClick={() => {
+                      handleCertificate();
+                      handleReject(
+                        submission._id,
+                        submission.passport,
+                        submission.video
+                      );
+                      setReceiver(submission.student._id);
+                    }}
+                  >
+                    Submit
+                  </Button>
+                </>
+              )}
+            </VStack>
+          ))}
+      </Box>
+>>>>>>> master
     </Box>
   );
 };

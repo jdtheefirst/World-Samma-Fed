@@ -1,7 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Club = require("../models/clubsModel");
+<<<<<<< HEAD
 const Sequence = require("../models/Sequence");
+=======
+>>>>>>> master
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
@@ -12,10 +15,19 @@ const crypto = require("crypto");
 const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
 const { getUserSocket } = require("../config/socketUtils");
+<<<<<<< HEAD
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
 const privateEmail = "admin@fuckmate.boo";
+=======
+const { getNextNumber } = require("../config/getNextSequence");
+const Admission = require("../models/AdmissionModel");
+
+dotenv.config({ path: "./secrets.env" });
+const privateEmailPass = process.env.privateEmailPass;
+const privateEmail = "support@worldsamma.org";
+>>>>>>> master
 
 const registerUsers = asyncHandler(async (req, res) => {
   const {
@@ -27,6 +39,11 @@ const registerUsers = asyncHandler(async (req, res) => {
     selectedCountry,
     otherName,
     provinces,
+<<<<<<< HEAD
+=======
+    passport,
+    language,
+>>>>>>> master
   } = req.body;
 
   if (
@@ -36,6 +53,7 @@ const registerUsers = asyncHandler(async (req, res) => {
     !gender ||
     !selectedCountry ||
     !otherName ||
+<<<<<<< HEAD
     !provinces
   ) {
     res.status(400);
@@ -125,12 +143,109 @@ const forgotEmail = async (req, res) => {
   const { email } = req.params;
 
   const userInfo = await User.findOne({ email });
+=======
+    !language ||
+    !passport
+  ) {
+    res.status(400);
+    throw new Error({ message: "Please enter all fields!" });
+  }
+
+  try {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exists, login");
+    }
+    const adminId = "6693a995f6295b8bd90d9301";
+    const WSF = await User.findOne({ _id: adminId });
+    const user = {
+      name,
+      email,
+      password,
+      passport,
+      language,
+      gender,
+      pic,
+      selectedCountry,
+      otherName,
+      provinces,
+      passport,
+      WSF,
+    };
+  
+    const userInfo = await User.create(user);
+  
+    if (userInfo) {
+      const responseData = {
+        _id: userInfo._id,
+        name: userInfo.name,
+        otherName: userInfo.otherName,
+        admission: userInfo.admission,
+        email: userInfo.email,
+        gender: userInfo.gender,
+        country: userInfo.selectedCountry,
+        provinces: userInfo.provinces,
+        pic: userInfo.pic,
+        belt: userInfo.belt,
+        physicalCoach: userInfo.physicalCoach,
+        coach: userInfo.coach,
+        certificates: userInfo.certificates,
+        clubRequests: userInfo.clubRequests,
+        wsf: userInfo.WSF,
+        language: userInfo.language,
+        token: generateToken(userInfo._id),
+      };
+  
+      res.status(201).json(responseData);
+    } else {
+      res.status(400);
+      throw new Error("Failed to create the account, try again after some time.");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500);
+    
+  }
+});
+
+const allUsers = asyncHandler(async (req, res) => {
+  const keyword = req.query.search
+    ? {
+        $or: [
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+          { admission: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {};
+
+  const userInfo = await User.find({ ...keyword, _id: { $ne: req.user._id } });
+  const admissionInfo = await Admission.find({
+    ...keyword,
+    _id: { $ne: req.user._id },
+  });
+
+  // Merge results from userInfo and admissionInfo into a single array
+  const allUsers = [...userInfo, ...admissionInfo];
+
+  res.send(allUsers);
+});
+
+const forgotEmail = async (req, res) => {
+  const { email } = req.params;
+  let userInfo = await User.findOne({ email });
+  let admissionInfo = await Admission.findOne({ email });
+
+  userInfo = userInfo || admissionInfo;
+>>>>>>> master
   if (userInfo) {
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
 
     let transporter = nodemailer.createTransport({
+<<<<<<< HEAD
       service: "gmail",
       auth: {
         userInfo: privateEmail,
@@ -148,6 +263,48 @@ This is system's generated code, please do not reply.`,
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         res.status(400).json({ message: "Email Sending Failed" });
+=======
+      host: "mail.privateemail.com",
+      port: 465, // or 587 if using STARTTLS
+      secure: true, // if using SSL/TLS
+      auth: {
+        user: privateEmail, // your email address
+        pass: privateEmailPass, // your email password
+      },
+    });
+    const companyLogoUrl = 'https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg';
+
+    const mailOptions = {
+      from: `World Samma Federation <${privateEmail}>`,
+      to: email,
+      subject: "Recover Your Email",
+      html: `
+        <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
+          <h2 style="color: #333;">Recover Your Email</h2>
+          <img src="${companyLogoUrl}" loading="eager" alt="Company Logo" style="width: 100px; margin-bottom: 20px;">
+          <p>Hello,</p>
+          <p>You have requested to recover your email associated with our service.</p>
+          <p>Your recovery code is: <strong>${verificationCode}</strong></p>
+          <p>If you did not request this change, please contact support immediately.</p>
+          <p>Stay connected and follow us on social media:</p>
+          <ul style="list-style: none; padding: 0;">
+            <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
+            <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+          </ul>
+          <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
+          <p>Thank you for being a part of our community.</p> 
+        </div>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        res.status(400).json({ message: "Email Sending Failed" });
+        console.log(error);
+>>>>>>> master
       } else {
         console.log("Email sent: " + info.response);
         res.status(200).json({ verificationCode, email });
@@ -155,6 +312,7 @@ This is system's generated code, please do not reply.`,
     });
   } else {
     res.json(false);
+<<<<<<< HEAD
     throw new Error("Email not Found in the database");
   }
 };
@@ -162,6 +320,20 @@ const searchUser = async (req, res) => {
   const { email } = req.params;
 
   const userInfo = await User.findOne({ email });
+=======
+    throw new Error({ message: "Email not Found in the database" });
+  }
+};
+
+const searchUser = async (req, res) => {
+  const { email } = req.params;
+
+  let userInfo = await User.findOne({ email });
+  let admissionInfo = await Admission.findOne({ email });
+
+  userInfo = userInfo || admissionInfo;
+
+>>>>>>> master
   if (!userInfo) {
     res.status(201).json("Unfound");
   } else {
@@ -180,6 +352,13 @@ const searchUser = async (req, res) => {
       coach: userInfo.coach,
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
+<<<<<<< HEAD
+=======
+      nationalRequests: userInfo.nationalRequests,
+      wsf: userInfo.WSF,
+      language: userInfo.language,
+      provinceRequests: userInfo.provinceRequests,
+>>>>>>> master
     };
     res.status(201).json(responseData);
   }
@@ -189,11 +368,29 @@ const recoverEmail = async (req, res) => {
   const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+<<<<<<< HEAD
   const userInfo = await User.findOneAndUpdate(
+=======
+  let userInfo = await User.findOneAndUpdate(
+>>>>>>> master
     { email: email },
     { password: hashedPassword },
     { new: true }
   );
+<<<<<<< HEAD
+=======
+  let admissionInfo = await Admission.findOneAndUpdate(
+    { email: email },
+    { password: hashedPassword },
+    { new: true }
+  );
+
+  if (!userInfo && !admissionInfo) {
+    return res.status(401).json({ message: "Invalid Email or Password" });
+  }
+  userInfo = userInfo || admissionInfo;
+
+>>>>>>> master
   try {
     if (userInfo) {
       const responseData = {
@@ -209,6 +406,13 @@ const recoverEmail = async (req, res) => {
         belt: userInfo.belt,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
+<<<<<<< HEAD
+=======
+        nationalRequests: userInfo.nationalRequests,
+        wsf: userInfo.WSF,
+        language: userInfo.language,
+        provinceRequests: userInfo.provinceRequests,
+>>>>>>> master
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
       };
@@ -223,9 +427,21 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
+<<<<<<< HEAD
     const userInfo = await User.findOne({ email });
 
     if (userInfo && (await userInfo.comparePassword(password))) {
+=======
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
+
+    if (await userInfo.comparePassword(password)) {
+>>>>>>> master
       res.json({
         _id: userInfo._id,
         admission: userInfo.admission,
@@ -238,6 +454,7 @@ const authUser = asyncHandler(async (req, res) => {
         coach: userInfo.coach,
         certificates: userInfo.certificates,
         pic: userInfo.pic,
+<<<<<<< HEAD
         token: generateToken(userInfo._id),
         clubRequests: userInfo.clubRequests,
       });
@@ -247,16 +464,37 @@ const authUser = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+=======
+        belt: userInfo.belt,
+        nationalRequests: userInfo.nationalRequests,
+        provinceRequests: userInfo.provinceRequests,
+        token: generateToken(userInfo._id),
+        wsf: userInfo.WSF,
+        language: userInfo.language,
+        clubRequests: userInfo.clubRequests,
+      });
+    } else {
+      res.status(401).json({ message: "Invalid Email or Password" });
+    }
+  } catch (error) {
+    console.log("We have an error", error);
+    res.status(500).json({ message: "Server error" });
+>>>>>>> master
   }
 });
 
 const getInfo = async (req, res) => {
+<<<<<<< HEAD
   console.log("getuserinfo route");
 
   const { userId } = req.params;
 
   console.log("getuserinfo route");
 
+=======
+  const { userId } = req.params;
+
+>>>>>>> master
   try {
     const userInfo = await User.findById(userId);
 
@@ -267,7 +505,10 @@ const getInfo = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
+<<<<<<< HEAD
   console.log("Route reached");
+=======
+>>>>>>> master
   const { country, provience } = req.params;
 
   if (!country || !provience) {
@@ -275,6 +516,7 @@ const getUsers = async (req, res) => {
   }
 
   try {
+<<<<<<< HEAD
     const allUsers = await User.find({
       selectedCountry: country,
       provinces: provience,
@@ -282,6 +524,24 @@ const getUsers = async (req, res) => {
     });
 
     res.json(allUsers);
+=======
+    const [userInfo, admissionInfo] = await Promise.all([
+      User.find({
+        selectedCountry: country,
+        provinces: provience,
+        $and: [{ coach: null }, { physicalCoach: null }],
+      }),
+      Admission.find({
+        selectedCountry: country,
+        provinces: provience,
+        $and: [{ coach: null }, { physicalCoach: null }],
+      }),
+    ]);
+
+    const allInfo = [...userInfo, ...admissionInfo];
+
+    res.json(allInfo);
+>>>>>>> master
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -358,11 +618,17 @@ const deleteImage = async (req, res) => {
       .json({ error: "An error occurred while deleting the image" });
   }
 };
+<<<<<<< HEAD
 const authorizeUser = async (req, res) => {
   console.log("Did we just access this route?");
   const { userEmail } = req.params;
 
   console.log(userEmail);
+=======
+
+const authorizeUser = async (req, res) => {
+  const { userEmail } = req.params;
+>>>>>>> master
 
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000
@@ -373,6 +639,7 @@ const authorizeUser = async (req, res) => {
     port: 465,
     secure: true,
     auth: {
+<<<<<<< HEAD
       userInfo: privateEmail,
       pass: privateEmailPass,
     },
@@ -389,12 +656,54 @@ This is system's generated code, please do not reply.`,
     if (error) {
       res.status(400).json({ message: "Email Sending Failed" });
       console.log(error);
+=======
+      user: privateEmail,
+      pass: privateEmailPass,
+    },
+  });
+  const companyLogoUrl = 'https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720864475/icon.jpg';
+
+  const mailOptions = {
+    from: `World Samma Federation <${privateEmail}>`,
+    to: userEmail,
+    subject: "Verify Your Email",
+    html: `
+      <div style="background-color: #f2f2f2; padding: 20px; font-family: Arial, sans-serif;">
+        <h2 style="color: #333;">Verify Your Email</h2>
+        <img src="${companyLogoUrl}" loading="eager" alt="Company Logo" style="width: 100px; margin-bottom: 20px;">
+        <p>Hello,</p>
+        <p>Your verification code is: <strong>${verificationCode}</strong></p>
+        <p>This is a system-generated code, please do not reply.</p>
+        <p>Join the World Samma Federation and be part of a vibrant community!</p>
+        <p>Stay connected and follow us on social media:</p>
+        <ul style="list-style: none; padding: 0;">
+          <li style="margin-bottom: 10px;"><a href="https://x.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">X</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.tiktok.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Tiktok</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://facebook.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Facebook</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://instagram.com/worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Instagram</a></li>
+          <li style="margin-bottom: 10px;"><a href="https://www.youtube.com/@worldsamma" target="_blank" style="color: #007bff; text-decoration: none;">Youtube</a></li>
+        </ul>
+        <p>Remember, every great journey begins with a single step. Embrace the challenges and keep pushing forward!</p>
+        <p>Thank you for being a part of our community.</p>
+      </div>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.status(400).json({ message: "Email Sending Failed" });
+      console.log("This is the error", error);
+>>>>>>> master
     } else {
       console.log("Email sent: " + info.response);
       res.status(200).json(verificationCode);
     }
   });
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 const getAdsInfo = async (req, res) => {
   const acceptLanguage = req.headers["accept-language"] || "en-US";
   const referrer = req.headers.referer || "unknown";
@@ -429,6 +738,7 @@ const getAdsInfo = async (req, res) => {
 const clubRequests = async (req, res) => {
   const { country, provience, name, userId } = req.params;
   const socket = getIO();
+<<<<<<< HEAD
 
   const loggedUser = req.user._id;
   const getNextClubNumber = async (prefix, initialSequence = 1) => {
@@ -477,6 +787,15 @@ const clubRequests = async (req, res) => {
 
     if (!club) {
       const clubCode = await getNextClubNumber("C");
+=======
+  const loggedUser = req.user._id;
+
+  try {
+    let club = await Club.findOne({ coach: loggedUser });
+
+    if (!club) {
+      const clubCode = await getNextNumber("C", 8);
+>>>>>>> master
 
       club = await Club.create({
         name: name,
@@ -487,6 +806,7 @@ const clubRequests = async (req, res) => {
         provience: provience,
         clubRequests: userId,
       });
+<<<<<<< HEAD
 
       const userInfo = await User.findById(userId);
       if (userInfo) {
@@ -526,21 +846,92 @@ const clubRequests = async (req, res) => {
     console.log(error);
   }
 };
+=======
+    } else {
+      club.clubRequests.push(userId);
+      await club.save();
+    }
+
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
+    if (userInfo) {
+      userInfo.clubRequests.push(club._id);
+      await userInfo.save();
+    }
+
+    const populatedClub = await Club.findById(club._id).populate("members");
+
+    const recipientSocketId = getUserSocket(userId);
+    if (recipientSocketId) {
+      socket.to(recipientSocketId).emit("sent request", club);
+    } else {
+      console.log("Recipient not connected");
+    }
+
+    res.json(populatedClub);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+>>>>>>> master
 const certificate = async (req, res) => {
   const { userId } = req.params;
   const { sendCertificate } = req.body;
   const socket = getIO();
   try {
+<<<<<<< HEAD
     const userInfo = await User.findById(userId);
     if (userInfo) {
       userInfo.certificates.push(sendCertificate);
       await userInfo.save();
+=======
+    let userInfo = await User.findOne({ email: email });
+    let admissionInfo = await Admission.findOne({ admission: email });
+
+    if (!userInfo && !admissionInfo) {
+      return res.status(401).json({ message: "Invalid Email or Password" });
+    }
+    userInfo = userInfo || admissionInfo;
+    if (userInfo) {
+      const belts = [
+        "Guest",
+        "Beginner",
+        "Yellow",
+        "Orange",
+        "Red",
+        "Purple",
+        "Green",
+        "Blue",
+        "Brown",
+        "Black",
+      ];
+
+      const userLevel = belts.indexOf(userInfo.belt);
+
+      if (userLevel !== -1 && userLevel < belts.length - 1) {
+        userInfo.belt = belts[userLevel + 1];
+
+        userInfo.certificates.push(sendCertificate);
+        await userInfo.save();
+      }
+>>>>>>> master
     }
 
     const recipientSocketId = getUserSocket(userId);
 
     if (recipientSocketId) {
+<<<<<<< HEAD
       socket.to(recipientSocketId).emit("certificates", userInfo.certificates);
+=======
+      socket.to(recipientSocketId).emit("certificates", userInfo);
+>>>>>>> master
     } else {
       console.log("Recipient not connected");
     }
@@ -548,8 +939,53 @@ const certificate = async (req, res) => {
     console.log(error);
   }
 };
+<<<<<<< HEAD
 
 module.exports = {
+=======
+const submitAdmissionForm = async (req, res) => {
+  const userId = req.user._id;
+  const {
+    name,
+    otherName,
+    id,
+    phoneNumber,
+    email,
+    selectedCountry,
+    provinces,
+    language,
+  } = req.body;
+
+  try {
+    if (!name || !otherName) {
+      throw new Error({ message: "First name and last name are required." });
+    }
+    const admCode = await getNextNumber("U", 9);
+
+    const admission = new Admission({
+      name,
+      otherName,
+      id,
+      phoneNumber,
+      email,
+      selectedCountry,
+      provinces,
+      language,
+      admission: admCode,
+      registrar: userId,
+    });
+
+    await admission.save();
+
+    res.status(201).json(admission);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  submitAdmissionForm,
+>>>>>>> master
   authorizeUser,
   registerUsers,
   forgotEmail,
@@ -564,4 +1000,8 @@ module.exports = {
   getAdsInfo,
   clubRequests,
   certificate,
+<<<<<<< HEAD
+=======
+  allUsers,
+>>>>>>> master
 };

@@ -5,6 +5,7 @@ import {
   Button,
   Link,
   useColorModeValue,
+<<<<<<< HEAD
   Image,
 } from "@chakra-ui/react";
 import black from "../blackBelt.png";
@@ -15,6 +16,12 @@ import orange from "../orangeBelt.png";
 import purple from "../pupleBelt.png";
 import red from "../redBelt.png";
 import yellow from "../yellowBelt.png";
+=======
+} from "@chakra-ui/react";
+
+import Paycheck from "./Payments";
+import { GiBlackBelt } from "react-icons/gi";
+>>>>>>> master
 
 const MyPrograms = ({ courses, user }) => {
   const handleDownload = (title, url) => {
@@ -23,6 +30,7 @@ const MyPrograms = ({ courses, user }) => {
     a.download = `${title}BeltCertificate.pdf`;
     a.click();
   };
+<<<<<<< HEAD
   const progressLevels = [
     yellow,
     orange,
@@ -39,6 +47,25 @@ const MyPrograms = ({ courses, user }) => {
       flexDir={"column"}
       alignItems="center"
       justifyContent="space-between"
+=======
+
+  const progressLevels = [
+    `#baba30`,
+    `orange`,
+    `red`,
+    `purple`,
+    `green`,
+    `blue`,
+    `brown`,
+    `black`,
+  ];
+  return (
+    <Box 
+      display={"flex"}
+      flexDir={"column"}
+      alignItems={"center"}
+      justifyContent={"center"}
+>>>>>>> master
       width="100%"
       p={4}
       backgroundColor={"white"}
@@ -59,10 +86,19 @@ const MyPrograms = ({ courses, user }) => {
           borderRadius={5}
         >
           <Box>
+<<<<<<< HEAD
             <Text fontSize={"larger"} fontWeight={"medium"}>
               <Text>{course.title}</Text>
               <Image src={progressLevels[index]} alt="Belt" />
             </Text>
+=======
+            <Box fontSize={"larger"} fontWeight={"medium"}>
+              <Text>{course.title}</Text>
+              <GiBlackBelt
+                style={{ color: progressLevels[index], fontSize: "3rem" }}
+              />
+            </Box>
+>>>>>>> master
             {course.title === user?.belt && (
               <Link
                 href={`/courses/${course.id}`}
@@ -80,6 +116,10 @@ const MyPrograms = ({ courses, user }) => {
               onClick={handleDownload(course.title, user.certificates[index])}
               borderRadius={20}
               fontSize={"small"}
+<<<<<<< HEAD
+=======
+              border={"none"}
+>>>>>>> master
             >
               Download Certificate
             </Button>
@@ -90,6 +130,7 @@ const MyPrograms = ({ courses, user }) => {
               justifyContent={"space-between"}
               alignItems={"center"}
             >
+<<<<<<< HEAD
               <Button
                 borderRadius={20}
                 fontSize={"small"}
@@ -100,16 +141,27 @@ const MyPrograms = ({ courses, user }) => {
               >
                 Enroll
               </Button>
+=======
+              <Paycheck course={course} />
+>>>>>>> master
               <Text
                 fontSize={"sm"}
                 fontWeight={400}
                 bg={useColorModeValue("green.50", "green.900")}
+<<<<<<< HEAD
                 p={1}
+=======
+                p={3}
+>>>>>>> master
                 px={3}
                 color={"green.500"}
                 rounded={"full"}
               >
+<<<<<<< HEAD
                 $100(*Best)
+=======
+                $12.00 only
+>>>>>>> master
               </Text>
             </Box>
           )}
