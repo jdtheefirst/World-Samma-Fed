@@ -24,12 +24,9 @@ export const ClubRegistration = ({ onClose }) => {
   const [name, setName] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(user?.country);
   const [provience, setProvience] = useState(user.provinces);
-<<<<<<< HEAD
-=======
   const [chairperson, setChairperson] = useState("");
   const [viceChair, setViceChair] = useState("");
   const [secretary, setSecretary] = useState("");
->>>>>>> master
   const [subdivisions, setSubdivisions] = useState([]);
   const [suggest, setSuggest] = useState([]);
   const navigate = useNavigate();
@@ -134,21 +131,6 @@ export const ClubRegistration = ({ onClose }) => {
     },
     [user.token, user._id, setClub]
   );
-<<<<<<< HEAD
-
-  return (
-    <VStack spacing="3px" backgroundColor={"whitesmoke"} p={1}>
-      <Button
-        fontSize={"x-large"}
-        marginRight={"90%"}
-        onClick={handleFormClose}
-        width={"10px"}
-      >
-        X
-      </Button>
-      <Text fontSize={"larger"} fontWeight={"bold"}>
-        Club Form
-=======
   const handleCreateClub = async (e) => {
     e.preventDefault();
     if (!chairperson || !secretary || !viceChair || !user) {
@@ -193,7 +175,6 @@ export const ClubRegistration = ({ onClose }) => {
         <Text fontWeight={"bold"} m={1}>
           Club Form
         </Text>
->>>>>>> master
         <Text
           fontSize={"sm"}
           fontWeight={500}
@@ -206,11 +187,7 @@ export const ClubRegistration = ({ onClose }) => {
           Status (*{club && club.registration ? "Registered" : "Not registered"}
           )
         </Text>
-<<<<<<< HEAD
-      </Text>
-=======
       </Box>
->>>>>>> master
       <Box
         m={3}
         p={3}
@@ -284,34 +261,21 @@ export const ClubRegistration = ({ onClose }) => {
             />
           </FormControl>
         )}
-<<<<<<< HEAD
-=======
         <FormControl id="first-name" isRequired>
           <FormLabel textColor={"#c255ed"}>
             Make requests to members around you.
           </FormLabel>
         </FormControl>
->>>>>>> master
         <Box
           display={"flex"}
           flexDir={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-<<<<<<< HEAD
-          m={1}
-=======
->>>>>>> master
           borderRadius={3}
           width={"100%"}
           height={"200px"}
           overflow="auto"
         >
-<<<<<<< HEAD
-          <Text textAlign={"center"} fontSize={"medium"}>
-            Make requests to members around you.
-          </Text>
-=======
->>>>>>> master
           {!suggest && (
             <Text textAlign={"center"}>
               No student without a club in this region.
@@ -326,11 +290,7 @@ export const ClubRegistration = ({ onClose }) => {
                 key={suggestion._id}
                 style={{ color: "black" }}
                 width={"90%"}
-<<<<<<< HEAD
-                m={3}
-=======
                 m={1}
->>>>>>> master
               >
                 <Text fontSize={"small"} fontWeight={"bold"}>
                   Name: {suggestion.name}, Adm: {suggestion.admission}
@@ -379,9 +339,6 @@ export const ClubRegistration = ({ onClose }) => {
               ))}
           </Box>
         </FormControl>
-<<<<<<< HEAD
-        <Button colorScheme="blue" width="100%" style={{ marginTop: 15 }}>
-=======
         <FormControl id="chairman" isRequired>
           <FormLabel>Chairperson</FormLabel>
           <Input
@@ -442,7 +399,6 @@ export const ClubRegistration = ({ onClose }) => {
           }
           onClick={() => handleCreateClub()}
         >
->>>>>>> master
           <Text> Register Club </Text>
         </Button>{" "}
       </Box>

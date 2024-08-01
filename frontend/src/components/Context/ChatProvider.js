@@ -1,18 +1,10 @@
-<<<<<<< HEAD
-import React, { createContext, useContext, useState} from "react";
-=======
 import React, { createContext, useContext, useState } from "react";
->>>>>>> master
 
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
   const [verify, setVerify] = useState(undefined);
-<<<<<<< HEAD
   const [user, setUser] = useState(undefined);
-=======
-  const [user, setUser] = useState(null);
->>>>>>> master
   const [chat, setChat] = useState(undefined);
   const [email, setEmail] = useState("");
   const [selectedChat, setSelectedChat] = useState(null);
@@ -24,11 +16,8 @@ const ChatProvider = ({ children }) => {
   const [messages, setMessages] = useState([]);
   const [requests, setRequests] = useState([]);
   const [club, setClub] = useState(undefined);
-<<<<<<< HEAD
-=======
   const [national, setNational] = useState(null);
   const [province, setProvince] = useState(null);
->>>>>>> master
 
   return (
     <ChatContext.Provider
@@ -58,15 +47,11 @@ const ChatProvider = ({ children }) => {
         requests,
         setRequests,
         club,
-<<<<<<< HEAD
-        setClub
-=======
         setClub,
         national,
         setNational,
         province,
         setProvince,
->>>>>>> master
       }}
     >
       {children}

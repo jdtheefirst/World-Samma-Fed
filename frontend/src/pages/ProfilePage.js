@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-import { Box, Button, Heading, Image, Text, useToast } from "@chakra-ui/react";
-import UpperNav from "../miscellenious/upperNav";
-import axiosInstance from "../components/config/axios";
-=======
 import {
   Box,
   Button,
@@ -27,7 +22,6 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import AdmissionForm from "../miscellenious/AdmissionForm";
 import { GoDotFill } from "react-icons/go";
 import { FaLock, FaLockOpen } from "react-icons/fa";
->>>>>>> master
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -37,8 +31,6 @@ const ProfilePage = ({ user }) => {
   const handleMembers = () => {
     setShowFollowers(!showFollowers);
   };
-<<<<<<< HEAD
-=======
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
@@ -46,16 +38,12 @@ const ProfilePage = ({ user }) => {
   const [show, setShow] = useState(false);
   const [register, setRegister] = useState(false);
   const adminId = "6693a995f6295b8bd90d9301";
->>>>>>> master
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
       return;
     }
-<<<<<<< HEAD
-=======
     setLoading(true);
->>>>>>> master
 
     try {
       const clubId = user.coach;
@@ -70,15 +58,10 @@ const ProfilePage = ({ user }) => {
         .get(`/api/clubs/${clubId}`, config)
         .then(async (response) => {
           setClub(response.data);
-<<<<<<< HEAD
-        })
-        .catch((error) => {
-=======
           setLoading(false);
         })
         .catch((error) => {
           setLoading(false);
->>>>>>> master
           if (error.response && error.response.status === 401) {
             toast({
               title: "Your session has expired",
@@ -96,14 +79,9 @@ const ProfilePage = ({ user }) => {
         });
     } catch (error) {
       console.error("Error fetching Club:", error);
-<<<<<<< HEAD
-    }
-  }, [user?.token, setClub]);
-=======
       setLoading(false);
     }
   }, [user?.token, setClub, setLoading]);
->>>>>>> master
 
   useEffect(() => {
     if (user) {
@@ -112,10 +90,6 @@ const ProfilePage = ({ user }) => {
       navigate("/dashboard");
     }
   }, [user, navigate]);
-<<<<<<< HEAD
-
-  console.log(club);
-=======
   const handleAcceptDecline = async (provinceId, accept) => {
     try {
       const config = {
@@ -260,105 +234,21 @@ const ProfilePage = ({ user }) => {
   ];
 
   const Level = belts.indexOf("Black");
->>>>>>> master
 
   return (
     <Box
       display={"flex"}
       width={"100%"}
-<<<<<<< HEAD
-      justifyContent={"center"}
-      flexDir={"column"}
-      overflow={"auto"}
-      alignItems={"center"}
-      background={"white"}
-=======
       minH={"100vh"}
       justifyContent={"start"}
       flexDir={"column"}
       overflow={"auto"}
       alignItems={"center"}
       bg={"whitesmoke"}
->>>>>>> master
     >
       <UpperNav />
       <Box
         display={"flex"}
-<<<<<<< HEAD
-        flexWrap={"wrap"}
-        p={10}
-        mt={40}
-        width={{ base: "100%", md: "80%" }}
-      >
-        <Image
-          src={user?.pic}
-          alt={`Profile*`}
-          borderRadius="full"
-          boxSize={{ base: "100px", md: "200px" }}
-          border="4px solid white"
-          marginBottom={4}
-        />
-        <Box textAlign={"start"} fontSize={"medium"} fontWeight={"bold"} m={2}>
-          <Heading mb={4}>Profile</Heading>
-          <Text>
-            Name: {user?.name} {user?.otherName}
-          </Text>
-          <Text>Email: {user?.email}</Text>
-          <Text>Country: {user?.country}</Text>
-          <Text>Coach: {user?.coach ? user.coach : "Not a coach"}</Text>
-          <Text>Highest Level Attained: {user?.belt}</Text>
-          {user.admin && (
-            <Button
-              mt={4}
-              colorScheme="teal"
-              onClick={() => navigate("/admin-work-slot")}
-            >
-              Admin Work Slot
-            </Button>
-          )}
-        </Box>
-        {user?.coach && club && (
-          <>
-            <Box
-              textAlign={"center"}
-              fontSize={"small"}
-              fontWeight={"bold"}
-              m={2}
-              background={"white"}
-              p={2}
-            >
-              <Heading mb={4}>Club Details</Heading>
-              <Text>Club Name: {club.name}</Text>
-              <Button
-                background={"transparent"}
-                _hover={{ background: "transparent", color: "green" }}
-                onClick={handleMembers}
-              >
-                Members: {club.members.length}
-              </Button>
-              <Text>Followers: {club.followers.length}</Text>
-              <Text>Received Likes: {club.likes.length}</Text>
-            </Box>
-            {showFollowers && (
-              <Box
-                textAlign={"start"}
-                fontSize={"medium"}
-                fontWeight={"bold"}
-                m={4}
-                background={"white"}
-              >
-                <Heading mb={4}>Members List</Heading>
-                {club.members.length > 0 &&
-                  club.members.map((member, index) => (
-                    <Text fontSize={"small"} key={member._id}>
-                      {index + 1}. Name: {member.name} Adm: {member.admission}
-                    </Text>
-                  ))}
-              </Box>
-            )}
-          </>
-        )}
-=======
         flexDir={'column'}
         width={{ base: "100%", md: "80%" }}
         boxShadow="dark-lg"
@@ -866,7 +756,6 @@ const ProfilePage = ({ user }) => {
             ))}
           </Box>
         )}
->>>>>>> master
       </Box>
     </Box>
   );

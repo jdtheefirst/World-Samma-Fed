@@ -19,9 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
         throw new Error("Not authorized, token has expired");
       }
 
-<<<<<<< HEAD
-      req.user = await User.findById(decoded.id).select("-password");
-=======
       // Check if user exists in User schema
       let user = await User.findById(decoded.id).select("-password");
 
@@ -36,7 +33,6 @@ const protect = asyncHandler(async (req, res, next) => {
       }
 
       req.user = user;
->>>>>>> master
 
       next();
     } catch (error) {

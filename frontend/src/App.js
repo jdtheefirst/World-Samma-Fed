@@ -1,19 +1,4 @@
 import "./App.css";
-<<<<<<< HEAD
-import { Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Logins from "./pages/Logins";
-import { Dashboard } from "./pages/Dashboard";
-import CourseDetails from "./pages/Courses";
-import { Clubs } from "./pages/Clubs";
-import ClubDetailes from "./pages/ClubDetails";
-import { ChatState } from "./components/Context/ChatProvider";
-import SubmissionPage from "./pages/Submit";
-import ProfilePage from "./pages/ProfilePage";
-import AdminWorkSlot from "./pages/AdminWorkSlot";
-import Provience from "./pages/Provience";
-=======
 import { Route, Routes, useLocation} from "react-router-dom";
 import { ChatState } from "./components/Context/ChatProvider";
 import { Suspense, lazy, useEffect, useState } from "react";
@@ -33,8 +18,8 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 import LoadingSpinner from './components/Loading';
 import SessionExpirationMessage from "./components/SessionExpired";
+import DelayedRender from "./components/Render";
 
->>>>>>> master
 
 const courses = [
   {
@@ -45,10 +30,6 @@ const courses = [
         id: 1,
         title: "Lesson 1",
         video:
-<<<<<<< HEAD
-          "https://res.cloudinary.com/dvc7i8g1a/video/upload/v1706267491/WhatsApp_Video_2024-01-26_at_2.10.09_AM_hjvvsd.mp4",
-        notes: "Notes for Lesson 1",
-=======
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945476/stances_e589zo.mp4",
         notes: `. Attention stance
 . Natural stance
@@ -61,17 +42,10 @@ const courses = [
 . Cross stance
 . Kneeling positions (one knee, both knees).
 `,
->>>>>>> master
       },
       {
         id: 2,
         title: "Lesson 2",
-<<<<<<< HEAD
-        video: "video_url_2",
-        notes: "Notes for Lesson 2",
-      },
-      // Add more lessons
-=======
         video:
           "https://res.cloudinary.com/dsdlgmgwi/video/upload/v1712945467/step_annbdf.mp4",
         notes: `. STEPPING (each done in the forward and reverse motion)
@@ -183,7 +157,6 @@ const courses = [
 .Face fall
 `,
       },
->>>>>>> master
     ],
   },
   {
@@ -302,11 +275,7 @@ const courses = [
   },
   {
     id: 8,
-<<<<<<< HEAD
-    title: "Black Belt",
-=======
     title: "Black Belt 1",
->>>>>>> master
     lessons: [
       {
         id: 1,
@@ -325,41 +294,6 @@ const courses = [
   },
 ];
 
-<<<<<<< HEAD
-function App() {
-  const { user, setUser } = ChatState();
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  if (!user && userInfo) {
-    setUser(userInfo);
-  }
-  return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Logins />} />
-        <Route path="/dashboard" element={<Dashboard courses={courses} />} />
-        <Route
-          path="/courses/:id"
-          element={<CourseDetails courses={courses} />}
-        />
-        <Route path="/clubs" element={<Clubs />} />
-        <Route
-          path="/courses/:id/submit"
-          element={<SubmissionPage user={user} />}
-        />
-        <Route path="/profile" element={<ProfilePage user={user} />} />
-        <Route
-          path="/admin-work-slot"
-          element={<AdminWorkSlot user={user} />}
-        />
-        <Route
-          path="/showclub/:clubId/:liveStream"
-          element={<ClubDetailes user={user} />}
-        />
-        <Route path="/province" element={<Provience user={user} />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-=======
 const RouteChangeTracker = () => {
   const location = useLocation();
 
@@ -375,50 +309,27 @@ const RouteChangeTracker = () => {
 };
 
 function App() {
-  const { user, setUser } = ChatState();
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo) {
-      setUser(userInfo);
-    }
-    setLoading(false); // Loading is complete
-  }, []);
-
-  const renderWithSessionCheck = (Component, props = {}) => {
-    if (loading) {
-      return <LoadingSpinner />; // Show loading spinner while checking session
-    }
-    if (!user) {
-      return <SessionExpirationMessage />;
-    }
-    return <Component {...props} user={user} />;
-  };
-
-
   return (
     <div className="App">
       <Suspense fallback={<LoadingSpinner />}>
         <RouteChangeTracker />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={renderWithSessionCheck(Dashboard, { courses })} />
-          <Route path="/courses/:id" element={renderWithSessionCheck(CourseDetails, { courses })} />
-          <Route path="/championships" element={renderWithSessionCheck(Championships)} />
-          <Route path="/clubs" element={renderWithSessionCheck(Clubs)} />
-          <Route path="/courses/:id/submit/:title" element={renderWithSessionCheck(SubmissionPage)} />
-          <Route path="/profile" element={renderWithSessionCheck(ProfilePage)} />
-          <Route path="/admin-work-slot" element={renderWithSessionCheck(AdminWorkSlot)} />
+          <Route path="/dashboard" element={<DelayedRender Component={Dashboard} courses={courses} />} />
+          <Route path="/courses/:id" element={<DelayedRender Component={CourseDetails} courses={courses} />} />
+          <Route path="/championships" element={<DelayedRender Component={Championships} />}  />
+          <Route path="/clubs" element={<DelayedRender Component={Clubs} />} />
+          <Route path="/courses/:id/submit/:title" element={<DelayedRender Component={SubmissionPage} />}   />
+          <Route path="/profile" element={<DelayedRender Component={ProfilePage} />} />
+          <Route path="/admin-work-slot" element={<DelayedRender Component={AdminWorkSlot} />}  />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/showclub/:clubId/:liveStream" element={renderWithSessionCheck(ClubDetailes)} />
-          <Route path="/province" element={renderWithSessionCheck(Provience)} />
-          <Route path="/national" element={renderWithSessionCheck(National)} />
+          <Route path="/showclub/:clubId/:liveStream" element={<DelayedRender Component={ClubDetailes} />}  />
+          <Route path="/province" element={<DelayedRender Component={Provience} />}  />
+          <Route path="/national" element={<DelayedRender Component={National} />}  />
           <Route path="/accountrecovery" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
->>>>>>> master
     </div>
   );
 }

@@ -1,9 +1,5 @@
 
 const userSockets = new Map();
-<<<<<<< HEAD
-=======
-const peerIdMap = new Map();
->>>>>>> master
 
 const setUserSocket = (userId, socketId) => {
   userSockets.set(userId, socketId);

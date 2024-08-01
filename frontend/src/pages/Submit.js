@@ -10,18 +10,11 @@ import {
   useToast,
   Box,
   Text,
-<<<<<<< HEAD
-} from "@chakra-ui/react";
-import UpperNav from "../miscellenious/upperNav";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-=======
   useColorModeValue,
 } from "@chakra-ui/react";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
->>>>>>> master
 
 const SubmissionPage = ({ user }) => {
   const [video, setVideo] = useState(null);
@@ -31,16 +24,9 @@ const SubmissionPage = ({ user }) => {
   const [saveVideo, setSaveVideo] = useState("");
   const [savePhoto, setSavePhoto] = useState("");
   const toast = useToast();
-<<<<<<< HEAD
-  const navigate = useNavigate();
-
-  console.log(user);
-
-=======
   const { title } = useParams();
   const navigate = useNavigate();
 
->>>>>>> master
   const handleVideoChange = (event) => {
     setVideo(event.target.files[0]);
   };
@@ -69,17 +55,10 @@ const SubmissionPage = ({ user }) => {
         },
         config
       );
-<<<<<<< HEAD
-      console.log(data);
-      navigate("/dashboard");
-      toast({
-        title: "Submission successful!",
-=======
       navigate("/dashboard");
       toast({
         title: "Submission successful!",
         description: "Wait for your results under 24hrs",
->>>>>>> master
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -185,9 +164,6 @@ const SubmissionPage = ({ user }) => {
       p={2}
     >
       <UpperNav />
-<<<<<<< HEAD
-=======
-
       <Text
         fontSize={"sm"}
         fontWeight={500}
@@ -201,7 +177,6 @@ const SubmissionPage = ({ user }) => {
       >
         {title}
       </Text>
->>>>>>> master
       <Text textAlign={"center"} fontSize={"large"} fontWeight={"bold"}>
         Submit your work for grading(*Passport picture as proof of identity)
       </Text>

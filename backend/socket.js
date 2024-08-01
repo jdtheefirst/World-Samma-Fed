@@ -2,10 +2,6 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
 const Club = require("../backend/models/clubsModel");
-<<<<<<< HEAD
-const { getUserIdFromToken } = require("./middleware/authMiddleware");
-=======
->>>>>>> master
 const { setUserSocket, getUserSocket } = require("./config/socketUtils");
 let io;
 
@@ -13,13 +9,6 @@ const initializeSocketIO = (server) => {
   io = socketIO(server, {
     pingTimeout: 60000,
     cors: {
-<<<<<<< HEAD
-      origin: "http://localhost:3000",
-    },
-  });
-  const onlineClubs = new Set();
-  const onlineUsers = new Set();
-=======
       origin: "/",
       methods: ["GET", "POST"],
       allowedHeaders: ["my-custom-header"],
@@ -27,7 +16,6 @@ const initializeSocketIO = (server) => {
     },
   });
   const onlineClubs = new Set();
->>>>>>> master
   const userStatuses = new Map();
 
   io.use(async (socket, next) => {
@@ -44,9 +32,6 @@ const initializeSocketIO = (server) => {
         throw new Error("Not authorized, token has expired");
       }
 
-<<<<<<< HEAD
-      const user = await User.findById(decoded.id).select("-password");
-=======
       // Check if user exists in User schema
       let user = await User.findById(decoded.id).select("-password");
 
@@ -55,17 +40,11 @@ const initializeSocketIO = (server) => {
         user = await Admission.findById(decoded.id).select("-password");
       }
 
->>>>>>> master
       if (!user) {
         throw new Error("User not found");
       }
 
       socket.user = user;
-<<<<<<< HEAD
-      socket.handshake.query.token = token;
-
-=======
->>>>>>> master
       next();
     } catch (error) {
       console.error(error);
@@ -74,13 +53,6 @@ const initializeSocketIO = (server) => {
   });
 
   io.on("connection", async (socket) => {
-<<<<<<< HEAD
-    const token = await socket.handshake.query.token;
-
-    const userId = getUserIdFromToken(token);
-    setUserSocket(userId, socket.id);
-
-=======
     console.log("connected")
 
     const userId = socket.user._id;
@@ -90,7 +62,6 @@ const initializeSocketIO = (server) => {
       io.emit('received-message', data); // Emit message to all clients
     });
 
->>>>>>> master
     socket.on("startLiveSession", async (clubId) => {
       const club = await Club.findOne({ _id: clubId });
 
@@ -100,28 +71,6 @@ const initializeSocketIO = (server) => {
       ) {
         onlineClubs.add(clubId);
         socket.join(clubId);
-<<<<<<< HEAD
-        socket.broadcast.to(clubId).emit("liveSessionStarted", club.name);
-
-        socket.to(clubId).emit("startSignal");
-      }
-    });
-
-    socket.on("identityLiveSession", async (adminId) => {
-      io.to(adminId).emit("signalStart");
-    });
-    socket.on("signaling", ({ to, from, signal }) => {
-      io.to(to).emit("signaling", { from, signal });
-    });
-
-    socket.on("new message", (newMessageReceived) => {
-      const recipientSocketId = getUserSocket(newMessageReceived.recipient._id);
-
-      if (recipientSocketId) {
-        socket
-          .to(recipientSocketId)
-          .emit("message received", newMessageReceived);
-=======
         io.broadcast.to(clubId).emit("liveSessionStarted", club.name);
 
         io.to(clubId).emit("startSignal");
@@ -133,85 +82,17 @@ const initializeSocketIO = (server) => {
     
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("message received", newMessageReceived);
->>>>>>> master
       } else {
         console.log("Recipient not connected");
       }
     });
 
-<<<<<<< HEAD
-    socket.on("newConnection", async (userData) => {
-      const email = userData.email;
-
-      const clubRequests = await User.findOne({ email }).select("clubRequests");
-
-      if (clubRequests) {
-        socket.emit("updates", clubRequests);
-      }
-
-      const userId = userData._id;
-      socket.join(userId);
-      socket.emit("connected");
-      socket.userData = userData;
-      onlineUsers.add(userId);
-      io.emit("onlineUsers", Array.from(onlineUsers));
-
-      if (userData.isNewUser) {
-        io.emit("newUserRegistered", userData);
-      }
-    });
-
-    socket.on("typing", (room) => socket.in(room).emit("typing"));
-    socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
-
-    socket.on("join room", (roomId) => {
-      socket.join(roomId);
-      const otherUsers = io.sockets.adapter.rooms.get(roomId);
-      if (otherUsers.size > 1) {
-        socket.to(roomId).emit("other user", socket.id);
-      }
-    });
-
-    socket.on("signal", ({ to, from, signal, room }) => {
-      io.to(to).emit("signal", { signal, callerID: from });
-    });
-    socket.on("initiate call", (recipientId) => {
-      const recipientStatus = userStatuses.get(recipientId) || "available";
-      if (recipientStatus === "busy") {
-        socket.emit("user busy", recipientId);
-      } else {
-        userStatuses.set(recipientId, "busy");
-        userStatuses.set(socket.userData._id, "busy");
-        const roomId = createRoomId(socket.userData._id, recipientId);
-        io.to(recipientId).emit("call initiated", roomId);
-      }
-    });
-
-    socket.on("call initiated", (roomId) => {
-      io.to(roomId).emit("ringing");
-    });
-
-    socket.on("endCall", (roomId) => {
-      io.to(roomId).emit("call ended");
-      socket.leave(roomId);
-    });
-
-    socket.on("disconnect", () => {
-      if (socket.userData && socket.userData._id) {
-        onlineUsers.delete(socket.userData._id);
-        io.emit("onlineUsers", Array.from(onlineUsers));
-        userStatuses.set(socket.userData?._id, "available");
-      }
-    });
-    userStatuses.delete(socket.userData?._id);
-=======
     socket.on("disconnect", () => {
       if (socket.user._id) {
         userStatuses.set(socket.user._id, "available");
       }
     });
     userStatuses.delete(socket.user._id);
->>>>>>> master
   });
 
   return io;

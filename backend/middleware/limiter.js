@@ -2,13 +2,6 @@ const rateLimit = require("express-rate-limit");
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-<<<<<<< HEAD
-  max: 10,
-  validate: { xForwardedForHeader: false },
-});
-
-module.exports = { limiter };
-=======
   max: 15,
   validate: { xForwardedForHeader: false },
 });
@@ -25,4 +18,3 @@ const downloadLimiter = rateLimit({
 });
 
 module.exports = { limiter, voteLimiter };
->>>>>>> master

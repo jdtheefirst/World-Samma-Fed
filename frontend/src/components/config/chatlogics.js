@@ -1,17 +1,8 @@
 import axios from "axios";
-<<<<<<< HEAD
-import { useEffect, useState, useRef } from "react";
-import { io } from "socket.io-client";
-import { ChatState } from "../Context/ChatProvider";
-
-let socketInstance;
-
-=======
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { ChatState } from "../Context/ChatProvider";
 
->>>>>>> master
 export const isSameSenderMargin = (messages, m, i, userId) => {
   const isCurrentUserSender = m.sender?.$oid === userId;
 
@@ -84,40 +75,6 @@ export async function getUserById(userId, token) {
   }
 }
 
-<<<<<<< HEAD
-export function useConnectSocket(token) {
-  const socketRef = useRef(null);
-  const { user } = ChatState();
-
-  useEffect(() => {
-    if (socketRef.current) {
-      return;
-    }
-
-    const newSocket = io("http://localhost:8080", {
-      query: { token },
-    });
-
-    newSocket.on("connect", () => {
-      const email = user?.email;
-      console.log("Socket Connected", email);
-      newSocket.emit("newConnection", { email });
-    });
-
-    newSocket.on("disconnect", () => {
-      console.log("Socket disconnected");
-    });
-
-    socketRef.current = newSocket;
-
-    return () => {
-      newSocket.disconnect();
-      socketRef.current = null;
-    };
-  }, [token, user?.email]);
-
-  return socketRef.current;
-=======
 let socketInstance = null;
 
 export function useConnectSocket(user) {
@@ -216,5 +173,4 @@ export async function handleApprove(accountType, type, user, setUser) {
     console.log(error);
     throw new Error("Error occurred", error);
   }
->>>>>>> master
 }

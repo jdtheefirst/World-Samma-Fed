@@ -5,13 +5,6 @@ import {
   Button,
   FormControl,
   FormLabel,
-<<<<<<< HEAD
-  Image,
-  Select,
-  Spinner,
-  Text,
-} from "@chakra-ui/react";
-=======
   Select,
   Spinner,
   Text,
@@ -19,20 +12,11 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { RxEyeNone } from "react-icons/rx";
->>>>>>> master
 import { ChatState } from "../components/Context/ChatProvider";
 import { getStatesOfCountry, getCountryFlag } from "../assets/state";
 import UpperNav from "../miscellenious/upperNav";
 import axios from "axios";
 import { ClubRegistration } from "../Authentication/club";
-<<<<<<< HEAD
-
-export const Clubs = () => {
-  const { user, club } = ChatState();
-  const [subdivisions, setSubdivisions] = useState([]);
-  const [clubs, setClubs] = useState([]);
-  const [provience, setProvience] = useState(user?.provinces);
-=======
 import FooterAchieves from "../components/FooterAchieves";
 
 const Clubs = () => {
@@ -40,15 +24,11 @@ const Clubs = () => {
   const [subdivisions, setSubdivisions] = useState([]);
   const [clubs, setClubs] = useState([]);
   const [province, setProvince] = useState(user?.provinces);
->>>>>>> master
   const [fillForm, setFillForm] = useState(false);
   const navigate = useNavigate();
   const flag = getCountryFlag(user?.country);
   const [loading, setLoading] = useState(false);
-<<<<<<< HEAD
-=======
   const toast = useToast();
->>>>>>> master
 
   const fetchClubs = useCallback(async () => {
     if (!user) {
@@ -56,11 +36,8 @@ const Clubs = () => {
       return;
     }
     setLoading(true);
-<<<<<<< HEAD
-=======
-    setClubs([])
-   
->>>>>>> master
+    setClubs([]);
+    
     try {
       const config = {
         headers: {
@@ -69,26 +46,17 @@ const Clubs = () => {
       };
 
       const { data } = await axios.get(
-<<<<<<< HEAD
-        `/api/clubs/${user.country}/${provience}`,
-=======
         `/api/clubs/${user.country}/${province}`,
->>>>>>> master
         config
       );
       setClubs(data);
       setLoading(false);
     } catch (error) {
-<<<<<<< HEAD
-      console.error("Error fetching or creating clubs:", error);
-    }
-  }, [user, setClubs, provience]);
-=======
+      console.log(error);
       setClubs([]);
       setLoading(false);
     }
-  }, [user, setClubs, province]);
->>>>>>> master
+  }, [user, setClubs, province ]);
 
   useEffect(() => {
     if (!user) {
@@ -99,10 +67,6 @@ const Clubs = () => {
   }, [fetchClubs, navigate, user]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    if (!user) navigate("/dashboard");
-=======
->>>>>>> master
 
     const fetchSubdivisions = async () => {
       const states = getStatesOfCountry(user?.country);
@@ -110,9 +74,6 @@ const Clubs = () => {
     };
 
     fetchSubdivisions();
-<<<<<<< HEAD
-  }, [user]);
-=======
   }, [user?.country]);
 
   const handleCreateClub = () => {
@@ -140,27 +101,11 @@ const Clubs = () => {
       });
     }
   };
->>>>>>> master
 
   return (
     <Box
       display="flex"
       flexDir="column"
-<<<<<<< HEAD
-      backgroundColor="white"
-      width="100%"
-      height={"100%"}
-      position={"relative"}
-    >
-      <Box
-        position={"fixed"}
-        background={"Background"}
-        zIndex={10}
-        width="100%"
-      >
-        <UpperNav />
-      </Box>
-=======
       backgroundColor="whitesmoke"
       width="100%"
       overflowX={"auto"}
@@ -169,17 +114,12 @@ const Clubs = () => {
       minH={"100vh"}
     >
         <UpperNav />
->>>>>>> master
       <Text
         textAlign="center"
         fontSize={"large"}
         fontWeight={"bold"}
         p={3}
-<<<<<<< HEAD
-        mt={14}
-=======
         mt={20}
->>>>>>> master
       >
         Country: {user?.country} {flag}
       </Text>
@@ -188,10 +128,6 @@ const Clubs = () => {
         flexDir={"column"}
         justifyContent={"center"}
         alignItems={"center"}
-<<<<<<< HEAD
-        width={"100%"}
-        backgroundColor="Background"
-=======
         width={{ base: "97%", md: "70%" }}
         boxShadow="dark-lg"
         p="6"
@@ -199,7 +135,6 @@ const Clubs = () => {
         bg="white"
         fontStyle={"italic"}
         mb={"6"}
->>>>>>> master
       >
         <FormControl
           id="provinces"
@@ -215,29 +150,17 @@ const Clubs = () => {
             justifyContent={"center"}
             alignItems={"center"}
             width={"100%"}
-<<<<<<< HEAD
-            value={provience}
-            onChange={(e) => {
-              setProvience(e.target.value);
-=======
             isDisabled={loading}
             value={province}
             onChange={(e) => {
               setProvince(e.target.value);
->>>>>>> master
               fetchClubs(e.target.value);
             }}
           >
             {subdivisions &&
-<<<<<<< HEAD
-              subdivisions.map((subdivision) => (
-                <option
-                  key={subdivision.value}
-=======
               subdivisions.map((subdivision, index) => (
                 <option
                   key={index}
->>>>>>> master
                   value={subdivision.value}
                   style={{ color: "black" }}
                 >
@@ -247,14 +170,9 @@ const Clubs = () => {
           </Select>
         </FormControl>
         <Text fontSize={"larger"} fontWeight={"bold"} textColor={"darkgreen"}>
-<<<<<<< HEAD
-          Available Clubs in {provience}
-        </Text>
-=======
           Available Clubs in {province}
         </Text>
 
->>>>>>> master
         <Box
           display={"flex"}
           flexDir={"column"}
@@ -265,31 +183,6 @@ const Clubs = () => {
           p={0}
           borderRadius={3}
           width={{ base: "100%", md: "80%" }}
-<<<<<<< HEAD
-        >
-          {" "}
-          {loading && <Spinner />}
-          {clubs && clubs.length > 0 ? (
-            clubs.map((club, index) => (
-              <Button
-                key={club.code}
-                width={"90%"}
-                onClick={() => navigate(`/showclub/${club._id}/${false}`)}
-              >
-                {index + 1}. Club: {club.name}, Reg no: {club.code}
-              </Button>
-            ))
-          ) : (
-            <>
-              <Text textAlign={"center"}>
-                <Image
-                  src="https://res.cloudinary.com/dvc7i8g1a/image/upload/v1708443842/icons8-here-80_oa8vme.png"
-                  width={7}
-                />
-              </Text>
-              <Text>No Clubs in this region</Text>
-            </>
-=======
          >
           {" "}
           {loading ? (
@@ -338,7 +231,6 @@ const Clubs = () => {
                 </>
               )}
             </Box>
->>>>>>> master
           )}
         </Box>
 
@@ -349,18 +241,6 @@ const Clubs = () => {
             display={"flex"}
             backgroundColor={"#c255ed"}
             borderRadius={20}
-<<<<<<< HEAD
-            onClick={() => {
-              setFillForm(true);
-            }}
-            m={2}
-          >
-            <Text>
-              {club && club.registered
-                ? "Continue Registering"
-                : "Register Club"}
-            </Text>
-=======
             fontSize={"small"}
             border={"none"}
             onClick={() => {
@@ -371,20 +251,13 @@ const Clubs = () => {
               {club && club.registered
                 ? "Continue Registering"
                 : "Register Club"}
->>>>>>> master
           </Button>
         )}
       </Box>
       {fillForm && <ClubRegistration onClose={() => setFillForm(false)} />}
-<<<<<<< HEAD
-    </Box>
-  );
-};
-=======
       <FooterAchieves/>
     </Box>
   );
 };
 
 export default Clubs;
->>>>>>> master

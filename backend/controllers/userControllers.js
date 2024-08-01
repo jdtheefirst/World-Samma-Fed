@@ -1,10 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Club = require("../models/clubsModel");
-<<<<<<< HEAD
-const Sequence = require("../models/Sequence");
-=======
->>>>>>> master
 const nodemailer = require("nodemailer");
 
 const generateToken = require("../config/generateToken");
@@ -15,19 +11,12 @@ const crypto = require("crypto");
 const axios = require("axios");
 const { DOMParser } = require("@xmldom/xmldom");
 const { getUserSocket } = require("../config/socketUtils");
-<<<<<<< HEAD
-
-dotenv.config({ path: "./secrets.env" });
-const privateEmailPass = process.env.privateEmailPass;
-const privateEmail = "admin@fuckmate.boo";
-=======
 const { getNextNumber } = require("../config/getNextSequence");
 const Admission = require("../models/AdmissionModel");
 
 dotenv.config({ path: "./secrets.env" });
 const privateEmailPass = process.env.privateEmailPass;
 const privateEmail = "support@worldsamma.org";
->>>>>>> master
 
 const registerUsers = asyncHandler(async (req, res) => {
   const {
@@ -39,11 +28,8 @@ const registerUsers = asyncHandler(async (req, res) => {
     selectedCountry,
     otherName,
     provinces,
-<<<<<<< HEAD
-=======
     passport,
     language,
->>>>>>> master
   } = req.body;
 
   if (
@@ -53,97 +39,6 @@ const registerUsers = asyncHandler(async (req, res) => {
     !gender ||
     !selectedCountry ||
     !otherName ||
-<<<<<<< HEAD
-    !provinces
-  ) {
-    res.status(400);
-    throw new Error("Please enter all fields");
-  }
-
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists, login");
-  }
-  const getNextAdminNumber = async () => {
-    const sequence = await Sequence.findOneAndUpdate(
-      {},
-      { $inc: { number: 1 } },
-      { new: true }
-    );
-
-    if (!sequence || sequence.number > 999999999) {
-      await Sequence.updateOne({}, { number: 1 }, { upsert: true });
-    }
-    const currentNumber = sequence ? sequence.number : 1;
-
-    const paddedNumber = currentNumber.toString().padStart(9, "0");
-
-    const suffix = generateSuffix((currentNumber - 1) % 702);
-
-    const adminNumber = `${paddedNumber}${suffix}`;
-
-    return adminNumber;
-  };
-
-  const generateSuffix = (index) => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const base = letters.length;
-
-    let suffix = "";
-    while (index >= 0) {
-      suffix = letters[index % base] + suffix;
-      index = Math.floor(index / base) - 1;
-    }
-
-    return suffix;
-  };
-
-  const admission = await getNextAdminNumber("U");
-  const user = {
-    name,
-    email,
-    password,
-    gender,
-    pic,
-    admission,
-    selectedCountry,
-    otherName,
-    provinces,
-  };
-
-  const userInfo = await User.create(user);
-
-  if (userInfo) {
-    const responseData = {
-      _id: userInfo._id,
-      name: userInfo.name,
-      otherName: userInfo.otherName,
-      admission: userInfo.admission,
-      email: userInfo.email,
-      gender: userInfo.gender,
-      country: userInfo.selectedCountry,
-      provinces: userInfo.provinces,
-      pic: userInfo.pic,
-      belt: userInfo.belt,
-      physicalCoach: userInfo.physicalCoach,
-      coach: userInfo.coach,
-      certificates: userInfo.certificates,
-      clubRequests: userInfo.clubRequests,
-      token: generateToken(userInfo._id),
-    };
-
-    res.status(201).json(responseData);
-  } else {
-    res.status(400);
-    throw new Error("Failed to create the account, try again after some time.");
-  }
-});
-const forgotEmail = async (req, res) => {
-  const { email } = req.params;
-
-  const userInfo = await User.findOne({ email });
-=======
     !language ||
     !passport
   ) {
@@ -238,32 +133,12 @@ const forgotEmail = async (req, res) => {
   let admissionInfo = await Admission.findOne({ email });
 
   userInfo = userInfo || admissionInfo;
->>>>>>> master
   if (userInfo) {
     const verificationCode = Math.floor(
       100000 + Math.random() * 900000
     ).toString();
 
     let transporter = nodemailer.createTransport({
-<<<<<<< HEAD
-      service: "gmail",
-      auth: {
-        userInfo: privateEmail,
-        pass: privateEmailPass,
-      },
-    });
-    const mailOptions = {
-      from: privateEmail,
-      to: email,
-      subject: "Recover Your Email",
-      text: `Your recovery code is:  ${verificationCode}
-    
-This is system's generated code, please do not reply.`,
-    };
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        res.status(400).json({ message: "Email Sending Failed" });
-=======
       host: "mail.privateemail.com",
       port: 465, // or 587 if using STARTTLS
       secure: true, // if using SSL/TLS
@@ -304,7 +179,6 @@ This is system's generated code, please do not reply.`,
       if (error) {
         res.status(400).json({ message: "Email Sending Failed" });
         console.log(error);
->>>>>>> master
       } else {
         console.log("Email sent: " + info.response);
         res.status(200).json({ verificationCode, email });
@@ -312,15 +186,6 @@ This is system's generated code, please do not reply.`,
     });
   } else {
     res.json(false);
-<<<<<<< HEAD
-    throw new Error("Email not Found in the database");
-  }
-};
-const searchUser = async (req, res) => {
-  const { email } = req.params;
-
-  const userInfo = await User.findOne({ email });
-=======
     throw new Error({ message: "Email not Found in the database" });
   }
 };
@@ -333,7 +198,6 @@ const searchUser = async (req, res) => {
 
   userInfo = userInfo || admissionInfo;
 
->>>>>>> master
   if (!userInfo) {
     res.status(201).json("Unfound");
   } else {
@@ -352,13 +216,10 @@ const searchUser = async (req, res) => {
       coach: userInfo.coach,
       certificates: userInfo.certificates,
       clubRequests: userInfo.clubRequests,
-<<<<<<< HEAD
-=======
       nationalRequests: userInfo.nationalRequests,
       wsf: userInfo.WSF,
       language: userInfo.language,
       provinceRequests: userInfo.provinceRequests,
->>>>>>> master
     };
     res.status(201).json(responseData);
   }
@@ -368,17 +229,11 @@ const recoverEmail = async (req, res) => {
   const { password } = req.body;
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-<<<<<<< HEAD
-  const userInfo = await User.findOneAndUpdate(
-=======
   let userInfo = await User.findOneAndUpdate(
->>>>>>> master
     { email: email },
     { password: hashedPassword },
     { new: true }
   );
-<<<<<<< HEAD
-=======
   let admissionInfo = await Admission.findOneAndUpdate(
     { email: email },
     { password: hashedPassword },
@@ -390,7 +245,6 @@ const recoverEmail = async (req, res) => {
   }
   userInfo = userInfo || admissionInfo;
 
->>>>>>> master
   try {
     if (userInfo) {
       const responseData = {
@@ -406,13 +260,10 @@ const recoverEmail = async (req, res) => {
         belt: userInfo.belt,
         physicalCoach: userInfo.physicalCoach,
         coach: userInfo.coach,
-<<<<<<< HEAD
-=======
         nationalRequests: userInfo.nationalRequests,
         wsf: userInfo.WSF,
         language: userInfo.language,
         provinceRequests: userInfo.provinceRequests,
->>>>>>> master
         certificates: userInfo.certificates,
         clubRequests: userInfo.clubRequests,
       };
@@ -427,11 +278,6 @@ const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-<<<<<<< HEAD
-    const userInfo = await User.findOne({ email });
-
-    if (userInfo && (await userInfo.comparePassword(password))) {
-=======
     let userInfo = await User.findOne({ email: email });
     let admissionInfo = await Admission.findOne({ admission: email });
 
@@ -441,7 +287,6 @@ const authUser = asyncHandler(async (req, res) => {
     userInfo = userInfo || admissionInfo;
 
     if (await userInfo.comparePassword(password)) {
->>>>>>> master
       res.json({
         _id: userInfo._id,
         admission: userInfo.admission,
@@ -454,17 +299,6 @@ const authUser = asyncHandler(async (req, res) => {
         coach: userInfo.coach,
         certificates: userInfo.certificates,
         pic: userInfo.pic,
-<<<<<<< HEAD
-        token: generateToken(userInfo._id),
-        clubRequests: userInfo.clubRequests,
-      });
-    } else {
-      res.status(401);
-      throw new Error("Invalid Email or Password");
-    }
-  } catch (error) {
-    console.log(error);
-=======
         belt: userInfo.belt,
         nationalRequests: userInfo.nationalRequests,
         provinceRequests: userInfo.provinceRequests,
@@ -479,22 +313,12 @@ const authUser = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log("We have an error", error);
     res.status(500).json({ message: "Server error" });
->>>>>>> master
   }
 });
 
 const getInfo = async (req, res) => {
-<<<<<<< HEAD
-  console.log("getuserinfo route");
-
   const { userId } = req.params;
 
-  console.log("getuserinfo route");
-
-=======
-  const { userId } = req.params;
-
->>>>>>> master
   try {
     const userInfo = await User.findById(userId);
 
@@ -505,10 +329,6 @@ const getInfo = async (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-<<<<<<< HEAD
-  console.log("Route reached");
-=======
->>>>>>> master
   const { country, provience } = req.params;
 
   if (!country || !provience) {
@@ -516,15 +336,6 @@ const getUsers = async (req, res) => {
   }
 
   try {
-<<<<<<< HEAD
-    const allUsers = await User.find({
-      selectedCountry: country,
-      provinces: provience,
-      $and: [{ coach: null }, { physicalCoach: null }],
-    });
-
-    res.json(allUsers);
-=======
     const [userInfo, admissionInfo] = await Promise.all([
       User.find({
         selectedCountry: country,
@@ -541,7 +352,6 @@ const getUsers = async (req, res) => {
     const allInfo = [...userInfo, ...admissionInfo];
 
     res.json(allInfo);
->>>>>>> master
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -618,17 +428,9 @@ const deleteImage = async (req, res) => {
       .json({ error: "An error occurred while deleting the image" });
   }
 };
-<<<<<<< HEAD
-const authorizeUser = async (req, res) => {
-  console.log("Did we just access this route?");
-  const { userEmail } = req.params;
-
-  console.log(userEmail);
-=======
 
 const authorizeUser = async (req, res) => {
   const { userEmail } = req.params;
->>>>>>> master
 
   const verificationCode = Math.floor(
     100000 + Math.random() * 900000
@@ -639,24 +441,6 @@ const authorizeUser = async (req, res) => {
     port: 465,
     secure: true,
     auth: {
-<<<<<<< HEAD
-      userInfo: privateEmail,
-      pass: privateEmailPass,
-    },
-  });
-  const mailOptions = {
-    from: privateEmail,
-    to: userEmail,
-    subject: "Verify Your Email",
-    text: `Your verification code is:  ${verificationCode}
-    
-This is system's generated code, please do not reply.`,
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      res.status(400).json({ message: "Email Sending Failed" });
-      console.log(error);
-=======
       user: privateEmail,
       pass: privateEmailPass,
     },
@@ -693,17 +477,12 @@ This is system's generated code, please do not reply.`,
     if (error) {
       res.status(400).json({ message: "Email Sending Failed" });
       console.log("This is the error", error);
->>>>>>> master
     } else {
       console.log("Email sent: " + info.response);
       res.status(200).json(verificationCode);
     }
   });
 };
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 const getAdsInfo = async (req, res) => {
   const acceptLanguage = req.headers["accept-language"] || "en-US";
   const referrer = req.headers.referer || "unknown";
@@ -738,56 +517,6 @@ const getAdsInfo = async (req, res) => {
 const clubRequests = async (req, res) => {
   const { country, provience, name, userId } = req.params;
   const socket = getIO();
-<<<<<<< HEAD
-
-  const loggedUser = req.user._id;
-  const getNextClubNumber = async (prefix, initialSequence = 1) => {
-    const sequence = await Sequence.findOneAndUpdate(
-      { prefix },
-      { $inc: { number: 1 } },
-      { new: true }
-    );
-
-    if (!sequence || sequence.number > 9999999) {
-      await Sequence.updateOne(
-        { prefix },
-        { number: initialSequence },
-        { upsert: true }
-      );
-    }
-
-    const currentNumber = sequence ? sequence.number : initialSequence;
-
-    const paddedNumber = currentNumber.toString().padStart(8, "0");
-
-    const suffix = generateSuffix((currentNumber - 1) % 702);
-
-    const clubNumber = `${prefix}${paddedNumber}${suffix}`;
-
-    return clubNumber;
-  };
-
-  const generateSuffix = (index) => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const base = letters.length;
-
-    let suffix = "";
-    while (index >= 0) {
-      suffix = letters[index % base] + suffix;
-      index = Math.floor(index / base) - 1;
-    }
-
-    return suffix;
-  };
-
-  let club;
-
-  try {
-    club = await Club.findOne({ coach: loggedUser });
-
-    if (!club) {
-      const clubCode = await getNextClubNumber("C");
-=======
   const loggedUser = req.user._id;
 
   try {
@@ -795,7 +524,6 @@ const clubRequests = async (req, res) => {
 
     if (!club) {
       const clubCode = await getNextNumber("C", 8);
->>>>>>> master
 
       club = await Club.create({
         name: name,
@@ -806,47 +534,6 @@ const clubRequests = async (req, res) => {
         provience: provience,
         clubRequests: userId,
       });
-<<<<<<< HEAD
-
-      const userInfo = await User.findById(userId);
-      if (userInfo) {
-        userInfo.clubRequests.push(club._id);
-        await userInfo.save();
-      }
-      const recipientSocketId = getUserSocket(userId);
-
-      if (recipientSocketId) {
-        socket.to(recipientSocketId).emit("sent request", club);
-      } else {
-        console.log("Recipient not connected");
-      }
-
-      res.json(club);
-    } else {
-      club.clubRequests.push(userId);
-      await club.save();
-
-      const userInfo = await User.findById(userId);
-      if (userInfo) {
-        userInfo.clubRequests.push(club._id);
-        await userInfo.save();
-      }
-
-      const recipientSocketId = getUserSocket(userId);
-
-      if (recipientSocketId) {
-        socket.to(recipientSocketId).emit("sent request", club);
-      } else {
-        console.log("Recipient not connected");
-      }
-
-      res.json(club);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-=======
     } else {
       club.clubRequests.push(userId);
       await club.save();
@@ -880,18 +567,11 @@ const clubRequests = async (req, res) => {
   }
 };
 
->>>>>>> master
 const certificate = async (req, res) => {
   const { userId } = req.params;
   const { sendCertificate } = req.body;
   const socket = getIO();
   try {
-<<<<<<< HEAD
-    const userInfo = await User.findById(userId);
-    if (userInfo) {
-      userInfo.certificates.push(sendCertificate);
-      await userInfo.save();
-=======
     let userInfo = await User.findOne({ email: email });
     let admissionInfo = await Admission.findOne({ admission: email });
 
@@ -921,17 +601,12 @@ const certificate = async (req, res) => {
         userInfo.certificates.push(sendCertificate);
         await userInfo.save();
       }
->>>>>>> master
     }
 
     const recipientSocketId = getUserSocket(userId);
 
     if (recipientSocketId) {
-<<<<<<< HEAD
-      socket.to(recipientSocketId).emit("certificates", userInfo.certificates);
-=======
       socket.to(recipientSocketId).emit("certificates", userInfo);
->>>>>>> master
     } else {
       console.log("Recipient not connected");
     }
@@ -939,10 +614,6 @@ const certificate = async (req, res) => {
     console.log(error);
   }
 };
-<<<<<<< HEAD
-
-module.exports = {
-=======
 const submitAdmissionForm = async (req, res) => {
   const userId = req.user._id;
   const {
@@ -985,7 +656,6 @@ const submitAdmissionForm = async (req, res) => {
 
 module.exports = {
   submitAdmissionForm,
->>>>>>> master
   authorizeUser,
   registerUsers,
   forgotEmail,
@@ -1000,8 +670,5 @@ module.exports = {
   getAdsInfo,
   clubRequests,
   certificate,
-<<<<<<< HEAD
-=======
   allUsers,
->>>>>>> master
 };

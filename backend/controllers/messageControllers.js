@@ -1,39 +1,14 @@
-<<<<<<< HEAD
-const Message = require("../models/messageModel")
-=======
 const nodemailer = require("nodemailer");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 const adminId = "6693a995f6295b8bd90d9301"; 
 const privateEmailPass = process.env.privateEmailPass;
 const privateEmail = "support@worldsamma.org";
->>>>>>> master
 
 const createMessage = async (req, res) => {
   const { sender, content, userId } = req.body;
 
   try {
-<<<<<<< HEAD
-   const message = new Message({
-  sender: userId,
-  recipient: sender,
-  content: content,
-});
-
-await message.save();
-
-const savedMessage = await Message.findById(message._id)
-  .populate({
-    path: "sender",
-    select: "name admission pic",
-  })
-  .populate({
-    path: "recipient",
-    select: "name admission pic",
-  });
-
-    res.json(savedMessage);
-=======
     if (userId === adminId) {
       // If the sender is the admin, send the message to all users
       const users = await User.find({ _id: { $ne: adminId } });
@@ -113,7 +88,6 @@ const savedMessage = await Message.findById(message._id)
 
       res.json(savedMessage);
     }
->>>>>>> master
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -123,15 +97,6 @@ const savedMessage = await Message.findById(message._id)
 const allMessages = async (req, res) => {
   try {
     const { userId } = req.params;
-<<<<<<< HEAD
-const messages = await Message.find({
-  $or: [
-    { sender: userId },
-    { recipient: userId }
-  ]
-}).populate("sender admission").populate("recipient admission");
-
-=======
     let messages;
 
     if (userId === adminId) {
@@ -179,7 +144,6 @@ const messages = await Message.find({
         messages = [savedMessage];
       }
     }
->>>>>>> master
 
     res.json(messages);
   } catch (error) {
@@ -188,8 +152,4 @@ const messages = await Message.find({
   }
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 module.exports = { createMessage, allMessages};

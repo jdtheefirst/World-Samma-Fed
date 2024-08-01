@@ -1,21 +1,4 @@
 require("dotenv").config({ path: "../secrets.env" });
-<<<<<<< HEAD
-const mongoose = require("mongoose");
-
-const connectDB = async () => {
-  const URL = process.env.MONGO_URI;
-  console.log(URL);
-  try {
-    const connect = await mongoose.connect(URL, {
-
-    });
-    console.log(`MongoDB connected ${connect.connection.host}`);
-  } catch (error) {
-    console.log(`Error: ${error.message}`);
-    process.exit(404);
-  }
-};
-=======
 const mongoose = require("mongoose"); 
 const pollModel = require("../models/pollModel");
 
@@ -56,5 +39,4 @@ const connectDB = async () => {
   }
 };
 
->>>>>>> master
 module.exports = connectDB;

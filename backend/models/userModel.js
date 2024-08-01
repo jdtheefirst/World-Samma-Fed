@@ -9,20 +9,6 @@ const userSchema = mongoose.Schema(
     password: { type: String, required: true },
     pic: {
       type: String,
-<<<<<<< HEAD
-
-      default:
-        "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
-    },
-    admission: { type: String, required: true, unique: true },
-    selectedCountry: { type: String },
-    gender: { type: String },
-    provinces: { type: String },
-    belt: { type: String, default: "Visitor" },
-    coach: { type: mongoose.Schema.Types.ObjectId, ref: "Club", default: null },
-    certificates: { type: Array, default: [] },
-    admin: { type: Boolean, default: false },
-=======
       default:
         "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1692259839/xqm81bw94x7h6velrwha.png",
     },
@@ -37,23 +23,11 @@ const userSchema = mongoose.Schema(
     certificates: { type: Array, default: [] },
     admin: { type: Boolean, default: false },
     WSF: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
->>>>>>> master
     physicalCoach: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-<<<<<<< HEAD
-    clubRequests: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Club",
-      },
-    ],
-  },
-  { versionKey: false },
-  { timestamps: true }
-=======
     clubRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Club" }],
     provinceRequests: [
       { type: mongoose.Schema.Types.ObjectId, ref: "ProvincialCoach" },
@@ -63,7 +37,6 @@ const userSchema = mongoose.Schema(
     ],
   },
   { versionKey: false, timestamps: true }
->>>>>>> master
 );
 
 userSchema.methods.comparePassword = async function (enteredPassword) {

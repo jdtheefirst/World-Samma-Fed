@@ -48,7 +48,6 @@ const AdmissionForm = () => {
   const [student, setStudent] = useState(null);
   const [phone, setPhone] = useState("");
   const [pic, setPic] = useState("");
-  const [register, setRegister] = useState(false);
   const { user } = ChatState();
   const [picLoading, setPicLoading] = useState(false);
   const toast = useToast();
@@ -164,14 +163,10 @@ const AdmissionForm = () => {
       selectedCountry,
       provinces,
       language,
-      id,
-      phoneNumber,
-      email,
       password,
       confirmpassword,
       gender,
     } = formData;
-    console.log(pic);
 
     if (
       !name ||

@@ -1,23 +1,8 @@
-<<<<<<< HEAD
-import { Image, Text } from "@chakra-ui/react";
-import styled from "styled-components";
-import { keyframes } from "styled-components";
-import black from "../blackBelt.png";
-import blue from "../blueBelt.png";
-import brown from "../brownBelt.png";
-import green from "../greenBelt.png";
-import orange from "../orangeBelt.png";
-import purple from "../pupleBelt.png";
-import red from "../redBelt.png";
-import yellow from "../yellowBelt.png";
-import beginner from "../beginner.png";
-
-=======
 import { Text } from "@chakra-ui/react";
 import styled from "styled-components";
 import { keyframes } from "styled-components";
 import { GiBlackBelt } from "react-icons/gi";
->>>>>>> master
+
 const ProgressContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -26,10 +11,6 @@ const ProgressContainer = styled.div`
   width: 100%;
   padding: 0;
   margin: 0;
-<<<<<<< HEAD
-  border: 1px solid #ccc;
-=======
->>>>>>> master
 `;
 
 const ProgressSlot = styled.div`
@@ -54,8 +35,6 @@ const progressAnimation = keyframes`
   }
 `;
 
-<<<<<<< HEAD
-=======
 const blinkingAnimation = keyframes`
   0%, 100% {
     background-color: #ed7d66; /* Slightly less green color */
@@ -65,7 +44,6 @@ const blinkingAnimation = keyframes`
   }
 `;
 
->>>>>>> master
 const ProgressArrow = styled.div`
   position: absolute;
   bottom: 0;
@@ -80,25 +58,6 @@ const ProgressArrow = styled.div`
   margin: 0;
   padding: 0;
   width: ${({ level }) => (level + 1) * 10}%;
-<<<<<<< HEAD
-  animation: ${progressAnimation} 2s ease-in-out;
-`;
-const Progress = ({ userBelt }) => {
-  const progressLevels = [
-    "Visitor",
-    `${beginner}`,
-    `${yellow}`,
-    `${orange}`,
-    `${red}`,
-    `${purple}`,
-    `${green}`,
-    `${blue}`,
-    `${brown}`,
-    `${black}`,
-  ];
-  const progress = [
-    "Visitor",
-=======
   animation: ${progressAnimation} 2s ease-in-out,
     ${blinkingAnimation} 3s ease-in-out infinite;
 `;
@@ -118,7 +77,6 @@ const Progress = ({ userBelt }) => {
   ];
   const progress = [
     "Guest" || undefined,
->>>>>>> master
     "Beginner",
     "Yellow",
     "Orange",
@@ -142,25 +100,17 @@ const Progress = ({ userBelt }) => {
             fontSize={{ base: "10px", md: "md" }}
             textAlign="center"
           >
-<<<<<<< HEAD
-            {index > 0 ? <Image src={belt} alt="Belt" height={5} /> : belt}
-=======
             {index > 0 ? (
               <GiBlackBelt style={{ color: belt, fontSize: "1.5rem" }} />
             ) : (
               belt
             )}
->>>>>>> master
           </Text>
         </ProgressSlot>
       ))}
       <ProgressArrow level={level}>
         {" "}
-<<<<<<< HEAD
-        <Text fontSize={"small"} p={1}>
-=======
         <Text textAlign={"center"} fontSize={"small"} p={1}>
->>>>>>> master
           {(level + 1) * 10}%
         </Text>{" "}
       </ProgressArrow>

@@ -3,31 +3,6 @@ import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
-<<<<<<< HEAD
-  Center,
-  Spinner,
-  Text,
-  useColorModeValue,
-} from "@chakra-ui/react";
-import { ChatState } from "../components/Context/ChatProvider";
-import { getStatesOfCountry } from "../assets/state";
-import UpperNav from "../miscellenious/upperNav";
-import axios from "axios";
-import ProvincialCoachForm from "../Authentication/ProvinceInterim";
-
-const Provience = () => {
-  const { user } = ChatState();
-  const [loading, setLoading] = useState(false);
-  const [clubs, setClubs] = useState([]);
-  const navigate = useNavigate();
-
-  console.log(user);
-  const fetchClubs = useCallback(async () => {
-    if (!user) {
-      navigate("/dashboard");
-      return;
-    }
-=======
   Spinner,
   Text,
   useToast,
@@ -51,7 +26,6 @@ const Provience = () => {
   const toast = useToast();
 
   const getDonations = useCallback(async () => {
->>>>>>> master
     setLoading(true);
     try {
       const config = {
@@ -59,28 +33,6 @@ const Provience = () => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-<<<<<<< HEAD
-
-      const { data } = await axios.get(
-        `/api/clubs/${user.country}/${user.provinces}`,
-        config
-      );
-      setClubs(data);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error("Error fetching or creating clubs:", error);
-    }
-  }, [user, setClubs]);
-  console.log(clubs);
-  useEffect(() => {
-    if (!user) {
-      navigate("/dashboard");
-      return;
-    }
-    fetchClubs();
-  }, [fetchClubs, navigate, user]);
-=======
       const { data } = await axios.get(`/api/donate/province`, config);
       setDonation(data);
       setLoading(false);
@@ -118,17 +70,11 @@ const Provience = () => {
       setShow(true);
     }
   };
->>>>>>> master
 
   return (
     <Box
       display="flex"
       flexDir="column"
-<<<<<<< HEAD
-      backgroundColor="Background"
-      overflowY={"auto"}
-      width="100%"
-=======
       alignItems={"center"}
       justifyContent={"space-between"}
       backgroundColor="whitesmoke"
@@ -136,7 +82,6 @@ const Provience = () => {
       width="100%"
       minH={"100vh"}
       p={"6"}
->>>>>>> master
     >
       <UpperNav />
       <Box
@@ -147,53 +92,11 @@ const Provience = () => {
         mt={20}
       >
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
-<<<<<<< HEAD
-          Country: {user?.country}
-=======
           Country: {user?.country} {flag}
->>>>>>> master
         </Text>
         <Text textAlign="center" fontSize={"large"} fontWeight={"bold"} p={3}>
           {user?.provinces} Samma Association
         </Text>
-<<<<<<< HEAD
-
-        <Box
-          height={"200px"}
-          width={{ base: "97%", md: "70%" }}
-          overflowY={"scroll"}
-          m={1}
-        >
-          <Text textAlign={"start"}>Registered clubs</Text>
-          {loading && <Spinner />}
-          {clubs &&
-            clubs.map((subdivision) => (
-              <Button
-                border={"1px solid #e803fc"}
-                m={1}
-                key={subdivision._id}
-                onClick={() =>
-                  navigate(`/showclub/${subdivision._id}/${false}`)
-                }
-              >
-                {subdivision.name}
-                <Text
-                  fontSize={"xm"}
-                  bg={useColorModeValue("green.50", "green.900")}
-                  color={"green.500"}
-                  rounded={"full"}
-                >
-                  (*
-                  {subdivision.registration ? "Registered" : "Unregistered"})
-                </Text>
-              </Button>
-            ))}
-        </Box>
-        <Box>
-          <Text>Officials: Viable Seat</Text>
-          <ProvincialCoachForm />
-        </Box>
-=======
         <Box textAlign={"center"}>
           {loading ? (
             <Spinner size={"sm"} />
@@ -265,7 +168,6 @@ const Provience = () => {
           )}
         </Box>
         <FooterAchieves/>
->>>>>>> master
       </Box>
     </Box>
   );

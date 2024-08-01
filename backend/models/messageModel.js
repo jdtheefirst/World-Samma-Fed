@@ -11,10 +11,7 @@ const messageModel = mongoose.Schema(
       ref: "User",
     },
     content: { type: String, trim: true },
-<<<<<<< HEAD
-=======
     isBroadcast: {type: Boolean, default: false},
->>>>>>> master
   },
   {
     timestamps: true,

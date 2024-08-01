@@ -1,11 +1,7 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
-<<<<<<< HEAD
-import { VStack } from "@chakra-ui/layout";
-=======
 import { Box, VStack } from "@chakra-ui/layout";
->>>>>>> master
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -24,11 +20,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
-
-import { GoogleOAuthProvider } from "@react-oauth/google";
-=======
->>>>>>> master
 import GoogleLoginButton from "./Google";
 import { ChatState } from "../components/Context/ChatProvider";
 
@@ -72,22 +63,6 @@ const Login = () => {
         { email, password },
         config
       );
-<<<<<<< HEAD
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setLoading(false);
-
-      navigate("/dashboard");
-    } catch (error) {
-      setLoading(false);
-      toast({
-        title: "Account Missing!",
-        description: "Wrong Email or Password",
-        status: "info",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-=======
       await localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/dashboard");
@@ -112,7 +87,6 @@ const Login = () => {
           position: "bottom",
         });
       }
->>>>>>> master
     }
   };
   const forgotPassword = async () => {
@@ -140,10 +114,6 @@ const Login = () => {
         setDisable(false);
       }, 30000);
     } catch (error) {
-<<<<<<< HEAD
-=======
-      console.log(error);
->>>>>>> master
       setSearching(false);
       setTimeout(() => {
         setDisable(false);
@@ -160,21 +130,6 @@ const Login = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <VStack spacing="10px">
-      <FormControl id="email" isRequired>
-        <FormLabel textColor={"white"}>Email Address</FormLabel>
-        <Input
-          value={email}
-          textColor={"white"}
-          type="email"
-          placeholder="Enter Your Email Address"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </FormControl>
-      <FormControl id="password" isRequired>
-        <FormLabel textColor={"white"}>Password</FormLabel>
-=======
     <VStack spacing="5px">
       <Box mb={"6"} fontWeight={"bold"}>
               <h1>Welcome Back!</h1>
@@ -193,17 +148,12 @@ const Login = () => {
       </FormControl>
       <FormControl id="password-login" isRequired>
         <FormLabel fontSize={"small"}>Password</FormLabel>
->>>>>>> master
         <InputGroup size="md">
           <Input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={show ? "text" : "password"}
-<<<<<<< HEAD
-            textColor={"white"}
-=======
             fontSize={"small"}
->>>>>>> master
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
@@ -219,21 +169,12 @@ const Login = () => {
         style={{ marginTop: 15 }}
         onClick={submitHandler}
         isLoading={loading}
-<<<<<<< HEAD
-      >
-        Login
-      </Button>
-      <GoogleOAuthProvider clientId="836402802539-eqr9obfujd1q8heagf9luptlmcid62ss.apps.googleusercontent.com">
-        <GoogleLoginButton />
-      </GoogleOAuthProvider>
-=======
         border={"none"}
         fontSize={"small"}
       >
         Login
       </Button>
         <GoogleLoginButton />
->>>>>>> master
       <Link
         onClick={() => {
           onOpen();
@@ -241,35 +182,16 @@ const Login = () => {
       >
         Forgot password?
       </Link>
-<<<<<<< HEAD
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-=======
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered closeOnOverlayClick={false}>
       <ModalOverlay
       bg="blackAlpha.300"
       backdropFilter="blur(10px) hue-rotate(90deg)"
     />
->>>>>>> master
         <ModalContent padding={5}>
           <ModalHeader
             fontSize="40px"
             fontFamily="Work sans"
             display="flex"
-<<<<<<< HEAD
-            justifyContent="center"
-          >
-            <Text
-              textAlign={"center"}
-              justifyContent={"center"}
-              fontSize={"2xl"}
-              textColor={"white"}
-            >
-              Enter your Email below
-            </Text>
-          </ModalHeader>
-          <ModalCloseButton />
-=======
             flexDir={"column"}
             justifyContent="space-between"
             alignItems={"center"}
@@ -280,7 +202,6 @@ const Login = () => {
            </Text>
           </ModalHeader>
           <ModalCloseButton border={"none"}/>
->>>>>>> master
           <ModalBody
             display="flex"
             flexDirection="column"
@@ -288,17 +209,9 @@ const Login = () => {
             justifyContent="space-between"
           >
             <Input
-<<<<<<< HEAD
-              fontSize={"2xl"}
-              placeholder={`example@mymail.com`}
-              type="text"
-              textColor={"white"}
-              textAlign="center"
-=======
               placeholder={`Enter your email here`}
               fontSize={"small"}
               type="text"
->>>>>>> master
               onChange={(e) => setForgotEmail(e.target.value)}
               value={forgotEmail}
             />
@@ -310,20 +223,13 @@ const Login = () => {
               }}
               colorScheme="green"
               isDisabled={disable}
-<<<<<<< HEAD
-=======
               border={"none"}
->>>>>>> master
             >
               {disable ? "Try again after 30sec" : "Search for my email"}
             </Button>
           </ModalBody>
           <ModalFooter display="flex">
-<<<<<<< HEAD
-            <Text textAlign={"start"} textColor={"white"}>
-=======
             <Text textAlign={"start"}>
->>>>>>> master
               A code will be sent to the above email
             </Text>
             {searching && <Spinner />}

@@ -1,54 +1,8 @@
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input } from "@chakra-ui/input";
-<<<<<<< HEAD
-import { Box, VStack } from "@chakra-ui/layout";
-import React, { useState } from "react";
-
-const ProvincialCoachForm = () => {
-  const [formData, setFormData] = useState({
-    chairman: "",
-    secretary: "",
-    viceChairman: "",
-    provincialCoach: "",
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    setFormData({
-      chairman: "",
-      secretary: "",
-      viceChairman: "",
-      provincialCoach: "",
-    });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <VStack spacing={4} align="stretch" width={"100%"}>
-        <Box></Box>
-        <FormControl id="chairman">
-          <FormLabel>Chairman</FormLabel>
-          <Input
-            type="text"
-            name="chairman"
-            value={formData.chairman}
-            onChange={handleInputChange}
-          />
-        </FormControl>
-        <FormControl id="secretary">
-=======
-import { Box, Center, Text, VStack } from "@chakra-ui/layout";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Box, Text, VStack } from "@chakra-ui/layout";
+import React, { useCallback, useEffect, useState } from "react";
 import { ChatState } from "../components/Context/ChatProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -238,24 +192,10 @@ const ProvincialCoachForm = () => {
           />
         </FormControl>
         <FormControl id="secretary" isRequired>
->>>>>>> master
           <FormLabel>Secretary</FormLabel>
           <Input
             type="text"
             name="secretary"
-<<<<<<< HEAD
-            value={formData.secretary}
-            onChange={handleInputChange}
-          />
-        </FormControl>
-        <FormControl id="vice-chairman">
-          <FormLabel>Vice Chairman</FormLabel>
-          <Input
-            type="text"
-            name="viceChairman"
-            value={formData.viceChairman}
-            onChange={handleInputChange}
-=======
             value={secretary}
             placeholder="Input valid adm of the party"
             isInvalid={
@@ -275,7 +215,6 @@ const ProvincialCoachForm = () => {
               !province?.approvals.some((adm) => adm.admission === viceChair)
             }
             onChange={(e) => setViceChair(e.target.viceChair)}
->>>>>>> master
           />
         </FormControl>
         <FormControl id="provincial-coach">
@@ -283,13 +222,6 @@ const ProvincialCoachForm = () => {
           <Input
             type="text"
             name="provincialCoach"
-<<<<<<< HEAD
-            value={formData.provincialCoach}
-            onChange={handleInputChange}
-          />
-        </FormControl>
-        <Button type="submit" colorScheme="blue">
-=======
             value={user?.admission}
             isDisabled={true}
           />
@@ -299,7 +231,6 @@ const ProvincialCoachForm = () => {
           colorScheme="blue"
           isDisabled={province?.approvals.length < 20}
         >
->>>>>>> master
           Submit
         </Button>
       </VStack>

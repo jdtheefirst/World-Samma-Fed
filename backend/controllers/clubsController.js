@@ -1,114 +1,10 @@
 const { getIO } = require("../socket");
 const { getUserSocket } = require("../config/socketUtils");
-<<<<<<< HEAD
-const Sequence = require("../models/Sequence");
-=======
->>>>>>> master
 const Club = require("../models/clubsModel");
 const Broadcast = require("../models/coachBroadcast");
 const User = require("../models/userModel");
 
 const registerClubs = async (req, res) => {
-<<<<<<< HEAD
-  const {
-    name,
-    country,
-    province,
-    coach,
-    chair,
-    viceChair,
-    treasurer,
-    members,
-  } = req.body;
-
-  if (
-    !name ||
-    !country ||
-    !province ||
-    !coach ||
-    !chair ||
-    !viceChair ||
-    !treasurer ||
-    !members
-  ) {
-    res.status(400);
-    throw new Error("Please enter all fields");
-  }
-
-  const userExists = await Club.findOne({ coach });
-  if (userExists) {
-    res.status(400);
-    throw new Error("You have an active club already");
-  }
-  const getNextClubNumber = async (prefix, initialSequence = 1) => {
-    const sequence = await Sequence.findOneAndUpdate(
-      { prefix },
-      { $inc: { number: 1 } },
-      { new: true }
-    );
-
-    if (!sequence || sequence.number > 9999999) {
-      await Sequence.updateOne(
-        { prefix },
-        { number: initialSequence },
-        { upsert: true }
-      );
-    }
-
-    const currentNumber = sequence ? sequence.number : initialSequence;
-
-    const paddedNumber = currentNumber.toString().padStart(8, "0");
-
-    const suffix = generateSuffix((currentNumber - 1) % 702);
-
-    const clubNumber = `${prefix}${paddedNumber}${suffix}`;
-
-    return clubNumber;
-  };
-
-  const generateSuffix = (index) => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const base = letters.length;
-
-    let suffix = "";
-    while (index >= 0) {
-      suffix = letters[index % base] + suffix;
-      index = Math.floor(index / base) - 1;
-    }
-
-    return suffix;
-  };
-
-  const clubCode = await getNextClubNumber("C");
-
-  const clubData = {
-    name,
-    country,
-    province,
-    coach,
-    chair,
-    viceChair,
-    treasurer,
-    members,
-    clubCode,
-  };
-
-  try {
-    const club = await Club.create(clubData);
-
-    const populatedClub = await Club.findById(club._id)
-      .populate({ path: "coach" })
-      .populate({
-        path: "membersRequests",
-        select: "name admission",
-      })
-      .populate({
-        path: "members",
-        select: "name admission",
-      });
-
-    res.status(200).json(populatedClub);
-=======
   const { chairperson, secretary, viceChair } = req.body;
   const coachId = req.user._id;
 
@@ -139,29 +35,20 @@ const registerClubs = async (req, res) => {
     {
       return res.status(404).json({ error: "Club not found" });
     }
->>>>>>> master
   } catch (error) {
     throw new Error("Error occurred", error);
   }
 };
-<<<<<<< HEAD
+
 const fetchClubs = async (req, res) => {
   const { country, provience } = req.params;
   try {
-    const clubs = await Club.find({ country, provience });
-=======
-
-const fetchClubs = async (req, res) => {
-  const { country, province } = req.params;
-  try {
     let clubs;
-    if (province) {
-      clubs = await Club.find({ country, province });
+    if (provience) {
+      clubs = await Club.find({ country, provience });
     } else {
-      clubs = await Club.find({ country, province: { $exists: false } });
+      clubs = await Club.find({ country, provience: { $exists: false } });
     }
->>>>>>> master
-
     res.status(200).json(clubs);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -176,19 +63,11 @@ const fetchMyClub = async (req, res) => {
       .populate({ path: "coach" })
       .populate({
         path: "membersRequests",
-<<<<<<< HEAD
-        select: "name admission",
-      })
-      .populate({
-        path: "members",
-        select: "name admission",
-=======
         select: "name admission pic",
       })
       .populate({
         path: "members",
         select: "name admission pic",
->>>>>>> master
       });
 
     if (!populatedClub) {
@@ -287,11 +166,7 @@ const likeClub = async (req, res) => {
 };
 
 const broadcast = async (req, res) => {
-<<<<<<< HEAD
-  const { clubId, coachId } = req.params;
-=======
   const { clubId } = req.params;
->>>>>>> master
 
   try {
     const broadcastMessages = await Broadcast.find({
@@ -427,17 +302,11 @@ const fetchRequests = async (req, res) => {
   const { userId } = req.params;
 
   try {
-<<<<<<< HEAD
-    const user = await User.findById(userId).populate({
-=======
     let user = await User.findById(userId).populate({
->>>>>>> master
       path: "clubRequests",
       select: "name _id",
     });
 
-<<<<<<< HEAD
-=======
     // If user not found in User schema, check in Admission schema
     if (!user) {
       user = await Admission.findById(userId).populate({
@@ -446,7 +315,6 @@ const fetchRequests = async (req, res) => {
       });
     }
 
->>>>>>> master
     if (user) {
       const clubs = user.clubRequests.map((club) => ({
         name: club.name,
@@ -461,24 +329,16 @@ const fetchRequests = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 const declineRequests = async (req, res) => {
   const { userId, clubId } = req.params;
 
   try {
-<<<<<<< HEAD
-    const user = await User.findById(userId);
-=======
     let user = await User.findById(userId);
 
     // If user not found in User schema, check in Admission schema
     if (!user) {
       user = await Admission.findById(userId);
     }
->>>>>>> master
 
     if (user) {
       const clubRequestToRemove = user.clubRequests.find(
