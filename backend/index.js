@@ -13,11 +13,9 @@ const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const downloadRouter = require("./routes/downloadRouter");
 const path = require("path");
-const jwt = require('jsonwebtoken');
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
-const { getIO } = require("./socket");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
