@@ -18,53 +18,12 @@ const testimonials = [
   },
   {
     id: 3,
-    name: "Abu Bakar",
-    role: "Student - Yellow Belt",
-    comment: "Completing my initial belts in the World Samma Federation has been an incredible start to my martial arts journey. The training is intense yet rewarding, and the instructors are incredibly supportive. I am excited to continue progressing and aim for higher belts.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/Abu%20Bakar.jpg",
+    name: "Aisha Hassan ",
+    role: "Student - Black Belt",
+    comment: "Kukamilisha mikanda yangu ya awali katika Shirikisho la Dunia la Samma imekuwa mwanzo wa ajabu wa safari yangu ya sanaa za kijeshi. Mafunzo ni makali lakini yenye thawabu, na waalimu wanatoa msaada mkubwa. Nina hamu ya kuendelea kusonga mbele na kulenga mikanda ya juu zaidi.",
+    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1723032436/ABCD0014_tgsvab.jpg",
   },
-  {
-    id: 4,
-    name: "Vincent Sanya",
-    role: "Student - Yellow Belt",
-    comment: "Starting my training with the World Samma Federation has been a transformative experience. The foundational skills I have acquired have given me confidence and motivation to push further. I look forward to advancing through the ranks and achieving my goals.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/IMG-20240605-WA0000_1_ffblei.jpg",
-  },
-  {
-    id: 5,
-    name: "Caleb Wambua",
-    role: "Novice Instructor - Brown Belt",
-    comment: "The World Samma Federation's online courses are fantastic. I've been able to enhance my skills and knowledge at my own pace, and the certification has opened up new opportunities for me.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721903067/Caleb.jpg",
-  },
-  {
-    id: 6,
-    name: "Peter Mugo",
-    role: "Novice Instructor - Green Belt",
-    comment: "The support from the instructors at World Samma Federation is unmatched. The courses are well-structured and easy to follow, making my learning experience both enjoyable and rewarding.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721903067/peter.jpg",
-  },
-  // {
-  //   id: 7,
-  //   name: "Emily Clark",
-  //   role: "Novice Instructor - Orange Belt",
-  //   comment: "Being a part of the World Samma Federation has been a game-changer for me. The community is supportive, and the opportunities for growth are endless. I'm proud to be an instructor here.",
-  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/emily.jpg",
-  // },
-  // {
-  //   id: 8,
-  //   name: "Nicholas",
-  //   role: "Certified Instructor - 5th degree black belt",
-  //   comment: "From the moment I started my training with the World Samma Federation, I knew I was in the right place. The courses are challenging yet achievable, and the certification process is straightforward.",
-  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/michael.jpg",
-  // },
-  // {
-  //   id: 9,
-  //   name: "Sarah Lee",
-  //   role: "Certified Instructor - 1st degree black belt",
-  //   comment: "Becoming a coach with the World Samma Federation has allowed me to turn my passion into a profession. The training and certification programs are top-notch, and the community support is invaluable.",
-  //   image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721137384/sarah.jpg",
-  // },
+  
 ];
 
 const TestimonialsGrid = () => {
@@ -95,7 +54,7 @@ const TestimonialsGrid = () => {
             <Box position="relative" mb={4}>
               <Image
                 borderRadius="full"
-                boxSize="120px"
+                boxSize="180px"
                 src={testimonial.image}
                 alt={"picture was not provided"}
                 mb={4}
@@ -103,12 +62,11 @@ const TestimonialsGrid = () => {
               <Box
                 position="absolute"
                 bottom="1rem"
+                boxSize={"180px"}
                 left="0"
                 right="0"
-                height={{ base: '1rem', md: '3rem' }}
-                background="linear-gradient(to bottom, rgba(244,244,244,0) 0%, rgba(244,244,244,1) 100%)"
-                borderBottomLeftRadius="full"
-                borderBottomRightRadius="full"
+                background="linear-gradient(to bottom, rgba(244,244,244,0) 75%, rgba(244,244,244,1) 100%)"
+                borderBottomRadius="full"
               />
             </Box>
             <Text fontSize="xl" fontWeight="bold" mb={1} color={cardTextColor}>

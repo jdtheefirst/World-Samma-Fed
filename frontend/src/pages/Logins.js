@@ -31,7 +31,7 @@ const Logins = () => {
         borderWidth="1px"
         fontSize={"small"}
       >
-        <Tabs isFitted variant="soft-rounded" defaultIndex={1}>
+        <Tabs isFitted variant="soft-rounded">
           <TabList>
             <Tab fontSize="small">Login</Tab>
             <Tab fontSize="small">Sign Up</Tab>

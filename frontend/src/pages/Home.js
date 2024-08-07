@@ -14,6 +14,7 @@ import {
   LinkOverlay,
   LinkBox,
   Spinner,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import ErrorBoundary from "../components/ErrorBoundary";
 import "../App.css";
@@ -22,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo1 from "../final.jpeg";
 import logo2 from "../finalLogo2.jpeg";
-import logo7 from "../pilot4.png";
+import logo7 from "../reduced.jpg";
 import logo9 from "../sammahouse.jpeg";
 import logo10 from "../Equity.png";
 import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaTiktok, } from "react-icons/fa";
@@ -37,9 +38,10 @@ import PollComponent from "../components/Polls";
 import { MdMenuOpen } from "react-icons/md";
 import axios from "axios";
 import { ChatState } from "../components/Context/ChatProvider";
+import CoursesGrid from "../components/Courses";
 
 function Homepage() {
-  const [getStarted, setGetStarted] = useState(true);
+  const [getStarted, setGetStarted] = useState(false);
   const {setUser} = ChatState();
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
@@ -260,75 +262,67 @@ function Homepage() {
                 rounded="md"
                 bg="blackAlpha.400"
                 borderRadius={"full"}
-                bottom={{base: "88%", md: "74%"}}
+                bottom={{base: "88%", md: "78%"}}
               />
-              <Text
-                textAlign={"center"}
-                width={"300px"}
-                p={{ base: "3", md: "6" }}
-                m={{ base: "4", md: "1" }}
-                boxShadow="base"
-                textColor={"#000000"}
-                rounded="md"
-                mt={"20px"}
-              >
-                ⭐ Sign up as GUEST (for free) at this WSF Online School so to
-                follow your favorite clubs and be enjoying the splendid
-                presentations(including live performances).
-              </Text>
-              <Text
-                textAlign={"center"}
-                width={"325px"}
-                textColor={"#000000"}
-                p={{ base: "3", md: "6" }}
-                m={{ base: "4", md: "1" }}
-                boxShadow="base"
-                rounded="md"
-              >
-                ⭐ ⭐ Enrol as STUDENT(or enrol your children and/or your other
-                dependants) for step by step online training and certification.
-              </Text>
-              <Text
-                textAlign={"center"}
-                width={"350px"}
-                textColor={"#000000"}
-                p={{ base: "3", md: "6" }}
-                m={{ base: "4", md: "1" }}
-                boxShadow="base"
-                rounded="md"
-              >
-                ⭐ ⭐ ⭐ Form/register your CLUB(S) so to be enjoying the
-                educational, managerial, health, social, financial and other
-                benefits.
-              </Text>
-              <Text
-                textAlign={"center"}
-                width={"375px"}
-                p={{ base: "3", md: "6" }}
-                textColor={"#000000"}
-                m={{ base: "4", md: "1" }}
-                boxShadow="base"
-                rounded="md"
-              >
-                ⭐ ⭐ ⭐ ⭐ Claim the interim leadership of PROVINCIAL SAMMA
-                ASSOCIATION so to be enjoying more benefits which includes
-                managing a percentage from donations to WSF via the site.
-              </Text>
-              <Text
-                textAlign={"center"}
-                width={"400px"}
-                p={{ base: "3", md: "6" }}
-                m={{ base: "4", md: "1" }}
-                mb={"4"}
-                textColor={"#000000"}
-                boxShadow="base"
-                rounded="md"
-              >
-                ⭐ ⭐ ⭐ ⭐ ⭐Claim the interim leadership of NATIONAL SAMMA
-                ASSOCIATION for much more benefits which includes managing an
-                increased percentage from donations to WSF via the site.
-              </Text>
-              <Box display={"flex"} justifyContent={'center'} alignItems={"center"} mt={{base: "0", md: "200px"}} flexDirection={"column"} width={"100%"}>
+             <Text
+  textAlign={"center"}
+  width={"300px"}
+  p={{ base: "3", md: "6" }}
+  m={{ base: "4", md: "1" }}
+  boxShadow="base"
+  textColor={"#000000"}
+  rounded="md"
+  mt={"20px"}
+>
+  ⭐ Sign up as a GUEST for free at the WSF Online School to follow your favorite clubs and enjoy splendid presentations, including live performances.
+</Text>
+<Text
+  textAlign={"center"}
+  width={"325px"}
+  textColor={"#000000"}
+  p={{ base: "3", md: "6" }}
+  m={{ base: "4", md: "1" }}
+  boxShadow="base"
+  rounded="md"
+>
+  ⭐ ⭐ Enroll as a STUDENT or enroll your children and other dependents for step-by-step online training and certification.
+</Text>
+<Text
+  textAlign={"center"}
+  width={"350px"}
+  textColor={"#000000"}
+  p={{ base: "3", md: "6" }}
+  m={{ base: "4", md: "1" }}
+  boxShadow="base"
+  rounded="md"
+>
+  ⭐ ⭐ ⭐ Register your CLUBS to enjoy educational, managerial, health, social, financial, and other benefits.
+</Text>
+<Text
+  textAlign={"center"}
+  width={"375px"}
+  p={{ base: "3", md: "6" }}
+  textColor={"#000000"}
+  m={{ base: "4", md: "1" }}
+  boxShadow="base"
+  rounded="md"
+>
+  ⭐ ⭐ ⭐ ⭐ Claim interim leadership of a PROVINCIAL SAMMA ASSOCIATION to enjoy more benefits, including managing a percentage of donations to WSF via the site.
+</Text>
+<Text
+  textAlign={"center"}
+  width={"400px"}
+  p={{ base: "3", md: "6" }}
+  m={{ base: "4", md: "1" }}
+  mb={"4"}
+  textColor={"#000000"}
+  boxShadow="base"
+  rounded="md"
+>
+  ⭐ ⭐ ⭐ ⭐ ⭐ Claim interim leadership of a NATIONAL SAMMA ASSOCIATION for even more benefits, including managing an increased percentage of donations to WSF via the site.
+</Text>
+              <CoursesGrid setGetStarted={setGetStarted}/>
+              <Box display={"flex"} justifyContent={'center'} alignItems={"center"} flexDirection={"column"} width={"100%"} bg={useColorModeValue('gray.50', 'gray.900')}>
                 <LinkBox
                 as="article"
                 maxW="sm"
@@ -353,7 +347,7 @@ function Homepage() {
                 Download Samma Book V4
                 </LinkOverlay>
               </LinkBox>
-              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'}>{loading? <Spinner speed="0.1"/> : Intl.NumberFormat().format(count)} DOWNLOADS</Text>
+              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'} mb={'6'}>{loading? <Spinner speed="0.1"/> : Intl.NumberFormat().format(count)} DOWNLOADS</Text>
               </Box>
               
               <Button
@@ -366,6 +360,7 @@ function Homepage() {
               >
                 Get Started Now!
               </Button>
+
               <TestimonialsCarousel/>
               <PollComponent/>
             </Box>
