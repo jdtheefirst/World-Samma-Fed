@@ -258,11 +258,10 @@ function Homepage() {
                 height={'auto'}
                 opacity={0.5}
                 loading="lazy"
-                border={"2px solid #2d1950"}
                 rounded="md"
                 bg="blackAlpha.400"
                 borderRadius={"full"}
-                bottom={{base: "88%", md: "78%"}}
+                top={{base: "1%", md: "0"}}
               />
              <Text
   textAlign={"center"}
@@ -322,7 +321,7 @@ function Homepage() {
   ⭐ ⭐ ⭐ ⭐ ⭐ Claim interim leadership of a NATIONAL SAMMA ASSOCIATION for even more benefits, including managing an increased percentage of donations to WSF via the site.
 </Text>
               <CoursesGrid setGetStarted={setGetStarted}/>
-              <Box display={"flex"} justifyContent={'center'} alignItems={"center"} flexDirection={"column"} width={"100%"} bg={useColorModeValue('gray.50', 'gray.900')}>
+              <Box display={"flex"} justifyContent={'center'} alignItems={"center"} flexDirection={"column"} width={"100%"}  p={6} bg={useColorModeValue('gray.50', 'gray.900')}>
                 <LinkBox
                 as="article"
                 maxW="sm"
@@ -348,8 +347,6 @@ function Homepage() {
                 </LinkOverlay>
               </LinkBox>
               <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'} mb={'6'}>{loading? <Spinner speed="0.1"/> : Intl.NumberFormat().format(count)} DOWNLOADS</Text>
-              </Box>
-              
               <Button
                 borderRadius={20}
                 onClick={() => setGetStarted(true)}
@@ -360,7 +357,7 @@ function Homepage() {
               >
                 Get Started Now!
               </Button>
-
+              </Box>
               <TestimonialsCarousel/>
               <PollComponent/>
             </Box>
