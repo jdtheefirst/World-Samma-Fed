@@ -660,7 +660,7 @@ function Homepage() {
                   fontSize={"small"}
                   width={"100%"}
                 >
-                  Samma is a modern hybrid martial art (from Eastern Africa)
+                  Samma is a modern hybrid martial art from Eastern Africa
                   with its own training curriculum (cheni 6) and a distinctive
                   sparring method that combines the three ranges of man to man
                   combat, that is; strike by an extension/stick, strike by limb

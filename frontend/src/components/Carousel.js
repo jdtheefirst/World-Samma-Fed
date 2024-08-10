@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Text, Image, Divider, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import Grace from "../ReducedABit.jpg"
 
 const testimonials = [
   {
@@ -18,10 +19,10 @@ const testimonials = [
   },
   {
     id: 3,
-    name: "Aisha Hassan ",
-    role: "Student - Black Belt",
+    name: "Grace Wachira",
+    role: "Student - Purple Belt and 2011 ASMAT Champion",
     comment: "Kukamilisha mikanda yangu ya awali katika Shirikisho la Dunia la Samma imekuwa mwanzo wa ajabu wa safari yangu ya sanaa za kijeshi. Mafunzo ni makali lakini yenye thawabu, na waalimu wanatoa msaada mkubwa. Nina hamu ya kuendelea kusonga mbele na kulenga mikanda ya juu zaidi.",
-    image: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1723032436/ABCD0014_tgsvab.jpg",
+    image: Grace,
   },
   
 ];
