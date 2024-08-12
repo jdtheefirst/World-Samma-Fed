@@ -9,10 +9,11 @@ const ScrollableChat = ({ messages }) => {
     <div style={{ width: '100%', height: '90%', overflowY: 'auto' }}>
       <Box 
         display="flex" 
-        justifyContent="center" 
+        justifyContent="start" 
         alignItems="center" 
         flexDir="column" 
         background="white"  
+        minH={"100vh"}
         p={4} 
         mb={"10"}
         width="100%"

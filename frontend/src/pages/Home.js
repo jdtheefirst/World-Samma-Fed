@@ -215,7 +215,7 @@ function Homepage() {
             justifyContent={"center"}
             alignItems={"center"}
             flexDirection="column"
-            mt={{base: "30px", md: "20px"}}
+            mt={{base: "60px", md: "20px"}}
           >
             <Logins />
             <Box display={"flex"} justifyContent={"space-around"} width={"80"} mt={"6"} fontSize={"small"}>
