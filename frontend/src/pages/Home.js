@@ -168,6 +168,7 @@ function Homepage() {
           alignItems={"center"}
           mt={70}
           width={"100%"}
+          
         >
           <Image
             src={logo1}
@@ -179,7 +180,7 @@ function Homepage() {
           <Text
             textAlign={"center"}
             fontSize={{
-              base: "small",
+              base: "xl",
               md: "30px",
               lg: "40px",
               xl: "50px",
@@ -188,7 +189,7 @@ function Homepage() {
             fontWeight="extrabold"
             borderRadius={3}
             position="absolute"
-            bottom={{base: -5, md: 0}}
+            bottom={{base: -14, md: 0}}
             left="50%"
             width={{ base: "60%", lg: "100%" }}
             transform="translateX(-50%)"
@@ -214,6 +215,7 @@ function Homepage() {
             justifyContent={"center"}
             alignItems={"center"}
             flexDirection="column"
+            mt={{base: "30px", md: "20px"}}
           >
             <Logins />
             <Box display={"flex"} justifyContent={"space-around"} width={"80"} mt={"6"} fontSize={"small"}>
@@ -271,7 +273,7 @@ function Homepage() {
   boxShadow="base"
   textColor={"#000000"}
   rounded="md"
-  mt={"20px"}
+  mt={{base: "60px", md: "20px"}}
 >
   ⭐ Sign up as a GUEST for free at the WSF Online School to follow your favorite clubs and enjoy splendid presentations, including live performances.
 </Text>
