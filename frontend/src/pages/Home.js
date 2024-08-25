@@ -30,7 +30,8 @@ import { FaArrowCircleRight, FaArrowAltCircleDown, FaRocket, FaTiktok, } from "r
 import { FcDonate } from "react-icons/fc";
 import { BiDonateHeart } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
-
+import { TbCloudDownload } from "react-icons/tb";
+import { RxDownload } from "react-icons/rx";
 import CoffeeModal from "../miscellenious/coffee";
 import { CiFacebook, CiInstagram, CiLocationOn, CiYoutube } from "react-icons/ci";
 import TestimonialsCarousel from "../components/Carousel";
@@ -339,16 +340,20 @@ function Homepage() {
               >
                 <LinkOverlay
                   userSelect={"none"}
+                  display={"flex"}
+                  justifyContent={"center"}
+                  alignItems={"center"}
                   href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721742094/sammaV4.pdf"
                   target="_blank"
                   download
                   fontSize={"xl"}
                   fontWeight={"bold"}
                 >
-                Download Samma Book V4
+               <RxDownload />
+               <Text pl={"4"}>Download Samma Book V4</Text>
                 </LinkOverlay>
               </LinkBox>
-              <Text fontSize={"small"} fontFamily={"itallic"} textColor={'black'} mb={'6'}>{loading? <Spinner speed="0.1"/> : Intl.NumberFormat().format(count)} DOWNLOADS</Text>
+              <Box display={"flex"} justifyContent={"center"} alignItems={"center"} width={"100%"} fontSize={"small"} textColor={'black'} p={'6'}>{loading? <Spinner/> : <><TbCloudDownload fontSize={"2rem"}/> <Text pl={"4"}>{Intl.NumberFormat().format(count)} &nbsp; DOWNLOADS</Text></>}</Box>
               <Button
                 borderRadius={20}
                 onClick={() => setGetStarted(true)}
