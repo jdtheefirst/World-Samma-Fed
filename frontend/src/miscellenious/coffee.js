@@ -13,11 +13,17 @@ import {
   Button,
   useToast,
   Text,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { getStatesOfCountry } from "../assets/state";
 import { countries } from "countries-list";
 import axios from "axios";
+import {
+  donationsMpesa,
+  makePaymentMpesa,
+} from "../components/config/chatlogics";
 
 const CoffeeModal = ({ isOpen, onClose }) => {
   const toast = useToast();
@@ -26,6 +32,7 @@ const CoffeeModal = ({ isOpen, onClose }) => {
   const [province, setProvince] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
   const [show, setShow] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const countryOptions = Object.entries(countries).map(([code, country]) => ({
     value: country.name,
@@ -71,6 +78,17 @@ const CoffeeModal = ({ isOpen, onClose }) => {
       setSubdivisions([]);
     }
   }, [country]);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+
+    // Prevent default action if the value is invalid
+    if (value === "" || (Number(value) >= 0 && !isNaN(value))) {
+      setAmount(value);
+    } else {
+      e.preventDefault(); // Prevent default action if needed
+    }
+  };
 
   const overlay = (
     <ModalOverlay
@@ -163,9 +181,10 @@ const CoffeeModal = ({ isOpen, onClose }) => {
                 <FormLabel>Donate</FormLabel>
                 <Input
                   type="number"
+                  min={"1"}
                   textColor={"grey"}
                   placeholder="$"
-                  onChange={(e) => setAmount(e.target.value)}
+                  onChange={(e) => handleChange(e)}
                 />
               </FormControl>
               <Button
@@ -184,59 +203,106 @@ const CoffeeModal = ({ isOpen, onClose }) => {
           )}
         </ModalBody>
         {show && (
-          <PayPalScriptProvider
-          options={{ clientId: "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
-            }}
-          >
-            <PayPalButtons
-              createOrder={(data, actions) => {
-                return actions.order.create({
-                  purchase_units: [
-                    {
-                      amount: {
-                        currency_code: "USD",
-                        value: amount,
-                      },
-                    },
-                  ],
-                });
+          <>
+            <PayPalScriptProvider
+              options={{
+                clientId:
+                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
               }}
-              onApprove={async (data, actions) => {
-                await handleSubmit();
-                return actions.order.capture().then(function (details) {
+            >
+              <PayPalButtons
+                createOrder={(data, actions) => {
+                  return actions.order.create({
+                    purchase_units: [
+                      {
+                        amount: {
+                          currency_code: "USD",
+                          value: amount,
+                        },
+                      },
+                    ],
+                  });
+                }}
+                onApprove={async (data, actions) => {
+                  await handleSubmit();
+                  return actions.order.capture().then(function (details) {
+                    toast({
+                      title: "Transaction Successful",
+                      description: "Thank you for your support!",
+                      status: "success",
+                      duration: 3000,
+                      isClosable: true,
+                      position: "bottom",
+                    });
+                  });
+                }}
+                onCancel={() => {
                   toast({
-                    title: "Transaction Successful",
-                    description: "Thank you for your support!",
-                    status: "success",
+                    title: "Transaction Canceled",
+                    description: "Thank you for considering!",
+                    status: "info",
                     duration: 3000,
                     isClosable: true,
                     position: "bottom",
                   });
-                });
-              }}
-              onCancel={() => {
-                toast({
-                  title: "Transaction Canceled",
-                  description: "Thank you for considering!",
-                  status: "info",
-                  duration: 3000,
-                  isClosable: true,
-                  position: "bottom",
-                });
-              }}
-              onError={(err) => {
-                console.error("PayPal error:", err);
-                toast({
-                  title: "Transaction Error",
-                  description: "An error occurred with the PayPal transaction.",
-                  status: "error",
-                  duration: 3000,
-                  isClosable: true,
-                  position: "bottom",
-                });
-              }}
-            />
-          </PayPalScriptProvider>
+                }}
+                onError={(err) => {
+                  console.error("PayPal error:", err);
+                  toast({
+                    title: "Transaction Error",
+                    description:
+                      "An error occurred with the PayPal transaction.",
+                    status: "error",
+                    duration: 3000,
+                    isClosable: true,
+                    position: "bottom",
+                  });
+                }}
+              />
+            </PayPalScriptProvider>
+            <Text textAlign={"center"} width={"100%"}>
+              Or
+            </Text>
+            <FormControl id="password-login">
+              <FormLabel fontSize={"small"}>Pay with Mpesa</FormLabel>
+              <InputGroup size="md">
+                <Input
+                  fontSize={"small"}
+                  color={"green.400"}
+                  fontWeight={"bold"}
+                  placeholder="Enter phone number"
+                  textAlign={"center"}
+                  type="number"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  value={phoneNumber}
+                  isDisabled={!country || !amount}
+                />
+                <InputRightElement width="4.5rem">
+                  <Button
+                    width={"100%"}
+                    onClick={() => {
+                      donationsMpesa(amount, phoneNumber, toast);
+                      toast({
+                        title: "Wait as message is sent by Admin Apparels",
+                        status: "loading",
+                        isClosable: true,
+                        position: "bottom",
+                        duration: 5000,
+                      });
+                    }}
+                    isDisabled={
+                      phoneNumber.length !== parseInt(10) || !country || !amount
+                    }
+                    colorScheme="teal"
+                    borderRadius={"full"}
+                    _hover={{ background: "green" }}
+                  >
+                    Pay
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+          </>
         )}
       </ModalContent>
     </Modal>

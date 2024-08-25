@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { ChatState } from "../Context/ChatProvider";
 
 export const isSameSenderMargin = (messages, m, i, userId) => {
   const isCurrentUserSender = m.sender?.$oid === userId;
@@ -75,8 +74,6 @@ export async function getUserById(userId, token) {
   }
 }
 
-let socketInstance = null;
-
 export function useConnectSocket(user) {
   const [socket, setSocket] = useState(null);
   const socketRef = useRef(null);
@@ -93,17 +90,17 @@ export function useConnectSocket(user) {
     }
 
     const userId = user._id;
-    const newSocket = io('/', {
+    const newSocket = io("/", {
       query: { token: user.token, userId },
     });
 
-    newSocket.on('connect', () => {
-      console.log('connected');
+    newSocket.on("connect", () => {
+      console.log("connected");
       setSocket(newSocket); // Set socket state after connection
     });
 
-    newSocket.on('disconnect', () => {
-      console.log('Socket disconnected');
+    newSocket.on("disconnect", () => {
+      console.log("Socket disconnected");
     });
 
     // Update socketRef with the new socket instance
@@ -148,6 +145,36 @@ export async function makePaymentMpesa(amount, phoneNumber, user, toast) {
     }
   } catch (error) {}
 }
+
+export async function donationsMpesa(amount, phoneNumber, toast) {
+  if (!phoneNumber) {
+    return;
+  }
+  try {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const { data } = await axios.post(
+      `/api/paycheck/donationsmpesa?amount=${amount}`,
+      { phoneNumber },
+      config
+    );
+
+    if (data) {
+      toast({
+        title: "You have been prompt to finish your subscription process",
+        status: "info",
+        duration: 1000,
+        position: "bottom",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function handleApprove(accountType, type, user, setUser) {
   try {
     const config = {

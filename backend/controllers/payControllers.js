@@ -128,6 +128,91 @@ const updateUser = async (req, res) => {
   }
 };
 
+const generateToken = async () => {
+  const secret = process.env.CUSTOMER_SECRET;
+  const key = process.env.CUSTOMER_KEY;
+  const auth = Buffer.from(key + ":" + secret).toString("base64");
+  try {
+    const response = await axios.get(
+      "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
+      {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }
+    );
+    const token = response.data.access_token; // No need for await here
+
+    return token;
+  } catch (error) {
+    console.log("Token Error generated", error);
+    throw error; // Re-throw the error to handle it in the calling function
+  }
+};
+
+const donationsMpesa = async (req, res) => {
+  const amount = req.query.amount;
+  const phoneNumber = req.body.phoneNumber;
+  const convert = amount * 130;
+
+  // Ensure phoneNumber is valid before slicing
+  if (!phoneNumber || phoneNumber.length < 1) {
+    return res.status(400).json({ error: "Invalid phone number" });
+  }
+
+  const phone = parseInt(phoneNumber.slice(1), 10); // Parse as integer
+  const current_time = new Date();
+  const year = current_time.getFullYear();
+  const month = String(current_time.getMonth() + 1).padStart(2, "0");
+  const day = String(current_time.getDate()).padStart(2, "0");
+  const hours = String(current_time.getHours()).padStart(2, "0");
+  const minutes = String(current_time.getMinutes()).padStart(2, "0");
+  const seconds = String(current_time.getSeconds()).padStart(2, "0");
+
+  const Shortcode = "6549717";
+  const Passkey =
+    "9101847e14f66f93ffdec5faeceb315e8918b0bcf4940443dc64b8acd94fd9dd";
+  const timestamp = `${year}${month}${day}${hours}${minutes}${seconds}`;
+  const password = Buffer.from(Shortcode + Passkey + timestamp).toString(
+    "base64"
+  );
+
+  try {
+    const token = await generateToken();
+
+    if (!token) {
+      throw new Error("Failed to retrieve access token");
+    }
+
+    const { data } = await axios.post(
+      "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+      {
+        BusinessShortCode: "6549717",
+        Password: `${password}`,
+        Timestamp: `${timestamp}`,
+        TransactionType: "CustomerBuyGoodsOnline",
+        Amount: convert,
+        PartyA: `254${phone}`,
+        PartyB: "8863150",
+        PhoneNumber: `254${phone}`,
+        CallBackURL: `https://worldsamma.org/api/paycheck/callback`,
+        AccountReference: "World Samma Federation",
+        TransactionDesc: "Subscription",
+      },
+      {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    res.json(data);
+  } catch (error) {
+    console.log("Error in donationsMpesa:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const makePaymentMpesa = async (req, res) => {
   const amount = req.query.amount;
   const userId = req.user._id;
@@ -151,28 +236,6 @@ const makePaymentMpesa = async (req, res) => {
     "base64"
   );
 
-  const generateToken = async () => {
-    const secret = process.env.CUSTOMER_SECRET;
-    const key = process.env.CUSTOMER_KEY;
-    const auth = Buffer.from(key + ":" + secret).toString("base64");
-    try {
-      const response = await axios.get(
-        "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Basic ${auth}`,
-          },
-        }
-      );
-      const token = await response.data.access_token;
-
-      return token;
-    } catch (error) {
-      console.log("Token Error generated", error);
-    }
-  };
-
   try {
     const token = await generateToken();
 
@@ -187,7 +250,7 @@ const makePaymentMpesa = async (req, res) => {
         PartyA: `254${phone}`,
         PartyB: "8863150",
         PhoneNumber: `254${phone}`,
-        CallBackURL: `https://worldsamma.org/api/paycheck/callback${userId}`,
+        CallBackURL: `https://worldsamma.org/api/paycheck/callback/${userId}`,
         AccountReference: "World Samma Federation",
         TransactionDesc: "Subcription",
       },
@@ -221,6 +284,13 @@ const CallBackURL = async (req, res) => {
   const recipientSocketId = getUserSocket(userId);
 
   try {
+    if (!userId) {
+      if (!transaction) {
+        return res
+          .status(200)
+          .json({ message: "Donation received, thank you." });
+      }
+    }
     // Find the transaction using the CheckoutRequestID from the callback
     const transaction = await Transaction.findOne({
       userId,
@@ -234,7 +304,9 @@ const CallBackURL = async (req, res) => {
     if (!Body.stkCallback.CallbackMetadata) {
       const nothing = "Payment cancelled or insufficient amount";
       socket.to(recipientSocketId).emit("noPayment", nothing);
-      await Transaction.findByIdAndUpdate(transaction._id, { status: "Failed" });
+      await Transaction.findByIdAndUpdate(transaction._id, {
+        status: "Failed",
+      });
       return res.status(400).json({ message: "Invalid callback data" });
     }
 
@@ -247,7 +319,8 @@ const CallBackURL = async (req, res) => {
     });
 
     // Update user subscription or other details
-    const userInfo = await User.findById(userId) || await Admission.findById(userId);
+    const userInfo =
+      (await User.findById(userId)) || (await Admission.findById(userId));
     if (!userInfo) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -276,8 +349,10 @@ const CallBackURL = async (req, res) => {
       const updatedBeltLevel = belts[nextLevelIndex];
 
       // Update user's belt level in the corresponding schema
-      const updatedUser = await (userInfo instanceof User ? User : Admission)
-        .findByIdAndUpdate(userId, { belt: updatedBeltLevel }, { new: true });
+      const updatedUser = await (userInfo instanceof User
+        ? User
+        : Admission
+      ).findByIdAndUpdate(userId, { belt: updatedBeltLevel }, { new: true });
 
       // Emit socket event
       if (recipientSocketId) {
@@ -292,7 +367,9 @@ const CallBackURL = async (req, res) => {
         userInfo: updatedUser,
       });
     } else {
-      return res.status(400).json({ message: "User is already at the highest belt level" });
+      return res
+        .status(400)
+        .json({ message: "User is already at the highest belt level" });
     }
   } catch (error) {
     console.error(error);
@@ -305,4 +382,5 @@ module.exports = {
   updateUser,
   makePaymentMpesa,
   CallBackURL,
+  donationsMpesa,
 };

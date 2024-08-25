@@ -1,40 +1,62 @@
 import React from "react";
-import { Box, Text, Image, SimpleGrid, useColorModeValue, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  Image,
+  SimpleGrid,
+  useColorModeValue,
+  Button,
+} from "@chakra-ui/react";
 import AdvancedTraining from "../Advanced.jpg";
-import Certified from "../Uniform_Blue.jpg"
+import Certified from "../Uniform_Blue.jpg";
 
 const courses = [
   {
     id: 1,
     title: "Introduction to Martial Arts",
-    description: "A beginner's guide to martial arts, covering the basics and fundamental techniques.",
+    description:
+      "A beginner's guide to martial arts, covering the basics and fundamental techniques.",
     directive: "Free Course",
-    thumbnail: "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720940066/training_dmljwp.jpg",
+    thumbnail:
+      "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1720940066/training_dmljwp.jpg",
   },
   {
     id: 2,
     title: "Advanced Training",
-    description: "In-depth training on advanced martial arts techniques and strategies.",
+    description:
+      "In-depth training on advanced martial arts techniques and strategies.",
     directive: "Sign In",
     thumbnail: AdvancedTraining,
   },
   {
     id: 3,
     title: "Vying for Leadership Positions",
-    description: "From coaching commissions to provincial, national, and international positions.",
+    description:
+      "From coaching commissions to provincial, national, and international positions.",
     directive: "Sign In",
     thumbnail: Certified,
   },
 ];
 
-const CoursesGrid = ({setGetStarted}) => {
-  const cardBg = useColorModeValue('white', 'gray.800');
-  const cardTextColor = useColorModeValue('gray.800', 'white');
+const CoursesGrid = ({ setGetStarted }) => {
+  const cardBg = useColorModeValue("white", "gray.800");
+  const cardTextColor = useColorModeValue("gray.800", "white");
 
   return (
-    <Box overflowY="auto" height="auto" p={'4'} bg={useColorModeValue('gray.50', 'gray.900')}>
-      <Text fontSize="3xl" fontWeight="bold" textAlign="center" mb={8} color={useColorModeValue('gray.700', 'white')}>
-      Check Out Our Free Courses & World Graded Courses
+    <Box
+      overflowY="auto"
+      height="auto"
+      p={"4"}
+      bg={useColorModeValue("gray.50", "gray.900")}
+    >
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        textAlign="center"
+        mb={8}
+        color={useColorModeValue("gray.700", "white")}
+      >
+        Check Out Our Free Courses & World Graded Courses
       </Text>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
         {courses.map((course) => (
@@ -50,23 +72,30 @@ const CoursesGrid = ({setGetStarted}) => {
             cursor={"pointer"}
             alignItems="center"
             transition="transform 0.2s"
-            _hover={{ transform: 'scale(1.05)' }}
+            _hover={{ transform: "scale(1.05)" }}
           >
-              <Image
-                boxSize="240px"
-                src={course.thumbnail}
-                alt={course.title}
-                width={"100%"}
-                p={"4"}
-                mb={'2'}
-              />
-            <Text fontSize="xl" fontWeight="bold" mb={1} p={'4'} color={cardTextColor}>
+            <Image
+              boxSize="240px"
+              src={course.thumbnail}
+              alt={course.title}
+              width={"100%"}
+              p={"4"}
+            />
+            <Text fontSize="xl" fontWeight="bold" p={"4"} color={cardTextColor}>
               {course.title}
             </Text>
-            <Text fontSize="small" color={cardTextColor} p={'4'}>
+            <Text fontSize="small" color={cardTextColor} p={"4"}>
               {course.description}
             </Text>
-            <Button mb={"2"} colorScheme="blue" onClick={()=> {setGetStarted(true)}}>{course.directive}</Button>
+            <Button
+              mb={"4"}
+              colorScheme="blue"
+              onClick={() => {
+                setGetStarted(true);
+              }}
+            >
+              {course.directive}
+            </Button>
           </Box>
         ))}
       </SimpleGrid>

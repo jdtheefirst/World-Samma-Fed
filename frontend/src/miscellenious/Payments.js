@@ -3,7 +3,6 @@ import {
   Box,
   Text,
   useColorModeValue,
-  VStack,
   useToast,
   Button,
   Image,
@@ -156,8 +155,16 @@ export default function Paycheck({ course }) {
         isOpen={isOpen}
         isCentered
       >
-        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px) hue-rotate(90deg)" />
-        <ModalContent display="flex" flexDirection="column" justifyContent="center" width={"100%"}>
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+        <ModalContent
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          width={"100%"}
+        >
           <ModalHeader fontSize="40px" fontFamily="Work sans">
             <Text
               textAlign={"center"}
@@ -175,7 +182,8 @@ export default function Paycheck({ course }) {
           <ModalBody>
             <PayPalScriptProvider
               options={{
-                clientId: "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+                clientId:
+                  "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
               }}
             >
               <PayPalButtons
@@ -238,16 +246,20 @@ export default function Paycheck({ course }) {
             </Button>
             {show && (
               <Box m={3}>
-                <Text textAlign={"center"} justifyContent={"center"} fontSize={"2xl"}>
+                <Text
+                  textAlign={"center"}
+                  justifyContent={"center"}
+                  fontSize={"2xl"}
+                >
                   Enter Your Mpesa Phone Number
                 </Text>
                 <Input
                   fontSize={"small"}
                   color={"green.400"}
                   fontWeight={"bold"}
-                  placeholder="i.e 0710334455"
+                  placeholder="Enter phone number"
                   textAlign={"center"}
-                  type="text"
+                  type="number"
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   value={phoneNumber}
                   minLength={10}
