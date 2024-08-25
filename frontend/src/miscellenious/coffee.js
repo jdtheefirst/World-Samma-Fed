@@ -15,6 +15,8 @@ import {
   Text,
   InputGroup,
   InputRightElement,
+  InputLeftElement,
+  Image,
 } from "@chakra-ui/react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { getStatesOfCountry } from "../assets/state";
@@ -264,7 +266,24 @@ const CoffeeModal = ({ isOpen, onClose }) => {
               Or
             </Text>
             <FormControl id="password-login">
-              <FormLabel fontSize={"small"}>Pay with Mpesa</FormLabel>
+              <FormLabel
+                display="flex"
+                justifyContent={"start"}
+                alignItems={"center"}
+                fontSize={"small"}
+              >
+                {" "}
+                <Text pr={"2"}>Pay with</Text>
+                <Image
+                  height={10}
+                  width={"auto"}
+                  src={
+                    "https://res.cloudinary.com/dsdlgmgwi/image/upload/v1724605149/M-PESA.png"
+                  }
+                  alt={""}
+                  loading="lazy"
+                />
+              </FormLabel>
               <InputGroup size="md">
                 <Input
                   fontSize={"small"}
