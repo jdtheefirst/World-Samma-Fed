@@ -325,6 +325,11 @@ const CallBackURL = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (amount === 450) {
+      socket.to(recipientSocketId).emit("Upgrade");
+      return res.status(201).json({ message: "Upgrading event emitted" });
+    }
+
     if (amount === 500) {
       socket.to(recipientSocketId).emit("manualRegister");
       return res.status(201).json({ message: "Manual register event emitted" });

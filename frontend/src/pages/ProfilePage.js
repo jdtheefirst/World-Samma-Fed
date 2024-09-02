@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
+  Divider,
+  FormLabel,
   Heading,
   Image,
   Input,
@@ -11,6 +13,7 @@ import {
   SkeletonText,
   Stack,
   Text,
+  Textarea,
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
@@ -22,6 +25,10 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import AdmissionForm from "../miscellenious/AdmissionForm";
 import { GoDotFill } from "react-icons/go";
 import { FaLock, FaLockOpen } from "react-icons/fa";
+import {
+  makePaymentMpesa,
+  useConnectSocket,
+} from "../components/config/chatlogics";
 
 const ProfilePage = ({ user }) => {
   const navigate = useNavigate();
@@ -35,9 +42,50 @@ const ProfilePage = ({ user }) => {
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [student, setStudent] = useState(null);
-  const [show, setShow] = useState(false);
+  const [payment, setPayment] = useState(false);
   const [register, setRegister] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [show, setShow] = useState(false);
+  const [savePhoto, setSavePhoto] = useState("");
+  const [details, setDetails] = useState("");
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const [passportPhoto, setPassportPhoto] = useState(null);
+  const [studentId, setStudentId] = useState("");
   const adminId = "6693a995f6295b8bd90d9301";
+
+  const socket = useConnectSocket(user);
+  const [isSocketConnected, setIsSocketConnected] = useState(false);
+
+  useEffect(() => {
+    if (socket) {
+      setIsSocketConnected(socket.connected);
+
+      socket.on("connect", () => {
+        setIsSocketConnected(true);
+      });
+
+      socket.on("disconnect", () => {
+        setIsSocketConnected(false);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (isSocketConnected) {
+      socket.on("Upgrade", async () => {
+        await submitDetails();
+        toast({
+          title: "Submitting details!",
+          status: "loading",
+          duration: 5000,
+          position: "bottom",
+        });
+      });
+      return () => {
+        socket.off("Upgrade");
+      };
+    }
+  });
 
   const requestClub = useCallback(async () => {
     if (!user.coach) {
@@ -144,7 +192,7 @@ const ProfilePage = ({ user }) => {
     }
   };
   const handleSearch = async () => {
-    setShow(false);
+    setPayment(false);
     if (!search) {
       toast({
         title: "Please enter something in search",
@@ -181,59 +229,87 @@ const ProfilePage = ({ user }) => {
       });
     }
   };
-  const handleAfterPay = async (studentId) => {
-    if (!studentId) {
-      toast({
-        title: "Your student info was lost or never inputted!",
-        description: "Failed to process",
-        status: "warning",
-        isClosable: true,
-        position: "bottom",
-      });
-      setShow(false);
-      return;
-    }
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
 
-      await axios.post(
-        `/api/submit/${studentId}?assisted=${true}`,
-        { savePhoto: user.pic },
-        config
-      );
-      setStudent(null);
-      setShow(false);
-    } catch (error) {
-      setStudent(null);
-      setShow(false);
-      toast({
-        title: "An Error Occurred!",
-        description: "Please try again later",
-        status: "warning",
-        isClosable: true,
-        position: "bottom",
-      });
+  const handlePhotoChange = (event) => {
+    setPassportPhoto(event.target.files[0]);
+  };
+  const submitHandler = useCallback(
+    async (studentId) => {
+      if (!user) {
+        return;
+      }
+      try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+
+        await axios.post(
+          `/api/submit/${user._id}?studentId=${studentId}`,
+          {
+            savePhoto,
+            details,
+          },
+          config
+        );
+        toast({
+          title: "Submission successful!",
+          description: "Wait for your results under 24hrs",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      } catch (error) {
+        console.log(error);
+        toast({
+          title: "Error occurred trying to send your work!",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "bottom",
+        });
+      }
+    },
+    [toast, user, savePhoto, details]
+  );
+
+  useEffect(() => {
+    if (savePhoto || studentId) {
+      submitHandler(studentId);
+    }
+  }, [savePhoto, studentId]);
+
+  const submitDetails = () => {
+    if (passportPhoto) {
+      setPhotoLoading(true);
+
+      let data = new FormData();
+      data.append("file", passportPhoto);
+      data.append("upload_preset", "worldsamma");
+
+      fetch("https://api.cloudinary.com/v1_1/dsdlgmgwi/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setSavePhoto(data.url);
+          setPhotoLoading(false);
+        })
+        .catch((err) => {
+          setPhotoLoading(false);
+          toast({
+            title: "Error Occurred uploading your passport photo.",
+            description: "Please try again later.",
+            duration: 5000,
+            status: "error",
+          });
+        });
     }
   };
-  const belts = [
-    "Guest",
-    "Beginner",
-    "Yellow",
-    "Orange",
-    "Red",
-    "Purple",
-    "Green",
-    "Blue",
-    "Brown",
-    "Black",
-  ];
-
-  const Level = belts.indexOf("Black");
 
   return (
     <Box
@@ -249,13 +325,13 @@ const ProfilePage = ({ user }) => {
       <UpperNav />
       <Box
         display={"flex"}
-        flexDir={'column'}
+        flexDir={"column"}
         width={{ base: "100%", md: "80%" }}
         boxShadow="dark-lg"
         rounded="md"
         bg="whitesmoke"
         mt={20}
-        fontStyle={"italic"}
+        fontFamily="Arial, sans-serif"
         overflow="auto"
       >
         <Box
@@ -267,7 +343,7 @@ const ProfilePage = ({ user }) => {
           p="2"
           rounded="md"
           bg="whitesmoke"
-         >
+        >
           {" "}
           <Image
             src={user?.pic}
@@ -278,7 +354,9 @@ const ProfilePage = ({ user }) => {
           />
           <Box fontSize={"md"} fontFamily={"monospace"}>
             {" "}
-            <Heading textAlign={"center"} mb={4} color={"teal"}>Profile</Heading>
+            <Heading textAlign={"center"} mb={4} color={"teal"}>
+              Profile
+            </Heading>
             <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
                 Name:
@@ -289,7 +367,9 @@ const ProfilePage = ({ user }) => {
               <Text fontWeight={"bold"} px={1}>
                 Code:
               </Text>{" "}
-              {user?.admission ? user?.admission : `Not enrolled: ${user?.belt}`}
+              {user?.admission
+                ? user?.admission
+                : `Not enrolled: ${user?.belt}`}
             </Box>
             <Box display={"flex"}>
               <Text fontWeight={"bold"} px={1}>
@@ -321,42 +401,95 @@ const ProfilePage = ({ user }) => {
               </Text>{" "}
               {user?.belt}
             </Box>
-            {user?._id === adminId && 
-            <Box display={"flex"} flexWrap={"wrap"}>
-              <Button
-                colorScheme="teal"
-                onClick={() => navigate("/admin-work-slot")}
-                border={"none"}
-                m={1}
-              >
-                Admin Work Slot
-              </Button>
-            </Box>}
+            {user?._id === adminId && (
+              <Box display={"flex"} flexWrap={"wrap"}>
+                <Button
+                  colorScheme="teal"
+                  onClick={() => navigate("/admin-work-slot")}
+                  border={"none"}
+                  m={1}
+                >
+                  Admin Work Slot
+                </Button>
+              </Box>
+            )}
           </Box>
         </Box>{" "}
-        <Text width={"100%"} textAlign={"center"} p={"3"}>Access all features in one place</Text>
-<Box display={"flex"} flexWrap={"wrap"} width={"100%"} p={"3"} fontSize={"small"}>
-  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
-    <GoDotFill />
-    <Text p={'1'}>Live stream competitions</Text>
-    <FaLockOpen style={{color: "green"}} />
-  </Box>
-  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
-    <GoDotFill />
-    <Text p={'1'}>Become a coach = 50%+ Revenue</Text>
-    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Box>
-  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
-    <GoDotFill />
-    <Text p={'1'}>Become a provincial coach = 70%+ Revenue</Text>
-    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Box>
-  <Box display={"flex"} justifyContent={"center"} alignItems={"center"} border={"1px solid grey"} borderRadius={"5px"} p={"1"} m={"1"}>
-    <GoDotFill />
-    <Text p={'1'}>Become a national coach = 90%+ Revenue</Text>
-    {user?.coach ? <FaLockOpen style={{color: "green"}} /> : <FaLock />}
-  </Box>
-</Box>
+        <Text width={"100%"} textAlign={"center"} p={"3"}>
+          Access all features in one place
+        </Text>
+        <Box
+          display={"flex"}
+          flexWrap={"wrap"}
+          width={"100%"}
+          p={"3"}
+          fontSize={"small"}
+        >
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            border={"1px solid grey"}
+            borderRadius={"5px"}
+            p={"1"}
+            m={"1"}
+          >
+            <GoDotFill />
+            <Text p={"1"}>Live stream competitions</Text>
+            <FaLockOpen style={{ color: "green" }} />
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            border={"1px solid grey"}
+            borderRadius={"5px"}
+            p={"1"}
+            m={"1"}
+          >
+            <GoDotFill />
+            <Text p={"1"}>Become a coach = 50%+ Revenue</Text>
+            {user?.coach ? (
+              <FaLockOpen style={{ color: "green" }} />
+            ) : (
+              <FaLock />
+            )}
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            border={"1px solid grey"}
+            borderRadius={"5px"}
+            p={"1"}
+            m={"1"}
+          >
+            <GoDotFill />
+            <Text p={"1"}>Become a provincial coach = 70%+ Revenue</Text>
+            {user?.coach ? (
+              <FaLockOpen style={{ color: "green" }} />
+            ) : (
+              <FaLock />
+            )}
+          </Box>
+          <Box
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            border={"1px solid grey"}
+            borderRadius={"5px"}
+            p={"1"}
+            m={"1"}
+          >
+            <GoDotFill />
+            <Text p={"1"}>Become a national coach = 90%+ Revenue</Text>
+            {user?.coach ? (
+              <FaLockOpen style={{ color: "green" }} />
+            ) : (
+              <FaLock />
+            )}
+          </Box>
+        </Box>
         {user?.coach && (
           <>
             <Box
@@ -446,63 +579,77 @@ const ProfilePage = ({ user }) => {
           </>
         )}
         {user?.coach && (
-          <Text textAlign={"center"} width={"100%"}>
-            <Button
-              background={"purple.400"}
-              onClick={() => setRegister(!register)}
-            >
-              Register Students Manually
-            </Button>
-            {register && `↓`}
-          </Text>
-        )}
-        {register && (
           <Box
             display="flex"
-            flexDir="column"
-            justifyContent="center"
-            alignItems="center"
-            overflow="auto"
-            width="100%"
-            m={2}
+            flexDir={"column"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            overflow={"auto"}
+            width={"100%"}
             boxShadow="base"
-            p="4"
+            p="6"
             rounded="md"
-            background="whitesmoke"
+            bg="whitesmoke"
           >
-            {" "}
-            <AdmissionForm />
-          </Box>
-        )}
-        {user?.coach &&
-          club?.registered &&
-          belts.indexOf(user?.belt) >= Level && (
+            <Box textAlign={"center"} width={"100%"} mb={"4"}>
+              <Button
+                background={"purple.400"}
+                onClick={() => setRegister(!register)}
+              >
+                Register Students Manually
+              </Button>
+              {register && `↓`}
+            </Box>
+            {register && (
+              <Box
+                display="flex"
+                flexDir="column"
+                justifyContent="center"
+                alignItems="center"
+                overflow="auto"
+                width="100%"
+                boxShadow="base"
+                p="4"
+                rounded="md"
+                background="whitesmoke"
+              >
+                {" "}
+                <AdmissionForm />
+              </Box>
+            )}
+            <Text
+              fontSize={"sm"}
+              fontWeight={500}
+              bg={useColorModeValue("green.50", "green.900")}
+              px={6}
+              p={"3"}
+              mb={"4"}
+              color={"green.500"}
+              rounded={"full"}
+            >
+              Coach's assisted student rank upgrading
+            </Text>
+            {!details || !passportPhoto}
             <Box
               display="flex"
-              flexDir={"column"}
+              pb={2}
+              width={{ base: "100%", md: "60%" }}
               justifyContent={"center"}
               alignItems={"center"}
-              overflow={"auto"}
-              width={"100%"}
-              m={2}
-              boxShadow="base"
-              p="6"
-              rounded="md"
-              bg="whitesmoke"
             >
-              {" "}
-              <Text
-                fontSize={"sm"}
-                fontWeight={500}
-                bg={useColorModeValue("green.50", "green.900")}
-                px={6}
-                p={"3"}
-                m={1}
-                color={"green.500"}
-                rounded={"full"}
-              >
-                Coach's assisted student rank upgrading
-              </Text>
+              <Input
+                placeholder="Search by name, email, or admission"
+                mr={2}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                fontSize={"small"}
+              />
+              <Button borderRadius={20} onClick={handleSearch}>
+                🔍Search
+              </Button>
+            </Box>
+            <Text>Or</Text>
+            {!student && (
               <Box
                 display="flex"
                 pb={2}
@@ -510,135 +657,206 @@ const ProfilePage = ({ user }) => {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <Input
-                  placeholder="Search by name, email, or admission"
+                <Textarea
+                  placeholder="Enter student details"
                   mr={2}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={details}
+                  onChange={(e) => setDetails(e.target.value)}
+                  fontSize={"small"}
                 />
-                <Button borderRadius={20} onClick={handleSearch}>
-                  🔍Search
-                </Button>
+                <FormLabel>Picture</FormLabel>
+                <Input
+                  type="file"
+                  accept="image/*" // Only accept image files
+                  borderRadius={20}
+                  fontSize={"small"}
+                  onChange={handlePhotoChange}
+                  isDisabled={photoLoading}
+                />
               </Box>
+            )}
+            <Box
+              display={"flex"}
+              flexDir={"column"}
+              overflow={"auto"}
+              width={"100%"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              overflowY={"auto"}
+            >
               <Box
-                display={"flex"}
+                display={payment ? "none" : "flex"}
                 flexDir={"column"}
-                overflow={"auto"}
                 width={"100%"}
-                justifyContent={"center"}
-                alignItems={"center"}
+                maxH={"300px"}
+                overflow={"auto"}
               >
-                {" "}
-                <Box
-                  display={show ? "none" : "flex"}
-                  flexDir={"column"}
-                  width={"100%"}
-                  maxH={"300px"}
-                  overflow={"auto"}
-                >
-                  {" "}
-                  {loading ? (
-                    <Box
-                      display={show ? "none" : "flex"}
-                      width={"100%"}
-                      padding="6"
-                      boxShadow="lg"
-                      bg="whitesmoke"
-                    >
-                      <SkeletonCircle size="10" />
-                      <SkeletonText
-                        mt="4"
-                        noOfLines={4}
-                        spacing="4"
-                        skeletonHeight="2"
-                      />
-                    </Box>
-                  ) : (
-                    searchResult?.map((user) => (
-                      <UserListItem
-                        key={user._id}
-                        user={user}
-                        handleFunction={() => {
-                          setStudent({
-                            id: user._id,
-                            name: user.name,
-                            email: user.email,
-                            pic: user.pic,
-                          });
-                          setShow(true);
-                        }}
-                      />
-                    ))
-                  )}
-                </Box>
-                {show && (
-                  <Box>
-                    <Text
-                      textAlign={"center"}
-                      fontSize={"sm"}
-                      fontWeight={500}
-                      bg={useColorModeValue("green.50", "green.900")}
-                      px={3}
-                      p={"3"}
-                      m={1}
-                      color={"purple.500"}
-                      rounded={"full"}
-                    >
-                      Upgrading: {student.name} {student.email}
-                      ($5 Fee)
-                    </Text>{" "}
-                    <PayPalScriptProvider
-                      options={{
-                        clientId:
-                          "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+                {loading ? (
+                  <Box
+                    display={"flex"}
+                    width={"100%"}
+                    padding="6"
+                    boxShadow="lg"
+                    bg="whitesmoke"
+                  >
+                    <SkeletonCircle size="10" />
+                    <SkeletonText
+                      mt="4"
+                      noOfLines={4}
+                      spacing="4"
+                      skeletonHeight="2"
+                    />
+                  </Box>
+                ) : (
+                  searchResult?.map((user) => (
+                    <UserListItem
+                      key={user._id}
+                      user={user}
+                      handleFunction={() => {
+                        setStudent({
+                          id: user._id,
+                          name: user.name,
+                          email: user.email,
+                          pic: user.pic,
+                        });
+                        setPayment(true);
                       }}
-                    >
-                      <PayPalButtons
-                        createOrder={(data, actions) => {
-                          const amount = 5.0;
-                          return actions.order.create({
-                            purchase_units: [
-                              {
-                                amount: {
-                                  currency_code: "USD",
-                                  value: amount.toFixed(2),
-                                },
+                    />
+                  ))
+                )}
+              </Box>
+              {(payment || (details && passportPhoto)) && (
+                <Box p={"6"}>
+                  <Text
+                    textAlign={"center"}
+                    fontSize={"sm"}
+                    fontWeight={500}
+                    bg={useColorModeValue("green.50", "green.900")}
+                    px={3}
+                    p="2.5"
+                    mb={"4"}
+                    color={"purple.500"}
+                    rounded={"full"}
+                  >
+                    Upgrading: {student?.name} {student?.email} {details}
+                    ($5 Fee)
+                  </Text>{" "}
+                  <PayPalScriptProvider
+                    options={{
+                      clientId:
+                        "AZAdYFR_SbadcgOcCLYn9ajkReJTZmOCnEeAvQ3xPYAE5BMYFBHi4vDeILfNwBO-hh-8wfyGC9lNeB1I",
+                    }}
+                  >
+                    <PayPalButtons
+                      createOrder={(data, actions) => {
+                        const amount = 5.0;
+                        return actions.order.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                currency_code: "USD",
+                                value: amount.toFixed(2),
                               },
-                            ],
-                          });
-                        }}
-                        onApprove={async (data, actions) => {
-                          await handleAfterPay(student.id);
-                          return actions.order
-                            .capture()
-                            .then(function (details) {
-                              toast({
-                                title: "Success",
-                                description:
-                                  "Wait for WSF to send certificate to particulars.",
-                                status: "success",
-                                duration: 3000,
-                                isClosable: true,
-                                position: "bottom",
-                              });
-                            });
-                        }}
-                        onCancel={() => {
-                          setShow(false);
+                            },
+                          ],
+                        });
+                      }}
+                      onApprove={async (data, actions) => {
+                        await submitDetails();
+                        await setStudentId(student._id);
+                        return actions.order.capture().then(function (details) {
                           toast({
-                            title: "Cancelled",
-                            status: "info",
+                            title: "Success",
+                            description:
+                              "Wait for WSF to send certificate to particulars.",
+                            status: "success",
+                            duration: 3000,
                             isClosable: true,
                             position: "bottom",
                           });
-                        }}
+                        });
+                      }}
+                      onCancel={() => {
+                        setPayment(false);
+                        toast({
+                          title: "Cancelled",
+                          status: "info",
+                          isClosable: true,
+                          position: "bottom",
+                        });
+                      }}
+                    />
+                  </PayPalScriptProvider>
+                  <Button
+                    fontSize={"small"}
+                    width={"100%"}
+                    bg={useColorModeValue("green.100", "green.900")}
+                    onClick={() => {
+                      setShow(true);
+                    }}
+                    p={0}
+                  >
+                    <Image
+                      height={5}
+                      width={"auto"}
+                      src={
+                        "https://res.cloudinary.com/dvc7i8g1a/image/upload/v1694007922/mpesa_ppfs6p.png"
+                      }
+                      alt={""}
+                      loading="lazy"
+                    />{" "}
+                    Pay via Mpesa
+                  </Button>
+                  {show && (
+                    <Box padding={"6"}>
+                      <Text
+                        textAlign={"center"}
+                        justifyContent={"center"}
+                        fontSize={"xl"}
+                      >
+                        Enter Your Mpesa Phone Number (KSH 450/=)
+                      </Text>
+                      <Input
+                        fontSize={"small"}
+                        color={"green.400"}
+                        fontWeight={"bold"}
+                        placeholder="Enter phone number"
+                        textAlign={"center"}
+                        type="number"
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        value={phoneNumber}
+                        minLength={10}
+                        maxLength={10}
                       />
-                    </PayPalScriptProvider>
-                  </Box>
-                )}
-              </Box>
+                      <Divider p={2} />
+                      <Button
+                        width={"100%"}
+                        onClick={() => {
+                          makePaymentMpesa("450", phoneNumber, user, toast);
+                          setShow(false);
+                          toast({
+                            title: "Wait as message is sent",
+                            status: "loading",
+                            isClosable: true,
+                            position: "bottom",
+                            duration: 5000,
+                          });
+                        }}
+                        isDisabled={phoneNumber.length !== parseInt(10)}
+                        colorScheme="green"
+                      >
+                        Proceed
+                      </Button>
+                      <Text textAlign={"center"} justifyContent={"center"}>
+                        You'll be sent a Message
+                      </Text>
+                    </Box>
+                  )}
+                </Box>
+              )}
             </Box>
-          )}
+          </Box>
+        )}
         {user?.provinceRequests?.length > 0 && (
           <Box
             textAlign={"start"}
