@@ -12,6 +12,7 @@ const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const downloadRouter = require("./routes/downloadRouter");
+
 const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
@@ -25,7 +26,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 // Initialize Socket.IO
 const server = app.listen(PORT, () => {
@@ -34,12 +35,11 @@ const server = app.listen(PORT, () => {
 initializeSocketIO(server);
 
 app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
   next();
 });
-
 
 // API routes
 app.use("/api/user", userRoutes);

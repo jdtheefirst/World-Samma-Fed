@@ -1,8 +1,17 @@
 const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
-const Club = require("../backend/models/clubsModel");
 const { setUserSocket, getUserSocket } = require("./config/socketUtils");
+const { spawn } = require("child_process");
+const fs = require("fs");
+
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 let io;
 
 const initializeSocketIO = (server) => {
@@ -15,7 +24,6 @@ const initializeSocketIO = (server) => {
       credentials: true,
     },
   });
-  const onlineClubs = new Set();
   const userStatuses = new Map();
 
   io.use(async (socket, next) => {
@@ -53,33 +61,69 @@ const initializeSocketIO = (server) => {
   });
 
   io.on("connection", async (socket) => {
-    console.log("connected")
+    console.log("connected");
 
     const userId = socket.user._id;
     setUserSocket(userId, socket.id);
 
-    socket.on('chat-message', (data) => {
-      io.emit('received-message', data); // Emit message to all clients
+    socket.on("chat-message", (data) => {
+      io.emit("received-message", data); // Emit message to all clients
     });
 
-    socket.on("startLiveSession", async (clubId) => {
-      const club = await Club.findOne({ _id: clubId });
+    const fs = require("fs"); // Add this line at the top of your file
 
-      if (
-        club &&
-        (club.members.includes(userId) || club.followers.includes(userId))
-      ) {
-        onlineClubs.add(clubId);
-        socket.join(clubId);
-        io.broadcast.to(clubId).emit("liveSessionStarted", club.name);
+    socket.on("startLiveSession", async (stream) => {
+      const outputPath = "/app/uploads/video.mp4"; // Path inside the container for saving the video
 
-        io.to(clubId).emit("startSignal");
-      }
+      const ffmpeg = spawn("ffmpeg", [
+        "-i",
+        stream,
+        "-c:v",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-f",
+        "tee",
+        "[f=flv]rtmp://your-rtmp-server/live/${clubId}|[f=flv]rtmp://live.yourstreamingplatform.com/app/your_stream_key|[f=flv]rtmp://anotherplatform.com/app/your_stream_key",
+      ]);
+
+      ffmpeg.stderr.on("data", (data) => {
+        console.error(`FFmpeg error: ${data}`);
+      });
+
+      ffmpeg.on("close", async (code) => {
+        console.log(`FFmpeg process exited with code ${code}`);
+
+        // Upload to Cloudinary
+        cloudinary.uploader.upload(
+          outputPath,
+          { resource_type: "video" },
+          (error, result) => {
+            if (error) {
+              console.error("Cloudinary upload error:", error);
+            } else {
+              console.log("Video uploaded to Cloudinary:", result.secure_url);
+              io.emit("videoSaved", result.secure_url);
+
+              // Cleanup: Remove the video file after upload
+              fs.unlink(outputPath, (err) => {
+                if (err) {
+                  console.error("Error deleting the video file:", err);
+                } else {
+                  console.log("Video file deleted successfully");
+                }
+              });
+            }
+          }
+        );
+      });
+
+      io.emit("startSignal", stream); // Notify users to start displaying the stream
     });
 
     socket.on("new message", (newMessageReceived) => {
       const recipientSocketId = getUserSocket(newMessageReceived.recipient._id);
-    
+
       if (recipientSocketId) {
         io.to(recipientSocketId).emit("message received", newMessageReceived);
       } else {

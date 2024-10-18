@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: . # Context set to the root directory
+      dockerfile: Dockerfile # Use the Dockerfile from the root directory
+    ports:
+      - "8080:8080" # Mapping port 8080 on host to port 8080 in the container
+    volumes:
+      - ./uploads:/usr/src/app/uploads # Mount uploads directory from host to container
+
+  frontend:
+    build:
+      context: ./frontend # Context set to the frontend directory
+      dockerfile: Dockerfile # Use the Dockerfile from the frontend directory
+    ports:
+      - "3000:3000" # Mapping port 3000 on host to port 3000 in the container

@@ -5,10 +5,10 @@
   "main": "backend/index.js",
   "scripts": {
     "start": "node backend/index.js",
-    "frontend": "cd frontend && npm start",
-    "backend": "cd backend && npm install && node index.js",
-    "vercel-build": "cd frontend && npm install && npm run build",
-    "heroku-postbuild": "cd frontend && npm install && npm run build"
+    "dev": "nodemon backend/index.js",
+    "frontend": "cd frontend && npm install && npm start",
+    "backend": "cd backend && npm install && nodemon index.js",
+    "build": "cd frontend && npm install && npm run build"
   },
   "heroku-run-build-script": true,
   "author": "jdtheefirst",
@@ -19,6 +19,8 @@
     "axios": "^1.6.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "child_process": "^1.0.2",
+    "cloudinary": "^2.5.1",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
