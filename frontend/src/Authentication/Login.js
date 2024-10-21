@@ -4,6 +4,7 @@ import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { Box, VStack } from "@chakra-ui/layout";
 import { useState } from "react";
 import axios from "axios";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import {
   useToast,
   Link,
@@ -132,10 +133,9 @@ const Login = () => {
   return (
     <VStack spacing="5px">
       <Box mb={"6"} fontWeight={"bold"}>
-              <h1>Welcome Back!</h1>
-              <p>To keep connected with us please login with your personal info</p>
-         
-            </Box>
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please login with your personal info</p>
+      </Box>
       <FormControl id="email-login" isRequired>
         <FormLabel fontSize={"small"}>Email address/Code</FormLabel>
         <Input
@@ -157,9 +157,11 @@ const Login = () => {
             placeholder="Enter password"
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick}>
-              {show ? "Hide" : "Show"}
-            </Button>
+            {show ? (
+              <FaEye onClick={handleClick} style={{ cursor: "pointer" }} />
+            ) : (
+              <FaEyeSlash onClick={handleClick} style={{ cursor: "pointer" }} />
+            )}
           </InputRightElement>
         </InputGroup>
       </FormControl>
@@ -174,7 +176,7 @@ const Login = () => {
       >
         Login
       </Button>
-        <GoogleLoginButton />
+      <GoogleLoginButton />
       <Link
         onClick={() => {
           onOpen();
@@ -182,11 +184,17 @@ const Login = () => {
       >
         Forgot password?
       </Link>
-      <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered closeOnOverlayClick={false}>
-      <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
+      <Modal
+        size="lg"
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+        closeOnOverlayClick={false}
+      >
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
         <ModalContent padding={5}>
           <ModalHeader
             fontSize="40px"
@@ -197,11 +205,15 @@ const Login = () => {
             alignItems={"center"}
             mb={"6"}
           >
-           <Text textAlign={"center"} justifyContent={"center"} fontSize={"2xl"}>
-           Enter your Email below
-           </Text>
+            <Text
+              textAlign={"center"}
+              justifyContent={"center"}
+              fontSize={"2xl"}
+            >
+              Enter your Email below
+            </Text>
           </ModalHeader>
-          <ModalCloseButton border={"none"}/>
+          <ModalCloseButton border={"none"} />
           <ModalBody
             display="flex"
             flexDirection="column"

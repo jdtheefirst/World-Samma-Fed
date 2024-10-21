@@ -70,10 +70,9 @@ const initializeSocketIO = (server) => {
       io.emit("received-message", data); // Emit message to all clients
     });
 
-    const fs = require("fs"); // Add this line at the top of your file
-
     socket.on("startLiveSession", async (stream) => {
-      const outputPath = "/app/uploads/video.mp4"; // Path inside the container for saving the video
+      const outputPath = "./uploads/video.mp4";
+      const hlsOutputPath = `./uploads/live.m3u8`;
 
       const ffmpeg = spawn("ffmpeg", [
         "-i",
@@ -84,7 +83,11 @@ const initializeSocketIO = (server) => {
         "veryfast",
         "-f",
         "tee",
-        "[f=flv]rtmp://your-rtmp-server/live/${clubId}|[f=flv]rtmp://live.yourstreamingplatform.com/app/your_stream_key|[f=flv]rtmp://anotherplatform.com/app/your_stream_key",
+        // Stream to multiple platforms and generate HLS output
+        `[f=flv]rtmp://worldsamma.org/live|` +
+          `[f=flv]rtmp://live.yourstreamingplatform.com/app/your_stream_key|` +
+          `[f=flv]rtmp://anotherplatform.com/app/your_stream_key|` +
+          `[f=hls]${hlsOutputPath}`, // HLS output
       ]);
 
       ffmpeg.stderr.on("data", (data) => {
@@ -94,7 +97,6 @@ const initializeSocketIO = (server) => {
       ffmpeg.on("close", async (code) => {
         console.log(`FFmpeg process exited with code ${code}`);
 
-        // Upload to Cloudinary
         cloudinary.uploader.upload(
           outputPath,
           { resource_type: "video" },
@@ -105,7 +107,6 @@ const initializeSocketIO = (server) => {
               console.log("Video uploaded to Cloudinary:", result.secure_url);
               io.emit("videoSaved", result.secure_url);
 
-              // Cleanup: Remove the video file after upload
               fs.unlink(outputPath, (err) => {
                 if (err) {
                   console.error("Error deleting the video file:", err);
@@ -116,9 +117,22 @@ const initializeSocketIO = (server) => {
             }
           }
         );
+
+        // Emit the HLS URL to the frontend clients
+        const hlsUrl = `https://worldsamma.org/uploads/live.m3u8`;
+        io.emit("hlsUrl", hlsUrl); // Notify clients about the HLS URL
+
+        // Clean up HLS files
+        fs.unlink(hlsOutputPath, (err) => {
+          if (err) {
+            console.error("Error deleting HLS file:", err);
+          } else {
+            console.log("HLS file deleted successfully");
+          }
+        });
       });
 
-      io.emit("startSignal", stream); // Notify users to start displaying the stream
+      io.emit("startSignal");
     });
 
     socket.on("new message", (newMessageReceived) => {

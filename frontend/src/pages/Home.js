@@ -389,7 +389,7 @@ function Homepage() {
                 flexDirection={"column"}
                 width={"100%"}
                 p={6}
-                bg={useColorModeValue("gray.50", "gray.900")}
+                bg={"whitesmoke"}
               >
                 <LinkBox
                   as="article"

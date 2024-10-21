@@ -43,12 +43,7 @@ const TestimonialsGrid = () => {
   const cardTextColor = useColorModeValue("gray.800", "white");
 
   return (
-    <Box
-      overflowY="auto"
-      height="auto"
-      p={6}
-      bg={useColorModeValue("gray.50", "gray.900")}
-    >
+    <Box overflowY="auto" height="auto" p={6} bg={"whitesmoke"}>
       <Text
         fontSize="3xl"
         fontWeight="bold"

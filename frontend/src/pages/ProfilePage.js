@@ -327,8 +327,6 @@ const ProfilePage = ({ user }) => {
         display={"flex"}
         flexDir={"column"}
         width={{ base: "100%", md: "80%" }}
-        boxShadow="dark-lg"
-        rounded="md"
         bg="whitesmoke"
         mt={20}
         fontFamily="Arial, sans-serif"

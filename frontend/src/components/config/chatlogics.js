@@ -1,6 +1,36 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
+import { z } from "zod";
+
+export const UserFormValidation = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(50, "Name must be at most 50 characters"),
+  otherName: z
+    .string()
+    .min(2, "Other name must be at least 2 characters")
+    .max(50, "Other name must be at most 50 characters"),
+  email: z.string().email("Invalid email address"),
+  gender: z.enum(["male", "female", "other"]),
+  password: z
+    .string()
+    .min(4, "Password must be at least 8 characters long")
+    .max(100, "Password must be at most 100 characters"),
+  confirmPassword: z
+    .string()
+    .min(4, "Confirm password must be at least 8 characters long")
+    .max(100, "Confirm password must be at most 100 characters")
+    .refine((val, ctx) => val === ctx.parent.password, {
+      message: "Passwords do not match",
+    }),
+  passport: z.string().regex(/^\d{8,15}$/, "Invalid passport/ID number"),
+  selectedCountry: z.string().min(2, "Country is required"),
+  provinces: z.string().optional(),
+  language: z.string().min(2, "Language is required"),
+  pic: z.string().url("Profile picture is required"),
+});
 
 export const isSameSenderMargin = (messages, m, i, userId) => {
   const isCurrentUserSender = m.sender?.$oid === userId;

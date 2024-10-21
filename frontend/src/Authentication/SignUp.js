@@ -2,22 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { Box, VStack } from "@chakra-ui/layout";
-import {
-  Radio,
-  RadioGroup,
-  Stack,
-  Text,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Divider,
-  Select,
-} from "@chakra-ui/react";
+import { Radio, RadioGroup, Stack, Text, Select } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -25,22 +10,21 @@ import { countries, languages } from "countries-list";
 import { useNavigate } from "react-router-dom";
 import { getStatesOfCountry } from "../assets/state";
 import UploadPicture from "../miscellenious/PicLogic";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { UserFormValidation } from "../components/config/chatlogics";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [confirmpassword, setConfirmpassword] = useState("");
+  const [confirmPassword, setConfirmpassword] = useState("");
   const [password, setPassword] = useState("");
   const [pic, setPic] = useState(undefined);
   const [picLoading, setPicLoading] = useState(false);
   const [gender, setGender] = useState("");
-  const [code, setCode] = useState("");
-  const [inputCode, setInputCode] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [otherName, setOtherName] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
@@ -48,6 +32,7 @@ const Signup = () => {
   const [passport, setPassport] = useState("");
   const [subdivisions, setSubdivisions] = useState([]);
   const [language, setLanguage] = useState("");
+  const [errors, setErrors] = useState({});
 
   const countryOptions = Object.entries(countries).map(([code, country]) => ({
     value: country.name,
@@ -58,65 +43,20 @@ const Signup = () => {
     name: languages[code].name,
   }));
 
-  const generateAndVerify = async () => {
-    setPicLoading(true);
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !confirmpassword ||
-      !otherName ||
-      !selectedCountry ||
-      !pic
-    ) {
-      toast({
-        title: "Please Fill all the Fields",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setPicLoading(false);
-      return;
-    }
-    if (password !== confirmpassword) {
-      toast({
-        title: "Passwords Do Not Match",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setPicLoading(false);
-      return;
-    }
-    try {
-      const { data } = await axios.get(`/api/user/${email}`);
-      setCode(data);
-      onOpen();
-      setPicLoading(false);
-      setDisabled(true);
-      setTimeout(() => {
-        setDisabled(false);
-      }, 30000);
-    } catch (error) {
-      toast({
-        title: "Check Your Email!",
-        description: error.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      setDisabled(true);
-      setTimeout(() => {
-        setDisabled(false);
-      }, 30000);
-      onClose();
-      setPicLoading(false);
-    }
-  };
   const submitHandler = async () => {
+    console.log(
+      name,
+      email,
+      password,
+      confirmPassword,
+      gender,
+      selectedCountry,
+      otherName,
+      provinces,
+      passport,
+      pic,
+      language
+    );
     if (
       !name ||
       !email ||
@@ -125,8 +65,8 @@ const Signup = () => {
       !gender ||
       !selectedCountry ||
       !otherName ||
-      !language ||
-      !pic
+      !language
+      // !pic
     ) {
       toast({
         title: "Please fill all the required fields.",
@@ -142,30 +82,45 @@ const Signup = () => {
         },
       };
 
-      const { data } = await axios.post(
-        "/api/user/post",
-        {
-          name,
-          email,
-          password,
-          gender,
-          selectedCountry,
-          otherName,
-          provinces,
-          passport,
-          pic,
-          language,
-        },
-        config
-      );
-      setPicLoading(false);
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      navigate("/dashboard");
+      const formData = {
+        name,
+        email,
+        password,
+        confirmPassword,
+        gender,
+        selectedCountry,
+        otherName,
+        provinces,
+        passport,
+        pic,
+        language,
+      };
+
+      const result = await UserFormValidation.safeParse(formData);
+
+      // Handle validation result
+      if (!result.success) {
+        // If validation fails, set errors
+        const fieldErrors = result.error.format();
+        setErrors(fieldErrors);
+      } else {
+        // If validation passes, proceed with form submission logic
+        console.log("Form data is valid:", result.data);
+        const { data } = await axios.post(
+          "/api/user/post",
+          result.data,
+          config
+        );
+        setPicLoading(false);
+        localStorage.setItem("userInfo", JSON.stringify(data));
+        navigate("/dashboard");
+        setErrors({});
+      }
     } catch (error) {
       console.log(error);
       toast({
         title: "Error Occurred!",
-        description: error.response.data.message,
+
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -186,89 +141,13 @@ const Signup = () => {
 
   return (
     <VStack spacing="5px">
-     <Box mb={"6"} fontWeight={"bold"} textAlign={"center"} width={"100%"}>
-              <h1>Hello there!</h1>
-              <p>Enter your personal details and start your journey with us. Your information is used solely for certification purposes</p>
+      <Box mb={"6"} fontWeight={"bold"} textAlign={"center"} width={"100%"}>
+        <h1>Hello there!</h1>
+        <p>
+          Enter your personal details and start your journey with us. Your
+          information is used solely for certification purposes
+        </p>
       </Box>
-      <Modal
-        size="lg"
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-        closeOnOverlayClick={false}
-      >
-        <ModalOverlay
-         bg="blackAlpha.300"
-         backdropFilter="blur(10px) hue-rotate(90deg)"
-        />
-        <ModalContent padding={5}>
-  <ModalHeader
-    fontFamily="Work Sans"
-    display="flex"
-    flexDir="column"
-    justifyContent="space-between"
-    alignItems="center"
-    textAlign="center"
-    mb="6"
-  >
-    <Text fontSize="2xl" mb="3" width="100%">
-      For your account security, please confirm your email.
-    </Text>
-    <Text fontSize="xl" mb="3" width="100%">
-      Enter the code sent to: <br />
-      <strong style={{ color: "green" }}>{email}</strong>
-    </Text>
-    <Text fontSize="sm">
-      ✔️ Check your inbox and refresh if you don't see it.
-    </Text>
-    <Text fontSize="sm">
-      ⚠️ Please do not close this modal.
-    </Text>
-  </ModalHeader>
-  <ModalCloseButton />
-  <ModalBody
-    display="flex"
-    flexDirection="column"
-    alignItems="center"
-    justifyContent="space-between"
-    fontSize="small"
-  >
-    <Input
-      fontSize="medium"
-      placeholder="Enter the code here..."
-      type="text"
-      textAlign="center"
-      onChange={(e) => setInputCode(e.target.value)}
-      value={inputCode}
-      minLength={6}
-      maxLength={6}
-    />
-    <Divider p={2} />
-    <Button
-      width="100%"
-      onClick={() => {
-        submitHandler();
-        onClose();
-      }}
-      border="none"
-      isDisabled={code !== inputCode}
-      colorScheme="green"
-    >
-      Confirm
-    </Button>
-     </ModalBody>
-     <ModalFooter display="flex">
-     <Text
-      textAlign="center"
-      justifyContent="center"
-      color={code !== inputCode ? "red" : "green"}
-      fontSize="small"
-      >
-      Please enter the exact code you received.
-      </Text>
-     </ModalFooter>
-     </ModalContent>
-      </Modal>
       <FormControl id="first-name" isRequired>
         <FormLabel fontSize="small">First name</FormLabel>
         <Input
@@ -277,6 +156,7 @@ const Signup = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
+        {errors.name && <Text color="red">{errors.name._errors[0]}</Text>}
       </FormControl>
 
       <FormControl id="other-name" isRequired>
@@ -287,6 +167,9 @@ const Signup = () => {
           fontSize="small"
           onChange={(e) => setOtherName(e.target.value)}
         />
+        {errors.otherName && (
+          <Text color="red">{errors.otherName._errors[0]}</Text>
+        )}
       </FormControl>
       <FormControl id="email" isRequired>
         <FormLabel fontSize="small">Email Address</FormLabel>
@@ -296,7 +179,7 @@ const Signup = () => {
           fontSize="small"
           onChange={(e) => setEmail(e.target.value)}
         />
-        
+
         {email ? (
           <FormLabel
             fontSize={"2xs"}
@@ -308,11 +191,12 @@ const Signup = () => {
             color={"green.400"}
             userSelect={"none"}
           >
-            Your email is for certification and login only. A code will be sent for security.
+            Your email is for certification and login only.
           </FormLabel>
         ) : (
           ""
         )}
+        {errors.email && <Text color="red">{errors.email._errors[0]}</Text>}
       </FormControl>
       <FormControl id="password" isRequired>
         <FormLabel fontSize="small">Password</FormLabel>
@@ -324,11 +208,16 @@ const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" fontSize="small" onClick={handleClick} border={"none"}>
-              {show ? "Hide" : "Show"}
-            </Button>
+            {show ? (
+              <FaEye onClick={handleClick} style={{ cursor: "pointer" }} />
+            ) : (
+              <FaEyeSlash onClick={handleClick} style={{ cursor: "pointer" }} />
+            )}
           </InputRightElement>
         </InputGroup>
+        {errors.password && (
+          <Text color="red">{errors.password._errors[0]}</Text>
+        )}
       </FormControl>
       <FormControl id="password-confirm" isRequired>
         <FormLabel fontSize="small">Confirm Password</FormLabel>
@@ -340,11 +229,16 @@ const Signup = () => {
             onChange={(e) => setConfirmpassword(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleClick} fontSize="small" border={"none"}>
-              {show ? "Hide" : "Show"}
-            </Button>
+            {show ? (
+              <FaEye onClick={handleClick} style={{ cursor: "pointer" }} />
+            ) : (
+              <FaEyeSlash onClick={handleClick} style={{ cursor: "pointer" }} />
+            )}
           </InputRightElement>
         </InputGroup>
+        {errors.confirmPassword && (
+          <Text color="red">{errors.confirmPassword._errors[0]}</Text>
+        )}
       </FormControl>
       <FormControl id="id/passport" isRequired>
         <FormLabel fontSize="small">Id/Passport</FormLabel>
@@ -355,6 +249,9 @@ const Signup = () => {
           value={passport}
           onChange={(e) => setPassport(e.target.value)}
         />
+        {errors.passport && (
+          <Text color="red">{errors.passport._errors[0]}</Text>
+        )}
       </FormControl>
       <FormControl id="country" isRequired>
         <FormLabel fontSize="small">Country</FormLabel>
@@ -432,27 +329,21 @@ const Signup = () => {
       </FormControl>
       <FormControl id="gender" isRequired>
         <FormLabel fontSize="small">Gender</FormLabel>
-        <RadioGroup
-          onChange={setGender}
-          value={gender}
-          isRequired
-        >
+        <RadioGroup onChange={setGender} value={gender} isRequired>
           <Stack direction="row">
             <Radio value="male">Male</Radio>
             <Radio value="female">Female</Radio>
+            <Radio value="other">Other</Radio>
           </Stack>
         </RadioGroup>
       </FormControl>
-      <UploadPicture
-        setPic={setPic}
-        setPicLoading={setPicLoading}
-      />
+      <UploadPicture setPic={setPic} setPicLoading={setPicLoading} />
 
       <Button
         colorScheme="blue"
         width="100%"
         style={{ marginTop: 15 }}
-        onClick={() => generateAndVerify()}
+        onClick={() => submitHandler()}
         isLoading={picLoading}
         isDisabled={disabled}
         fontSize="small"
