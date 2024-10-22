@@ -82,7 +82,7 @@ const Requests = () => {
         onClick={onOpen}
         border={"none"}
       >
-        <RiTeamLine fontSize={"20px"} border={"none"}/>
+        <RiTeamLine fontSize={"20px"} border={"none"} />
         {clubRequests && clubRequests.length > 0 && (
           <Text
             position="absolute"
@@ -99,11 +99,11 @@ const Requests = () => {
         <Text />
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size={"sm"}>
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
         <ModalContent>
           <ModalHeader textAlign={"center"}>Clubs Requests</ModalHeader>
           <ModalCloseButton border={"none"} />

@@ -3,6 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { z } from "zod";
 
+export const cn = (...inputs) => {
+  return twMerge(clsx(inputs));
+};
+
 export const UserFormValidation = z.object({
   name: z
     .string()

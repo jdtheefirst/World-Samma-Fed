@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .App {
   text-align: center;
   width: 100%;
@@ -27,29 +31,27 @@
   z-index: 10;
 }
 .rocket-animation {
-	animation: fly 1s ease-in-out infinite alternate;
+  animation: fly 1s ease-in-out infinite alternate;
   color: aliceblue;
   bottom: 0;
+}
 
+@keyframes fly {
+  0% {
+    transform: translateX(0);
   }
-  
-  @keyframes fly {
-	0% {
-	  transform: translateX(0);
-	}
-	100% {
-	  transform: translateX(-20px);
-	}
+  100% {
+    transform: translateX(-20px);
   }
-  
-  @keyframes slideInFromTop {
-    0% {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    100% {
-      transform: translateY(0);
-      opacity: 1;
-    }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
   }
-  
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

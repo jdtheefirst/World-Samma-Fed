@@ -350,7 +350,7 @@ const ProfilePage = ({ user }) => {
             boxSize={{ base: "100px", md: "200px" }}
             border="4px solid white"
           />
-          <Box fontSize={"md"} fontFamily={"monospace"}>
+          <Box fontSize={"md"}>
             {" "}
             <Heading textAlign={"center"} mb={4} color={"teal"}>
               Profile

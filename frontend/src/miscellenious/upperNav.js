@@ -26,6 +26,7 @@ import React from "react";
 import logo7 from "../final.jpeg";
 import { PiSignOutLight } from "react-icons/pi";
 import { RiAdminLine } from "react-icons/ri";
+import { PasskeyModal, Password } from "./Password";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
@@ -115,8 +116,9 @@ function UpperNav() {
                   onClick={() => {
                     setNotification(notification.filter((n) => n !== notif));
                   }}
+                  p={"4"}
                 >
-                  {`New Message from ${
+                  {`New message from ${
                     notif.sender ? notif.sender.name : "Coach"
                   } ADM: ${notif.sender ? notif.sender.admission : " "}`}
                 </MenuItem>
@@ -266,20 +268,7 @@ function UpperNav() {
             >
               International Championship
             </Button>
-            <Button
-              background={"white"}
-              justifyContent={"left"}
-              border={"none"}
-              _hover={{
-                backgroundColor: "transparent",
-                color: "blackAlpha.600",
-              }}
-              onClick={() => {
-                navigate("/admin");
-              }}
-            >
-              <RiAdminLine /> &nbsp; Admin
-            </Button>
+            <PasskeyModal />
             <Button
               background={"white"}
               justifyContent={"left"}
