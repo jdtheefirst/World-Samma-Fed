@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
+  Divider,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -20,8 +22,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../components/config/axios";
 import { ChatState } from "../components/Context/ChatProvider";
+import { GrUserAdmin } from "react-icons/gr";
+import { MdLiveTv } from "react-icons/md";
 
-const AdminWorkSlot = ({ user }) => {
+const AdminWorkSlot = () => {
   const [submissions, setSubmissions] = useState([]);
   const [reject, setReject] = useState(false);
   const [approaved, setApproaved] = useState(false);
@@ -33,7 +37,7 @@ const AdminWorkSlot = ({ user }) => {
   const [message, setMessage] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
-  const { setMessages } = ChatState();
+  const { setMessages, user } = ChatState();
 
   const handleReject = (submissionId, passport, video) => {
     console.log(`Rejected submission with ID: ${submissionId}`);
@@ -88,7 +92,6 @@ const AdminWorkSlot = ({ user }) => {
 
   const submitHandler = useCallback(async () => {
     if (!user) {
-      navigate("/dashboard");
       return;
     }
     const config = {
@@ -98,7 +101,7 @@ const AdminWorkSlot = ({ user }) => {
     };
     if (sendCertificate && receiver) {
       try {
-        const { data } = await axios.get(
+        await axios.get(
           `/api/user/certificate/${receiver}`,
           { sendCertificate },
           config
@@ -110,7 +113,6 @@ const AdminWorkSlot = ({ user }) => {
     }
     try {
       const { data } = await axios.get(`/api/submit`, config);
-      console.log(data);
       setSubmissions(data);
     } catch (error) {
       console.log(error);
@@ -194,6 +196,9 @@ const AdminWorkSlot = ({ user }) => {
       });
     }
   };
+  const goToLivePage = () => {
+    navigate(`/live`);
+  };
 
   return (
     <Box
@@ -208,25 +213,65 @@ const AdminWorkSlot = ({ user }) => {
     >
       {" "}
       <UpperNav />
-      <Heading mb={"6"}>World Samma Federation</Heading>
-      <Heading size={"sm"} mb={"6"}>Admin Work Slot</Heading>
-      <Box display={"flex"} justifyContent={"center"} alignItems={"center"} flexDir={"column"} width={"100%"}>
-        {" "}
+      <Box
+        display={"flex"}
+        justifyContent={"start"}
+        alignItems={"center"}
+        flexDir={"column"}
+        overflow={"auto"}
+        width={"100%"}
+        minH={"100vh"}
+      >
+        <Box
+          mt={20}
+          display={"flex"}
+          justifyContent={"space-around"}
+          alignItems={"center"}
+          width={"100%"}
+          mb={"4"}
+        >
+          <Heading>W.S.F</Heading>
+          <Flex>
+            <GrUserAdmin /> &nbsp; <>Admin</>
+          </Flex>
+        </Box>
+
+        <Divider mb={"4"} />
+
+        <Box
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          mb={"4"}
+        >
+          <Text p={"6"}>Go Live Now</Text>
+          <MdLiveTv
+            onClick={goToLivePage}
+            fontSize={"100px"}
+            color="red"
+            cursor="pointer"
+          />
+        </Box>
+
+        <Divider mb={"4"} />
         <Text
           textAlign={"center"}
           fontSize={"sm"}
           fontWeight={500}
           bg={useColorModeValue("green.50", "green.900")}
           p={2}
-          width={{base: "100%", md: "60%"}}
+          width={{ base: "100%", md: "60%" }}
           color={"green.500"}
           rounded={"full"}
+          mb={"4"}
         >
           {submissions.length} submissions.
         </Text>
-      </Box>
-      <Box overflow={"auto"}>
-        {submissions.length === 0 && <Text>Work will be posted here.</Text>}
+        {submissions.length === 0 && (
+          <Text mb={"4"} textAlign={"center"}>
+            Work will be posted here.
+          </Text>
+        )}
         {submissions.length > 0 &&
           submissions.map((submission) => (
             <VStack key={submission._id} m={3} spacing={4}>
@@ -265,7 +310,7 @@ const AdminWorkSlot = ({ user }) => {
                   <Text>Admission: {submission.student.admission}</Text>
                   <Text>Current Rank: {submission.student.belt}</Text>
                 </Box>
-              </Box>{" "}
+              </Box>
               <Box>
                 <video controls width="300" height="200">
                   <source src={submission.video} type="video/mp4" />

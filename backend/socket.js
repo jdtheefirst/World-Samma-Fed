@@ -25,6 +25,7 @@ const initializeSocketIO = (server) => {
     },
   });
   const userStatuses = new Map();
+  let isLiveStreamActive = false;
 
   io.use(async (socket, next) => {
     try {
@@ -70,7 +71,15 @@ const initializeSocketIO = (server) => {
       io.emit("received-message", data); // Emit message to all clients
     });
 
+    //check if there's another live sessio before starting a new one.
+    socket.on("checkLiveStream", () => {
+      socket.emit("liveStreamStatus", isLiveStreamActive);
+      console.log(isLiveStreamActive);
+    });
+
     socket.on("startLiveSession", async (stream) => {
+      isLiveStreamActive = true;
+
       const outputPath = "./uploads/video.mp4";
       const hlsOutputPath = `./uploads/live.m3u8`;
 
@@ -83,10 +92,9 @@ const initializeSocketIO = (server) => {
         "veryfast",
         "-f",
         "tee",
-        // Stream to multiple platforms and generate HLS output
-        `[f=flv]rtmp://worldsamma.org/live|` +
-          `[f=flv]rtmp://live.yourstreamingplatform.com/app/your_stream_key|` +
-          `[f=flv]rtmp://anotherplatform.com/app/your_stream_key|` +
+        `[f=flv]rtmp://localhost:8080/live|` +
+          // `[f=flv]rtmp://live.yourstreamingplatform.com/app/your_stream_key|` +
+          // `[f=flv]rtmp://anotherplatform.com/app/your_stream_key|` +
           `[f=hls]${hlsOutputPath}`, // HLS output
       ]);
 
@@ -96,6 +104,8 @@ const initializeSocketIO = (server) => {
 
       ffmpeg.on("close", async (code) => {
         console.log(`FFmpeg process exited with code ${code}`);
+        isLiveStreamActive = false;
+        io.emit("liveStreamStatus", false);
 
         cloudinary.uploader.upload(
           outputPath,
@@ -118,10 +128,6 @@ const initializeSocketIO = (server) => {
           }
         );
 
-        // Emit the HLS URL to the frontend clients
-        const hlsUrl = `https://worldsamma.org/uploads/live.m3u8`;
-        io.emit("hlsUrl", hlsUrl); // Notify clients about the HLS URL
-
         // Clean up HLS files
         fs.unlink(hlsOutputPath, (err) => {
           if (err) {
@@ -132,7 +138,7 @@ const initializeSocketIO = (server) => {
         });
       });
 
-      io.emit("startSignal");
+      io.emit("startSignal"); // Notify clients that the stream has started
     });
 
     socket.on("new message", (newMessageReceived) => {

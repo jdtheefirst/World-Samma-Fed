@@ -1,25 +1,23 @@
 import "./App.css";
-import { Route, Routes, useLocation} from "react-router-dom";
-import { ChatState } from "./components/Context/ChatProvider";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
-const Home = lazy(() => import('./pages/Home'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Championships = lazy(() => import('./pages/InternationalChampionships'));
-const CourseDetails = lazy(() => import('./pages/Courses'));
-const Clubs = lazy(() => import('./pages/Clubs'));
-const SubmissionPage = lazy(() => import('./pages/Submit'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
-const AdminWorkSlot = lazy(() => import('./pages/AdminWorkSlot'));
-const AboutPage = lazy(() => import('./pages/About'));
-const ClubDetailes = lazy(() => import('./pages/ClubDetails'));
-const Provience = lazy(() => import('./pages/Provience'));
-const National = lazy(() => import('./pages/National'));
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
-const NotFound = lazy(() => import('./pages/NotFound'));
-import LoadingSpinner from './components/Loading';
-import SessionExpirationMessage from "./components/SessionExpired";
+const Home = lazy(() => import("./pages/Home"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Championships = lazy(() => import("./pages/InternationalChampionships"));
+const CourseDetails = lazy(() => import("./pages/Courses"));
+const Clubs = lazy(() => import("./pages/Clubs"));
+const SubmissionPage = lazy(() => import("./pages/Submit"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage"));
+const AdminWorkSlot = lazy(() => import("./pages/AdminWorkSlot"));
+const AboutPage = lazy(() => import("./pages/About"));
+const ClubDetailes = lazy(() => import("./pages/ClubDetails"));
+const Provience = lazy(() => import("./pages/Provience"));
+const National = lazy(() => import("./pages/National"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+import LoadingSpinner from "./components/Loading";
 import DelayedRender from "./components/Render";
-
+import LivePage from "./pages/LivePage";
 
 const courses = [
   {
@@ -118,7 +116,9 @@ const courses = [
 . Down
 . Up
 . Back
-`,},{
+`,
+      },
+      {
         id: 8,
         title: "Lesson 8",
         video:
@@ -299,7 +299,7 @@ const RouteChangeTracker = () => {
 
   useEffect(() => {
     if (window.gtag) {
-      window.gtag('config', 'G-ZFWT8RB2MQ', {
+      window.gtag("config", "G-ZFWT8RB2MQ", {
         page_path: location.pathname,
       });
     }
@@ -315,17 +315,48 @@ function App() {
         <RouteChangeTracker />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<DelayedRender Component={Dashboard} courses={courses} />} />
-          <Route path="/courses/:id" element={<DelayedRender Component={CourseDetails} courses={courses} />} />
-          <Route path="/championships" element={<DelayedRender Component={Championships} />}  />
+          <Route
+            path="/dashboard"
+            element={<DelayedRender Component={Dashboard} courses={courses} />}
+          />
+          <Route path="/admin" element={<AdminWorkSlot />} />
+          <Route path="/live" element={<LivePage />} />
+          <Route
+            path="/courses/:id"
+            element={
+              <DelayedRender Component={CourseDetails} courses={courses} />
+            }
+          />
+          <Route
+            path="/championships"
+            element={<DelayedRender Component={Championships} />}
+          />
           <Route path="/clubs" element={<DelayedRender Component={Clubs} />} />
-          <Route path="/courses/:id/submit/:title" element={<DelayedRender Component={SubmissionPage} />}   />
-          <Route path="/profile" element={<DelayedRender Component={ProfilePage} />} />
-          <Route path="/admin-work-slot" element={<DelayedRender Component={AdminWorkSlot} />}  />
+          <Route
+            path="/courses/:id/submit/:title"
+            element={<DelayedRender Component={SubmissionPage} />}
+          />
+          <Route
+            path="/profile"
+            element={<DelayedRender Component={ProfilePage} />}
+          />
+          <Route
+            path="/admin-work-slot"
+            element={<DelayedRender Component={AdminWorkSlot} />}
+          />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/showclub/:clubId/:liveStream" element={<DelayedRender Component={ClubDetailes} />}  />
-          <Route path="/province" element={<DelayedRender Component={Provience} />}  />
-          <Route path="/national" element={<DelayedRender Component={National} />}  />
+          <Route
+            path="/showclub/:clubId/:liveStream"
+            element={<DelayedRender Component={ClubDetailes} />}
+          />
+          <Route
+            path="/province"
+            element={<DelayedRender Component={Provience} />}
+          />
+          <Route
+            path="/national"
+            element={<DelayedRender Component={National} />}
+          />
           <Route path="/accountrecovery" element={<ForgotPassword />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

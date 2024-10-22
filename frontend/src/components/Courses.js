@@ -51,7 +51,7 @@ const CoursesGrid = ({ setGetStarted }) => {
         mb={8}
         color={useColorModeValue("gray.700", "white")}
       >
-        Check Out Our Free Courses & World Graded Courses
+        Check Out Our Free & World Graded Courses
       </Text>
       <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={8}>
         {courses.map((course) => (

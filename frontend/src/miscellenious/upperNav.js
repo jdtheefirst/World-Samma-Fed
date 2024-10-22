@@ -24,6 +24,8 @@ import { ChatState } from "../components/Context/ChatProvider";
 import Requests from "./Requests";
 import React from "react";
 import logo7 from "../final.jpeg";
+import { PiSignOutLight } from "react-icons/pi";
+import { RiAdminLine } from "react-icons/ri";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
@@ -58,7 +60,7 @@ function UpperNav() {
         top={0}
         position={"fixed"}
       >
-        <Image src={logo7} height={12}/>
+        <Image src={logo7} height={12} />
         <Box display={"flex"} justifyContent={"center"} alignItems={"center"}>
           <Button
             backgroundColor={"transparent"}
@@ -79,10 +81,7 @@ function UpperNav() {
             onClick={onOpen}
             _hover={{ backgroundColor: "transparent", color: "green.400" }}
           >
-            <Text
-              px={4}
-              userSelect={"none"}
-            >
+            <Text px={4} userSelect={"none"}>
               Discover
             </Text>
           </Button>
@@ -143,9 +142,7 @@ function UpperNav() {
                 <IconButton
                   backgroundColor={"transparent"}
                   border={"none"}
-                  icon={
-                    <TiThMenuOutline />
-                  }
+                  icon={<TiThMenuOutline />}
                 />
               )}
             </MenuButton>
@@ -154,10 +151,10 @@ function UpperNav() {
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
-      <DrawerOverlay
-      bg="blackAlpha.300"
-      backdropFilter="blur(10px) hue-rotate(90deg)"
-    />
+        <DrawerOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
         <DrawerContent>
           <DrawerHeader
             borderBottomWidth="1px"
@@ -170,97 +167,131 @@ function UpperNav() {
           <DrawerBody
             display={"flex"}
             flexDir={"column"}
-            justifyContent={"space-between"}
+            justifyContent={"start"}
             width={"100%"}
+            padding={3}
           >
-            <Box
-              padding={3}
+            <Button
               display={"flex"}
-              justifyContent={"space-around"}
-              flexDir={"column"}
+              justifyContent={"left"}
+              alignItems={"center"}
+              border={"none"}
+              fontSize={"medium"}
+              background={"white"}
+              _hover={{ backgroundColor: "transparent", color: "green" }}
+              onClick={() => navigate("/profile")}
             >
-              <Button
-                display={"flex"}
-                justifyContent={"left"}
-                alignItems={"center"}
-                border={"none"}
-                background={"white"}
-                m={1}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                onClick={() => navigate("/profile")}
-              >
-                <Avatar
-                  size="sm"
-                  cursor="pointer"
-                  name={user?.name}
-                  src={user?.pic}
-                />
-                <Text p={2} m={1}>
-                  Profile
-                </Text>
-              </Button>
-              <Button
-                justifyContent={"left"}
-                border={"none"}
-                background={"white"}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                onClick={() => {
-                  navigate("/dashboard");
-                  onClose();
-                }}
-              >
-                My Programs
-              </Button>
-              <Button
-                justifyContent={"start"}
-                background={"white"}
-                border={"none"}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                onClick={() => {
-                  navigate("/clubs");
-                  onClose();
-                }}
-              >
-                Clubs
-              </Button>
-              <Button
-                justifyContent={"left"}
-                background={"white"}
-                border={"none"}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                isDisabled={!user?.provinces}
-                onClick={() => {
-                  navigate("/province");
-                  onClose();
-                }}
-              >
-                Provincial level
-              </Button>
-              <Button
-                background={"white"}
-                justifyContent={"left"}
-                border={"none"}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                onClick={() => {
-                  navigate("/national");
-                  onClose();
-                }}
-              >
-                National level
-              </Button>
-              <Button
-                background={"white"}
-                justifyContent={"left"}
-                border={"none"}
-                _hover={{ backgroundColor: "transparent", color: "green" }}
-                onClick={()=> {
-                  navigate("/championships")
-                }}
-              >
-                International Championship
-              </Button>
-            </Box>
-            <Button border={"none"} onClick={logoutHandler}>Log out</Button>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                name={user?.name}
+                src={user?.pic}
+              />
+              <Text p={2} m={1}>
+                Profile
+              </Text>
+            </Button>
+            <Button
+              justifyContent={"left"}
+              border={"none"}
+              background={"white"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/dashboard");
+                onClose();
+              }}
+            >
+              My Programs
+            </Button>
+            <Button
+              justifyContent={"start"}
+              background={"white"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/clubs");
+                onClose();
+              }}
+            >
+              Clubs
+            </Button>
+            <Button
+              justifyContent={"left"}
+              background={"white"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              isDisabled={!user?.provinces}
+              onClick={() => {
+                navigate("/province");
+                onClose();
+              }}
+            >
+              Provincial level
+            </Button>
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/national");
+                onClose();
+              }}
+            >
+              National level
+            </Button>
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/championships");
+              }}
+            >
+              International Championship
+            </Button>
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/admin");
+              }}
+            >
+              <RiAdminLine /> &nbsp; Admin
+            </Button>
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={logoutHandler}
+            >
+              <PiSignOutLight /> &nbsp; Sign out
+            </Button>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
