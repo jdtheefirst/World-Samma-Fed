@@ -4,7 +4,11 @@ import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import * as React from "react";
 
 import { buttonVariants } from "./button";
-import { cn } from "../../components/config/chatlogics";
+import classNames from "classnames";
+
+const cn = (...inputs: (string | undefined | null | boolean)[]) => {
+  return classNames(...inputs);
+};
 
 const AlertDialog = AlertDialogPrimitive.Root;
 

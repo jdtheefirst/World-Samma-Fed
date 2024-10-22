@@ -3,8 +3,11 @@
 import { OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 import * as React from "react";
+import classNames from "classnames";
 
-import { cn } from "../../components/config/chatlogics";
+const cn = (...inputs: (string | undefined | null | boolean)[]) => {
+  return classNames(...inputs);
+};
 
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,

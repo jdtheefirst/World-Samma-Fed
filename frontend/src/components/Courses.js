@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Text,
@@ -7,8 +6,8 @@ import {
   useColorModeValue,
   Button,
 } from "@chakra-ui/react";
-import AdvancedTraining from "../Advanced.jpg";
-import Certified from "../Uniform_Blue.jpg";
+import AdvancedTraining from "../assets/images/Advanced.jpg";
+import Certified from "../assets/images/Uniform_Blue.jpg";
 
 const courses = [
   {

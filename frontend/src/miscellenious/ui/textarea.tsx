@@ -1,6 +1,9 @@
 import * as React from "react";
+import classNames from "classnames";
 
-import { cn } from "../../components/config/chatlogics";
+const cn = (...inputs: (string | undefined | null | boolean)[]) => {
+  return classNames(...inputs);
+};
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}

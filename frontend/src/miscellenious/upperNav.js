@@ -22,16 +22,17 @@ import { Avatar } from "@chakra-ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import Requests from "./Requests";
-import React from "react";
-import logo7 from "../final.jpeg";
+import logo7 from "../assets/images/final.jpeg";
 import { PiSignOutLight } from "react-icons/pi";
+import { PasskeyModal } from "./Password";
+import { useState } from "react";
 import { RiAdminLine } from "react-icons/ri";
-import { PasskeyModal, Password } from "./Password";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const [modal, setModal] = useState(false);
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
@@ -152,6 +153,8 @@ function UpperNav() {
         </div>
       </Box>
 
+      {modal && <PasskeyModal setModal={setModal} />}
+
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay
           bg="blackAlpha.300"
@@ -264,11 +267,26 @@ function UpperNav() {
               }}
               onClick={() => {
                 navigate("/championships");
+                onClose();
               }}
             >
               International Championship
             </Button>
-            <PasskeyModal />
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                setModal(true);
+                onClose();
+              }}
+            >
+              <RiAdminLine /> &nbsp; Admin
+            </Button>
             <Button
               background={"white"}
               justifyContent={"left"}

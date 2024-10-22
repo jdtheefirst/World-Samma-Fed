@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Text,
@@ -7,7 +6,7 @@ import {
   SimpleGrid,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Grace from "../ReducedABit.jpg";
+import Grace from "../assets/images/ReducedABit.jpg";
 
 const testimonials = [
   {

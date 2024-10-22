@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import HLS from "hls.js";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 

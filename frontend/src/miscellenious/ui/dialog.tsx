@@ -3,8 +3,11 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import * as React from "react";
+import classNames from "classnames";
 
-import { cn } from "../../components/config/chatlogics";
+const cn = (...inputs: (string | undefined | null | boolean)[]) => {
+  return classNames(...inputs);
+};
 
 const Dialog = DialogPrimitive.Root;
 

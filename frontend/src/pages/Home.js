@@ -21,11 +21,11 @@ import "../App.css";
 import Logins from "./Logins";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo1 from "../final.jpeg";
-import logo2 from "../finalLogo2.jpeg";
-import logo7 from "../reduced.jpg";
-import logo9 from "../sammahouse.jpeg";
-import logo10 from "../Equity.png";
+import logo1 from "../assets/images/final.jpeg";
+import logo2 from "../assets/images/finalLogo2.jpeg";
+import logo7 from "../assets/images/reduced.jpg";
+import logo9 from "../assets/images/sammahouse.jpeg";
+import logo10 from "../assets/images/Equity.png";
 import {
   FaArrowCircleRight,
   FaArrowAltCircleDown,

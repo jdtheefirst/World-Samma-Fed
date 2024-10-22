@@ -1,6 +1,9 @@
 import * as React from "react";
-import { cn } from "../../components/config/chatlogics";
+import classNames from "classnames";
 
+const cn = (...inputs: (string | undefined | null | boolean)[]) => {
+  return classNames(...inputs);
+};
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
