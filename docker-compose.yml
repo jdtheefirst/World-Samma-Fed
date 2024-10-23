@@ -5,5 +5,20 @@ services:
       dockerfile: Dockerfile # Use the Dockerfile from the root directory
     ports:
       - "8080:8080" # Mapping port 8080 on host to port 8080 in the container
+      - "1935:1935" # RTMP port
     volumes:
-      - ./uploads:/usr/src/app/uploads # Mount uploads directory from host to container
+      - .:/usr/src/app # Sync everything except node_modules for dev
+      - /usr/src/app/node_modules # Exclude node_modules for performance
+      - ./uploads:/usr/src/app/uploads # Keep upload directory synced
+      - ./nginx.conf:/etc/nginx/nginx.conf # Mount your nginx.conf
+    command: node backend/index.js # Use nodemon to restart server on changes
+
+  nginx:
+    build:
+      context: ./nginx # Use the nginx directory for the Dockerfile
+      dockerfile: Dockerfile.nginx # Use the custom NGINX Dockerfile
+    ports:
+      - "80:80" # HTTP port
+      - "1935:1935" # RTMP port
+    volumes:
+      - ./uploads:/usr/src/app/uploads # Sync uploads directory

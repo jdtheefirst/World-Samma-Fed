@@ -71,13 +71,19 @@ const initializeSocketIO = (server) => {
       io.emit("received-message", data); // Emit message to all clients
     });
 
-    //check if there's another live sessio before starting a new one.
+    //check if there's another live session before starting a new one.
     socket.on("checkLiveStream", () => {
       socket.emit("liveStreamStatus", isLiveStreamActive);
       console.log(isLiveStreamActive);
     });
 
     socket.on("startLiveSession", async (stream) => {
+      console.log("Triggered live stream around here:", stream);
+
+      if (isLiveStreamActive || !stream) {
+        return;
+      }
+
       isLiveStreamActive = true;
 
       const outputPath = "./uploads/video.mp4";
