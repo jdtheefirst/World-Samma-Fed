@@ -68,6 +68,16 @@ object-assign
  * @license MIT
  */
 
+/**
+ * This module contains a set of reusable components that have been found useful
+ * during the development of the WebRTC applications with Kurento.
+ * 
+ * @module kurentoUtils
+ * 
+ * @copyright 2014 Kurento (http://kurento.org/)
+ * @license ALv2
+ */
+
 /** @license React v16.13.1
  * react-is.production.min.js
  *

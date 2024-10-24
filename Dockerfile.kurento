@@ -1,0 +1,6 @@
+# Dockerfile for Kurento Media Server
+FROM kurento/kurento-media-server:latest
+
+# Expose necessary ports
+EXPOSE 8888
+EXPOSE 8889

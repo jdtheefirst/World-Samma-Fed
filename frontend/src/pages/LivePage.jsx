@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
@@ -8,13 +8,11 @@ import kurentoUtils from "kurento-utils"; // For handling WebRTC signaling
 const LivePage = () => {
   const [isStreamActive, setIsStreamActive] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [kurentoPeer, setKurentoPeer] = useState(null);
+  const kurentoPeerRef = useRef(null); // Ref for storing kurentoPeer
   const navigate = useNavigate();
   const { user } = ChatState();
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
-  const [isLiveStreamActive, setIsLiveStreamActive] = useState(false);
-  const hlsUrl = `https://localhost:8080/uploads/live.m3u8`; // Hardcoded HLS URL
 
   // Check socket connection status
   useEffect(() => {
@@ -58,6 +56,7 @@ const LivePage = () => {
         },
       };
 
+      // Create the kurentoPeer
       const kurentoPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
         options,
         function (error) {
@@ -68,49 +67,40 @@ const LivePage = () => {
             if (error) return console.error(error);
 
             // Send the offer to the backend via socket
-            socket.emit("startLiveSession", { sdpOffer: offerSdp });
+            socket.emit("start", { sdpOffer: offerSdp });
           });
         }
       );
 
-      // Set the peer state
-      setKurentoPeer(kurentoPeer);
+      kurentoPeerRef.current = kurentoPeer; // Store in the ref
 
       // Listen for Kurento's answer
       socket.on("sdpAnswer", (sdpAnswer) => {
-        kurentoPeer.processAnswer(sdpAnswer);
+        if (kurentoPeerRef.current) {
+          kurentoPeerRef.current.processAnswer(sdpAnswer);
+        }
       });
 
       // Listen for ICE candidates from Kurento
       socket.on("iceCandidate", (candidate) => {
-        kurentoPeer.addIceCandidate(candidate);
+        if (kurentoPeerRef.current) {
+          kurentoPeerRef.current.addIceCandidate(candidate);
+        }
       });
     } catch (err) {
       console.error("Error accessing media devices:", err);
     }
   };
 
-  // Check stream validity
-  const checkStreamValidity = async () => {
-    try {
-      const response = await fetch(hlsUrl, { method: "HEAD" });
-      if (response.ok) {
-        setIsLiveStreamActive(true);
-      } else {
-        setIsLiveStreamActive(false);
-      }
-    } catch (error) {
-      console.error("Error checking stream validity:", error);
-      setIsLiveStreamActive(false);
+  const stopStreaming = () => {
+    if (kurentoPeerRef.current) {
+      kurentoPeerRef.current.dispose(); // Dispose of the WebRTC peer connection
+      kurentoPeerRef.current = null; // Clear the stored peer connection
+      setIsStreamActive(false); // Update the stream status in the component
+      console.log("Stream stopped.");
+      socket.emit("stop"); // Optionally notify the backend
     }
   };
-
-  // Check stream validity if a stream is active
-  useEffect(() => {
-    if (isStreamActive) {
-      checkStreamValidity();
-    }
-  }, [isStreamActive]);
 
   // Loading state
   if (loading) {
@@ -123,57 +113,25 @@ const LivePage = () => {
       <Box>
         <Text>Another stream is already active.</Text>
         <Button onClick={() => navigate("/streams")}>Watch Stream</Button>
+        <Button colorScheme="red" onClick={stopStreaming}>
+          Stop Live Stream
+        </Button>
       </Box>
     );
   }
 
   return (
     <Box>
-      {isLiveStreamActive ? (
-        <Box
-          as="video"
-          id="liveVideo"
-          controls
-          width="100%"
-          height="100vh" // Full height
-          autoPlay
-          muted
-        />
-      ) : (
-        <Box>
-          <Text>No live stream active. Start your stream below.</Text>
-          <Button colorScheme="teal" onClick={startStreaming}>
-            Start Live Stream
-          </Button>
-          <video
-            id="localVideo"
-            autoPlay
-            muted
-            style={{ width: "100%", height: "100vh" }}
-          />
-        </Box>
-      )}
-      {/* Load the HLS video if the stream is active */}
-      {isLiveStreamActive && (
-        <script>
-          {`
-            const video = document.getElementById('liveVideo');
-            if (Hls.isSupported()) {
-              const hls = new Hls();
-              hls.loadSource('${hlsUrl}');
-              hls.attachMedia(video);
-              hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                video.play();
-              });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-              video.src = '${hlsUrl}';
-              video.addEventListener('loadedmetadata', function() {
-                video.play();
-              });
-            }
-          `}
-        </script>
-      )}
+      <Text>No live stream active. Start your stream below.</Text>
+      <Button colorScheme="teal" onClick={startStreaming}>
+        Start Live Stream
+      </Button>
+      <video
+        id="localVideo"
+        autoPlay
+        muted
+        style={{ width: "100%", height: "100vh" }}
+      />
     </Box>
   );
 };
