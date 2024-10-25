@@ -1,27 +1,24 @@
 services:
   backend:
     build:
-      context: . # Context set to the root directory
-      dockerfile: Dockerfile # Use the Dockerfile from the root directory
+      context: . # Root directory for backend
+      dockerfile: Dockerfile # Backend Dockerfile in root directory
     ports:
-      - "8080:8080" # Mapping port 8080 on host to port 8080 in the container
-      - "1936:1935" # Change the host's RTMP port to 1936, but inside the container it is still 1935
+      - "8080:8080"
+      - "1936:1935"
     volumes:
-      - .:/usr/src/app # Sync everything except node_modules for dev
-      - ./uploads:/usr/src/app/uploads # Keep upload directory synced
-      - ./nginx.conf:/etc/nginx/nginx.conf # Mount your nginx.conf
-    command: node backend/index.js # Use nodemon to restart server on changes
+      - .:/usr/src/app
+
+    command: node backend/index.js
 
   nginx:
     build:
-      context: .
-      dockerfile: Dockerfile.nginx # Use the custom NGINX Dockerfile
+      context: frontend # Context limited to frontend for nginx build
+      dockerfile: Dockerfile.nginx # Specify path to Dockerfile.nginx
     ports:
       - "80:80" # HTTP port
       - "1935:1935" # RTMP port
-    volumes:
-      - ./uploads:/usr/src/app/uploads # Sync uploads directory
-      - ./frontend/build:/usr/share/nginx/html
+    # Removing volumes here to prevent mounting over copied build files
 
   kurento:
     build:

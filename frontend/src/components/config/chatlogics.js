@@ -133,8 +133,20 @@ export function useConnectSocket(user) {
       setSocket(newSocket); // Set socket state after connection
     });
 
-    newSocket.on("disconnect", () => {
-      console.log("Socket disconnected");
+    newSocket.on("disconnect", (reason) => {
+      console.log("Socket.IO disconnected due to:", reason);
+      if (reason === "io server disconnect") {
+        // Handle server-side disconnections
+        newSocket.connect();
+      }
+    });
+
+    newSocket.on("reconnect_attempt", (attemptNumber) => {
+      console.log(`Reconnection attempt ${attemptNumber}`);
+    });
+
+    newSocket.on("error", (error) => {
+      console.error("Socket.IO error:", error);
     });
 
     // Update socketRef with the new socket instance

@@ -1,6 +1,17 @@
+# Exclude node_modules and any unnecessary build artifacts
 node_modules
-build
+Dockerfile.nginx
 *.log
-npm-debug.log
-Dockerfile
-docker-compose.yml
+.git
+uploads
+temp
+cache
+dist
+frontend/node_modules  # In case of nested dependencies
+nginx.conf  # If you want to avoid copying configuration files unintentionally
+
+# Exclude other frontend development files
+src/
+tests/
+public/
+

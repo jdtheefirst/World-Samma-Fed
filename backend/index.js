@@ -53,7 +53,6 @@ app.use("/api/translate", useTranslator);
 app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
 app.use("/api/download", downloadRouter);
-app.use("/uploads", express.static(path.join(__dirname, "./uploads")));
 
 // Serve static assets and React frontend in production
 const __dirname1 = path.resolve();

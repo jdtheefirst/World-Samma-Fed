@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
 import kurentoUtils from "kurento-utils"; // For handling WebRTC signaling
@@ -9,7 +8,6 @@ const LivePage = () => {
   const [isStreamActive, setIsStreamActive] = useState(false);
   const [loading, setLoading] = useState(true);
   const kurentoPeerRef = useRef(null); // Ref for storing kurentoPeer
-  const navigate = useNavigate();
   const { user } = ChatState();
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
@@ -31,14 +29,23 @@ const LivePage = () => {
         setIsStreamActive(status);
         setLoading(false);
       });
+      socket.on("stopped", (status) => {
+        setIsStreamActive(status);
+      });
       return () => {
         socket.off("liveStreamStatus");
+        socket.off("stopped");
       };
     }
   }, [isSocketConnected]);
 
   // Start streaming and setup WebRTC
   const startStreaming = async () => {
+    if (isStreamActive) {
+      console.log("Stream already active. Cannot start another.");
+      return;
+    }
+
     try {
       // Request access to user's media devices
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -76,6 +83,7 @@ const LivePage = () => {
 
       // Listen for Kurento's answer
       socket.on("sdpAnswer", (sdpAnswer) => {
+        console.log("Received SDP answer from server:", sdpAnswer);
         if (kurentoPeerRef.current) {
           kurentoPeerRef.current.processAnswer(sdpAnswer);
         }
@@ -98,39 +106,50 @@ const LivePage = () => {
       kurentoPeerRef.current = null; // Clear the stored peer connection
       setIsStreamActive(false); // Update the stream status in the component
       console.log("Stream stopped.");
-      socket.emit("stop"); // Optionally notify the backend
+      socket.emit("stop"); // Notify the backend
+
+      // Clear Kurento-related socket listeners
+      socket.off("sdpAnswer");
+      socket.off("iceCandidate");
     }
   };
+
+  // Cleanup on component unmount
+  useEffect(() => {
+    return () => {
+      if (kurentoPeerRef.current) {
+        stopStreaming();
+      }
+    };
+  }, []);
 
   // Loading state
   if (loading) {
     return <Text>Loading...</Text>;
   }
 
-  // If another stream is active
-  if (isStreamActive) {
-    return (
-      <Box>
-        <Text>Another stream is already active.</Text>
-        <Button onClick={() => navigate("/streams")}>Watch Stream</Button>
-        <Button colorScheme="red" onClick={stopStreaming}>
-          Stop Live Stream
-        </Button>
-      </Box>
-    );
-  }
-
   return (
     <Box>
       <Text>No live stream active. Start your stream below.</Text>
-      <Button colorScheme="teal" onClick={startStreaming}>
+      <Button
+        colorScheme="teal"
+        isDisabled={isStreamActive}
+        onClick={startStreaming}
+      >
         Start Live Stream
+      </Button>
+      <Button colorScheme="red" onClick={stopStreaming}>
+        Stop Live Stream
       </Button>
       <video
         id="localVideo"
         autoPlay
         muted
-        style={{ width: "100%", height: "100vh" }}
+        style={{
+          display: isStreamActive ? "block" : "none",
+          width: "100%",
+          height: "80vh",
+        }}
       />
     </Box>
   );

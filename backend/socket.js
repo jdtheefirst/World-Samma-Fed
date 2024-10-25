@@ -77,23 +77,38 @@ const initializeSocketIO = (server) => {
     });
 
     // Kurento-related events
-    socket.on("start", (data) => {
-      startKurentoPipeline(data.sdpOffer, socket);
+    socket.on("start", async (data) => {
+      try {
+        console.log("Received start event with data:", data);
+        await startKurentoPipeline(data.sdpOffer, socket);
+        console.log("Kurento pipeline started successfully.");
+      } catch (error) {
+        console.error("Error in start event:", error);
+      }
     });
 
     socket.on("onIceCandidate", (data) => {
-      addIceCandidate(data.candidate, socket);
+      try {
+        console.log("Received ICE candidate:", data.candidate);
+        addIceCandidate(data.candidate, socket);
+        console.log("ICE candidate added successfully.");
+      } catch (error) {
+        console.error("Error adding ICE candidate:", error);
+      }
     });
 
     socket.on("checkLiveStream", () => {
+      console.log("checkLiveStream event received");
       socket.emit("liveStreamStatus", isLiveStreamActive);
-      console.log(isLiveStreamActive);
+      console.log("Live stream status emitted:", isLiveStreamActive);
     });
 
     socket.on("stop", () => {
       if (socket.kurentoClient) {
         socket.kurentoClient.close();
         isLiveStreamActive = false;
+
+        io.emit("stopped", false); // Emit message to all clients
         console.log("Stream stopped by user.");
       }
     });

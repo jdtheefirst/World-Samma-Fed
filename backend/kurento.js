@@ -1,6 +1,7 @@
 const kurento = require("kurento-client");
 
 const kurentoUrl = "ws://localhost:8888/kurento"; // This is the WebSocket URL for Kurento
+
 let isLiveStreamActive = false;
 
 function startKurentoPipeline(sdpOffer, socket) {
@@ -60,7 +61,7 @@ function startKurentoPipeline(sdpOffer, socket) {
               return socket.emit("error", { message: error.message });
             }
 
-            const rtmpUri = "rtmp://localhost/live";
+            const rtmpUri = "rtmp://nginx:1935/live";
 
             rtpEndpoint.connect(webRtcEndpoint, (error) => {
               if (error) {
