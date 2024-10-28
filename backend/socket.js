@@ -77,24 +77,62 @@ const initializeSocketIO = (server) => {
     });
 
     // Kurento-related events
-    socket.on("start", async (data) => {
+
+    // For admin initiating the stream
+    socket.on("startStream", async (data) => {
       try {
-        console.log("Received start event with data:", data);
+        if (isLiveStreamActive) {
+          console.log("Stream is already active, cannot start a new one.");
+          return;
+        }
+
+        console.log("Admin started the stream:", data);
         await startKurentoPipeline(data.sdpOffer, socket);
-        console.log("Kurento pipeline started successfully.");
       } catch (error) {
-        console.error("Error in start event:", error);
+        console.error("Error in startStream event:", error);
       }
     });
 
-    socket.on("onIceCandidate", (data) => {
-      try {
-        console.log("Received ICE candidate:", data.candidate);
-        addIceCandidate(data.candidate, socket);
-        console.log("ICE candidate added successfully.");
-      } catch (error) {
-        console.error("Error adding ICE candidate:", error);
+    // For user joining the stream
+    socket.on("joinStream", async (data) => {
+      if (!isLiveStreamActive) {
+        console.log("Stream is not active. Cannot join.");
+        return socket.emit("error", { message: "No active stream" });
       }
+
+      const { kurentoClient } = socket;
+      kurentoClient.getMediaobjectById(pipeline.id, (error, pipeline) => {
+        if (error) {
+          return console.error("Error retrieving pipeline:", error);
+        }
+
+        pipeline.create("WebRtcEndpoint", (error, userEndpoint) => {
+          if (error) {
+            return socket.emit("error", { message: error.message });
+          }
+
+          userEndpoint.processOffer(data.sdpOffer, (error, sdpAnswer) => {
+            if (error) {
+              return socket.emit("error", { message: error.message });
+            }
+
+            // Send the SDP answer to the user
+
+            socket.emit("userSdpAnswer", { sdpAnswer });
+            userEndpoint.on("OnIceCandidate", (candidate) => {
+              socket.emit("userIceCandidate", candidate);
+            });
+            socket.on("onUserIceCandidate", (candidate) => {
+              userEndpoint.addIceCandidate(candidate);
+            });
+          });
+        });
+      });
+    });
+
+    socket.on("onIceCandidate", (data) => {
+      console.log("Backend received ICE candidate:", data.candidate);
+      addIceCandidate(data.candidate, socket);
     });
 
     socket.on("checkLiveStream", () => {

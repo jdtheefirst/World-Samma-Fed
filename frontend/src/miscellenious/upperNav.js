@@ -27,6 +27,7 @@ import { PiSignOutLight } from "react-icons/pi";
 import { PasskeyModal } from "./Password";
 import { useState } from "react";
 import { RiAdminLine } from "react-icons/ri";
+import { MdLiveTv } from "react-icons/md";
 
 function UpperNav() {
   const { user, notification, setNotification } = ChatState();
@@ -271,6 +272,21 @@ function UpperNav() {
               }}
             >
               International Championship
+            </Button>
+            <Button
+              background={"white"}
+              justifyContent={"left"}
+              border={"none"}
+              _hover={{
+                backgroundColor: "transparent",
+                color: "blackAlpha.600",
+              }}
+              onClick={() => {
+                navigate("/stream");
+                onClose();
+              }}
+            >
+              <MdLiveTv /> &nbsp; Streams
             </Button>
             <Button
               background={"white"}

@@ -17,7 +17,8 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import LoadingSpinner from "./components/Loading";
 import DelayedRender from "./components/Render";
-import LivePage from "./pages/LivePage";
+const LivePage = lazy(() => import("./pages/LivePage"));
+const StreamViewPage = lazy(() => import("./pages/StreamViewing"));
 
 const courses = [
   {
@@ -330,6 +331,10 @@ function App() {
           <Route
             path="/championships"
             element={<DelayedRender Component={Championships} />}
+          />
+          <Route
+            path="/stream"
+            element={<DelayedRender Component={StreamViewPage} />}
           />
           <Route path="/clubs" element={<DelayedRender Component={Clubs} />} />
           <Route

@@ -32,9 +32,13 @@ const LivePage = () => {
       socket.on("stopped", (status) => {
         setIsStreamActive(status);
       });
+      socket.on("streamEnded", () => {
+        setIsStreamActive(false);
+      });
       return () => {
         socket.off("liveStreamStatus");
         socket.off("stopped");
+        socket.off("streamEnded");
       };
     }
   }, [isSocketConnected]);
@@ -74,7 +78,7 @@ const LivePage = () => {
             if (error) return console.error(error);
 
             // Send the offer to the backend via socket
-            socket.emit("start", { sdpOffer: offerSdp });
+            socket.emit("startStream", { sdpOffer: offerSdp });
           });
         }
       );
@@ -83,14 +87,14 @@ const LivePage = () => {
 
       // Listen for Kurento's answer
       socket.on("sdpAnswer", (sdpAnswer) => {
-        console.log("Received SDP answer from server:", sdpAnswer);
+        console.log("Frontend received SDP answer from server:", sdpAnswer);
         if (kurentoPeerRef.current) {
           kurentoPeerRef.current.processAnswer(sdpAnswer);
         }
       });
 
       // Listen for ICE candidates from Kurento
-      socket.on("iceCandidate", (candidate) => {
+      socket.on("adminIceCandidate", (candidate) => {
         if (kurentoPeerRef.current) {
           kurentoPeerRef.current.addIceCandidate(candidate);
         }

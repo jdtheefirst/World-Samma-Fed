@@ -24,22 +24,21 @@ const StreamViewPage = () => {
   // Check live stream status and connect to socket
   useEffect(() => {
     if (isSocketConnected) {
-      socket.emit("checkLiveStream"); // Emit event to check live stream status
+      socket.emit("checkLiveStream");
 
-      // Listen for live stream status
       socket.on("liveStreamStatus", (status) => {
         setIsStreamActive(status);
-        if (status) {
-          // If stream is active, set up WebRTC
-          setupWebRTC();
-        }
+        if (status) setupWebRTC();
       });
 
-      // Listen for stream stop event
+      socket.on("streamEnded", () => {
+        setIsStreamActive(false);
+      });
+
       socket.on("stopped", (status) => {
         setIsStreamActive(status);
         if (kurentoPeerRef.current) {
-          kurentoPeerRef.current.dispose(); // Clean up if stream stopped
+          kurentoPeerRef.current.dispose();
           kurentoPeerRef.current = null;
         }
       });
@@ -47,50 +46,57 @@ const StreamViewPage = () => {
       return () => {
         socket.off("liveStreamStatus");
         socket.off("stopped");
+        socket.off("streamEnded");
+        if (kurentoPeerRef.current) {
+          kurentoPeerRef.current.dispose();
+          kurentoPeerRef.current = null;
+        }
       };
     }
-  }, [socket]);
+  }, [isSocketConnected]);
 
   // Setup WebRTC connection
   const setupWebRTC = () => {
+    if (!videoRef.current) return;
+
     const options = {
       remoteVideo: videoRef.current,
       onicecandidate: (candidate) => {
-        // Send ICE candidates to the backend
-        socket.emit("onIceCandidate", candidate);
+        if (candidate) {
+          socket.emit("onUserIceCandidate", candidate);
+        }
       },
     };
 
-    // Create the kurentoPeer for receiving the stream
     const kurentoPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
       options,
       function (error) {
-        if (error) return console.error(error);
+        if (error) return console.error("WebRTC peer creation failed:", error);
 
-        // Generate offer to send to Kurento
         this.generateOffer((error, offerSdp) => {
-          if (error) return console.error(error);
+          if (error) return console.error("Error generating SDP offer:", error);
 
-          // Send the offer to the backend via socket
-          socket.emit("start", { sdpOffer: offerSdp });
+          socket.emit("joinStream", { sdpOffer: offerSdp });
         });
       }
     );
 
-    kurentoPeerRef.current = kurentoPeer; // Store in the ref
+    kurentoPeerRef.current = kurentoPeer;
 
-    // Listen for SDP answer from Kurento
-    socket.on("sdpAnswer", (sdpAnswer) => {
-      console.log("Received SDP answer from server:", sdpAnswer);
+    // SDP Answer and ICE Candidate handlers
+    socket.on("userSdpAnswer", ({ sdpAnswer }) => {
       if (kurentoPeerRef.current) {
-        kurentoPeerRef.current.processAnswer(sdpAnswer);
+        kurentoPeerRef.current.processAnswer(sdpAnswer, (error) => {
+          if (error) console.error("Error processing SDP answer:", error);
+        });
       }
     });
 
-    // Listen for ICE candidates from Kurento
-    socket.on("iceCandidate", (candidate) => {
-      if (kurentoPeerRef.current) {
-        kurentoPeerRef.current.addIceCandidate(candidate);
+    socket.on("userIceCandidate", (candidate) => {
+      if (kurentoPeerRef.current && candidate) {
+        kurentoPeerRef.current.addIceCandidate(candidate, (error) => {
+          if (error) console.error("Error adding ICE candidate:", error);
+        });
       }
     });
   };
