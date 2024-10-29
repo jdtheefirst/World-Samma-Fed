@@ -2,11 +2,10 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
 const { setUserSocket, getUserSocket } = require("./config/socketUtils");
-const {
-  addIceCandidate,
-  startKurentoPipeline,
-  isLiveStreamActive,
-} = require("./kurento");
+
+const kurento = require("kurento-client");
+const kurentoUrl = "wss://localhost:8888/kurento"; // This is the WebSocket URL for Kurento
+let isLiveStreamActive = false;
 
 let io;
 
@@ -78,20 +77,140 @@ const initializeSocketIO = (server) => {
 
     // Kurento-related events
 
-    // For admin initiating the stream
-    socket.on("startStream", (data) => {
-      try {
-        if (isLiveStreamActive) {
-          console.log("Stream is already active, cannot start a new one.");
-          return;
-        }
+    socket.on("onIceCandidate", (data) => {
+      console.log("Backend received ICE candidate:", data.candidate);
 
-        console.log("Admin started the stream:");
-        startKurentoPipeline(data.sdpOffer, socket);
-      } catch (error) {
-        console.error("Error in startStream event:", error);
+      if (socket.kurentoClient && data.candidate) {
+        console.log("Adding ICE candidate to Kurento client.");
+
+        socket.kurentoClient.addIceCandidate(data.candidate, (error) => {
+          if (error) {
+            console.error("Error adding ICE candidate:", error);
+          } else {
+            console.log("ICE candidate added successfully.");
+          }
+        });
+      } else {
+        console.error("Kurento client or candidate is not set.");
       }
     });
+
+    // For admin initiating the stream
+    socket.on("startStream", (data) => {
+      const sdpOffer = data.sdpOffer;
+
+      if (isLiveStreamActive || !sdpOffer) {
+        console.log(
+          "Stream already active or SDP offer is missing:",
+          isLiveStreamActive,
+          sdpOffer
+        );
+        return;
+      }
+
+      isLiveStreamActive = true;
+
+      try {
+        kurento(kurentoUrl, (error, kurentoClient) => {
+          if (error) {
+            console.error("Could not find Kurento server at", kurentoUrl);
+            isLiveStreamActive = false;
+            return io.emit("error", {
+              message: "Kurento server not available",
+            });
+          }
+
+          console.log("Kurento client connected successfully.");
+          socket.kurentoClient = kurentoClient;
+
+          createMediaPipeline(sdpOffer);
+        });
+      } catch (error) {
+        console.error("Error in starting stream:", error);
+        isLiveStreamActive = false;
+      }
+    });
+
+    function createMediaPipeline(sdpOffer) {
+      socket.kurentoClient.create("MediaPipeline", (error, pipeline) => {
+        if (error) {
+          isLiveStreamActive = false;
+          return io.emit("error", { message: error.message });
+        }
+
+        console.log("Media pipeline created.");
+        pipeline.on("release", () => {
+          isLiveStreamActive = false;
+          console.log("Pipeline released, stream ended.");
+          io.emit("streamEnded", { message: "Stream has ended." });
+        });
+
+        createWebRtcEndpoint(pipeline, sdpOffer);
+      });
+    }
+
+    function createWebRtcEndpoint(pipeline, sdpOffer) {
+      pipeline.create("WebRtcEndpoint", (error, webRtcEndpoint) => {
+        if (error) {
+          isLiveStreamActive = false;
+          return io.emit("error", { message: error.message });
+        }
+
+        monitorMediaFlow(webRtcEndpoint);
+
+        webRtcEndpoint.processOffer(sdpOffer, (error, sdpAnswer) => {
+          if (error) {
+            isLiveStreamActive = false;
+            return socket.emit("error", { message: error.message });
+          }
+
+          socket.emit("sdpAnswer", sdpAnswer); // Send the SDP answer to the client
+          createRtpEndpoint(pipeline, webRtcEndpoint);
+        });
+      });
+    }
+
+    function createRtpEndpoint(pipeline, webRtcEndpoint) {
+      pipeline.create("RtpEndpoint", (error, rtpEndpoint) => {
+        if (error) {
+          isLiveStreamActive = false;
+          return io.emit("error", { message: error.message });
+        }
+
+        const rtmpUri = "rtmp://nginx:1935/stream";
+
+        // Connect the WebRtcEndpoint to the RTP endpoint
+        rtpEndpoint.connect(webRtcEndpoint, (error) => {
+          if (error) {
+            isLiveStreamActive = false;
+            return console.error(
+              "Error connecting WebRtcEndpoint to RTP:",
+              error
+            );
+          }
+
+          // Connect the RTP endpoint to the RTMP server
+          rtpEndpoint.connect(rtmpUri, (error) => {
+            if (error) {
+              isLiveStreamActive = false;
+              return console.error("Error streaming to RTMP server:", error);
+            }
+
+            console.log("Streaming to RTMP server started");
+          });
+        });
+      });
+    }
+
+    function monitorMediaFlow(webRtcEndpoint) {
+      webRtcEndpoint.on("MediaFlowInStateChange", (event) => {
+        if (event.state === "NOT_FLOWING") {
+          isLiveStreamActive = false;
+          console.log("Media flow stopped, stream ended.");
+          io.emit("streamEnded", { message: "Stream has stopped." });
+        }
+      });
+    }
 
     // For user joining the stream
     socket.on("joinStream", (data) => {
@@ -128,11 +247,6 @@ const initializeSocketIO = (server) => {
           });
         });
       });
-    });
-
-    socket.on("onIceCandidate", (data) => {
-      console.log("Backend received ICE candidate:", data.candidate);
-      addIceCandidate(data.candidate, socket);
     });
 
     socket.on("checkLiveStream", () => {
