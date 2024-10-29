@@ -61,8 +61,10 @@ const LivePage = () => {
       // Create a new WebRTC peer for Kurento
       const options = {
         localVideo: document.getElementById("localVideo"),
+        configuration: {
+          iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+        },
         onicecandidate: (candidate) => {
-          // Send ICE candidates to the backend
           socket.emit("onIceCandidate", candidate);
         },
       };

@@ -4,7 +4,7 @@ const kurentoUrl = "ws://localhost:8888/kurento"; // This is the WebSocket URL f
 
 let isLiveStreamActive = false;
 
-function startKurentoPipeline(sdpOffer, socket) {
+async function startKurentoPipeline(sdpOffer, socket) {
   console.log("startKurentoPipeline function about to run");
 
   // Check if a stream is already active or if the SDP offer is missing
@@ -20,7 +20,9 @@ function startKurentoPipeline(sdpOffer, socket) {
   isLiveStreamActive = true;
 
   // Connect to the Kurento server
-  kurento(kurentoUrl, (error, kurentoClient) => {
+  await kurento(kurentoUrl, (error, kurentoClient) => {
+    console.log("We are in Kurento!!!");
+
     if (error) {
       console.error("Could not find Kurento server at", kurentoUrl);
       isLiveStreamActive = false;
@@ -107,7 +109,7 @@ function startKurentoPipeline(sdpOffer, socket) {
 }
 
 function addIceCandidate(candidate, socket) {
-  console.log("Adding a candidate!");
+  console.log("Adding a candidate!", candidate, socket);
   if (socket.kurentoClient && candidate) {
     socket.kurentoClient.addIceCandidate(candidate, (error) => {
       if (error) {

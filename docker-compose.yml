@@ -5,20 +5,19 @@ services:
       dockerfile: Dockerfile # Backend Dockerfile in root directory
     ports:
       - "8080:8080"
-      - "1936:1935"
     volumes:
       - .:/usr/src/app
-
     command: node backend/index.js
 
   nginx:
-    build:
-      context: frontend # Context limited to frontend for nginx build
-      dockerfile: Dockerfile.nginx # Specify path to Dockerfile.nginx
+    image: alfg/nginx-rtmp
     ports:
       - "80:80" # HTTP port
       - "1935:1935" # RTMP port
-    # Removing volumes here to prevent mounting over copied build files
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      - NGINX_VERSION=1.20.0
 
   kurento:
     build:

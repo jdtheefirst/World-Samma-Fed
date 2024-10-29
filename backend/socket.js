@@ -79,22 +79,22 @@ const initializeSocketIO = (server) => {
     // Kurento-related events
 
     // For admin initiating the stream
-    socket.on("startStream", async (data) => {
+    socket.on("startStream", (data) => {
       try {
         if (isLiveStreamActive) {
           console.log("Stream is already active, cannot start a new one.");
           return;
         }
 
-        console.log("Admin started the stream:", data);
-        await startKurentoPipeline(data.sdpOffer, socket);
+        console.log("Admin started the stream:");
+        startKurentoPipeline(data.sdpOffer, socket);
       } catch (error) {
         console.error("Error in startStream event:", error);
       }
     });
 
     // For user joining the stream
-    socket.on("joinStream", async (data) => {
+    socket.on("joinStream", (data) => {
       if (!isLiveStreamActive) {
         console.log("Stream is not active. Cannot join.");
         return socket.emit("error", { message: "No active stream" });
