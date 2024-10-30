@@ -277,6 +277,7 @@ function UpperNav() {
               background={"white"}
               justifyContent={"left"}
               border={"none"}
+              isDisabled
               _hover={{
                 backgroundColor: "transparent",
                 color: "blackAlpha.600",

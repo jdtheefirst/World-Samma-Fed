@@ -43,87 +43,138 @@ const LivePage = () => {
     }
   }, [isSocketConnected]);
 
-  const startStreaming = async () => {
+  // Step 1: Get User Media Stream
+  async function getUserMediaStream() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
       console.log("Media access granted:", stream);
+      return stream;
+    } catch (err) {
+      console.error("Error accessing media devices:", err);
+      return null;
+    }
+  }
 
+  // Step 2: Initialize Kurento Peer
+  async function initializeKurentoPeer() {
+    return new Promise((resolve, reject) => {
       const options = {
         localVideo: document.getElementById("localVideo"),
         configuration: {
           iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
         },
         onicecandidate: async (candidate) => {
-          // Send candidate to server via API instead of socket
-          await fetch("/sendIceCandidate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ candidate }),
-          });
+          await sendIceCandidate(candidate);
         },
       };
 
       const kurentoPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
         options,
-        async function (error) {
-          if (error) return console.error(error);
-
-          this.generateOffer(async (error, offerSdp) => {
-            if (error) return console.error(error);
-
-            // Send SDP offer to the backend via API
-            const offerResponse = await fetch("/startStream", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ sdpOffer: offerSdp }),
-            });
-
-            if (!offerResponse.ok) {
-              console.error(
-                "Error starting stream:",
-                await offerResponse.text()
-              );
-              return; // Exit if the stream couldn't be started
-            }
-
-            // Fetch SDP answer from the server
-            const answerResponse = await fetch("/getSdpAnswer");
-            const { sdpAnswer } = await answerResponse.json();
-            kurentoPeer.processAnswer(sdpAnswer);
-          });
+        function (error) {
+          if (error) {
+            console.error("Error initializing Kurento Peer:", error);
+            return reject(error);
+          }
+          console.log("Kurento Peer initialized successfully.");
+          resolve(this);
         }
       );
+    });
+  }
 
-      kurentoPeerRef.current = kurentoPeer;
+  // Step 3: Send ICE Candidates to Server
+  async function sendIceCandidate(candidate) {
+    try {
+      await fetch("/sendIceCandidate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidate }),
+      });
+      console.log("ICE candidate sent to server.");
+    } catch (error) {
+      console.error("Error sending ICE candidate:", error);
+    }
+  }
 
-      // Periodically poll for ICE candidates from the server
-      const pollIceCandidates = setInterval(async () => {
+  // Step 4: Start Streaming Function
+  async function startStreaming() {
+    // Get media stream
+    const stream = await getUserMediaStream();
+    if (!stream) return; // Stop if media access fails
+
+    // Initialize Kurento Peer
+    const kurentoPeer = await initializeKurentoPeer();
+    if (!kurentoPeer) return; // Stop if peer setup fails
+
+    // Generate SDP Offer and Process Answer
+    kurentoPeer.generateOffer(async (error, offerSdp) => {
+      if (error) {
+        console.error("Error generating SDP offer:", error);
+        return;
+      }
+
+      const sdpAnswer = await startStream(offerSdp);
+      if (sdpAnswer) {
+        kurentoPeer.processAnswer(sdpAnswer);
+        console.log("SDP answer processed.");
+      } else {
+        console.log("No SDP answer received.");
+      }
+
+      // Start polling ICE candidates
+      const pollInterval = startPollingIceCandidates(kurentoPeer);
+      kurentoPeerRef.current = { peer: kurentoPeer, pollInterval };
+    });
+  }
+
+  // Step 5: Start Stream (handles fetch to server for SDP exchange)
+  async function startStream(offerSdp) {
+    try {
+      const response = await fetch("/start-stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sdpOffer: offerSdp }),
+      });
+
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        console.error("Error starting stream:", errorMessage);
+        return null;
+      }
+
+      const { sdpAnswer } = await response.json();
+      console.log("SDP answer received:", sdpAnswer);
+      return sdpAnswer;
+    } catch (error) {
+      console.error("Error in startStream function:", error);
+      return null;
+    }
+  }
+
+  // Step 6: Start Polling ICE Candidates
+  function startPollingIceCandidates(kurentoPeer) {
+    return setInterval(async () => {
+      try {
         const response = await fetch("/getIceCandidates");
         const { candidates } = await response.json();
-
-        candidates.forEach((candidate) => {
-          if (kurentoPeerRef.current) {
-            kurentoPeerRef.current.addIceCandidate(candidate);
-          }
-        });
-      }, 1000);
-
-      // Store polling interval ID for cleanup
-      kurentoPeerRef.current.pollInterval = pollIceCandidates;
-    } catch (err) {
-      console.error("Error accessing media devices:", err);
-    }
-  };
+        candidates.forEach((candidate) =>
+          kurentoPeer.addIceCandidate(candidate)
+        );
+      } catch (error) {
+        console.error("Error fetching ICE candidates:", error);
+      }
+    }, 1000); // Poll every 1 second
+  }
 
   // Cleanup when component unmounts
-  useEffect(() => {
-    return () => {
-      clearInterval(kurentoPeerRef.current.pollInterval);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     clearInterval(kurentoPeerRef.current.pendingIceCandidates);
+  //   };
+  // }, []);
 
   const stopStreaming = () => {
     if (kurentoPeerRef.current) {

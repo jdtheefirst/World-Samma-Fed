@@ -16,7 +16,7 @@ const downloadRouter = require("./routes/downloadRouter");
 const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
-const { initializeSocketIO } = require("./socket");
+const { initializeSocketIO, getIO } = require("./socket");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -33,6 +33,7 @@ const server = app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}...`);
 });
 initializeSocketIO(server);
+const io = getIO();
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
@@ -62,97 +63,99 @@ let sdpAnswer;
 let serverIceCandidates = [];
 const kurentoUrl = "ws://localhost:8888/kurento";
 
+app.post("/sendIceCandidate", (req, res) => {
+  const { candidate } = req.body;
+
+  console.log(candidate);
+
+  if (webRtcEndpoint) {
+    webRtcEndpoint.addIceCandidate(candidate);
+  } else {
+    console.log("Nothing like webRTC", webRtcEndpoint);
+  }
+  res.sendStatus(200);
+});
+
+app.get("/getSdpAnswer", (req, res) => {
+  console.log("getting sdpAnswer");
+
+  res.json({ sdpAnswer });
+});
+
+app.get("/getIceCandidates", (req, res) => {
+  consoole.log("getIceCandidate", serverIceCandidates);
+
+  res.json({ candidates: serverIceCandidates });
+  serverIceCandidates = []; // Reset the candidate list after sending
+});
+
 app.post("/start-stream", async (req, res) => {
   const { sdpOffer } = req.body;
 
+  console.log("Starting the stream!!");
+
   if (!sdpOffer) {
-    return res.status(400).json({
-      error: "Stream already active or SDP offer is missing",
-    });
+    return res.status(400).json({ error: "SDP offer is missing" });
   }
 
-  if (!kurentoClient) {
-    kurentoClient = await kurento("ws://localhost:8888/kurento");
-    kurentoPipeline = await kurentoClient.create("MediaPipeline");
-  }
-
-  kurento(kurentoUrl, (error, kurentoClient) => {
-    if (error) {
-      console.error("Could not find Kurento server at", kurentoUrl);
-      return res.status(500).json({ message: "Kurento server not available" });
+  try {
+    if (!kurentoClient) {
+      kurentoClient = await kurento(kurentoUrl);
+      kurentoPipeline = await kurentoClient.create("MediaPipeline");
     }
-
-    console.log("Kurento client connected successfully.");
-    req.kurentoClient = kurentoClient;
-
-    createMediaPipeline(sdpOffer, res); // Pass 'res' for direct response
-  });
+    await createMediaPipeline(sdpOffer, res);
+  } catch (error) {
+    console.error("Error setting up Kurento:", error);
+    return res.status(500).json({ message: "Kurento setup error" });
+  }
 });
 
-function createMediaPipeline(sdpOffer, res) {
-  req.kurentoClient.create("MediaPipeline", (error, pipeline) => {
-    if (error) {
-      return res.status(500).json({ message: error.message });
-    }
-
+async function createMediaPipeline(sdpOffer, res) {
+  try {
+    kurentoPipeline = await kurentoClient.create("MediaPipeline");
     console.log("Media pipeline created.");
-    pipeline.on("release", () => {
+
+    kurentoPipeline.on("release", () => {
       console.log("Pipeline released, stream ended.");
     });
 
-    createWebRtcEndpoint(pipeline, sdpOffer, res);
-  });
+    await createWebRtcEndpoint(kurentoPipeline, sdpOffer, res);
+  } catch (error) {
+    console.error("Error creating MediaPipeline:", error);
+    res.status(500).json({ message: error.message });
+  }
 }
 
-function createWebRtcEndpoint(pipeline, sdpOffer, res) {
-  pipeline.create("WebRtcEndpoint", (error, webRtcEndpoint) => {
-    if (error) {
-      return res.status(500).json({ message: error.message });
-    }
-
+async function createWebRtcEndpoint(pipeline, sdpOffer, res) {
+  try {
+    webRtcEndpoint = await pipeline.create("WebRtcEndpoint");
     monitorMediaFlow(webRtcEndpoint);
 
-    // Process the SDP offer
-    webRtcEndpoint.processOffer(sdpOffer, (error, sdpAnswer) => {
-      if (error) {
-        return res.status(500).json({ message: error.message });
-      }
+    sdpAnswer = await webRtcEndpoint.processOffer(sdpOffer);
+    res.status(200).json({ sdpAnswer });
 
-      // Respond with the SDP answer to the client
-      res.status(200).json({ sdpAnswer });
-      createRtpEndpoint(pipeline, webRtcEndpoint);
-    });
-  });
+    await webRtcEndpoint.gatherCandidates();
+    await createRtpEndpoint(pipeline, webRtcEndpoint);
+  } catch (error) {
+    console.error("Error creating WebRtcEndpoint:", error);
+    res.status(500).json({ message: error.message });
+  }
 }
 
-function createRtpEndpoint(pipeline, webRtcEndpoint) {
-  pipeline.create("RtpEndpoint", (error, rtpEndpoint) => {
-    if (error) {
-      console.error("Error creating RTP endpoint:", error);
-      return io.emit("error", { message: error.message });
-    }
-
-    // Example RTMP URI where the stream will be sent
+async function createRtpEndpoint(pipeline, webRtcEndpoint) {
+  try {
+    const rtpEndpoint = await pipeline.create("RtpEndpoint");
     const rtmpUri = "rtmp://nginx:1935/stream";
 
-    // Connect the WebRtcEndpoint to the RTP endpoint
-    rtpEndpoint.connect(webRtcEndpoint, (error) => {
-      if (error) {
-        console.error("Error connecting WebRtcEndpoint to RTP:", error);
-        return io.emit("error", { message: error.message });
-      }
+    await rtpEndpoint.connect(webRtcEndpoint);
+    console.log("Connected WebRtcEndpoint to RTP endpoint.");
 
-      // Connect the RTP endpoint to the RTMP server
-      rtpEndpoint.connect(rtmpUri, (error) => {
-        if (error) {
-          console.error("Error streaming to RTMP server:", error);
-          return io.emit("error", { message: error.message });
-        }
-
-        console.log("Streaming to RTMP server started successfully.");
-      });
-    });
-  });
+    await rtpEndpoint.connect(rtmpUri);
+    console.log("Streaming to RTMP server started successfully.");
+  } catch (error) {
+    console.error("Error creating RTP endpoint or streaming to RTMP:", error);
+    io.emit("error", { message: error.message });
+  }
 }
 
 function monitorMediaFlow(webRtcEndpoint) {
@@ -170,11 +173,11 @@ function monitorMediaFlow(webRtcEndpoint) {
 const __dirname1 = path.resolve();
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "./frontend/build")));
+  app.use(express.static(path.join(__dirname1, "../frontend/build")));
 
   // Serve index.html for all other routes
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname1, "./frontend/build", "index.html"));
+    res.sendFile(path.resolve(__dirname1, "../frontend/build", "index.html"));
   });
 } else {
   // Fallback for development or other environments
