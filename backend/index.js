@@ -54,6 +54,118 @@ app.use("/api/donate", donateRouter);
 app.use("/api/poll", voteRouter);
 app.use("/api/download", downloadRouter);
 
+const kurento = require("kurento-client");
+let kurentoClient;
+let kurentoPipeline;
+let webRtcEndpoint;
+let sdpAnswer;
+let serverIceCandidates = [];
+const kurentoUrl = "ws://localhost:8888/kurento";
+
+app.post("/start-stream", async (req, res) => {
+  const { sdpOffer } = req.body;
+
+  if (!sdpOffer) {
+    return res.status(400).json({
+      error: "Stream already active or SDP offer is missing",
+    });
+  }
+
+  if (!kurentoClient) {
+    kurentoClient = await kurento("ws://localhost:8888/kurento");
+    kurentoPipeline = await kurentoClient.create("MediaPipeline");
+  }
+
+  kurento(kurentoUrl, (error, kurentoClient) => {
+    if (error) {
+      console.error("Could not find Kurento server at", kurentoUrl);
+      return res.status(500).json({ message: "Kurento server not available" });
+    }
+
+    console.log("Kurento client connected successfully.");
+    req.kurentoClient = kurentoClient;
+
+    createMediaPipeline(sdpOffer, res); // Pass 'res' for direct response
+  });
+});
+
+function createMediaPipeline(sdpOffer, res) {
+  req.kurentoClient.create("MediaPipeline", (error, pipeline) => {
+    if (error) {
+      return res.status(500).json({ message: error.message });
+    }
+
+    console.log("Media pipeline created.");
+    pipeline.on("release", () => {
+      console.log("Pipeline released, stream ended.");
+    });
+
+    createWebRtcEndpoint(pipeline, sdpOffer, res);
+  });
+}
+
+function createWebRtcEndpoint(pipeline, sdpOffer, res) {
+  pipeline.create("WebRtcEndpoint", (error, webRtcEndpoint) => {
+    if (error) {
+      return res.status(500).json({ message: error.message });
+    }
+
+    monitorMediaFlow(webRtcEndpoint);
+
+    // Process the SDP offer
+    webRtcEndpoint.processOffer(sdpOffer, (error, sdpAnswer) => {
+      if (error) {
+        return res.status(500).json({ message: error.message });
+      }
+
+      // Respond with the SDP answer to the client
+      res.status(200).json({ sdpAnswer });
+      createRtpEndpoint(pipeline, webRtcEndpoint);
+    });
+  });
+}
+
+function createRtpEndpoint(pipeline, webRtcEndpoint) {
+  pipeline.create("RtpEndpoint", (error, rtpEndpoint) => {
+    if (error) {
+      console.error("Error creating RTP endpoint:", error);
+      return io.emit("error", { message: error.message });
+    }
+
+    // Example RTMP URI where the stream will be sent
+    const rtmpUri = "rtmp://nginx:1935/stream";
+
+    // Connect the WebRtcEndpoint to the RTP endpoint
+    rtpEndpoint.connect(webRtcEndpoint, (error) => {
+      if (error) {
+        console.error("Error connecting WebRtcEndpoint to RTP:", error);
+        return io.emit("error", { message: error.message });
+      }
+
+      // Connect the RTP endpoint to the RTMP server
+      rtpEndpoint.connect(rtmpUri, (error) => {
+        if (error) {
+          console.error("Error streaming to RTMP server:", error);
+          return io.emit("error", { message: error.message });
+        }
+
+        console.log("Streaming to RTMP server started successfully.");
+      });
+    });
+  });
+}
+
+function monitorMediaFlow(webRtcEndpoint) {
+  webRtcEndpoint.on("MediaFlowInStateChange", (event) => {
+    if (event.state === "NOT_FLOWING") {
+      console.log("Media flow stopped, stream ended.");
+      io.emit("streamEnded", { message: "Stream has stopped." });
+    } else {
+      console.log("Media flow state changed:", event.state);
+    }
+  });
+}
+
 // Serve static assets and React frontend in production
 const __dirname1 = path.resolve();
 

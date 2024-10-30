@@ -78,10 +78,10 @@ const initializeSocketIO = (server) => {
     // Kurento-related events
 
     socket.on("onIceCandidate", (data) => {
-      console.log("Backend received ICE candidate:", data.candidate);
+      console.log("Backend received ICE candidate:");
 
       if (socket.kurentoClient && data.candidate) {
-        console.log("Adding ICE candidate to Kurento client.");
+        console.log("Adding ICE candidate to Kurento client instance.");
 
         socket.kurentoClient.addIceCandidate(data.candidate, (error) => {
           if (error) {

@@ -43,68 +43,87 @@ const LivePage = () => {
     }
   }, [isSocketConnected]);
 
-  // Start streaming and setup WebRTC
   const startStreaming = async () => {
-    if (isStreamActive) {
-      console.log("Stream already active. Cannot start another.");
-      return;
-    }
-
     try {
-      // Request access to user's media devices
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
       console.log("Media access granted:", stream);
 
-      // Create a new WebRTC peer for Kurento
       const options = {
         localVideo: document.getElementById("localVideo"),
         configuration: {
           iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
         },
-        onicecandidate: (candidate) => {
-          socket.emit("onIceCandidate", candidate);
+        onicecandidate: async (candidate) => {
+          // Send candidate to server via API instead of socket
+          await fetch("/sendIceCandidate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ candidate }),
+          });
         },
       };
 
-      // Create the kurentoPeer
       const kurentoPeer = kurentoUtils.WebRtcPeer.WebRtcPeerSendonly(
         options,
-        function (error) {
+        async function (error) {
           if (error) return console.error(error);
 
-          // Generate offer to send to Kurento
-          this.generateOffer((error, offerSdp) => {
+          this.generateOffer(async (error, offerSdp) => {
             if (error) return console.error(error);
 
-            // Send the offer to the backend via socket
-            socket.emit("startStream", { sdpOffer: offerSdp });
+            // Send SDP offer to the backend via API
+            const offerResponse = await fetch("/startStream", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ sdpOffer: offerSdp }),
+            });
+
+            if (!offerResponse.ok) {
+              console.error(
+                "Error starting stream:",
+                await offerResponse.text()
+              );
+              return; // Exit if the stream couldn't be started
+            }
+
+            // Fetch SDP answer from the server
+            const answerResponse = await fetch("/getSdpAnswer");
+            const { sdpAnswer } = await answerResponse.json();
+            kurentoPeer.processAnswer(sdpAnswer);
           });
         }
       );
 
-      kurentoPeerRef.current = kurentoPeer; // Store in the ref
+      kurentoPeerRef.current = kurentoPeer;
 
-      // Listen for Kurento's answer
-      socket.on("sdpAnswer", (sdpAnswer) => {
-        console.log("Frontend received SDP answer from server:", sdpAnswer);
-        if (kurentoPeerRef.current) {
-          kurentoPeerRef.current.processAnswer(sdpAnswer);
-        }
-      });
+      // Periodically poll for ICE candidates from the server
+      const pollIceCandidates = setInterval(async () => {
+        const response = await fetch("/getIceCandidates");
+        const { candidates } = await response.json();
 
-      // Listen for ICE candidates from Kurento
-      socket.on("adminIceCandidate", (candidate) => {
-        if (kurentoPeerRef.current) {
-          kurentoPeerRef.current.addIceCandidate(candidate);
-        }
-      });
+        candidates.forEach((candidate) => {
+          if (kurentoPeerRef.current) {
+            kurentoPeerRef.current.addIceCandidate(candidate);
+          }
+        });
+      }, 1000);
+
+      // Store polling interval ID for cleanup
+      kurentoPeerRef.current.pollInterval = pollIceCandidates;
     } catch (err) {
       console.error("Error accessing media devices:", err);
     }
   };
+
+  // Cleanup when component unmounts
+  useEffect(() => {
+    return () => {
+      clearInterval(kurentoPeerRef.current.pollInterval);
+    };
+  }, []);
 
   const stopStreaming = () => {
     if (kurentoPeerRef.current) {
