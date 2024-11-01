@@ -41,6 +41,7 @@
     "countries-list": "^3.0.6",
     "hls.js": "^1.5.17",
     "input-otp": "^1.2.4",
+    "janus-gateway": "^1.2.4",
     "kurento-utils": "^7.1.0",
     "lucide-react": "^0.453.0",
     "process": "^0.11.10",
@@ -56,6 +57,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^4.9.5",
     "web-vitals": "^3.5.2",
+    "webrtc-adapter": "^9.0.1",
     "zod": "^3.23.8"
   },
   "browserslist": {

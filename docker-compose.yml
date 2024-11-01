@@ -1,26 +1,32 @@
 services:
   backend:
     build:
-      context: . # Root directory for backend
+      context: .
       dockerfile: Dockerfile # Backend Dockerfile in root directory
     ports:
       - "8080:8080"
-    volumes:
-      - .:/usr/src/app
     command: node backend/index.js
 
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx # Specifies the custom NGINX Dockerfile
+      dockerfile: Dockerfile.nginx # Specifies the custom NGINX Dockerfile with RTMP support
     ports:
       - "80:80" # HTTP port
+      - "443:443" # HTTPS port if SSL is enabled
       - "1935:1935" # RTMP port
+    depends_on:
+      - janus # Ensures Janus starts before NGINX
 
-  kurento:
+  janus:
     build:
       context: .
-      dockerfile: Dockerfile.kurento
+      dockerfile: Dockerfile.janus # Specifies your Janus Dockerfile with RTMP plugin support
     ports:
-      - "8888:8888"
-      - "8889:8889"
+      - "8088:8088" # HTTP REST API
+      - "8188:8188" # WebSockets API
+      - "10000-10200:10000-10200/udp" # Media ports (for streaming)
+    environment:
+      - JANUS_LOG_LEVEL=4 # Adjust as needed for debugging levels
+    depends_on:
+      - backend # Start after backend is available

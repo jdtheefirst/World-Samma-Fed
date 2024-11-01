@@ -1,0 +1,50 @@
+FROM ubuntu:20.04
+
+# Set non-interactive mode to avoid prompts during package installations
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies, including tzdata for timezone configuration and ca-certificates for git
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    libmicrohttpd-dev \
+    libjansson-dev \
+    libssl-dev \
+    libsrtp2-dev \
+    libsofia-sip-ua-dev \
+    libglib2.0-dev \
+    libopus-dev \
+    libogg-dev \
+    libcurl4-openssl-dev \
+    liblua5.3-dev \
+    libconfig-dev \
+    pkg-config \
+    gengetopt \
+    libtool \
+    automake \
+    git \
+    wget \
+    ffmpeg \
+    tzdata \
+    ca-certificates \
+    libnice-dev \ 
+    zlib1g-dev \  
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set timezone (now that tzdata is installed)
+RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
+# Clone Janus
+RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
+    cd /opt/janus && \
+    sh autogen.sh && \
+    ./configure --enable-plugin-rtmp --disable-websockets --disable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
+    make && make install && make configs
+
+# Expose necessary ports
+EXPOSE 8088 8089
+
+# Start Janus
+CMD ["janus", "-F", "/usr/local/etc/janus"]
