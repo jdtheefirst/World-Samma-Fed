@@ -36,7 +36,7 @@ RUN apt-get update && \
 # Install libusrsctp
 RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     cd /opt/usrsctp && \
-    git checkout v0.9.3 && \ 
+    git checkout 0.9.5.0 && \ 
     ./bootstrap && \
     ./configure && \
     make && \
