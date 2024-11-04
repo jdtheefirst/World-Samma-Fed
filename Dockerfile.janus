@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 # Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies, including tzdata for timezone configuration and ca-certificates for git
+# Install dependencies and set timezone
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -30,21 +30,22 @@ RUN apt-get update && \
     ca-certificates \
     libnice-dev \
     zlib1g-dev \
-    libwebsockets-dev \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    libwebsockets-dev && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set timezone now that tzdata is installed
+RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
 
 # Install libusrsctp
 RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     cd /opt/usrsctp && \
-    git checkout 0.9.5.0 && \ 
+    git checkout 0.9.5.0 && \
     ./bootstrap && \
     ./configure && \
     make && \
-    make install
-
-# Set timezone (now that tzdata is installed)
-RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
+    make install && \
+    cd .. && rm -rf /opt/usrsctp
 
 # Clone Janus
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
@@ -53,9 +54,9 @@ RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Clone and install the RTMP plugin
-RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-plugin-rtmp && \
-    cd /opt/janus-plugin-rtmp && \
+# Clone RTMP Plugin directly into the Janus plugins directory
+RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
+    cd /opt/janus/plugins/janus-plugin-rtmp && \
     mkdir build && cd build && \
     cmake .. && \
     make && make install
