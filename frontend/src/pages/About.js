@@ -125,7 +125,7 @@ const AboutPage = () => {
                 knee, kick and finally grappling).
               </Text>
               <a
-                href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1721742094/sammaV4.pdf"
+                href="https://res.cloudinary.com/dsdlgmgwi/image/upload/v1730722401/sammaV5.pdf"
                 download
                 style={{ textDecoration: "none", color: "blue" }} // Adjust color as needed
               >
