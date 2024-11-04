@@ -50,7 +50,7 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
-    ./configure --enable-websockets --enable-data-channels --enable-rabbitmq --enable-mqtt --disable-docs && \
+    ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
 # Clone and install the RTMP plugin
