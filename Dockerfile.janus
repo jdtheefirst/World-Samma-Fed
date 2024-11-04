@@ -28,8 +28,9 @@ RUN apt-get update && \
     ffmpeg \
     tzdata \
     ca-certificates \
-    libnice-dev \ 
-    zlib1g-dev \  
+    libnice-dev \
+    zlib1g-dev \
+    libwebsockets-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone (now that tzdata is installed)
@@ -40,11 +41,18 @@ RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
-    ./configure --enable-plugin-rtmp --disable-websockets --disable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
+    ./configure --enable-websockets --enable-data-channels --enable-rabbitmq --enable-mqtt --disable-docs && \
     make && make install && make configs
 
+# Clone and install the RTMP plugin
+RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-plugin-rtmp && \
+cd /opt/janus-plugin-rtmp && \
+mkdir build && cd build && \
+cmake .. && \
+make && make install
+
 # Expose necessary ports
-EXPOSE 8088 8089
+EXPOSE 8088 8089 8188 8189 
 
 # Start Janus
 CMD ["janus", "-F", "/usr/local/etc/janus"]
