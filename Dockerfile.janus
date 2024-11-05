@@ -75,9 +75,10 @@ ENV C_INCLUDE_PATH=/usr/local/include/janus
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/local --with-janus=/usr/local/janus && \
+    ./configure --prefix=/usr/local && \
     make && make install && \
     cd ../../.. && rm -rf /opt/janus/plugins/janus-plugin-rtmp
+
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
