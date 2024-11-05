@@ -50,29 +50,32 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     make install && \
     cd .. && rm -rf /opt/usrsctp
 
+# Create a directory for Janus headers
+RUN mkdir -p /usr/local/janus
+
 # Clone and install Janus
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
-    make && make install && make configs && \
-    cd .. && rm -rf /opt/janus
-
-# Create a directory for Janus headers
-RUN mkdir -p /usr/local/janus
+    make && make install && make configs
 
 # Copy specified Janus headers and usrsctp.h to /usr/local/janus
 RUN for file in loggers/logger.h plugins/plugin.h debug.h refcount.h apierror.h sdp-utils.h log.h rtcp.h mutex.h config.h rtpsrtp.h events/eventhandler.h transports/transport.h rtp.h text2pcap.h utils.h record.h ip-utils.h; do \
         cp /usr/local/include/janus/$file /usr/local/janus/; \
     done && cp /usr/local/include/usrsctp.h /usr/local/janus/
 
-RUN find /usr/local/janus -name "*.h" 2>/dev/null
+# Verify that the headers are copied
+RUN ls /usr/local/janus
+
+# Set the include path for the RTMP plugin build
+ENV C_INCLUDE_PATH=/usr/local/include/janus
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/local && \
+    ./configure --prefix=/usr/local --with-janus=/usr/local/janus && \
     make && make install && \
     cd ../../.. && rm -rf /opt/janus/plugins/janus-plugin-rtmp
 
