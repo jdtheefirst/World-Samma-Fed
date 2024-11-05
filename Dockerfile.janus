@@ -68,14 +68,12 @@ RUN for file in loggers/logger.h plugins/plugin.h debug.h refcount.h apierror.h 
 # Verify that the headers are copied
 RUN ls /usr/local/janus
 
-# Set the include path for the RTMP plugin build
-ENV C_INCLUDE_PATH=/usr/local/include
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/local && \
+    ./configure --prefix=/usr/local/janus && \
     make && make install && \
     cd ../../.. && rm -rf /opt/janus/plugins/janus-plugin-rtmp
 
