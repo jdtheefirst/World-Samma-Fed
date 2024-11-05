@@ -3,7 +3,7 @@ FROM ubuntu:20.04
 # Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies, including those for Janus, GStreamer, and other build tools
+# Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -50,9 +50,6 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     make install && \
     cd .. && rm -rf /opt/usrsctp
 
-# Create a directory for Janus headers
-RUN mkdir -p /usr/local/janus
-
 # Clone and install Janus
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
@@ -60,30 +57,21 @@ RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-
-# Copy specified Janus headers and usrsctp.h to /usr/local/janus
+# Copy Janus headers and usrsctp.h to /usr/local/include
 RUN for file in loggers/logger.h plugins/plugin.h debug.h refcount.h apierror.h sdp-utils.h log.h rtcp.h mutex.h config.h rtpsrtp.h events/eventhandler.h transports/transport.h rtp.h text2pcap.h utils.h record.h ip-utils.h; do \
-        cp /usr/local/include/janus/$file /usr/local/janus/; \
-    done && cp /usr/local/include/usrsctp.h /usr/local/janus/
+        cp /usr/local/include/janus/$file /usr/local/include/; \
+    done && cp /usr/local/include/usrsctp.h /usr/local/include/
 
 # Verify that the headers are copied
-RUN ls /usr/local/janus
-
-#Copy janus files to include folder
-RUN cp -r /usr/local/janus/* /usr/include/
-
-# Verify that the headers are copied in include folder
-RUN ls /usr/include
-
+RUN ls /usr/local/include/*
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/include && \
+    ./configure --prefix=/usr/local && \
     make && make install && \
     cd ../../.. && rm -rf /opt/janus/plugins/janus-plugin-rtmp
-
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
