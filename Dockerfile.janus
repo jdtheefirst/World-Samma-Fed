@@ -56,9 +56,12 @@ RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Copy Janus headers for RTMP plugin compatibility
+RUN find /usr/local/include -name "*.h" 2>/dev/null
+
+
 RUN mkdir -p /usr/local/janus && \
-    cp /opt/janus/{.,plugins}/*.h /usr/local/janus
+    cp /opt/janus/*.h /usr/local/janus && \
+    cp /opt/janus/plugins/*.h /usr/local/janus
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
