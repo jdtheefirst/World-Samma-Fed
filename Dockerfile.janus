@@ -3,11 +3,10 @@ FROM ubuntu:20.04
 # Set non-interactive mode to avoid prompts during package installations
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies and set timezone
+# Install dependencies, including those for Janus, GStreamer, and other build tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
-    cmake \
     libmicrohttpd-dev \
     libjansson-dev \
     libssl-dev \
@@ -30,10 +29,14 @@ RUN apt-get update && \
     ca-certificates \
     libnice-dev \
     zlib1g-dev \
-    libwebsockets-dev && \
+    libwebsockets-dev \
+    libgstreamer1.0-dev \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set timezone now that tzdata is installed
+# Set timezone
 RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
@@ -44,25 +47,28 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     ./bootstrap && \
     ./configure && \
     make && \
-    make install && \
-    cd .. && rm -rf /opt/usrsctp
+    make install
 
-# Clone Janus
+# Clone and install Janus
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Clone RTMP Plugin directly into the Janus plugins directory
+# Copy Janus headers for RTMP plugin compatibility
+RUN mkdir -p /usr/local/janus && \
+    cp /opt/janus/{.,plugins}/*.h /usr/local/janus
+
+# Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
-    mkdir build && cd build && \
-    cmake .. && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
     make && make install
 
 # Expose necessary ports
-EXPOSE 8088 8089 8188 8189 
+EXPOSE 8088 8089 8188 8189
 
 # Start Janus
 CMD ["janus", "-F", "/usr/local/etc/janus"]
