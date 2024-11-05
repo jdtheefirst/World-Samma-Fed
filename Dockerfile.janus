@@ -57,15 +57,14 @@ RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Copy specified Janus headers to /usr/local/include
+# Copy specified Janus headers to /usr/local/janus
 RUN for file in loggers/logger.h plugins/plugin.h debug.h refcount.h apierror.h sdp-utils.h log.h rtcp.h mutex.h config.h rtpsrtp.h events/eventhandler.h transports/transport.h rtp.h text2pcap.h utils.h record.h ip-utils.h; do \
-        cp /usr/local/include/janus/$file /usr/local/include/; \
-    done && \
-    [ -f /usr/local/include/usrsctp.h ] && cp /usr/local/include/usrsctp.h /usr/local/include/ || echo "usrsctp.h not found"
+        cp /usr/local/include/janus/$file /usr/local/janus/; \
+    done && cp /usr/local/include/usrsctp.h /usr/local/janus/
 
 
 # Verify that the headers are copied
-RUN ls /usr/local/include/*
+RUN ls /usr/local/janus/*
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
