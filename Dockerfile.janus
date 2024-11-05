@@ -29,11 +29,7 @@ RUN apt-get update && \
     ca-certificates \
     libnice-dev \
     zlib1g-dev \
-    libwebsockets-dev \
-    libgstreamer1.0-dev \
-    gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad && \
+    libwebsockets-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
@@ -48,14 +44,18 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     ./configure && \
     make && \
     make install && \
+    ldconfig && \ 
     cd .. && rm -rf /opt/usrsctp
 
 # Clone and install Janus
-RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
+RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
+
+# Set library path
+ENV LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
