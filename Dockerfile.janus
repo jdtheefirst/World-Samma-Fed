@@ -47,28 +47,34 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     ./bootstrap && \
     ./configure && \
     make && \
-    make install
+    make install && \
+    cd .. && rm -rf /opt/usrsctp
 
 # Clone and install Janus
 RUN git clone https://github.com/meetecho/janus-gateway.git /opt/janus && \
     cd /opt/janus && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
-    make && make install && make configs
+    make && make install && make configs && \
+    cd .. && rm -rf /opt/janus
 
-RUN find /usr/local/include -name "*.h" 2>/dev/null
+# Create a directory for Janus headers
+RUN mkdir -p /usr/local/janus
 
+# Copy specified Janus headers and usrsctp.h to /usr/local/janus
+RUN for file in loggers/logger.h plugins/plugin.h debug.h refcount.h apierror.h sdp-utils.h log.h rtcp.h mutex.h config.h rtpsrtp.h events/eventhandler.h transports/transport.h rtp.h text2pcap.h utils.h record.h ip-utils.h; do \
+        cp /usr/local/include/janus/$file /usr/local/janus/; \
+    done && cp /usr/local/include/usrsctp.h /usr/local/janus/
 
-RUN mkdir -p /usr/local/janus && \
-    cp /opt/janus/*.h /usr/local/janus && \
-    cp /opt/janus/plugins/*.h /usr/local/janus
+RUN find /usr/local/janus -name "*.h" 2>/dev/null
 
 # Clone, build, and install the RTMP plugin
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus/plugins/janus-plugin-rtmp && \
     cd /opt/janus/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
     ./configure --prefix=/usr/local && \
-    make && make install
+    make && make install && \
+    cd ../../.. && rm -rf /opt/janus/plugins/janus-plugin-rtmp
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
