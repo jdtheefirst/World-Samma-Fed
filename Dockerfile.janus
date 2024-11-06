@@ -70,9 +70,15 @@ RUN ls /usr/local/janus/
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
     cd /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/local && \
-    make && make install && \
-    cd ../../../.. && rm -rf /opt/janus-gateway/src/plugins/janus-plugin-rtmp
+    ./configure --prefix=/usr/local --with-janus-include=/usr/local/janus && \
+    make && \
+    make install && \
+    cd ../../../.. && \
+    rm -rf /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
+    # Ensure plugin headers are copied
+    cp -r /opt/janus-gateway/src/plugins/**/*.h /usr/local/janus && \
+    cp /usr/local/include/plugin.h /usr/local/janus
+
 
 
 # Expose necessary ports
