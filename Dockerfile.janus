@@ -61,7 +61,7 @@ RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus
 # Create the /usr/local/janus directory and copy necessary headers
 RUN mkdir -p /usr/local/janus && \
     cp /opt/janus-gateway/src/*.h /usr/local/janus && \
-    cp /opt/janus-gateway/src/plugins/*.h /usr/local/janus
+    cp -r /opt/janus-gateway/src/plugins/**/*.h /usr/local/janus
 
 # Verify that headers were copied successfully
 RUN ls /usr/local/janus/
