@@ -70,7 +70,7 @@ RUN ls /usr/local/janus/
 RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
     cd /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
     ./autogen.sh && \
-    ./configure --prefix=/usr/local --with-janus-include=/usr/local/janus && \
+    ./configure --prefix=/usr/local/janus/ --with-janus-include=/usr/local/janus && \
     make && \
     make install && \
     cd ../../../.. && \
