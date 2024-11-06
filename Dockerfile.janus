@@ -1,40 +1,47 @@
-# First stage: build dependencies and compile Janus
-FROM ubuntu:20.04 AS build-stage
+# Use Ubuntu as the base image
+FROM ubuntu:20.04
 
+# Set non-interactive mode to avoid prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Split installation into smaller chunks to reduce memory usage
+# Install dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    build-essential libmicrohttpd-dev libjansson-dev libssl-dev && \
+    build-essential \
+    libmicrohttpd-dev \
+    libjansson-dev \
+    libssl-dev \
+    libsrtp2-dev \
+    libsofia-sip-ua-dev \
+    libglib2.0-dev \
+    libopus-dev \
+    libogg-dev \
+    libcurl4-openssl-dev \
+    liblua5.3-dev \
+    libconfig-dev \
+    pkg-config \
+    gengetopt \
+    libtool \
+    automake \
+    git \
+    wget \
+    ffmpeg \
+    tzdata \
+    ca-certificates \
+    libnice-dev \
+    zlib1g-dev \
+    libwebsockets-dev \
+    libgstreamer1.0-dev \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libsrtp2-dev libsofia-sip-ua-dev libglib2.0-dev libopus-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libogg-dev libcurl4-openssl-dev liblua5.3-dev libconfig-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    pkg-config gengetopt libtool automake git wget ffmpeg tzdata ca-certificates && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libnice-dev zlib1g-dev libwebsockets-dev libgstreamer1.0-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Compile usrsctp
+# Install libusrsctp
 RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     cd /opt/usrsctp && \
     git checkout 0.9.5.0 && \
@@ -44,23 +51,29 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     ldconfig && \
     cd .. && rm -rf /opt/usrsctp
 
-# Compile Janus Gateway
+# Clone and build Janus Gateway
 RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus-gateway && \
     cd /opt/janus-gateway && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Second stage: copy binaries and set up final image
-FROM ubuntu:20.04
-
-# Copy the necessary binaries from the build stage
-COPY --from=build-stage /usr/local /usr/local
-COPY --from=build-stage /opt/janus-gateway /opt/janus-gateway
-
-# Copy only necessary headers for Janus Gateway
+# Create the /usr/local/janus directory and copy necessary headers
 RUN mkdir -p /usr/local/janus && \
-    cp /opt/janus-gateway/{.,plugins}/*.h /usr/local/janus
+    cp /opt/janus-gateway/src/*.h /usr/local/janus && \
+    cp /opt/janus-gateway/src/plugins/*.h /usr/local/janus
+
+# Verify that headers were copied successfully
+RUN ls /usr/local/janus/
+
+# Clone, build, and install the RTMP plugin
+RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
+    cd /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
+    make && make install && \
+    cd ../../../.. && rm -rf /opt/janus-gateway/src/plugins/janus-plugin-rtmp
+
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
