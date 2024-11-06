@@ -1,6 +1,7 @@
+# Use Ubuntu as the base image
 FROM ubuntu:20.04
 
-# Set non-interactive mode to avoid prompts during package installations
+# Set non-interactive mode to avoid prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
@@ -29,7 +30,11 @@ RUN apt-get update && \
     ca-certificates \
     libnice-dev \
     zlib1g-dev \
-    libwebsockets-dev && \
+    libwebsockets-dev \
+    libgstreamer1.0-dev \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
@@ -42,20 +47,31 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     git checkout 0.9.5.0 && \
     ./bootstrap && \
     ./configure && \
-    make && \
-    make install && \
-    ldconfig && \ 
+    make && make install && \
+    ldconfig && \
     cd .. && rm -rf /opt/usrsctp
 
-# Clone and install Janus
-RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus && \
-    cd /opt/janus && \
+# Clone and build Janus Gateway
+RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus-gateway && \
+    cd /opt/janus-gateway && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Set library path
-ENV LD_LIBRARY_PATH /usr/local/lib:$LD_LIBRARY_PATH
+# Create the /usr/local/janus directory and copy necessary headers
+RUN mkdir -p /usr/local/janus && \
+    cp /opt/janus-gateway/{.,plugins}/*.h /usr/local/janus
+
+# Verify that headers were copied successfully
+RUN ls /usr/local/janus/
+
+# Clone, build, and install the RTMP plugin
+RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-gateway/plugins/janus-plugin-rtmp && \
+    cd /opt/janus-gateway/plugins/janus-plugin-rtmp && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
+    make && make install && \
+    cd ../../.. && rm -rf /opt/janus-gateway/plugins/janus-plugin-rtmp
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
