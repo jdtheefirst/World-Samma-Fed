@@ -52,15 +52,23 @@ RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/ja
     cd /opt/janus-gateway && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
-    make && make install && make configs
+    make
+
+# Copy the prebuilt plugin file into the build directory
+RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /opt/janus-gateway/src/plugins/
+
+# Run make install to install everything
+RUN cd /opt/janus-gateway && \
+    make install && \
+    make configs
 
 # Check if the plugin files are installed correctly
 RUN ls /usr/local/janus/lib/janus/plugins/
 
-# Optionally, copy your custom plugin or re-check files
-RUN mkdir -p /usr/local/janus && \
-    cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/janus/lib/janus/plugins/ && \
-    cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/janus/etc/janus/
+# Optionally, copy your custom plugin to the final location if needed
+# RUN mkdir -p /usr/local/janus && \
+#     cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/janus/lib/janus/plugins/ && \
+#     cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/janus/etc/janus/
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
