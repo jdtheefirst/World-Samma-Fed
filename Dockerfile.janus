@@ -62,6 +62,21 @@ RUN cd /opt/janus-gateway && \
 # Check janus folder
 RUN ls /usr/local/
 
+# Check janus folder src
+RUN ls /usr/local/src
+
+# Check janus folder lib
+RUN ls /usr/local/lib
+
+# Check janus folder etc
+RUN ls /usr/local/etc
+
+# Check janus folder include
+RUN ls /usr/local/include
+
+# Check janus folder bin
+RUN ls /usr/local/bin
+
 # Check janus folder
 RUN ls /usr/local/janus-gateway/
 
