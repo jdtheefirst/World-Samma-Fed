@@ -59,8 +59,9 @@ RUN cd /opt/janus-gateway && \
     make install && \
     make configs
 
+
 # Check janus folder
-RUN ls /usr/local/janus/
+RUN ls /usr/local/janus-gateway/
 
 # Check if the plugin files are installed correctly (after make install)
 RUN ls /usr/local/janus/lib/janus/plugins/
