@@ -31,10 +31,6 @@ RUN apt-get update && \
     libnice-dev \
     zlib1g-dev \
     libwebsockets-dev \
-    libgstreamer1.0-dev \
-    gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
@@ -52,34 +48,19 @@ RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     cd .. && rm -rf /opt/usrsctp
 
 # Clone and build Janus Gateway
-RUN git clone --depth 1 https://github.com/meetecho/janus-gateway.git /opt/janus-gateway && \
+RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/janus-gateway && \
     cd /opt/janus-gateway && \
     sh autogen.sh && \
     ./configure --enable-websockets --enable-data-channels --disable-rabbitmq --disable-mqtt --disable-docs && \
     make && make install && make configs
 
-# Create the /usr/local/janus directory and copy necessary headers
+# Check if the plugin files are installed correctly
+RUN ls /usr/local/janus/lib/janus/plugins/
+
+# Optionally, copy your custom plugin or re-check files
 RUN mkdir -p /usr/local/janus && \
-    cp /opt/janus-gateway/src/*.h /usr/local/janus && \
-    cp -r /opt/janus-gateway/src/plugins/**/*.h /usr/local/janus
-
-# Verify that headers were copied successfully
-RUN ls /usr/local/janus/
-
-# Clone, build, and install the RTMP plugin
-RUN git clone https://github.com/shakurocom/janus-plugin-rtmp.git /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
-    cd /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
-    ./autogen.sh && \
-    ./configure --prefix=/usr/local/janus/ --with-janus-include=/usr/local/janus && \
-    make && \
-    make install && \
-    cd ../../../.. && \
-    rm -rf /opt/janus-gateway/src/plugins/janus-plugin-rtmp && \
-    # Ensure plugin headers are copied
-    cp -r /opt/janus-gateway/src/plugins/**/*.h /usr/local/janus && \
-    cp /usr/local/include/plugin.h /usr/local/janus
-
-
+    cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/janus/lib/janus/plugins/ && \
+    cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/janus/etc/janus/
 
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
