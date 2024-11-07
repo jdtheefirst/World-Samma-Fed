@@ -57,36 +57,17 @@ RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/ja
 # Run make install to install everything
 RUN cd /opt/janus-gateway && \
     make install && \
-    make configs
+    make VERBOSE=1 configs
 
-# Check janus folder
-RUN ls /usr/local/
-
-# Check janus folder src
-RUN ls /usr/local/src
-
-# Check janus folder lib
-RUN ls /usr/local/lib
-
-# Check janus folder etc
-RUN ls /usr/local/etc
-
-# Check janus folder include
-RUN ls /usr/local/include
-
-# Check janus folder bin
-RUN ls /usr/local/bin
-
-# Check janus folder
-RUN ls /usr/local/janus-gateway/
-
-# Check if the plugin files are installed correctly (after make install)
-RUN ls /usr/local/janus/lib/janus/plugins/
+# Check for installed Janus files
+RUN ls /usr/local/lib/janus/
+RUN ls /usr/local/etc/janus/
+RUN ls /usr/local/include/janus/
+RUN ls /usr/local/bin/
 
 # Optionally, copy your custom plugin to the final location if needed
-RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/janus/lib/janus/plugins/ && \
-    cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/janus/etc/janus/
-
+RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/lib/janus/plugins/ && \
+    cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/etc/janus/
 # Expose necessary ports
 EXPOSE 8088 8089 8188 8189
 
