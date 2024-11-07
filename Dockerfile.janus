@@ -59,6 +59,8 @@ RUN cd /opt/janus-gateway && \
     make install && \
     make configs
 
+# Check janus folder
+RUN ls /usr/local/
 
 # Check janus folder
 RUN ls /usr/local/janus-gateway/
