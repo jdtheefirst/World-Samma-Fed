@@ -31,6 +31,12 @@ RUN apt-get update && \
     libnice-dev \
     zlib1g-dev \
     libwebsockets-dev && \
+    libgstreamer1.0-0 \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone
@@ -58,12 +64,6 @@ RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/ja
 RUN cd /opt/janus-gateway && \
     make install && \
     make VERBOSE=1 configs
-
-# Check for installed Janus files
-RUN ls /usr/local/lib/janus/
-RUN ls /usr/local/etc/janus/
-RUN ls /usr/local/include/janus/
-RUN ls /usr/local/bin/
 
 # Optionally, copy your custom plugin to the final location if needed
 RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/lib/janus/plugins/ && \
