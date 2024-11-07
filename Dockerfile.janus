@@ -34,8 +34,9 @@ RUN apt-get update && \
     libgstreamer1.0-dev \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    gstreamer1.0-plugins-bad && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
@@ -67,6 +68,7 @@ RUN cd /opt/janus-gateway && \
 RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/lib/janus/plugins/ && \
     cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/etc/janus/
 
+# Verify installed plugins and configuration files
 RUN ls /usr/local/lib/janus/plugins/
 RUN ls /usr/local/etc/janus/
 
