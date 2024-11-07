@@ -31,7 +31,6 @@ RUN apt-get update && \
     libnice-dev \
     zlib1g-dev \
     libwebsockets-dev \
-    libgstreamer1.0-0 \
     libgstreamer1.0-dev \
     gstreamer1.0-plugins-base \
     gstreamer1.0-plugins-good \
