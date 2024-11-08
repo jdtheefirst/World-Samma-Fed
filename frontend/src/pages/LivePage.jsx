@@ -16,20 +16,20 @@ const JanusRtmpStreamer = () => {
   useEffect(() => {
     // Initialize WebSocket connection once and keep it alive
     if (!ipRef.current) {
-      ipRef.current = new WebSocket("ws://janus:8188");
+      ipRef.current = new WebSocket("ws://janus-1:8188");
 
       ipRef.current.onopen = () => {
-        console.log("WebSocket connected");
+        console.log("WebSocket connected janus-1");
         setIsWsConnected(true); // Update state when connected
       };
 
       ipRef.current.onclose = () => {
-        console.log("WebSocket closed");
+        console.log("WebSocket closed janus-1");
         setIsWsConnected(false); // Update state when closed
       };
 
       ipRef.current.onerror = (error) => {
-        console.error("WebSocket error", error);
+        console.error("WebSocket error janus-1", error);
       };
     }
 
