@@ -15,6 +15,11 @@ const JanusRtmpStreamer = () => {
   ws.onclose = () => console.log("WebSocket closed");
   ws.onerror = (error) => console.error("WebSocket error", error);
 
+  const ip = new WebSocket("ws://167.99.44.195:8188");
+  ip.onopen = () => console.log("WebSocket connected");
+  ip.onclose = () => console.log("WebSocket closed");
+  ip.onerror = (error) => console.error("WebSocket error", error);
+
   const w = new WebSocket("ws://janus:8188");
   w.onopen = () => console.log("WebSocket connected");
   w.onclose = () => console.log("WebSocket closed");
@@ -30,7 +35,7 @@ const JanusRtmpStreamer = () => {
       debug: "all",
       callback: () => {
         const janusInstance = new Janus({
-          server: "ws://janus:8188",
+          server: "ws://167.99.44.195:8188",
           success: () => {
             attachRtmpPlugin(janusInstance);
           },
