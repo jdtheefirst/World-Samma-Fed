@@ -8,51 +8,57 @@ const JanusRtmpStreamer = () => {
   const [rtmpPlugin, setRtmpPlugin] = useState(null);
   const [streaming, setStreaming] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [isWsConnected, setIsWsConnected] = useState(false);
   const localVideoRef = useRef(null);
 
-  const ws = new WebSocket("ws://localhost:8188");
-  ws.onopen = () => console.log("WebSocket connected");
-  ws.onclose = () => console.log("WebSocket closed");
-  ws.onerror = (error) => console.error("WebSocket error", error);
+  useEffect(() => {
+    const ip = new WebSocket("ws://167.99.44.195:8188");
 
-  const ip = new WebSocket("ws://167.99.44.195:8188");
-  ip.onopen = () => console.log("WebSocket connected");
-  ip.onclose = () => console.log("WebSocket closed");
-  ip.onerror = (error) => console.error("WebSocket error", error);
+    ip.onopen = () => {
+      console.log("WebSocket connected");
+      setIsWsConnected(true); // Update state to indicate connection is open
+    };
 
-  const w = new WebSocket("ws://janus:8188");
-  w.onopen = () => console.log("WebSocket connected");
-  w.onclose = () => console.log("WebSocket closed");
-  w.onerror = (error) => console.error("WebSocket error", error);
+    ip.onclose = () => {
+      console.log("WebSocket closed");
+      setIsWsConnected(false); // Update state to indicate connection is closed
+    };
 
-  const j = new WebSocket("ws://world-samma-fed-janus-1:8188");
-  j.onopen = () => console.log("WebSocket connected");
-  j.onclose = () => console.log("WebSocket closed");
-  j.onerror = (error) => console.error("WebSocket error", error);
+    ip.onerror = (error) => {
+      console.error("WebSocket error", error);
+    };
+
+    return () => {
+      ip.close(); // Clean up WebSocket connection on component unmount
+    };
+  }, []);
 
   useEffect(() => {
-    Janus.init({
-      debug: "all",
-      callback: () => {
-        const janusInstance = new Janus({
-          server: "ws://167.99.44.195:8188",
-          success: () => {
-            attachRtmpPlugin(janusInstance);
-          },
-          error: (error) => {
-            console.error("Janus error:", error);
-          },
-        });
-        setJanus(janusInstance);
-      },
-    });
+    // Initialize Janus only if WebSocket connection is established
+    if (isWsConnected) {
+      Janus.init({
+        debug: "all",
+        callback: () => {
+          const janusInstance = new Janus({
+            server: "ws://167.99.44.195:8188",
+            success: () => {
+              attachRtmpPlugin(janusInstance);
+            },
+            error: (error) => {
+              console.error("Janus error:", error);
+            },
+          });
+          setJanus(janusInstance);
+        },
+      });
+    }
 
     return () => {
       if (janus) {
         janus.destroy();
       }
     };
-  }, []);
+  }, [isWsConnected]); // Trigger Janus init when WebSocket is connected
 
   const attachRtmpPlugin = (janusInstance) => {
     janusInstance.attach({
