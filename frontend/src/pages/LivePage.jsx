@@ -12,7 +12,7 @@ const JanusRtmpStreamer = () => {
   const localVideoRef = useRef(null);
 
   useEffect(() => {
-    const ip = new WebSocket("ws://167.99.44.195:8188");
+    const ip = new WebSocket("ws://janus:8188");
 
     ip.onopen = () => {
       console.log("WebSocket connected");
@@ -40,7 +40,7 @@ const JanusRtmpStreamer = () => {
         debug: "all",
         callback: () => {
           const janusInstance = new Janus({
-            server: "ws://167.99.44.195:8188",
+            server: "ws://janus:8188",
             success: () => {
               attachRtmpPlugin(janusInstance);
             },
