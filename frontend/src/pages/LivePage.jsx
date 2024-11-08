@@ -11,27 +11,34 @@ const JanusRtmpStreamer = () => {
   const [isWsConnected, setIsWsConnected] = useState(false);
   const localVideoRef = useRef(null);
 
+  const ipRef = useRef(null); // Keep WebSocket connection persistent across renders
+
   useEffect(() => {
-    const ip = new WebSocket("ws://janus:8188");
+    // Initialize WebSocket connection once and keep it alive
+    if (!ipRef.current) {
+      ipRef.current = new WebSocket("ws://janus:8188");
 
-    ip.onopen = () => {
-      console.log("WebSocket connected");
-      setIsWsConnected(true); // Update state to indicate connection is open
-    };
+      ipRef.current.onopen = () => {
+        console.log("WebSocket connected");
+        setIsWsConnected(true); // Update state when connected
+      };
 
-    ip.onclose = () => {
-      console.log("WebSocket closed");
-      setIsWsConnected(false); // Update state to indicate connection is closed
-    };
+      ipRef.current.onclose = () => {
+        console.log("WebSocket closed");
+        setIsWsConnected(false); // Update state when closed
+      };
 
-    ip.onerror = (error) => {
-      console.error("WebSocket error", error);
-    };
+      ipRef.current.onerror = (error) => {
+        console.error("WebSocket error", error);
+      };
+    }
 
     return () => {
-      ip.close(); // Clean up WebSocket connection on component unmount
+      if (ipRef.current) {
+        ipRef.current.close(); // Clean up WebSocket connection on component unmount
+      }
     };
-  }, []);
+  }, []); // Run this effect only once (on component mount)
 
   useEffect(() => {
     // Initialize Janus only if WebSocket connection is established
