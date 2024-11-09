@@ -14,20 +14,22 @@ const JanusRtmpStreamer = () => {
   const ipRef = useRef(null); // Keep WebSocket connection persistent across renders
 
   useEffect(() => {
-    // Initialize WebSocket connection once and keep it alive
+    // Initialize WebSocket connection via backend proxy
     if (!ipRef.current) {
-      ipRef.current = new WebSocket("ws://janus:8188");
+      ipRef.current = new WebSocket("/janus-ws"); // Use backend proxy here
 
       ipRef.current.onopen = () => {
-        console.log("WebSocket connected janus");
+        setIsWsConnected(true);
+        console.log("WebSocket connected to Janus via backend proxy");
       };
 
       ipRef.current.onclose = () => {
-        console.log("WebSocket closed janus");
+        setIsWsConnected(false);
+        console.log("WebSocket closed Janus connection");
       };
 
       ipRef.current.onerror = (error) => {
-        console.error("WebSocket error janus", error);
+        console.error("WebSocket error with Janus", error);
       };
     }
 
@@ -36,34 +38,7 @@ const JanusRtmpStreamer = () => {
         ipRef.current.close(); // Clean up WebSocket connection on component unmount
       }
     };
-  }, []); // Run this effect only once (on component mount)
-
-  useEffect(() => {
-    // Initialize WebSocket connection once and keep it alive
-    if (!ipRef.current) {
-      ipRef.current = new WebSocket("ws://janus-1:8188");
-
-      ipRef.current.onopen = () => {
-        console.log("WebSocket connected janus-1");
-        setIsWsConnected(true); // Update state when connected
-      };
-
-      ipRef.current.onclose = () => {
-        console.log("WebSocket closed janus-1");
-        setIsWsConnected(false); // Update state when closed
-      };
-
-      ipRef.current.onerror = (error) => {
-        console.error("WebSocket error janus-1", error);
-      };
-    }
-
-    return () => {
-      if (ipRef.current) {
-        ipRef.current.close(); // Clean up WebSocket connection on component unmount
-      }
-    };
-  }, []); // Run this effect only once (on component mount)
+  }, []); // Run only once
 
   useEffect(() => {
     // Initialize Janus only if WebSocket connection is established
@@ -72,7 +47,7 @@ const JanusRtmpStreamer = () => {
         debug: "all",
         callback: () => {
           const janusInstance = new Janus({
-            server: "ws://janus:8188",
+            server: "/janus-ws",
             success: () => {
               attachRtmpPlugin(janusInstance);
             },
@@ -121,7 +96,7 @@ const JanusRtmpStreamer = () => {
       return;
     }
 
-    const rtmpUrl = "rtmp://nginx:1935/stream";
+    const rtmpUrl = "rtmp://167.99.44.195:1935/stream";
     rtmpPlugin.publish({
       stream: rtmpUrl,
       success: () => {

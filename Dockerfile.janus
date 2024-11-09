@@ -1,10 +1,9 @@
-# Use a lighter base image
-FROM debian:bullseye-slim
+# Stage 1: Build essential libraries and Janus
+FROM debian:bullseye-slim AS builder
 
-# Set non-interactive mode to avoid prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install essential dependencies
+# Install build dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -36,21 +35,15 @@ RUN apt-get update && \
     gstreamer1.0-plugins-bad && \
     rm -rf /var/lib/apt/lists/*
 
-# Set timezone
-RUN ln -snf /usr/share/zoneinfo/Europe/London /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
-
 # Install libusrsctp
-RUN git clone https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
+RUN git clone --depth 1 https://github.com/sctplab/usrsctp.git /opt/usrsctp && \
     cd /opt/usrsctp && \
-    git checkout 0.9.5.0 && \
     ./bootstrap && \
     ./configure && \
     make && make install && \
-    ldconfig && \
     cd .. && rm -rf /opt/usrsctp
 
-# Clone and build Janus Gateway with minimal plugins
+# Clone and build Janus Gateway
 RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/janus-gateway && \
     cd /opt/janus-gateway && \
     sh autogen.sh && \
@@ -59,12 +52,12 @@ RUN git clone --depth 1 https://github.com/jdtheefirst/janus-gateway.git /opt/ja
     make install && \
     make configs
 
-# Copy custom plugin if needed
-RUN cp /opt/janus-gateway/src/plugins/libjanus_rtmp.so /usr/local/lib/janus/plugins/ && \
-    cp /opt/janus-gateway/conf/janus.plugin.rtmp.cfg.sample /usr/local/etc/janus/
+# Stage 2: Copy the build output to a slim image
+FROM debian:bullseye-slim
 
-# Expose necessary ports
+COPY --from=builder /usr/local /usr/local
+COPY --from=builder /opt/janus-gateway/conf /usr/local/etc/janus
+
 EXPOSE 8088 8089 8188 8189
 
-# Start Janus
 CMD ["janus", "-F", "/usr/local/etc/janus"]
