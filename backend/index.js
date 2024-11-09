@@ -73,29 +73,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use(
-  "/janus-ws",
-  createProxyMiddleware({
-    target: "ws://janus:8188",
-    ws: true,
-    changeOrigin: true,
-    logLevel: "debug",
-    onProxyReqWs: (proxyReq, req, socket, options) => {
-      console.log("Proxying WebSocket request:", req.url);
-      console.log("Headers:", req.headers);
-    },
-    onError: (err, req, res) => {
-      console.error("WebSocket proxy error:", err.message);
-    },
-    onOpen: (proxySocket) => {
-      console.log("WebSocket connection established with Janus");
-    },
-    onClose: (res) => {
-      console.log("WebSocket connection closed");
-    },
-  })
-);
-
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
