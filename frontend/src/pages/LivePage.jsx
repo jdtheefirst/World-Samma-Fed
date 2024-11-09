@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import "webrtc-adapter";
 import { FaPlay, FaStop, FaVideo } from "react-icons/fa";
 import { useConnectSocket } from "../components/config/chatlogics";
+import { ChatState } from "../components/Context/ChatProvider";
 
 const JanusRtmpStreamer = () => {
   const [streaming, setStreaming] = useState(false);
   const [connected, setConnected] = useState(false);
   const localVideoRef = useRef(null);
+  const { user } = ChatState();
   const socket = useConnectSocket(user);
   const [isSocketConnected, setIsSocketConnected] = useState(false);
   const mediaStream = useRef(null); // Hold media stream reference
