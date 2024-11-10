@@ -9,11 +9,6 @@ services:
       - "10000-10200:10000-10200/udp" # Media ports for streaming
     environment:
       - JANUS_LOG_LEVEL=4
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://janus:8088/janus/info"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
 
   backend:
     build:
@@ -22,8 +17,7 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      janus
-      #   condition: service_healthy
+      - janus
     command: node backend/index.js
 
   nginx:
