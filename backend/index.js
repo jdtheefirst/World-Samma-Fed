@@ -12,6 +12,7 @@ const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const downloadRouter = require("./routes/downloadRouter");
+const Janus = require("janus-gateway");
 
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -36,76 +37,28 @@ const server = app.listen(PORT, () => {
 });
 initializeSocketIO(server);
 
-// Setup WebSocket proxy
-const wss = new WebSocket.Server({ server, path: "/" });
-
-wss.on("connection", (ws) => {
-  const janusSocket = new WebSocket("ws://janus:8188");
-  const ipSocket = new WebSocket("ws://167.99.44.195:8188");
-
-  janusSocket.onopen = () => {
-    console.log("Janus WebSocket connected janus");
-  };
-
-  ipSocket.onopen = () => {
-    console.log("Janus WebSocket connected ip");
-  };
-
-  ipSocket.onerror = (error) => {
-    console.log("WebSocket error ip error", error);
-  };
-
-  janusSocket.onerror = (error) => {
-    console.log("WebSocket error janus error", error);
-  };
-
-  ws.on("message", (message) => {
-    // Relay messages from frontend to Janus
-    if (janusSocket.readyState === WebSocket.OPEN) {
-      janusSocket.send(message);
-    }
-  });
-
-  janusSocket.on("message", (message) => {
-    // Relay messages from Janus to frontend
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(message);
-    }
-  });
-
-  ws.on("close", () => {
-    janusSocket.close();
-  });
-
-  janusSocket.on("close", () => {
-    ws.close();
-  });
-});
-
-let janusSocket;
-
 // Function to connect to Janus WebSocket
 function connectToJanus() {
-  janusSocket = new WebSocket("ws://janus:8188");
-
-  janusSocket.onopen = () => {
-    console.log("Connected to Janus WebSocket");
-  };
-
-  janusSocket.onmessage = (message) => {
-    console.log("Received message from Janus:", message.data);
-    // Here you can handle or route incoming messages from Janus
-  };
-
-  janusSocket.onclose = () => {
-    console.log("Disconnected from Janus WebSocket. Reconnecting...");
-    setTimeout(connectToJanus, 3000); // Attempt reconnection after 3 seconds
-  };
-
-  janusSocket.onerror = (error) => {
-    console.error("Janus WebSocket error:", error);
-    janusSocket.close(); // Close the socket on error, triggering onclose
-  };
+  Janus.init({
+    debug: "all",
+    callback: () => {
+      const janusInstance = new Janus({
+        server: "ws://janus:8188",
+        success: () => {
+          console.log("Connected to Janus server!");
+          attachRtmpPlugin(janusInstance);
+        },
+        error: (error) => {
+          console.error("Janus connection error:", error);
+        },
+        destroyed: () => {
+          console.log("Janus connection destroyed, attempting to reconnect...");
+          setTimeout(initJanusConnection, 3000); // Reconnect after a delay
+        },
+      });
+      setJanus(janusInstance);
+    },
+  });
 }
 
 app.use((req, res, next) => {
