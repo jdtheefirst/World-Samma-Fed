@@ -1,32 +1,38 @@
 services:
+  janus:
+    build:
+      context: .
+      dockerfile: Dockerfile.janus
+    ports:
+      - "8088:8088" # HTTP REST API
+      - "8188:8188" # WebSockets API
+      - "10000-10200:10000-10200/udp" # Media ports for streaming
+    environment:
+      - JANUS_LOG_LEVEL=4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://janus:8088/janus/info"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: .
-      dockerfile: Dockerfile # Backend Dockerfile in root directory
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      janus:
+        condition: service_healthy
     command: node backend/index.js
 
   nginx:
     build:
       context: .
-      dockerfile: Dockerfile.nginx # Specifies the custom NGINX Dockerfile with RTMP support
+      dockerfile: Dockerfile.nginx
     ports:
-      - "80:80" # HTTP port
-      - "443:443" # HTTPS port if SSL is enabled
-      - "1935:1935" # RTMP port
+      - "80:80"
+      - "443:443"
+      - "1935:1935"
     depends_on:
-      - janus # Ensures Janus starts before NGINX
-
-  janus:
-    build:
-      context: .
-      dockerfile: Dockerfile.janus # Specifies your Janus Dockerfile with RTMP plugin support
-    ports:
-      - "8088:8088" # HTTP REST API
-      - "8188:8188" # WebSockets API
-      - "10000-10200:10000-10200/udp" # Media ports (for streaming)
-    environment:
-      - JANUS_LOG_LEVEL=4 # Adjust as needed for debugging levels
-    depends_on:
-      - backend # Start after backend is available
+      - backend
