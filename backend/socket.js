@@ -2,8 +2,6 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const User = require("../backend/models/userModel");
 const { setUserSocket, getUserSocket } = require("./config/socketUtils");
-const { createProxyMiddleware } = require("http-proxy-middleware");
-// const Janus = require("janus-gateway");
 
 let io;
 
@@ -18,11 +16,6 @@ const initializeSocketIO = (server) => {
     },
   });
   const userStatuses = new Map();
-  // const createJanusSession = () => {
-  //   return new Janus.Client("ws://janus:8188", {
-  //     keepAlive: "true",
-  //   });
-  // };
 
   io.use(async (socket, next) => {
     try {
@@ -61,38 +54,6 @@ const initializeSocketIO = (server) => {
   io.on("connection", async (socket) => {
     console.log("connected");
 
-    // // Initialize Janus session when a client connects
-    // const janus = createJanusSession();
-
-    // // Handle messages from frontend
-    // socket.on("start-stream", async (data) => {
-    //   try {
-    //     const rtmpPlugin = await janus.attach("janus.plugin.rtmp");
-
-    //     // Publish stream to internal Janus RTMP server
-    //     const response = await rtmpPlugin.message({
-    //       request: "publish",
-    //       rtmp: "rtmp://janus:8188/stream", // Internal Janus RTMP URL
-    //     });
-
-    //     socket.emit("stream-started", response); // Notify frontend
-    //   } catch (error) {
-    //     console.error("Error starting stream:", error);
-    //     socket.emit("error", "Failed to start streaming");
-    //   }
-    // });
-
-    // socket.on("stop-stream", async () => {
-    //   try {
-    //     // Stop the RTMP stream by hanging up the plugin
-    //     await janus.detach();
-    //     socket.emit("stream-stopped");
-    //   } catch (error) {
-    //     console.error("Error stopping stream:", error);
-    //     socket.emit("error", "Failed to stop streaming");
-    //   }
-    // });
-
     const userId = socket.user._id;
     setUserSocket(userId, socket.id);
 
@@ -115,7 +76,6 @@ const initializeSocketIO = (server) => {
         userStatuses.set(socket.user._id, "available");
       }
     });
-    // janus.destroy();
     userStatuses.delete(socket.user._id);
   });
 

@@ -12,12 +12,12 @@ const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const downloadRouter = require("./routes/downloadRouter");
-const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
-const { initializeSocketIO, getIO } = require("./socket");
+const { initializeSocketIO } = require("./socket");
+const WebSocket = require("ws");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -32,9 +32,81 @@ app.set("trust proxy", 1);
 // Initialize Socket.IO
 const server = app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}...`);
+  connectToJanus();
 });
 initializeSocketIO(server);
-const io = getIO();
+
+// Setup WebSocket proxy
+const wss = new WebSocket.Server({ server, path: "/" });
+
+wss.on("connection", (ws) => {
+  const janusSocket = new WebSocket("ws://janus:8188");
+  const ipSocket = new WebSocket("ws://167.99.44.195:8188");
+
+  janusSocket.onopen = () => {
+    console.log("Janus WebSocket connected janus");
+  };
+
+  ipSocket.onopen = () => {
+    console.log("Janus WebSocket connected ip");
+  };
+
+  ipSocket.onerror = (error) => {
+    console.log("WebSocket error ip error", error);
+  };
+
+  janusSocket.onerror = (error) => {
+    console.log("WebSocket error janus error", error);
+  };
+
+  ws.on("message", (message) => {
+    // Relay messages from frontend to Janus
+    if (janusSocket.readyState === WebSocket.OPEN) {
+      janusSocket.send(message);
+    }
+  });
+
+  janusSocket.on("message", (message) => {
+    // Relay messages from Janus to frontend
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(message);
+    }
+  });
+
+  ws.on("close", () => {
+    janusSocket.close();
+  });
+
+  janusSocket.on("close", () => {
+    ws.close();
+  });
+});
+
+let janusSocket;
+
+// Function to connect to Janus WebSocket
+function connectToJanus() {
+  janusSocket = new WebSocket("ws://janus:8188");
+
+  janusSocket.onopen = () => {
+    console.log("Connected to Janus WebSocket");
+  };
+
+  janusSocket.onmessage = (message) => {
+    console.log("Received message from Janus:", message.data);
+    // Here you can handle or route incoming messages from Janus
+  };
+
+  janusSocket.onclose = () => {
+    console.log("Disconnected from Janus WebSocket. Reconnecting...");
+    setTimeout(connectToJanus, 3000); // Attempt reconnection after 3 seconds
+  };
+
+  janusSocket.onerror = (error) => {
+    console.error("Janus WebSocket error:", error);
+    janusSocket.close(); // Close the socket on error, triggering onclose
+  };
+}
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
