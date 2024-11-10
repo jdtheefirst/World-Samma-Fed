@@ -29,7 +29,7 @@ const JanusRtmpStreamer = () => {
       };
 
       ipRef.current.onerror = (error) => {
-        console.error("WebSocket error with Janus, not even /janus-ws", error);
+        console.error("WebSocket error with Janus, not even /", error);
       };
     }
 
@@ -47,7 +47,7 @@ const JanusRtmpStreamer = () => {
         debug: "all",
         callback: () => {
           const janusInstance = new Janus({
-            server: "/",
+            server: "ws://janus:8188",
             success: () => {
               attachRtmpPlugin(janusInstance);
             },
