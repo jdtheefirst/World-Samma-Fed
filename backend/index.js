@@ -46,17 +46,14 @@ function connectToJanus() {
         server: "ws://janus:8188",
         success: () => {
           console.log("Connected to Janus server!");
-          attachRtmpPlugin(janusInstance);
         },
         error: (error) => {
           console.error("Janus connection error:", error);
         },
         destroyed: () => {
           console.log("Janus connection destroyed, attempting to reconnect...");
-          setTimeout(initJanusConnection, 3000); // Reconnect after a delay
         },
       });
-      setJanus(janusInstance);
     },
   });
 }
