@@ -12,7 +12,6 @@ const voteRouter = require("./routes/voteRouter");
 const donateRouter = require("./routes/donateRouter");
 const useTranslator = require("./routes/translateRouter");
 const downloadRouter = require("./routes/downloadRouter");
-const Janus = require("janus-gateway");
 
 const path = require("path");
 const bodyParser = require("body-parser");
@@ -38,11 +37,12 @@ const server = app.listen(PORT, () => {
 initializeSocketIO(server);
 
 // Function to connect to Janus WebSocket
-function connectToJanus() {
+async function connectToJanus() {
+  const { default: Janus } = await import("janus-gateway");
   Janus.init({
     debug: "all",
     callback: () => {
-      const janusInstance = new Janus({
+      new Janus({
         server: "ws://janus:8188",
         success: () => {
           console.log("Connected to Janus server!");
