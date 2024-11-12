@@ -17,7 +17,6 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const { initializeSocketIO } = require("./socket");
-const WebSocket = require("ws");
 
 dotenv.config({ path: "./secrets.env" });
 connectDB();
@@ -32,31 +31,8 @@ app.set("trust proxy", 1);
 // Initialize Socket.IO
 const server = app.listen(PORT, () => {
   console.log(`Server running on PORT ${PORT}...`);
-  connectToJanus();
 });
 initializeSocketIO(server);
-
-// Function to connect to Janus WebSocket
-async function connectToJanus() {
-  const { default: Janus } = await import("janus-gateway");
-  Janus.init({
-    debug: "all",
-    callback: () => {
-      new Janus({
-        server: "ws://janus:8188",
-        success: () => {
-          console.log("Connected to Janus server!");
-        },
-        error: (error) => {
-          console.error("Janus connection error:", error);
-        },
-        destroyed: () => {
-          console.log("Janus connection destroyed, attempting to reconnect...");
-        },
-      });
-    },
-  });
-}
 
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
