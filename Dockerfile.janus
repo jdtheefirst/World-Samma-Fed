@@ -1,4 +1,4 @@
-# Use a lighter base image
+# Dockerfile.janus using a lighter base image
 FROM debian:bullseye-slim
 
 # Set non-interactive mode to avoid prompts

@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import "webrtc-adapter";
+import React, { useState, useEffect, useRef } from "react";
+import { FaPlay, FaStop } from "react-icons/fa";
 import Janus from "janus-gateway";
-import { FaPlay, FaStop, FaVideo } from "react-icons/fa";
 
 const JanusRtmpStreamer = () => {
   const [janus, setJanus] = useState(null);
@@ -10,17 +9,18 @@ const JanusRtmpStreamer = () => {
   const [connected, setConnected] = useState(false);
   const [isWsConnected, setIsWsConnected] = useState(false);
   const localVideoRef = useRef(null);
+  const localStreamRef = useRef(null);
 
   const ipRef = useRef(null); // Keep WebSocket connection persistent across renders
 
   useEffect(() => {
     // Initialize WebSocket connection via backend proxy
     if (!ipRef.current) {
-      ipRef.current = new WebSocket("/"); // Use backend proxy here
+      ipRef.current = new WebSocket("/ws/"); // Use backend proxy here
 
       ipRef.current.onopen = () => {
         setIsWsConnected(true);
-        console.log("WebSocket connected to Janus via backend proxy");
+        console.log("WebSocket connected to Janus");
       };
 
       ipRef.current.onclose = () => {
@@ -29,7 +29,7 @@ const JanusRtmpStreamer = () => {
       };
 
       ipRef.current.onerror = (error) => {
-        console.error("WebSocket error with Janus, not even /", error);
+        console.error("WebSocket error", error);
       };
     }
 
@@ -47,7 +47,7 @@ const JanusRtmpStreamer = () => {
         debug: "all",
         callback: () => {
           const janusInstance = new Janus({
-            server: "ws://janus:8188",
+            server: "/ws/",
             success: () => {
               attachRtmpPlugin(janusInstance);
             },
@@ -73,6 +73,7 @@ const JanusRtmpStreamer = () => {
       success: (pluginHandle) => {
         setRtmpPlugin(pluginHandle);
         console.log("RTMP plugin attached!");
+        startLocalStream(); // Start capturing local video stream
       },
       error: (error) => {
         console.error("Error attaching RTMP plugin:", error);
@@ -90,15 +91,48 @@ const JanusRtmpStreamer = () => {
     });
   };
 
+  const startLocalStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      localVideoRef.current.srcObject = stream;
+      localStreamRef.current = stream;
+
+      if (rtmpPlugin) {
+        rtmpPlugin.createOffer({
+          media: { video: true, audio: true, data: false },
+          stream: localStreamRef.current,
+          success: (jsep) => {
+            rtmpPlugin.send({
+              message: { request: "configure", audio: true, video: true },
+              jsep,
+            });
+          },
+          error: (error) => {
+            console.error("Error creating WebRTC offer:", error);
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error accessing user media:", error);
+    }
+  };
+
   const startStreaming = () => {
     if (!rtmpPlugin) {
       console.error("RTMP plugin not attached.");
       return;
     }
 
-    const rtmpUrl = "rtmp://167.99.44.195:1935/stream";
-    rtmpPlugin.publish({
-      stream: rtmpUrl,
+    // const rtmpUrl = "rtmp://167.99.44.195:1935/stream";
+    const rtmpUrl = "rtmp://nginx/stream";
+    rtmpPlugin.send({
+      message: {
+        request: "publish",
+        rtmp_url: rtmpUrl,
+      },
       success: () => {
         console.log("Publishing to RTMP successfully!");
         setStreaming(true);
@@ -113,6 +147,9 @@ const JanusRtmpStreamer = () => {
     if (rtmpPlugin) {
       rtmpPlugin.hangup();
       setStreaming(false);
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => track.stop()); // Stop all tracks
+      }
     }
   };
 

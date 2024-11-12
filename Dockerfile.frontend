@@ -1,0 +1,29 @@
+# Dokcerfile.frontend using Node.js image to build the React app
+FROM node:20 as build
+
+# Set the working directory in the container for building the app
+WORKDIR /usr/src/app
+
+# Copy only the frontend-specific package.json files from the frontend folder
+COPY frontend/package*.json ./
+
+# Install frontend dependencies
+RUN npm install
+
+# Copy the rest of the frontend source code
+COPY frontend/. .
+
+# Build the React app (output will be in /usr/src/app/build)
+RUN npm run build
+
+# Use Nginx to serve the build folder as a static site
+FROM nginx:alpine
+
+# Copy the build folder from the previous stage into Nginx’s html directory
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+
+# Expose port 80 for the frontend
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx"]
