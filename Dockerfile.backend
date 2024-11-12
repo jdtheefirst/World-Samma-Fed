@@ -5,7 +5,7 @@ FROM node:20-slim
 WORKDIR /usr/src/app
 
 # Copy only the backend-specific package.json files from backend folder
-COPY backend/package*.json ./
+COPY package*.json ./
 
 # Install backend dependencies
 RUN npm install

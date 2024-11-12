@@ -2,10 +2,10 @@
   "name": "world",
   "version": "1.0.0",
   "description": "world-samma",
-  "main": "index.js",
+  "main": "backend/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node backend/index.js",
+    "dev": "nodemon backend/index.js",
     "frontend": "cd frontend && npm install && npm start",
     "backend": "cd backend && npm install && nodemon index.js",
     "build": "cd frontend && npm install && npm run build"
