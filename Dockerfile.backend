@@ -16,8 +16,8 @@ ENV NODE_OPTIONS=--max-old-space-size=4096
 # Install a stable version of npm (e.g., 9.x.x)
 RUN npm install -g npm@9.8.1 --cache /tmp/empty-cache --prefer-offline
 
-# Copy the entire backend source directory
-COPY backend/. .
+# Copy the entire source directory
+COPY . .
 
 # Create a volume for uploads
 VOLUME ["/usr/src/app/uploads"]
