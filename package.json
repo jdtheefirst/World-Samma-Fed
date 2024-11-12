@@ -24,15 +24,13 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-rate-limit": "^7.1.5",
-    "janus-gateway": "^1.2.4",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "nodemailer": "^6.9.8",
     "nodemon": "^3.0.2",
     "path": "^0.12.7",
     "punycode": "^2.3.1",
-    "socket.io": "^4.7.4",
-    "ws": "^8.18.0"
+    "socket.io": "^4.7.4"
   },
   "resolutions": {
     "punycode": "^2.0.0"
