@@ -18,7 +18,7 @@ services:
       - "8080:8080"
     depends_on:
       - janus
-    command: node index.js
+    command: node backend/index.js
 
   frontend:
     build:
