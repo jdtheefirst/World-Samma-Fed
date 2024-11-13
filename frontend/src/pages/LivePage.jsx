@@ -12,6 +12,10 @@ const JanusRtmpStreamer = () => {
   const localStreamRef = useRef(null);
 
   const ipRef = useRef(null); // Keep WebSocket connection persistent across renders
+  const testSocket = new WebSocket("ws://http://167.99.44.195/ws/");
+  testSocket.onopen = () => console.log("WebSocket connected to ip");
+  testSocket.onerror = (err) => console.error("WebSocket error ip", err);
+  testSocket.onclose = () => console.log("WebSocket closed ip");
 
   useEffect(() => {
     // Initialize WebSocket connection via backend proxy
