@@ -5,7 +5,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Copy the pre-built React app from the frontend/build directory to the Nginx container
-COPY ./frontend/build /usr/share/nginx/html
+COPY frontend/build /usr/share/nginx/html
 
 # Expose port 80 to allow external access to the app
 EXPOSE 80
