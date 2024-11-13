@@ -1,4 +1,4 @@
-# Use the official Nginx image to serve the static site
+# Frontend using the official Nginx image to serve the static site
 FROM nginx:alpine
 
 # Set the working directory for Nginx to serve the app
