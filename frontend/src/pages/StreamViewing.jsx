@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { ChatState } from "../components/Context/ChatProvider";
 import { useConnectSocket } from "../components/config/chatlogics";
-import kurentoUtils from "kurento-utils"; // For handling WebRTC signaling
 
 const StreamViewPage = () => {
   const [isStreamActive, setIsStreamActive] = useState(false);
@@ -54,61 +53,6 @@ const StreamViewPage = () => {
       };
     }
   }, [isSocketConnected]);
-
-  // Setup WebRTC connection
-  const setupWebRTC = () => {
-    if (!videoRef.current) return;
-
-    const options = {
-      remoteVideo: videoRef.current,
-      onicecandidate: (candidate) => {
-        if (candidate) {
-          socket.emit("onUserIceCandidate", candidate);
-        }
-      },
-    };
-
-    const kurentoPeer = kurentoUtils.WebRtcPeer.WebRtcPeerRecvonly(
-      options,
-      function (error) {
-        if (error) return console.error("WebRTC peer creation failed:", error);
-
-        this.generateOffer((error, offerSdp) => {
-          if (error) return console.error("Error generating SDP offer:", error);
-
-          socket.emit("joinStream", { sdpOffer: offerSdp });
-        });
-      }
-    );
-
-    kurentoPeerRef.current = kurentoPeer;
-
-    // SDP Answer and ICE Candidate handlers
-    socket.on("userSdpAnswer", ({ sdpAnswer }) => {
-      if (kurentoPeerRef.current) {
-        kurentoPeerRef.current.processAnswer(sdpAnswer, (error) => {
-          if (error) console.error("Error processing SDP answer:", error);
-        });
-      }
-    });
-
-    socket.on("userIceCandidate", (candidate) => {
-      if (kurentoPeerRef.current && candidate) {
-        kurentoPeerRef.current.addIceCandidate(candidate, (error) => {
-          if (error) console.error("Error adding ICE candidate:", error);
-        });
-      }
-    });
-  };
-
-  // Loading state
-  if (!isStreamActive) {
-    return (
-      <Box>
-        <Text>No live stream is currently active.</Text>
-      </Box>
-    );
-  }
 
   return (
     <Box>

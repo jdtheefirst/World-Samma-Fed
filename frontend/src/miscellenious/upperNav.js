@@ -154,7 +154,7 @@ function UpperNav() {
         </div>
       </Box>
 
-      {modal && <PasskeyModal setModal={setModal} />}
+      <PasskeyModal isOpen={modal} onClose={() => setModal(false)} />
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay
