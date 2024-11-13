@@ -17,10 +17,25 @@ const JanusRtmpStreamer = () => {
   testSocket.onerror = (err) => console.error("WebSocket error ip", err);
   testSocket.onclose = () => console.log("WebSocket closed ip");
 
+  const test = new WebSocket("ws://167.99.44.195:8188");
+  test.onopen = () => console.log("WebSocket connected to ip:8188");
+  test.onerror = (err) => console.error("WebSocket error ip:8188", err);
+  test.onclose = () => console.log("WebSocket closed ip:8188");
+
+  const janusing = new WebSocket("ws://janus:8188");
+  janusing.onopen = () => console.log("WebSocket connected to janus");
+  janusing.onerror = (err) => console.error("WebSocket error janus", err);
+  janusing.onclose = () => console.log("WebSocket closed janus");
+
   const Socket = new WebSocket("ws://172.18.0.2:8188");
   Socket.onopen = () => console.log("WebSocket connected to IP 172");
   Socket.onerror = (err) => console.error("WebSocket error on IP 172", err);
   Socket.onclose = () => console.log("WebSocket closed on IP 172");
+
+  const So = new WebSocket("ws://172.18.0.2");
+  So.onopen = () => console.log("WebSocket connected to So");
+  So.onerror = (err) => console.error("WebSocket error on So", err);
+  So.onclose = () => console.log("WebSocket closed on IP So");
 
   useEffect(() => {
     // Initialize WebSocket connection via backend proxy
