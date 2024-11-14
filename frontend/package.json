@@ -39,7 +39,7 @@
     "class-variance-authority": "^0.7.0",
     "countries-list": "^3.0.6",
     "hls.js": "^1.5.17",
-    "janus-gateway": "^1.2.4",
+    "janus-gateway-js": "^2.0.2",
     "process": "^0.11.10",
     "react": "^18.2.0",
     "react-country-flag": "^3.1.0",

@@ -1,147 +1,99 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";
-import Janus from "janus-gateway";
+import Janus from "janus-gateway-js";
+import "../App.css";
+import "webrtc-adapter";
 
 const JanusRtmpStreamer = () => {
-  const [janus, setJanus] = useState(null);
+  const janusRef = useRef(null);
   const [rtmpPlugin, setRtmpPlugin] = useState(null);
   const [streaming, setStreaming] = useState(false);
   const [connected, setConnected] = useState(false);
-  const [isWsConnected, setIsWsConnected] = useState(false);
   const localVideoRef = useRef(null);
   const localStreamRef = useRef(null);
-
-  const ipRef = useRef(null); // Keep WebSocket connection persistent across renders
-  const testSocket = new WebSocket("ws://167.99.44.195/ws/");
-  testSocket.onopen = () => console.log("WebSocket connected to ip");
-  testSocket.onerror = (err) => console.error("WebSocket error ip", err);
-  testSocket.onclose = () => console.log("WebSocket closed ip");
-
-  const test = new WebSocket("ws://167.99.44.195:8188");
-  test.onopen = () => console.log("WebSocket connected to ip:8188");
-  test.onerror = (err) => console.error("WebSocket error ip:8188", err);
-  test.onclose = () => console.log("WebSocket closed ip:8188");
-
-  const janusing = new WebSocket("ws://janus:8188");
-  janusing.onopen = () => console.log("WebSocket connected to janus");
-  janusing.onerror = (err) => console.error("WebSocket error janus", err);
-  janusing.onclose = () => console.log("WebSocket closed janus");
-
-  const Socket = new WebSocket("ws://172.18.0.2:8188");
-  Socket.onopen = () => console.log("WebSocket connected to IP 172");
-  Socket.onerror = (err) => console.error("WebSocket error on IP 172", err);
-  Socket.onclose = () => console.log("WebSocket closed on IP 172");
-
-  const So = new WebSocket("ws://172.18.0.2");
-  So.onopen = () => console.log("WebSocket connected to So");
-  So.onerror = (err) => console.error("WebSocket error on So", err);
-  So.onclose = () => console.log("WebSocket closed on IP So");
+  const wsRef = useRef(null);
 
   useEffect(() => {
-    // Initialize WebSocket connection via backend proxy
-    if (!ipRef.current) {
-      ipRef.current = new WebSocket("/ws/"); // Use backend proxy here
-
-      ipRef.current.onopen = () => {
-        setIsWsConnected(true);
-        console.log("WebSocket connected to Janus");
-      };
-
-      ipRef.current.onclose = () => {
-        setIsWsConnected(false);
-        console.log("WebSocket closed Janus connection");
-      };
-
-      ipRef.current.onerror = (error) => {
-        console.error("WebSocket error", error);
-      };
-    }
+    initializeJanus();
 
     return () => {
-      if (ipRef.current) {
-        ipRef.current.close(); // Clean up WebSocket connection on component unmount
-      }
+      cleanUp();
     };
-  }, []); // Run only once
+  }, []);
 
-  useEffect(() => {
-    // Initialize Janus only if WebSocket connection is established
-    if (isWsConnected) {
-      Janus.init({
-        debug: "all",
-        callback: () => {
-          const janusInstance = new Janus({
-            server: "/ws/",
-            success: () => {
-              attachRtmpPlugin(janusInstance);
-            },
-            error: (error) => {
-              console.error("Janus error:", error);
-            },
-          });
-          setJanus(janusInstance);
-        },
-      });
+  const initializeJanus = async () => {
+    try {
+      const janusInstance = new Janus.Client("/ws/", { keepalive: true });
+      janusRef.current = janusInstance;
+      janusInstance
+        .createConnection("id")
+        .then((connection) => {
+          connection
+            .createSession()
+            .then((session) => {
+              session
+                .attachPlugin("janus.plugin.rtmp")
+                .then((plugin) => {
+                  console.log("RTMP plugin attached!");
+                  setRtmpPlugin(plugin);
+                  setConnected(true);
+                  attachStream(plugin);
+                })
+                .catch((err) => {
+                  console.error("Plugin attach error:", err);
+                });
+            })
+            .catch((err) => {
+              console.error("Session creation error:", err);
+            });
+        })
+        .catch((err) => {
+          console.error("Connection creation error:", err);
+        });
+    } catch (error) {
+      console.error("Error initializing Janus:", error);
     }
-
-    return () => {
-      if (janus) {
-        janus.destroy();
-      }
-    };
-  }, [isWsConnected]); // Trigger Janus init when WebSocket is connected
-
-  const attachRtmpPlugin = (janusInstance) => {
-    janusInstance.attach({
-      plugin: "janus.plugin.rtmp",
-      success: (pluginHandle) => {
-        setRtmpPlugin(pluginHandle);
-        console.log("RTMP plugin attached!");
-        startLocalStream(); // Start capturing local video stream
-      },
-      error: (error) => {
-        console.error("Error attaching RTMP plugin:", error);
-      },
-      webrtcState: (on) => {
-        setConnected(on);
-        console.log("WebRTC peer connection is ", on ? "up" : "down");
-      },
-      onmessage: (msg, jsep) => {
-        console.log("Message received from RTMP plugin:", msg);
-      },
-      onlocalstream: (stream) => {
-        localVideoRef.current.srcObject = stream;
-      },
-    });
   };
 
-  const startLocalStream = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-      localVideoRef.current.srcObject = stream;
-      localStreamRef.current = stream;
+  const attachStream = (plugin) => {
+    // Capture the local media stream from the user's camera and microphone
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        localVideoRef.current.srcObject = stream; // Display the stream in the video element
+        localStreamRef.current = stream; // Store the stream in the ref
 
-      if (rtmpPlugin) {
-        rtmpPlugin.createOffer({
-          media: { video: true, audio: true, data: false },
-          stream: localStreamRef.current,
+        // Send the local stream to Janus for RTMP publishing
+        plugin.createOffer({
+          media: { video: true, audio: true },
+          stream,
           success: (jsep) => {
-            rtmpPlugin.send({
+            plugin.send({
               message: { request: "configure", audio: true, video: true },
               jsep,
             });
           },
-          error: (error) => {
-            console.error("Error creating WebRTC offer:", error);
-          },
+          error: (error) =>
+            console.error("Error creating WebRTC offer:", error),
         });
-      }
-    } catch (error) {
-      console.error("Error accessing user media:", error);
-    }
+      })
+      .catch((error) => {
+        console.error("Error accessing user media:", error);
+      });
+
+    plugin.on("message", (msg) => {
+      console.log("Message received from RTMP plugin:", msg);
+    });
+
+    plugin.on("localstream", (stream) => {
+      console.log("Local stream attached.");
+      localVideoRef.current.srcObject = stream;
+      localStreamRef.current = stream;
+    });
+
+    plugin.on("webrtcState", (on) => {
+      console.log("WebRTC peer connection is", on ? "up" : "down");
+    });
   };
 
   const startStreaming = () => {
@@ -150,20 +102,14 @@ const JanusRtmpStreamer = () => {
       return;
     }
 
-    // const rtmpUrl = "rtmp://167.99.44.195:1935/stream";
-    const rtmpUrl = "rtmp://nginx/stream";
+    const rtmpUrl = "/stream";
     rtmpPlugin.send({
-      message: {
-        request: "publish",
-        rtmp_url: rtmpUrl,
-      },
+      message: { request: "publish", rtmp_url: rtmpUrl },
       success: () => {
         console.log("Publishing to RTMP successfully!");
         setStreaming(true);
       },
-      error: (error) => {
-        console.error("Error publishing to RTMP:", error);
-      },
+      error: (error) => console.error("Error publishing to RTMP:", error),
     });
   };
 
@@ -172,8 +118,23 @@ const JanusRtmpStreamer = () => {
       rtmpPlugin.hangup();
       setStreaming(false);
       if (localStreamRef.current) {
-        localStreamRef.current.getTracks().forEach((track) => track.stop()); // Stop all tracks
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
       }
+    }
+  };
+
+  const cleanUp = () => {
+    // Make sure janusRef.current is the Janus client instance
+    if (janusRef.current && typeof janusRef.current.destroy === "function") {
+      janusRef.current.destroy(); // Clean up Janus instance
+      console.log("Janus destroyed successfully");
+    } else {
+      console.error("Janus instance not found or destroy method missing");
+    }
+    // Close WebSocket connection if present
+    if (wsRef.current) {
+      wsRef.current.close();
+      console.log("WebSocket connection closed");
     }
   };
 
@@ -196,7 +157,7 @@ const JanusRtmpStreamer = () => {
         <div className="controls">
           <button
             onClick={startStreaming}
-            disabled={streaming}
+            disabled={streaming || !connected}
             className="start-btn"
           >
             <FaPlay /> Start Streaming
