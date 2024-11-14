@@ -3,6 +3,9 @@ import { FaPlay, FaStop } from "react-icons/fa";
 import Janus from "janus-gateway-js";
 import "../App.css";
 import "webrtc-adapter";
+import StatusIndicator from "../components/Status";
+import { Box, Flex, Heading, Text, Spinner } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/button";
 
 const JanusRtmpStreamer = () => {
   const janusRef = useRef(null);
@@ -25,75 +28,50 @@ const JanusRtmpStreamer = () => {
     try {
       const janusInstance = new Janus.Client("/ws/", { keepalive: true });
       janusRef.current = janusInstance;
-      janusInstance
-        .createConnection("id")
-        .then((connection) => {
-          connection
-            .createSession()
-            .then((session) => {
-              session
-                .attachPlugin("janus.plugin.rtmp")
-                .then((plugin) => {
-                  console.log("RTMP plugin attached!");
-                  setRtmpPlugin(plugin);
-                  setConnected(true);
-                  attachStream(plugin);
-                })
-                .catch((err) => {
-                  console.error("Plugin attach error:", err);
-                });
-            })
-            .catch((err) => {
-              console.error("Session creation error:", err);
-            });
-        })
-        .catch((err) => {
-          console.error("Connection creation error:", err);
-        });
+
+      const connection = await janusInstance.createConnection("id");
+      const session = await connection.createSession();
+
+      const plugin = await session.attachPlugin("janus.plugin.rtmp");
+
+      if (!plugin) {
+        throw new Error("Failed to attach RTMP plugin");
+      }
+
+      console.log("RTMP plugin attached!");
+      setRtmpPlugin(plugin);
+      setConnected(true);
+
+      await attachStream(plugin); // Ensure we wait for the stream attachment to complete
     } catch (error) {
       console.error("Error initializing Janus:", error);
     }
   };
 
-  const attachStream = (plugin) => {
-    // Capture the local media stream from the user's camera and microphone
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        localVideoRef.current.srcObject = stream; // Display the stream in the video element
-        localStreamRef.current = stream; // Store the stream in the ref
-
-        // Send the local stream to Janus for RTMP publishing
-        plugin.createOffer({
-          media: { video: true, audio: true },
-          stream,
-          success: (jsep) => {
-            plugin.send({
-              message: { request: "configure", audio: true, video: true },
-              jsep,
-            });
-          },
-          error: (error) =>
-            console.error("Error creating WebRTC offer:", error),
-        });
-      })
-      .catch((error) => {
-        console.error("Error accessing user media:", error);
+  const attachStream = async (plugin) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
       });
-
-    plugin.on("message", (msg) => {
-      console.log("Message received from RTMP plugin:", msg);
-    });
-
-    plugin.on("localstream", (stream) => {
-      console.log("Local stream attached.");
       localVideoRef.current.srcObject = stream;
       localStreamRef.current = stream;
-    });
 
-    plugin.on("webrtcState", (on) => {
-      console.log("WebRTC peer connection is", on ? "up" : "down");
-    });
+      plugin.createOffer({
+        media: { video: true, audio: true },
+        stream,
+        success: (jsep_1) => {
+          plugin.send({
+            message: { request: "configure", audio: true, video: true },
+            jsep_1,
+          });
+        },
+        error: (error_1) =>
+          console.error("Error creating WebRTC offer:", error_1),
+      });
+    } catch (error_2) {
+      console.error("Error accessing user media:", error_2);
+    }
   };
 
   const startStreaming = () => {
@@ -139,39 +117,92 @@ const JanusRtmpStreamer = () => {
   };
 
   return (
-    <div className="streaming-container">
-      <div className="video-wrapper">
-        <video ref={localVideoRef} autoPlay muted className="video-feed" />
-        {!connected && <div className="overlay">Connecting...</div>}
-      </div>
-      <div className="control-panel">
-        <h2>Live Stream Control</h2>
-        <div className="status-indicators">
-          <div className={`status ${connected ? "connected" : "disconnected"}`}>
-            {connected ? "Connected" : "Disconnected"}
-          </div>
-          <div className={`status ${streaming ? "live" : "idle"}`}>
-            {streaming ? "Live" : "Idle"}
-          </div>
-        </div>
-        <div className="controls">
-          <button
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      width="100%"
+      fontFamily="Arial, sans-serif"
+      color="gray.800"
+    >
+      <Box
+        position="relative"
+        width="80%"
+        maxWidth="720px"
+        mb={5}
+        bg="black"
+        borderRadius="8px"
+        overflow="hidden"
+      >
+        <video
+          ref={localVideoRef}
+          autoPlay
+          muted
+          width="100%"
+          className="video-feed"
+        />
+
+        {!connected && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="rgba(0, 0, 0, 0.7)"
+            color="white"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            fontSize="1.5rem"
+          >
+            <Spinner size="lg" />
+            <Text ml={2}>Connecting...</Text>
+          </Box>
+        )}
+      </Box>
+
+      <Box textAlign="center" width="100%" maxWidth="500px">
+        <Heading as="h2" size="lg" mb={3}>
+          Live Stream Control
+        </Heading>
+
+        <Flex justifyContent="space-around" mb={3}>
+          <StatusIndicator
+            status={connected ? "Connected" : "Disconnected"}
+            isConnected={connected}
+          />
+          <StatusIndicator
+            status={streaming ? "Live" : "Idle"}
+            isConnected={streaming}
+          />
+        </Flex>
+
+        <Flex justifyContent="center" gap={3}>
+          <Button
+            leftIcon={<FaPlay />}
             onClick={startStreaming}
-            disabled={streaming || !connected}
-            className="start-btn"
+            isDisabled={streaming || !connected}
+            colorScheme="green"
+            size="lg"
+            fontSize={"md"}
           >
-            <FaPlay /> Start Streaming
-          </button>
-          <button
+            Start Streaming
+          </Button>
+
+          <Button
+            leftIcon={<FaStop />}
             onClick={stopStreaming}
-            disabled={!streaming}
-            className="stop-btn"
+            isDisabled={!streaming}
+            colorScheme="red"
+            size="lg"
+            fontSize={"md"}
           >
-            <FaStop /> Stop Streaming
-          </button>
-        </div>
-      </div>
-    </div>
+            Stop Streaming
+          </Button>
+        </Flex>
+      </Box>
+    </Box>
   );
 };
 
