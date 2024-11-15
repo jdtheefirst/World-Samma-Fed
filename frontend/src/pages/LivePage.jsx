@@ -26,23 +26,26 @@ const JanusRtmpStreamer = () => {
 
   const initializeJanus = async () => {
     try {
-      const janusInstance = new Janus.Client("/ws/", { keepalive: true });
+      const janusInstance = new Janus({
+        server: "/ws/",
+        success: async () => {
+          const session = await janusInstance.createSession();
+          const plugin = await session.attachPlugin("janus.plugin.streaming");
+
+          if (!plugin) {
+            throw new Error("Failed to attach streaming plugin");
+          }
+
+          console.log("Streaming plugin attached!");
+          setRtmpPlugin(plugin);
+          setConnected(true);
+
+          // Proceed with further setup if necessary, e.g., offering media
+          await attachStream(plugin);
+        },
+        error: (error) => console.error("Janus initialization error:", error),
+      });
       janusRef.current = janusInstance;
-
-      const connection = await janusInstance.createConnection("id");
-      const session = await connection.createSession();
-
-      const plugin = await session.attachPlugin("janus.plugin.rtmp");
-
-      if (!plugin) {
-        throw new Error("Failed to attach RTMP plugin");
-      }
-
-      console.log("RTMP plugin attached!");
-      setRtmpPlugin(plugin);
-      setConnected(true);
-
-      await attachStream(plugin); // Ensure we wait for the stream attachment to complete
     } catch (error) {
       console.error("Error initializing Janus:", error);
     }
@@ -54,23 +57,28 @@ const JanusRtmpStreamer = () => {
         video: true,
         audio: true,
       });
+
       localVideoRef.current.srcObject = stream;
       localStreamRef.current = stream;
+
+      plugin.send({
+        message: { request: "configure", audio: true, video: true },
+      });
 
       plugin.createOffer({
         media: { video: true, audio: true },
         stream,
-        success: (jsep_1) => {
-          plugin.send({
-            message: { request: "configure", audio: true, video: true },
-            jsep_1,
-          });
+        success: (jsep) => {
+          console.log("Generated JSEP:", jsep);
+          plugin.send({ message: { request: "start" }, jsep });
         },
-        error: (error_1) =>
-          console.error("Error creating WebRTC offer:", error_1),
+        error: (error) => {
+          console.error("Error creating WebRTC offer:", error);
+          alert("An error occurred during streaming setup. Please try again.");
+        },
       });
-    } catch (error_2) {
-      console.error("Error accessing user media:", error_2);
+    } catch (error) {
+      console.error("Error accessing user media:", error);
     }
   };
 
