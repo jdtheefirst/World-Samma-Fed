@@ -26,25 +26,26 @@ const JanusRtmpStreamer = () => {
 
   const initializeJanus = async () => {
     try {
-      const janusInstance = new Janus({
-        server: "/ws/",
-        success: async () => {
-          const session = await janusInstance.createSession();
-          const plugin = await session.attachPlugin("janus.plugin.streaming");
-
-          if (!plugin) {
-            throw new Error("Failed to attach streaming plugin");
-          }
-
-          console.log("Streaming plugin attached!");
-          setRtmpPlugin(plugin);
-          setConnected(true);
-
-          // Proceed with further setup if necessary, e.g., offering media
-          await attachStream(plugin);
-        },
-        error: (error) => console.error("Janus initialization error:", error),
+      const janusClient = new Janus.Client("/ws/", {
+        keepalive: true,
       });
+      janusRef.current = janusClient;
+
+      const connection = await janusClient.createConnection("connection-id");
+      const session = await connection.createSession();
+      const plugin = await session.attachPlugin("janus.plugin.streaming");
+
+      if (!plugin) {
+        throw new Error("Failed to attach streaming plugin");
+      }
+
+      console.log("Streaming plugin attached!");
+      setRtmpPlugin(plugin);
+      setConnected(true);
+
+      // Proceed with further setup if necessary, e.g., offering media
+      await attachStream(plugin);
+
       janusRef.current = janusInstance;
     } catch (error) {
       console.error("Error initializing Janus:", error);
