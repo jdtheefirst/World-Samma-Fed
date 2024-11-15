@@ -40,6 +40,14 @@ const JanusRtmpStreamer = () => {
         throw new Error("Failed to attach streaming plugin");
       }
 
+      await plugin.send({
+        message: {
+          janus: "message",
+          transaction,
+          body: { request: "create", audio: true, video: true },
+        },
+      });
+
       console.log("Streaming plugin attached!");
       setRtmpPlugin(plugin);
       setConnected(true);
