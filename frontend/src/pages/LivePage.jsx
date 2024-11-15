@@ -80,7 +80,8 @@ const JanusRtmpStreamer = () => {
       return;
     }
 
-    const rtmpUrl = "/stream";
+    const rtmpUrl = "rtmp://nginx:1935/stream";
+
     rtmpPlugin.send({
       message: { request: "publish", rtmp_url: rtmpUrl },
       success: () => {
