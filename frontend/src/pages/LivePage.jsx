@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPlay, FaStop } from "react-icons/fa";
-import Janus from "janus-gateway-js";
+// import Janus from "janus-gateway-js";
 import "../App.css";
 import "webrtc-adapter";
 import StatusIndicator from "../components/Status";
 import { Box, Flex, Heading, Text, Spinner } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
+import Janus from "janus-gateway";
 
 const JanusRtmpStreamer = () => {
   const janusRef = useRef(null);
@@ -14,8 +15,6 @@ const JanusRtmpStreamer = () => {
   const [connected, setConnected] = useState(false);
   const localVideoRef = useRef(null);
   const localStreamRef = useRef(null);
-  const transaction = `txn-${Date.now()}`;
-  const wsRef = useRef(null);
 
   useEffect(() => {
     initializeJanus();
@@ -25,37 +24,38 @@ const JanusRtmpStreamer = () => {
     };
   }, []);
 
-  const initializeJanus = async () => {
-    try {
-      const janusClient = new Janus.Client("/ws/", {
-        keepalive: true,
-      });
-      janusRef.current = janusClient;
+  const initializeJanus = () => {
+    Janus.init({
+      debug: "all",
+      callback: () => {
+        const janus = new Janus({
+          server: "/ws/",
+          success: () => {
+            console.log("Janus Gateway initialized!");
+            attachPlugin(janus);
+          },
+          error: (err) => {
+            console.error("Error initializing Janus Gateway:", err);
+          },
+        });
+        janusRef.current = janus;
+      },
+    });
+  };
 
-      const connection = await janusClient.createConnection("connection-id");
-      const session = await connection.createSession();
-      const plugin = await session.attachPlugin("janus.plugin.streaming");
-
-      if (!plugin) {
-        throw new Error("Failed to attach streaming plugin");
-      }
-
-      await plugin.send({
-        message: {
-          janus: "message",
-          transaction,
-          body: { request: "create", audio: true, video: true },
-        },
-      });
-
-      console.log("Streaming plugin attached!");
-      setRtmpPlugin(plugin);
-      setConnected(true);
-
-      await attachStream(plugin);
-    } catch (error) {
-      console.error("Error initializing Janus:", error);
-    }
+  const attachPlugin = (janus) => {
+    janus.attach({
+      plugin: "janus.plugin.streaming",
+      success: (plugin) => {
+        console.log("Streaming plugin attached!", plugin);
+        setRtmpPlugin(plugin);
+        setConnected(true);
+        attachStream(plugin);
+      },
+      error: (err) => {
+        console.error("Error attaching plugin:", err);
+      },
+    });
   };
 
   const attachStream = async (plugin) => {
@@ -64,26 +64,8 @@ const JanusRtmpStreamer = () => {
         video: true,
         audio: true,
       });
-
       localVideoRef.current.srcObject = stream;
       localStreamRef.current = stream;
-
-      await plugin.send({
-        message: {
-          janus: "message",
-          transaction,
-          body: { request: "configure", audio: true, video: true },
-        },
-      });
-
-      plugin.onmessage = (msg) => {
-        console.log("Configure Response from Janus:", msg);
-        if (msg.janus === "success") {
-          console.log("Configuration successful!");
-        } else if (msg.janus === "error") {
-          console.error("Error configuring plugin:", msg.error);
-        }
-      };
 
       plugin.createOffer({
         media: { video: true, audio: true },
@@ -91,21 +73,9 @@ const JanusRtmpStreamer = () => {
         success: (jsep) => {
           console.log("Generated JSEP:", jsep);
           plugin.send({
-            message: {
-              janus: "message",
-              transaction,
-              body: { request: "start" },
-              jsep,
-            },
+            message: { request: "configure", audio: true, video: true },
+            jsep,
           });
-          plugin.onmessage = (msg) => {
-            console.log("Start Response from Janus:", msg);
-            if (msg.janus === "success") {
-              console.log("Streaming started successfully!");
-            } else if (msg.janus === "error") {
-              console.error("Error starting stream:", msg.error);
-            }
-          };
         },
         error: (error) => {
           console.error("Error creating WebRTC offer:", error);
@@ -121,25 +91,18 @@ const JanusRtmpStreamer = () => {
       console.error("RTMP plugin not attached.");
       return;
     }
-
     const rtmpUrl = "rtmp://nginx:1935/stream";
 
     rtmpPlugin.send({
-      message: {
-        janus: "message",
-        transaction,
-        body: { request: "publish", rtmp_url: rtmpUrl },
-      },
-    });
-    rtmpPlugin.onmessage = (msg) => {
-      console.log("Janus Plugin Message:", msg);
-      if (msg.janus === "success") {
+      message: { request: "publish", rtmp_url: rtmpUrl },
+      success: () => {
         console.log("Publishing to RTMP successfully!");
         setStreaming(true);
-      } else if (msg.janus === "error") {
-        console.error("Error from Janus:", msg.error);
-      }
-    };
+      },
+      error: (err) => {
+        console.error("Error publishing to RTMP:", err);
+      },
+    });
   };
 
   const stopStreaming = () => {
@@ -153,17 +116,12 @@ const JanusRtmpStreamer = () => {
   };
 
   const cleanUp = () => {
-    // Make sure janusRef.current is the Janus client instance
-    if (janusRef.current && typeof janusRef.current.destroy === "function") {
-      janusRef.current.destroy(); // Clean up Janus instance
+    if (janusRef.current) {
+      janusRef.current.destroy();
       console.log("Janus destroyed successfully");
-    } else {
-      console.error("Janus instance not found or destroy method missing");
     }
-    // Close WebSocket connection if present
-    if (wsRef.current) {
-      wsRef.current.close();
-      console.log("WebSocket connection closed");
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach((track) => track.stop());
     }
   };
 
