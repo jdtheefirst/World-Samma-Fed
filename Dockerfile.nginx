@@ -4,9 +4,6 @@ FROM alfg/nginx-rtmp
 # Install FFmpeg using apk
 RUN apk add --no-cache ffmpeg
 
-COPY ip.crt /etc/nginx/selfsigned.crt
-COPY ip.key /etc/nginx/selfsigned.key
-
 # Copy your nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
