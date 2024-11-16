@@ -43,3 +43,4 @@ services:
       - janus
     volumes:
       - ./frontend/build:/usr/share/nginx/html:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live
