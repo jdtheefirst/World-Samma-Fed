@@ -4,6 +4,13 @@ FROM alfg/nginx-rtmp
 # Install FFmpeg using apk
 RUN apk add --no-cache ffmpeg
 
+# Create a directory for the certificates
+RUN mkdir /etc/nginx/certificates
+
+# Copy certificates into the container
+COPY fullchain.pem /etc/nginx/certificates/fullchain.pem
+COPY privkey.pem /etc/nginx/certificates/privkey.pem
+
 # Copy your nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
