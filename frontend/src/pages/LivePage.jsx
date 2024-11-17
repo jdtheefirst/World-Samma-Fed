@@ -29,7 +29,7 @@ const JanusRtmpStreamer = () => {
       debug: "all",
       callback: () => {
         const janus = new Janus({
-          server: "wss://test.worldsamma.org/ws",
+          server: "wss://test.worldsamma.org/ws/",
           success: () => {
             console.log("Janus Gateway initialized!");
             attachPlugin(janus);
