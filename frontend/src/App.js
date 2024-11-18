@@ -17,6 +17,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 import LoadingSpinner from "./components/Loading";
 import DelayedRender from "./components/Render";
+const MeetingComponent = lazy(() => import("./pages/Meetings"));
 const JanusRtmpStreamer = lazy(() => import("./pages/LivePage"));
 const StreamViewPage = lazy(() => import("./pages/StreamViewing"));
 
@@ -322,6 +323,7 @@ function App() {
           />
           <Route path="/admin" element={<AdminWorkSlot />} />
           <Route path="/live" element={<JanusRtmpStreamer />} />
+          <Route path="/streams" element={<StreamViewPage />} />
           <Route
             path="/courses/:id"
             element={
@@ -335,6 +337,10 @@ function App() {
           <Route
             path="/stream"
             element={<DelayedRender Component={StreamViewPage} />}
+          />
+          <Route
+            path="/meeting"
+            element={<DelayedRender Component={MeetingComponent} />}
           />
           <Route path="/clubs" element={<DelayedRender Component={Clubs} />} />
           <Route

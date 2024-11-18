@@ -23,7 +23,8 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../components/config/axios";
 import { ChatState } from "../components/Context/ChatProvider";
 import { GrUserAdmin } from "react-icons/gr";
-import { MdLiveTv } from "react-icons/md";
+import { MdLiveTv, MdOutlineMeetingRoom } from "react-icons/md";
+import AnimatedLetters from "../components/wsf";
 
 const AdminWorkSlot = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -199,6 +200,9 @@ const AdminWorkSlot = () => {
   const goToLivePage = () => {
     navigate(`/live`);
   };
+  const goToMeeting = () => {
+    navigate(`/meeting`);
+  };
 
   return (
     <Box
@@ -230,28 +234,33 @@ const AdminWorkSlot = () => {
           width={"100%"}
           mb={"4"}
         >
-          <Heading>W.S.F</Heading>
+          <AnimatedLetters />
           <Flex>
-            <GrUserAdmin /> &nbsp; <>Admin</>
+            <GrUserAdmin style={{ marginTop: "3px" }} /> &nbsp; Admin
           </Flex>
         </Box>
 
         <Divider mb={"4"} />
 
-        <Box
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          mb={"4"}
-        >
-          <Text p={"6"}>Go Live Now</Text>
-          <MdLiveTv
+        <Flex mb={"4"} gap={2}>
+          <Button
             onClick={goToLivePage}
-            fontSize={"100px"}
-            color="red"
-            cursor="pointer"
-          />
-        </Box>
+            border={"none"}
+            fontSize={"sm"}
+            borderRadius={"full"}
+          >
+            Go Live Now &nbsp; <MdLiveTv color="red" cursor="pointer" />
+          </Button>
+          <Button
+            onClick={goToMeeting}
+            border={"none"}
+            fontSize={"sm"}
+            borderRadius={"full"}
+          >
+            Join Meeting &nbsp;{" "}
+            <MdOutlineMeetingRoom color="red" cursor="pointer" />
+          </Button>
+        </Flex>
 
         <Divider mb={"4"} />
         <Text

@@ -43,3 +43,4 @@ services:
       - janus
     volumes:
       - ./frontend/build:/usr/share/nginx/html:ro
+      - ./hls:/opt/data/hls

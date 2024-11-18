@@ -7,6 +7,8 @@ import StatusIndicator from "../components/Status";
 import { Box, Flex, Heading, Text, Spinner } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import Janus from "janus-gateway";
+import VideoPlayer from "../components/video";
+import UpperNav from "../miscellenious/upperNav";
 
 const JanusRtmpStreamer = () => {
   const janusRef = useRef(null);
@@ -78,6 +80,7 @@ const JanusRtmpStreamer = () => {
           });
         },
         error: (error) => {
+          alert("An error occurred while creating the WebRTC offer.");
           console.error("Error creating WebRTC offer:", error);
         },
       });
@@ -91,7 +94,7 @@ const JanusRtmpStreamer = () => {
       console.error("RTMP plugin not attached.");
       return;
     }
-    const rtmpUrl = "rtmp://nginx:1935/stream";
+    const rtmpUrl = "rtmps://test.worldsamma.org/stream";
 
     rtmpPlugin.send({
       message: { request: "publish", rtmp_url: rtmpUrl },
@@ -120,6 +123,10 @@ const JanusRtmpStreamer = () => {
       janusRef.current.destroy();
       console.log("Janus destroyed successfully");
     }
+    if (rtmpPlugin) {
+      rtmpPlugin.detach(); // Detach the plugin
+      console.log("Detached from streaming plugin");
+    }
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
     }
@@ -134,22 +141,18 @@ const JanusRtmpStreamer = () => {
       fontFamily="Arial, sans-serif"
       color="gray.800"
     >
+      <UpperNav />
       <Box
         position="relative"
         width="80%"
         maxWidth="720px"
-        mb={5}
+        mb={2}
+        marginTop={20}
         bg="black"
         borderRadius="8px"
         overflow="hidden"
       >
-        <video
-          ref={localVideoRef}
-          autoPlay
-          muted
-          width="100%"
-          className="video-feed"
-        />
+        <VideoPlayer localVideoRef={localVideoRef} />
 
         {!connected && (
           <Box
@@ -187,14 +190,14 @@ const JanusRtmpStreamer = () => {
           />
         </Flex>
 
-        <Flex justifyContent="center" gap={3}>
+        <Flex justifyContent="center" gap={2}>
           <Button
             leftIcon={<FaPlay />}
             onClick={startStreaming}
             isDisabled={streaming || !connected}
             colorScheme="green"
             size="lg"
-            fontSize={"md"}
+            fontSize={"sm"}
           >
             Start Streaming
           </Button>
@@ -205,7 +208,7 @@ const JanusRtmpStreamer = () => {
             isDisabled={!streaming}
             colorScheme="red"
             size="lg"
-            fontSize={"md"}
+            fontSize={"sm"}
           >
             Stop Streaming
           </Button>
