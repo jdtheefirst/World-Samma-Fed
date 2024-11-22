@@ -1,23 +1,21 @@
-# Dockerfile.nginx
-FROM alfg/nginx-rtmp
+# Use the official Nginx image
+FROM nginx:alpine
 
-# Create the nginx user and group manually
-RUN addgroup -S nginx && adduser -S nginx -G nginx
-
-# Create the directory and set ownership
-RUN mkdir -p /opt/data/hls && chown nginx:nginx /opt/data/hls
-
-# Create a directory for the certificates
-RUN mkdir /etc/nginx/certificates
+# Install the RTMP module
+RUN apk add --no-cache \
+    nginx-mod-rtmp \
+    openssl \
+    && mkdir -p /opt/data/hls \
+    && chown nginx:nginx /opt/data/hls
 
 # Copy certificates into the container
 COPY fullchain.pem /etc/nginx/certificates/fullchain.pem
 COPY privkey.pem /etc/nginx/certificates/privkey.pem
 
-# Copy your nginx configuration file
+# Copy your custom nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose necessary ports for Nginx RTMP
+# Expose necessary ports
 EXPOSE 80 443 1935
 
 # Start Nginx
