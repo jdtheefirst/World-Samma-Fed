@@ -1,7 +1,7 @@
 FROM tiangolo/nginx-rtmp
 
 # Create nginx user and group
-RUN addgroup -S nginx && adduser -S -G nginx nginx
+RUN addgroup nginx && adduser -G nginx nginx
 
 # Create directories for RTMP streams and SSL certificates, and set appropriate permissions
 RUN mkdir -p /opt/data/hls /etc/nginx/certificates && chown -R nginx:nginx /opt/data/hls /etc/nginx/certificates
