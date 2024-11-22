@@ -1,7 +1,6 @@
-# Start from the official Nginx base image
 FROM nginx:alpine
 
-# Install dependencies required for building Nginx and the RTMP module
+# Install dependencies for building modules
 RUN apk add --no-cache \
     gcc \
     make \
@@ -12,33 +11,33 @@ RUN apk add --no-cache \
     git \
     wget
 
-# Download Nginx source code
-ARG NGINX_VERSION=1.25.2
+# Specify the Nginx stable version
+ARG NGINX_VERSION=1.26.2
 RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
     tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
     mv nginx-${NGINX_VERSION} /usr/src/nginx
 
-# Download and prepare the nginx-rtmp-module
+# Clone nginx-rtmp-module
 RUN git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
 
-# Build Nginx with the RTMP module statically included
+# Build Nginx with RTMP and SSL modules
 WORKDIR /usr/src/nginx
 RUN ./configure \
-    --prefix=/etc/nginx \
     --add-module=/usr/src/nginx-rtmp-module \
-    --with-http_ssl_module && \
+    --with-http_ssl_module \
+    --prefix=/etc/nginx && \
     make && make install
 
 # Clean up build dependencies and temporary files
 RUN apk del gcc make libc-dev openssl-dev pcre-dev zlib-dev git wget && \
     rm -rf /usr/src/nginx* /var/cache/apk/* /tmp/* /var/tmp/*
 
-# Copy your custom Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy SSL certificates into the container
+# Copy SSL certificates
 COPY fullchain.pem /etc/nginx/certificates/fullchain.pem
 COPY privkey.pem /etc/nginx/certificates/privkey.pem
+
+# Copy custom Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Create directories for RTMP streams
 RUN mkdir -p /opt/data/hls && chown -R nginx:nginx /opt/data/hls
