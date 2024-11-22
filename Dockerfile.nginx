@@ -1,19 +1,47 @@
-# Use the official Nginx image
+# Start from the official Nginx base image
 FROM nginx:alpine
 
-# Install the RTMP module
+# Install dependencies required for building Nginx and the RTMP module
 RUN apk add --no-cache \
-    nginx-mod-rtmp \
-    openssl \
-    && mkdir -p /opt/data/hls \
-    && chown nginx:nginx /opt/data/hls
+    gcc \
+    make \
+    libc-dev \
+    openssl-dev \
+    pcre-dev \
+    zlib-dev \
+    git \
+    wget
 
-# Copy certificates into the container
+# Download Nginx source code
+ARG NGINX_VERSION=1.25.2
+RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
+    tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
+    mv nginx-${NGINX_VERSION} /usr/src/nginx
+
+# Download and prepare the nginx-rtmp-module
+RUN git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
+
+# Build Nginx with the RTMP module statically included
+WORKDIR /usr/src/nginx
+RUN ./configure \
+    --prefix=/etc/nginx \
+    --add-module=/usr/src/nginx-rtmp-module \
+    --with-http_ssl_module && \
+    make && make install
+
+# Clean up build dependencies and temporary files
+RUN apk del gcc make libc-dev openssl-dev pcre-dev zlib-dev git wget && \
+    rm -rf /usr/src/nginx* /var/cache/apk/* /tmp/* /var/tmp/*
+
+# Copy your custom Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy SSL certificates into the container
 COPY fullchain.pem /etc/nginx/certificates/fullchain.pem
 COPY privkey.pem /etc/nginx/certificates/privkey.pem
 
-# Copy your custom nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Create directories for RTMP streams
+RUN mkdir -p /opt/data/hls && chown -R nginx:nginx /opt/data/hls
 
 # Expose necessary ports
 EXPOSE 80 443 1935
