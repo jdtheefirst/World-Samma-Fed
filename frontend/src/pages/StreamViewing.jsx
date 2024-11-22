@@ -12,21 +12,20 @@ const LiveStream = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const YOUTUBE_PLAYLIST_ID = "YOUR_PLAYLIST_ID"; // Replace with your YouTube playlist ID
-  const YOUTUBE_API_KEY = "YOUR_API_KEY"; // Replace with your YouTube API key
+  const API_KEY = REACT_APP_API_KEY;
   const liveStreamURL = "https://test.worldsamma.org/live/stream.m3u8";
 
   // Fetch YouTube Playlist
-  const fetchPlaylist = async () => {
+  const fetchPlaylistVideos = async () => {
     try {
       const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${YOUTUBE_PLAYLIST_ID}&key=${YOUTUBE_API_KEY}&maxResults=10`
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PLvaKkVKQu-3-hB4GzyHa69c5LQ1GyJ5S3&maxResults=5&key=${API_KEY}`
       );
-      if (!response.ok) throw new Error("Failed to fetch playlist");
+      if (!response.ok) throw new Error("Failed to fetch playlist videos");
       const data = await response.json();
       setVideos(data.items || []);
     } catch (error) {
-      console.error("Error fetching YouTube playlist:", error);
+      console.error("Error fetching playlist videos:", error);
     }
   };
 
@@ -82,7 +81,7 @@ const LiveStream = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      await Promise.all([fetchPlaylist(), checkLiveStream()]);
+      await Promise.all([fetchPlaylistVideos(), checkLiveStream()]);
       setLoading(false);
     };
     fetchData();
@@ -131,19 +130,43 @@ const LiveStream = () => {
                   p={4}
                   border="1px solid #ccc"
                   borderRadius="md"
-                  onClick={() =>
-                    window.open(
-                      `https://www.youtube.com/watch?v=${video.snippet.resourceId.videoId}`,
-                      "_blank"
-                    )
-                  }
-                  cursor="pointer"
+                  display="flex"
+                  flexDirection={{ base: "column", md: "row" }}
+                  gap={4}
                   _hover={{ bg: "gray.100" }}
                 >
-                  <Text fontWeight="bold">{video.snippet.title}</Text>
-                  <Text fontSize="sm" noOfLines={2}>
-                    {video.snippet.description}
-                  </Text>
+                  <Box width={{ base: "100%", md: "60%" }}>
+                    {activeVideoId === video.snippet.resourceId.videoId ? (
+                      <Box
+                        as="iframe"
+                        width="100%"
+                        height="180px"
+                        src={`https://www.youtube.com/embed/${video.snippet.resourceId.videoId}?autoplay=1`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <Image
+                        src={video.snippet.thumbnails.medium.url}
+                        alt={video.snippet.title}
+                        borderRadius="md"
+                        onClick={() =>
+                          setActiveVideoId(
+                            activeVideoId === video.snippet.resourceId.videoId
+                              ? null
+                              : video.snippet.resourceId.videoId
+                          )
+                        }
+                      />
+                    )}
+                  </Box>
+                  <Box width={{ base: "100%", md: "40%" }}>
+                    <Text fontWeight="bold">{video.snippet.title}</Text>
+                    <Text fontSize="sm" noOfLines={2}>
+                      {video.snippet.description}
+                    </Text>
+                  </Box>
                 </Box>
               ))}
             </Stack>

@@ -19,8 +19,39 @@ const JanusRtmpStreamer = () => {
   const localStreamRef = useRef(null);
 
   useEffect(() => {
-    initializeJanus();
+    const initialize = async () => {
+      try {
+        // Check permissions
+        const cameraPermission = await navigator.permissions.query({
+          name: "camera",
+        });
+        const micPermission = await navigator.permissions.query({
+          name: "microphone",
+        });
 
+        if (
+          cameraPermission.state !== "granted" ||
+          micPermission.state !== "granted"
+        ) {
+          console.warn("Camera or microphone permissions are not granted.");
+          // Optionally show a UI prompt here to notify the user
+        } else {
+          console.log("Permissions granted for camera and microphone.");
+        }
+
+        // Initialize Janus
+        initializeJanus();
+      } catch (error) {
+        console.error(
+          "Error initializing Janus or checking permissions:",
+          error
+        );
+      }
+    };
+
+    initialize();
+
+    // Cleanup logic on component unmount
     return () => {
       cleanUp();
     };
@@ -94,7 +125,7 @@ const JanusRtmpStreamer = () => {
       console.error("RTMP plugin not attached.");
       return;
     }
-    const rtmpUrl = "rtmps://test.worldsamma.org/stream";
+    const rtmpUrl = "rtmps://test.worldsamma.org/stream/";
 
     rtmpPlugin.send({
       message: { request: "publish", rtmp_url: rtmpUrl },

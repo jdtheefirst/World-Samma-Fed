@@ -1,8 +1,7 @@
 # Dockerfile.nginx
 FROM alfg/nginx-rtmp
 
-# Install FFmpeg using apk
-RUN apk add --no-cache ffmpeg
+RUN mkdir -p /opt/data/hls && chown nginx:nginx /opt/data/hls
 
 # Create a directory for the certificates
 RUN mkdir /etc/nginx/certificates
