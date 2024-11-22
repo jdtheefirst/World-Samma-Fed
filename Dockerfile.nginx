@@ -11,18 +11,23 @@ RUN apk add --no-cache \
     git \
     wget
 
-    
-ARG NGINX_VERSION=1.26.2
+ARG NGINX_VERSION=1.27.2
 
+# Install dependencies and download the nginx source code
 RUN apk add --no-cache wget tar && \
+    # Download and extract nginx source code
     wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
     tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
-    ls -l && \
-    mv nginx-${NGINX_VERSION} /usr/src/nginx
-
+    # Create the target directory in /usr/src
+    mkdir -p /usr/src/nginx && \
+    # Move the extracted nginx source code to the target directory
+    mv nginx-${NGINX_VERSION}/* /usr/src/nginx && \
+    # Clean up by removing the downloaded tarball and extracted files
+    rm -rf nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
 
 # Clone nginx-rtmp-module
-RUN git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
+RUN mkdir -p /usr/src/nginx-rtmp-module && \
+    git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
 
 # Build Nginx with RTMP and SSL modules
 WORKDIR /usr/src/nginx
