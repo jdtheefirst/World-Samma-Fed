@@ -35,7 +35,8 @@ RUN ./configure \
     --add-module=/usr/src/nginx-rtmp-module \
     --with-http_ssl_module \
     --prefix=/etc/nginx && \
-    make && make install
+    make && make install && \
+    nginx -V
 
 # Clean up build dependencies and temporary files
 RUN apk del gcc make libc-dev openssl-dev pcre-dev zlib-dev git wget && \
