@@ -12,10 +12,9 @@ RUN apk add --no-cache \
     wget
 
 # Specify the Nginx stable version
-ARG NGINX_VERSION=1.26.2
-RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
-    tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
-    mv nginx-${NGINX_VERSION} /usr/src/nginx
+RUN wget http://nginx.org/download/nginx-1.26.2.tar.gz && \
+    tar -zxvf nginx-1.26.2.tar.gz && \
+    mv nginx-1.26.2 /usr/src/nginx
 
 # Clone nginx-rtmp-module
 RUN git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
