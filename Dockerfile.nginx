@@ -1,48 +1,7 @@
-FROM nginx:alpine
+FROM tiangolo/nginx-rtmp
 
-# Install dependencies for building modules
-RUN apk add --no-cache \
-    gcc \
-    make \
-    libc-dev \
-    openssl-dev \
-    pcre-dev \
-    zlib-dev \
-    git \
-    wget
-
-ARG NGINX_VERSION=1.27.2
-
-# Install dependencies and download the nginx source code
-RUN apk add --no-cache wget tar && \
-    # Download and extract nginx source code
-    wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
-    tar -zxvf nginx-${NGINX_VERSION}.tar.gz && \
-    # Create the target directory in /usr/src
-    mkdir -p /usr/src/nginx && \
-    # Move the extracted nginx source code to the target directory
-    mv nginx-${NGINX_VERSION}/* /usr/src/nginx && \
-    # Clean up by removing the downloaded tarball and extracted files
-    rm -rf nginx-${NGINX_VERSION}.tar.gz nginx-${NGINX_VERSION}
-
-# Clone nginx-rtmp-module
-RUN mkdir -p /usr/src/nginx-rtmp-module && \
-    git clone https://github.com/arut/nginx-rtmp-module.git /usr/src/nginx-rtmp-module
-
-# Build Nginx with RTMP and SSL modules
-WORKDIR /usr/src/nginx
-RUN ./configure \
-    --add-module=/usr/src/nginx-rtmp-module \
-    --with-http_ssl_module \
-    --prefix=/etc/nginx && \
-    make && make install
-
-# Verify NGINX build and RTMP module inclusion
-RUN nginx -V
-
-# Clean up build dependencies and temporary files
-RUN apk del gcc make libc-dev openssl-dev pcre-dev zlib-dev git wget && \
-    rm -rf /usr/src/nginx* /var/cache/apk/* /tmp/* /var/tmp/*
+# Create directories for RTMP streams and SSL certificates, and set appropriate permissions
+RUN mkdir -p /opt/data/hls /etc/nginx/certificates && chown -R nginx:nginx /opt/data/hls /etc/nginx/certificates
 
 # Copy SSL certificates
 COPY fullchain.pem /etc/nginx/certificates/fullchain.pem
@@ -50,9 +9,6 @@ COPY privkey.pem /etc/nginx/certificates/privkey.pem
 
 # Copy custom Nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
-
-# Create directories for RTMP streams
-RUN mkdir -p /opt/data/hls && chown -R nginx:nginx /opt/data/hls
 
 # Expose necessary ports
 EXPOSE 80 443 1935
