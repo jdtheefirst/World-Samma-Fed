@@ -192,11 +192,13 @@ const MeetingComponent = ({ roomId }) => {
           </Text>
         </Box>
         <Grid
-          templateColumns="repeat(auto-fit, minmax(150px, 1fr))"
+          templateColumns="repeat(auto-fit, minmax(200px, 1fr))"
           gap={4}
           bg="gray.50"
           p={4}
           borderRadius="md"
+          maxH="80vh" // Max height for better control on larger screens
+          overflowY="auto" // Add scrolling for overflow
         >
           {/* Local participant video */}
           <GridItem>
@@ -234,6 +236,7 @@ const MeetingComponent = ({ roomId }) => {
             </GridItem>
           ))}
         </Grid>
+
         <HStack justifyContent="center" spacing={2} mt={4}>
           <Button
             colorScheme={isMuted ? "red" : "blue"}
