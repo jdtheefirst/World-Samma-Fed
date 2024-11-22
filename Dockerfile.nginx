@@ -18,7 +18,7 @@ COPY privkey.pem /etc/nginx/certificates/privkey.pem
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose necessary ports for Nginx RTMP
-EXPOSE 80 1935
+EXPOSE 80 443 1935
 
 # Start Nginx
 CMD ["nginx"]
