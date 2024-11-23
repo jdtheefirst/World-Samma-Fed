@@ -125,7 +125,7 @@ const JanusRtmpStreamer = () => {
       console.error("RTMP plugin not attached.");
       return;
     }
-    const rtmpUrl = "rtmps://test.worldsamma.org/stream/";
+    const rtmpUrl = "rtmps://test.worldsamma.org/rtmp/";
 
     rtmpPlugin.send({
       message: { request: "publish", rtmp_url: rtmpUrl },
